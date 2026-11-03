@@ -1,0 +1,14 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - silvertrail.php
+        - uninstall.php
+        - includes
+        - templates
+    bootstrapFiles:
+        - tests/phpstan-bootstrap.php
+    # Filter callbacks can return anything, whatever the hook's docblock says.
+    treatPhpDocTypesAsCertain: false

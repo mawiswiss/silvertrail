@@ -1,0 +1,6 @@
+/vendor/
+/node_modules/
+/test-results/
+/playwright-report/
+/.phpunit.result.cache
+/.wp-env.override.json
