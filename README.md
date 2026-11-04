@@ -55,6 +55,39 @@ Any link to `#silvertrail` opens the preferences.
 
 `silvertrail_has( 'hubspot' )` reads the cookie. Use it only on requests a page cache never serves, such as form posts. Pages render every gated thing blocked and the browser decides.
 
+## Google Consent Mode and the WP Consent API
+
+A service lists the Consent Mode types it grants, for example `'google' => [ 'analytics_storage' ]`. Silvertrail prints the default (everything denied except `security_storage`) first in `<head>` and sends an update after every decision. Google tags stay blocked until consent. Set `$config['google']['mode'] = 'advanced'` in the `silvertrail_config` filter to load them before consent, so they send cookieless pings.
+
+Each group maps to a WP Consent API category through its `consent_api` key. A category is allowed when the visitor agreed to every service in it.
+
+## Records
+
+With records turned on, every decision is posted to `/wp-json/silvertrail/v1/record` and stored with a random consent ID, the choices and the time. No IP address is stored. The `silvertrail_recorded` action fires for every decision, whether records are on or not, so a site can keep them elsewhere. The data comes from the browser and is not verified.
+
+## Check what leaks
+
+Turn on the leak check in the settings and open any page with `?silvertrail-check` as an admin. A panel lists the hosts the page contacted before consent.
+
+For CI, `testing/expect-no-leaks.mjs` gives a Playwright suite the same check. It lives in this repository and is not part of the release zip, so copy it into your tests or check out the repository:
+
+```js
+import { expectNoLeaks } from './silvertrail/testing/expect-no-leaks.mjs';
+
+test('home page loads nothing before consent', async ({ page }) => {
+	await expectNoLeaks(page, '/', { allow: ['cdn.example.com'] });
+});
+```
+
+## WP-CLI
+
+```bash
+wp silvertrail services
+wp silvertrail validate
+wp silvertrail ask-again
+wp silvertrail records export --file=records.csv
+```
+
 ## Develop
 
 ```bash
