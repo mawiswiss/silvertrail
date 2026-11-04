@@ -37,3 +37,4 @@ spl_autoload_register(
 require __DIR__ . '/includes/functions.php';
 
 Silvertrail\Plugin::boot();
+register_activation_hook( __FILE__, array( Silvertrail\Records::class, 'sync' ) );

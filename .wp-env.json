@@ -12,6 +12,7 @@
 	},
 	"env": {
 		"tests": {
+			"plugins": [ ".", "https://downloads.wordpress.org/plugin/wp-consent-api.latest-stable.zip" ],
 			"mappings": {
 				"wp-content/mu-plugins": "./tests/e2e/fixtures"
 			}

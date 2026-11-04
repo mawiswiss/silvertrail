@@ -256,6 +256,71 @@
 	display: none;
 }
 
+.silvertrail__note {
+	margin: 0 0 1rem;
+	padding: 0.75rem;
+	border-left: 3px solid var(--silvertrail-accent);
+	background: color-mix(in srgb, var(--silvertrail-line) 40%, transparent);
+	font-size: 0.9375rem;
+}
+
+.silvertrail__trail {
+	padding: 1rem 0 0;
+	border-top: 1px solid var(--silvertrail-line);
+	font-size: 0.875rem;
+}
+
+.silvertrail__trail-title {
+	margin: 0 0 0.5rem;
+	font-size: 1rem;
+	color: inherit;
+}
+
+.silvertrail__trail dl {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 0.25rem 0.75rem;
+	margin: 0;
+}
+
+.silvertrail__trail dt {
+	color: var(--silvertrail-muted);
+}
+
+.silvertrail__trail dd {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+/* Reopen button */
+
+.silvertrail-reopen {
+	position: fixed;
+	bottom: 1rem;
+	left: 1rem;
+	z-index: 99999;
+	display: grid;
+	place-items: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	padding: 0;
+	border: 1px solid var(--silvertrail-line);
+	border-radius: 50%;
+	background: var(--silvertrail-background);
+	color: var(--silvertrail-accent);
+	box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 0.15);
+	cursor: pointer;
+}
+
+.silvertrail-reopen[hidden] {
+	display: none;
+}
+
+.silvertrail-reopen:focus-visible {
+	outline: 3px solid var(--silvertrail-accent);
+	outline-offset: 3px;
+}
+
 /* Embed placeholder */
 
 .silvertrail-embed {

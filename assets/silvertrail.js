@@ -26,6 +26,9 @@
 
 	// A stale cached page carries a lower n than the cookie, so >= keeps it from re-prompting.
 	function read() {
+		if (config.check) {
+			return null;
+		}
 		const data = readRaw();
 		return data && data.n >= config.n ? data : null;
 	}
@@ -46,6 +49,9 @@
 
 	// A stale cached page must not lower the stored n or drop services it does not know.
 	function set(ids, { silent = false, source = 'banner', partial = false } = {}) {
+		if (config.check) {
+			return;
+		}
 		const stored = readRaw();
 		const newer = !!stored && stored.n > config.n;
 		const consents = consentIds.filter((id) => ids.includes(id));
@@ -58,14 +64,49 @@
 		}
 		if (stored && stored.i) {
 			data.i = stored.i;
+		} else if (config.recordIds) {
+			data.i = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join('');
 		}
 		const secure = window.location.protocol === 'https:' ? '; Secure' : '';
 		document.cookie = `${config.cookie}=${encodeURIComponent(JSON.stringify(data))}; Max-Age=${config.maxAge}; Path=${config.path}; SameSite=Lax${secure}`;
 		window.dispatchEvent(new CustomEvent(CHANGE, { detail: { consents, silent, source } }));
+		if (config.record) {
+			fetch(config.record, {
+				method: 'POST',
+				keepalive: true,
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ i: data.i || '', n: data.n, c: consents, source }),
+			}).catch(() => {});
+		}
 	}
 
-	function grant(id) {
-		set([...consentIds.filter(has), id], { partial: !decided() });
+	function grant(id, options = {}) {
+		set([...consentIds.filter(has), id], { ...options, partial: !decided() });
+	}
+
+	// Google Consent Mode and the WP Consent API
+
+	function syncConsentMode(consents) {
+		if (typeof window.gtag !== 'function' || Object.keys(config.google).length === 0) {
+			return;
+		}
+		const update = {};
+		for (const [type, ids] of Object.entries(config.google)) {
+			update[type] = ids.some((id) => config.essential.includes(id) || consents.includes(id)) ? 'granted' : 'denied';
+		}
+		window.gtag('consent', 'update', update);
+	}
+
+	function syncConsentApi(consents) {
+		if (typeof window.wp_set_consent !== 'function') {
+			return;
+		}
+		const everything = consentIds.every((id) => consents.includes(id));
+		window.wp_set_consent('functional', 'allow');
+		for (const [category, ids] of Object.entries(config.consentApi)) {
+			const allowed = ids.length > 0 ? ids.every((id) => consents.includes(id)) : everything;
+			window.wp_set_consent(category, allowed ? 'allow' : 'deny');
+		}
 	}
 
 	// Gated scripts and embeds
@@ -82,7 +123,7 @@
 		const inert = document.querySelectorAll('script[type="text/plain"][data-silvertrail]');
 		let pending = [];
 		for (const node of inert) {
-			if (!has(node.dataset.silvertrail)) {
+			if (!has(node.dataset.silvertrail) && !config.ungated.includes(node.dataset.silvertrail)) {
 				continue;
 			}
 			const script = document.createElement('script');
@@ -128,6 +169,78 @@
 		});
 	}
 
+	// The trail: what this page held back and what it loaded from other hosts
+
+	function serviceForUrl(url) {
+		let parsed;
+		try {
+			parsed = new URL(url, window.location.href);
+		} catch {
+			return null;
+		}
+		const host = parsed.hostname.toLowerCase();
+		const path = parsed.pathname.replace(/^\//, '');
+		for (const [id, service] of Object.entries(config.services)) {
+			for (const pattern of service.hosts) {
+				const [patternHost, ...rest] = pattern.split('/');
+				const patternPath = rest.join('/');
+				if ((host === patternHost || host.endsWith('.' + patternHost)) && path.startsWith(patternPath)) {
+					return id;
+				}
+			}
+		}
+		return null;
+	}
+
+	function trail() {
+		const held = new Set();
+		document.querySelectorAll('script[type="text/plain"][data-silvertrail]').forEach((node) => held.add(node.dataset.silvertrail));
+		document.querySelectorAll('[data-silvertrail-embed]').forEach((node) => held.add(node.dataset.silvertrailEmbed));
+
+		const loaded = new Map();
+		for (const entry of performance.getEntriesByType('resource')) {
+			const host = new URL(entry.name, window.location.href).hostname;
+			if (host !== window.location.hostname && !loaded.has(host)) {
+				loaded.set(host, { host, service: serviceForUrl(entry.name), startTime: entry.startTime });
+			}
+		}
+		return { held: [...held], loaded: [...loaded.values()] };
+	}
+
+	function renderTrail() {
+		const section = banner.querySelector('[data-silvertrail-trail]');
+		if (!section) {
+			return;
+		}
+		const texts = config.texts;
+		const name = (id) => (config.services[id] ? config.services[id].name : id);
+		const { held, loaded } = trail();
+		const list = document.createElement('dl');
+		const row = (term, items) => {
+			if (items.length === 0) {
+				return;
+			}
+			const dt = document.createElement('dt');
+			dt.textContent = term;
+			const dd = document.createElement('dd');
+			dd.textContent = items.join(', ');
+			list.append(dt, dd);
+		};
+		row(texts.held, held.map(name));
+		row(
+			texts.loaded,
+			loaded.map((item) => (item.service ? `${name(item.service)} (${item.host})` : `${item.host} (${texts.unknown})`)),
+		);
+		if (list.children.length === 0) {
+			const dd = document.createElement('dd');
+			dd.textContent = texts.none;
+			list.append(dd);
+		}
+		section.querySelector('dl')?.remove();
+		section.append(list);
+		section.hidden = false;
+	}
+
 	// Banner
 
 	const banner = document.getElementById('silvertrail-banner');
@@ -162,12 +275,25 @@
 		groupInput.indeterminate = states.some(Boolean) && !groupInput.checked;
 	}
 
+	function showReopen() {
+		document.querySelectorAll('[data-silvertrail-reopen]').forEach((button) => {
+			button.hidden = !decided();
+		});
+	}
+
 	function show(name) {
 		if (!banner) {
 			return;
 		}
 		syncSwitches();
 		view(name);
+		if (name === 'preferences') {
+			renderTrail();
+		}
+		const gpcNote = banner.querySelector('[data-silvertrail-gpc]');
+		if (gpcNote) {
+			gpcNote.hidden = !(config.gpc && navigator.globalPrivacyControl === true);
+		}
 		const closable = decided();
 		banner.querySelector('[data-silvertrail-action="close"]').hidden = !closable;
 		if (isBox) {
@@ -217,7 +343,7 @@
 				const placeholder = loader.closest('[data-silvertrail-embed]');
 				const remember = placeholder.querySelector('[data-silvertrail-remember]');
 				if (remember && remember.checked) {
-					grant(placeholder.dataset.silvertrailEmbed);
+					grant(placeholder.dataset.silvertrailEmbed, { source: 'embed' });
 				} else {
 					reveal(placeholder);
 				}
@@ -242,6 +368,7 @@
 				choose([...banner.querySelectorAll('[data-silvertrail-service]:checked')].map((input) => input.value));
 			} else if (action === 'preferences') {
 				view('preferences');
+				renderTrail();
 			} else if (action === 'close') {
 				hide();
 			}
@@ -291,8 +418,18 @@
 
 	async function start() {
 		bind();
+		window.wp_consent_type = 'optin';
+		document.dispatchEvent(new CustomEvent('wp_consent_type_defined'));
+		const stored = read();
+		if (stored) {
+			syncConsentApi(stored.c);
+		}
 		activate();
+		showReopen();
 
+		if (config.check) {
+			return;
+		}
 		if (window.location.hash === '#silvertrail') {
 			open();
 			return;
@@ -318,14 +455,19 @@
 		}
 	}
 
-	window.addEventListener(CHANGE, activate);
+	window.addEventListener(CHANGE, (event) => {
+		syncConsentMode(event.detail.consents);
+		syncConsentApi(event.detail.consents);
+		activate();
+		showReopen();
+	});
 	window.addEventListener('hashchange', () => {
 		if (window.location.hash === '#silvertrail') {
 			open();
 		}
 	});
 
-	window.silvertrail = { has, set, grant, open, decided };
+	window.silvertrail = { has, set, grant, open, decided, trail };
 
 	let started = false;
 	const once = () => {

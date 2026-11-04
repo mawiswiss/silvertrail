@@ -73,6 +73,14 @@ final class Config {
 		return self::$config;
 	}
 
+	/**
+	 * Builds again on the next read, keeping what was registered.
+	 */
+	public static function rebuild(): void {
+		self::$config   = null;
+		self::$revision = null;
+	}
+
 	public static function reset(): void {
 		self::$config              = null;
 		self::$revision            = null;
@@ -117,6 +125,14 @@ final class Config {
 	 */
 	public static function consent_ids(): array {
 		return array_values( array_diff( array_keys( self::get()['services'] ), self::essential_ids() ) );
+	}
+
+	/**
+	 * In Consent Mode Advanced, Google tags load before consent and send only cookieless pings.
+	 */
+	public static function ungated( string $id ): bool {
+		$config = self::get();
+		return 'advanced' === $config['google']['mode'] && array() !== ( $config['services'][ $id ]['google'] ?? array() );
 	}
 
 	/**
@@ -241,7 +257,7 @@ final class Config {
 				'name'        => (string) ( $group['name'] ?? $id ),
 				'description' => (string) ( $group['description'] ?? '' ),
 				'locked'      => 'essential' === $id || ! empty( $group['locked'] ),
-				'consent_api' => (string) ( $group['consent_api'] ?? 'marketing' ),
+				'consent_api' => in_array( $group['consent_api'] ?? null, ConsentApi::CATEGORIES, true ) ? (string) $group['consent_api'] : 'marketing',
 			);
 		}
 		$groups['essential'] ??= self::default_groups()['essential'];

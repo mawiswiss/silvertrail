@@ -12,8 +12,8 @@ final class Texts {
 	/**
 	 * @return array<string, string>
 	 */
-	public static function all(): array {
-		$defaults = array(
+	public static function defaults(): array {
+		return array(
 			'title'             => __( 'Privacy settings', 'silvertrail' ),
 			'intro'             => __( 'We use cookies and similar technologies. Some are needed for this site to work. Everything else only runs if you agree.', 'silvertrail' ),
 			'accept_all'        => __( 'Accept all', 'silvertrail' ),
@@ -35,7 +35,20 @@ final class Texts {
 			/* translators: %s: service name */
 			'embed_remember'    => __( 'Always allow %s', 'silvertrail' ),
 			'reopen'            => __( 'Privacy settings', 'silvertrail' ),
+			'gpc'               => __( 'Your browser sends Global Privacy Control, so only essential services run. You can still allow more here.', 'silvertrail' ),
+			'trail_title'       => __( 'On this page', 'silvertrail' ),
+			'trail_held'        => __( 'Held back', 'silvertrail' ),
+			'trail_loaded'      => __( 'Loaded from', 'silvertrail' ),
+			'trail_unknown'     => __( 'not listed here', 'silvertrail' ),
+			'trail_none'        => __( 'Nothing from other sites.', 'silvertrail' ),
 		);
+	}
+
+	/**
+	 * @return array<string, string>
+	 */
+	public static function all(): array {
+		$defaults = self::defaults();
 
 		$custom = Settings::get( 'texts' );
 		if ( is_array( $custom ) ) {

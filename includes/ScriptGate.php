@@ -63,7 +63,7 @@ final class ScriptGate {
 		}
 		$essential = Config::essential_ids();
 		foreach ( Config::get()['services'] as $id => $service ) {
-			if ( in_array( $handle, $service['handles'], true ) && ! in_array( $id, $essential, true ) ) {
+			if ( in_array( $handle, $service['handles'], true ) && ! in_array( $id, $essential, true ) && ! Config::ungated( $id ) ) {
 				return $id;
 			}
 		}

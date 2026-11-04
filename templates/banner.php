@@ -8,6 +8,7 @@
  * @var array{
  *     layout: 'modal'|'box',
  *     appearance: string,
+ *     trail: bool,
  *     groups: array<string, array{name: string, description: string, locked: bool, services: array<string, array<string, mixed>>}>,
  *     texts: array<string, string>,
  *     privacy_url: string,
@@ -49,6 +50,7 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 
 		<div class="silvertrail__view" data-silvertrail-view="preferences" hidden>
 			<p class="silvertrail__text"><?php echo esc_html( $silvertrail_texts['preferences_intro'] ); ?></p>
+			<p class="silvertrail__note" data-silvertrail-gpc hidden><?php echo esc_html( $silvertrail_texts['gpc'] ); ?></p>
 			<ul class="silvertrail__groups">
 				<?php foreach ( $args['groups'] as $silvertrail_group_id => $silvertrail_group ) : ?>
 					<li class="silvertrail__group">
@@ -105,6 +107,11 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 					</li>
 				<?php endforeach; ?>
 			</ul>
+			<?php if ( $args['trail'] ) : ?>
+				<section class="silvertrail__trail" data-silvertrail-trail hidden>
+					<h3 class="silvertrail__trail-title"><?php echo esc_html( $silvertrail_texts['trail_title'] ); ?></h3>
+				</section>
+			<?php endif; ?>
 			<div class="silvertrail__actions">
 				<button type="button" class="silvertrail__button" data-silvertrail-action="accept-all"><?php echo esc_html( $silvertrail_texts['accept_all'] ); ?></button>
 				<button type="button" class="silvertrail__button" data-silvertrail-action="reject-all"><?php echo esc_html( $silvertrail_texts['reject_all'] ); ?></button>

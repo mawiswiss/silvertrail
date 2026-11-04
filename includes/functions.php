@@ -10,6 +10,8 @@ declare(strict_types=1);
 use Silvertrail\Config;
 use Silvertrail\Consent;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Whether the visitor consented to a service. Reads the cookie, so it only holds on
  * requests a page cache never serves, such as form posts or REST calls. Pages

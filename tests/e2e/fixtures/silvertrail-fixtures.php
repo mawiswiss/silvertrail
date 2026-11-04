@@ -23,6 +23,7 @@ add_action(
 				'provider' => 'Example Analytics',
 				'purpose'  => 'Counts visits in the e2e suite.',
 				'hosts'    => array( 'analytics.example.test' ),
+				'google'   => array( 'analytics_storage' ),
 			)
 		);
 		silvertrail_register_service(
@@ -49,6 +50,7 @@ add_action(
 				'provider' => 'Example Ads',
 				'purpose'  => 'Marks conversions in the e2e suite.',
 				'hosts'    => array( 'pixel.example.test' ),
+				'google'   => array( 'ad_storage', 'ad_user_data', 'ad_personalization' ),
 			)
 		);
 	}
@@ -74,19 +76,56 @@ add_action(
 add_action(
 	'init',
 	static function (): void {
-		if ( get_page_by_path( 'silvertrail-embeds' ) ) {
-			return;
-		}
-		// Front-end requests run kses, which would strip the iframe.
-		kses_remove_filters();
-		wp_insert_post(
-			array(
-				'post_type'    => 'page',
-				'post_status'  => 'publish',
-				'post_title'   => 'Embeds',
-				'post_name'    => 'silvertrail-embeds',
-				'post_content' => '<iframe src="https://video.example.test/embed/1" title="Test video"></iframe>',
-			)
+		$pages = array(
+			'silvertrail-embeds'    => '<iframe src="https://video.example.test/embed/1" title="Test video"></iframe>',
+			'silvertrail-shortcode' => '[silvertrail_link]',
+			'silvertrail-block'     => '<!-- wp:silvertrail/reopen-link {"text":"Cookie settings"} /-->',
+			'silvertrail-leak'      => 'This page loads a script from another host without asking.',
 		);
+		foreach ( $pages as $slug => $content ) {
+			if ( get_page_by_path( $slug ) ) {
+				continue;
+			}
+			// Front-end requests run kses, which would strip the iframe.
+			kses_remove_filters();
+			wp_insert_post(
+				array(
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => $slug,
+					'post_name'    => $slug,
+					'post_content' => $content,
+				)
+			);
+		}
+	}
+);
+
+// Lets a test switch settings per browser context without touching the shared database.
+// The GTM preset stays on for every test. Switching services per test would change the shared revision.
+$silvertrail_test_settings = static function ( $value ) {
+	$value            = is_array( $value ) ? $value : array();
+	$value['presets'] = array(
+		'google-tag-manager' => array(
+			'enabled' => true,
+			'tag_id'  => 'GTM-TEST123',
+		),
+	) + ( $value['presets'] ?? array() );
+	if ( empty( $_COOKIE['silvertrail_test_settings'] ) ) {
+		return $value;
+	}
+	$override = json_decode( wp_unslash( $_COOKIE['silvertrail_test_settings'] ), true );
+	return is_array( $override ) ? array_replace( $value, $override ) : $value;
+};
+add_filter( 'option_silvertrail', $silvertrail_test_settings );
+add_filter( 'default_option_silvertrail', $silvertrail_test_settings );
+
+// An ungated script from another host, for the trail, the leak check and expect-no-leaks.
+add_action(
+	'wp_head',
+	static function (): void {
+		if ( is_page( 'silvertrail-leak' ) ) {
+			echo '<script src="http://127.0.0.1:8892/wp-content/mu-plugins/leak.js"></script>';
+		}
 	}
 );

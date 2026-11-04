@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test.js';
 
-const ALL_IDS = ['test-analytics', 'test-gated', 'test-video', 'test-pixel'];
+const ALL_IDS = ['google-tag-manager', 'test-analytics', 'test-gated', 'test-video', 'test-pixel'];
 // Footer scripts print before the fixture's inline tags, and the after code waits for its file.
 const ALL_RAN = ['gated-src', 'gated-after', 'analytics', 'pixel'];
 

@@ -13,5 +13,15 @@ final class Plugin {
 		Frontend::register();
 		ScriptGate::register();
 		EmbedGate::register();
+		Snippets::register();
+		ConsentMode::register();
+		ConsentApi::register();
+		Reopen::register();
+		LeakCheck::register();
+		Records::register();
+		Cli::register();
+		if ( is_admin() ) {
+			Admin\SettingsPage::register();
+		}
 	}
 }

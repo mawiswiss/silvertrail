@@ -128,7 +128,7 @@ final class Presets {
 					self::GOOGLE,
 					__( 'Shows embedded maps.', 'silvertrail' ),
 					'https://policies.google.com/privacy',
-					array( 'maps.google.com', 'google.com/maps', 'maps.googleapis.com', 'maps.gstatic.com' )
+					array( 'maps.google.com', 'google.com/maps' )
 				),
 			),
 		);

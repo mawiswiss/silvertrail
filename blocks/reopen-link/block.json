@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "silvertrail/reopen-link",
+	"title": "Privacy settings link",
+	"category": "widgets",
+	"icon": "privacy",
+	"description": "A link that opens the cookie preferences again.",
+	"keywords": [ "cookie", "consent", "privacy" ],
+	"textdomain": "silvertrail",
+	"attributes": {
+		"text": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"color": {
+			"text": true,
+			"link": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"render": "file:./render.php"
+}
