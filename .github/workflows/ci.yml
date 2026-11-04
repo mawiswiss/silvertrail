@@ -60,6 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Check what the release zip ships. The folder name must match the slug.
+      - run: rsync -a --exclude-from=<(sed 's#^/##' .distignore) ./ build/silvertrail/
+        shell: bash
       - uses: wordpress/plugin-check-action@v1
         with:
-          exclude-directories: 'node_modules,vendor,tests,testing,.github'
+          build-dir: './build/silvertrail'

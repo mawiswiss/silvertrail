@@ -10,5 +10,7 @@ parameters:
         - templates
     bootstrapFiles:
         - tests/phpstan-bootstrap.php
+    scanFiles:
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
     # Filter callbacks can return anything, whatever the hook's docblock says.
     treatPhpDocTypesAsCertain: false
