@@ -127,6 +127,15 @@ $silvertrail_test_settings = static function ( $value ) {
 add_filter( 'option_silvertrail', $silvertrail_test_settings );
 add_filter( 'default_option_silvertrail', $silvertrail_test_settings );
 
+// Settings from code, through the public filter, per browser context.
+add_filter(
+	'silvertrail_settings',
+	static function ( array $settings ): array {
+		$code = json_decode( wp_unslash( $_COOKIE['silvertrail_test_code'] ?? '' ), true );
+		return is_array( $code ) ? array_replace( $settings, $code ) : $settings;
+	}
+);
+
 // Asks every group in place, as on a site with embeds only. The services and the revision stay the same.
 add_filter(
 	'silvertrail_config',

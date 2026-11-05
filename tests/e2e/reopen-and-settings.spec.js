@@ -180,6 +180,27 @@ test.describe('settings page', () => {
 		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
 	});
 
+	test('a setting from code shows as set in code and cannot be changed', async ({ page, context }) => {
+		await context.addCookies([
+			{ name: 'silvertrail_test_code', value: JSON.stringify({ layout: 'box', records: true }), url: 'http://localhost:8892' },
+		]);
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+
+		await expect(page.locator('th', { hasText: 'Position' })).toContainText('Set in code');
+		await expect(page.locator('th', { hasText: 'Appearance' })).not.toContainText('Set in code');
+		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
+		await expect(page.getByRole('radio', { name: 'Corner' })).toBeDisabled();
+		await expect(page.getByRole('radio', { name: 'Centered' })).toBeDisabled();
+		await expect(page.getByRole('radio', { name: 'Dark' })).toBeEnabled();
+		await expect(page.getByLabel('Imprint page')).toBeEnabled();
+
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
+		const records = page.getByLabel('Keep a record of each decision');
+		await expect(records).toBeChecked();
+		await expect(records).toBeDisabled();
+		await expect(page.locator('.post-state', { hasText: 'Set in code' })).toBeVisible();
+	});
+
 	test('turns records on in the tools tab', async ({ page }) => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
 
