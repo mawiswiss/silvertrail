@@ -88,7 +88,7 @@
 	position: sticky;
 	bottom: 0;
 	margin: 0 calc(-1 * var(--silvertrail-gutter));
-	padding: 1rem var(--silvertrail-gutter) var(--silvertrail-gutter);
+	padding: 1rem var(--silvertrail-gutter);
 	border-top: 1px solid var(--silvertrail-line);
 	background: var(--silvertrail-background);
 }
@@ -241,7 +241,8 @@
 	flex-wrap: wrap;
 	gap: 1rem;
 	justify-content: center;
-	margin: 1rem 0 0;
+	margin: 0;
+	padding-bottom: var(--silvertrail-gutter);
 	font-size: 0.875rem;
 }
 

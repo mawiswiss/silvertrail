@@ -116,14 +116,15 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 				<button type="button" class="silvertrail__button" data-silvertrail-action="reject-all"><?php echo esc_html( $silvertrail_texts['reject_all'] ); ?></button>
 				<button type="button" class="silvertrail__link" data-silvertrail-action="preferences" data-silvertrail-view="entrance"><?php echo esc_html( $silvertrail_texts['preferences'] ); ?></button>
 			</div>
-			<?php if ( array() !== $silvertrail_links ) : ?>
-				<p class="silvertrail__legal">
-					<?php foreach ( $silvertrail_links as $silvertrail_label => $silvertrail_url ) : ?>
-						<a href="<?php echo esc_url( $silvertrail_url ); ?>"><?php echo esc_html( (string) $silvertrail_label ); ?></a>
-					<?php endforeach; ?>
-				</p>
-			<?php endif; ?>
 		</div>
+
+		<?php if ( array() !== $silvertrail_links ) : ?>
+			<p class="silvertrail__legal">
+				<?php foreach ( $silvertrail_links as $silvertrail_label => $silvertrail_url ) : ?>
+					<a href="<?php echo esc_url( $silvertrail_url ); ?>"><?php echo esc_html( (string) $silvertrail_label ); ?></a>
+				<?php endforeach; ?>
+			</p>
+		<?php endif; ?>
 	</div>
 
 	<button type="button" class="silvertrail__close" data-silvertrail-action="close" aria-label="<?php echo esc_attr( $silvertrail_texts['close'] ); ?>" hidden>
