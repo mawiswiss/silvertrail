@@ -132,7 +132,7 @@ final class SettingsPage {
 	}
 
 	public static function in_code( string $id ): bool {
-		return isset( Config::get()['services'][ $id ] ) && empty( Settings::stored()['presets'][ $id ]['enabled'] );
+		return isset( Config::get()['services'][ $id ] ) && ! Presets::switched_on( $id );
 	}
 
 	/**

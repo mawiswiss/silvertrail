@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Silvertrail;
 
 /**
- * @phpstan-type Group array{name: string, description: string, locked: bool, consent_api: string}
+ * @phpstan-type Group array{name: string, description: string, locked: bool, consent_api: string, in_place: bool}
  * @phpstan-type Service array{
  *     group: string,
  *     name: string,
@@ -147,8 +147,17 @@ final class Config {
 		return '/' . $path;
 	}
 
+	/**
+	 * Services in a group asked in place, such as embeds, ask on their placeholder instead.
+	 */
 	public static function needs_banner(): bool {
-		return array() !== self::consent_ids();
+		$config = self::get();
+		foreach ( self::consent_ids() as $id ) {
+			if ( ! $config['groups'][ $config['services'][ $id ]['group'] ]['in_place'] ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -266,6 +275,7 @@ final class Config {
 				'description' => (string) ( $group['description'] ?? '' ),
 				'locked'      => 'essential' === $id || ! empty( $group['locked'] ),
 				'consent_api' => in_array( $group['consent_api'] ?? null, ConsentApi::CATEGORIES, true ) ? (string) $group['consent_api'] : 'marketing',
+				'in_place'    => ! empty( $group['in_place'] ),
 			);
 		}
 		$groups['essential'] ??= self::default_groups()['essential'];
@@ -281,6 +291,10 @@ final class Config {
 				/* translators: 1: service ID, 2: group ID */
 				self::wrong( sprintf( __( 'Skipped the service "%1$s" because its group "%2$s" does not exist.', 'silvertrail' ), $id, $group ) );
 				continue;
+			}
+			if ( $groups[ $group ]['in_place'] && ( array() !== self::strings( $service['handles'] ?? array() ) || '' !== (string) ( $service['tag_id'] ?? '' ) ) ) {
+				/* translators: 1: service ID, 2: group ID */
+				self::wrong( sprintf( __( 'The service "%1$s" loads scripts, but its group "%2$s" asks in place, so no banner asks for it. Move it to another group.', 'silvertrail' ), $id, $group ) );
 			}
 			$google  = self::strings( $service['google'] ?? array() );
 			$unknown = array_diff( $google, self::GOOGLE_TYPES );
@@ -327,30 +341,35 @@ final class Config {
 				'description' => __( 'Needed for the site to work. They are always on.', 'silvertrail' ),
 				'locked'      => true,
 				'consent_api' => 'functional',
+				'in_place'    => false,
 			),
 			'preferences'    => array(
 				'name'        => __( 'Preferences', 'silvertrail' ),
 				'description' => __( 'Remember your settings, such as a language or a filled-in form.', 'silvertrail' ),
 				'locked'      => false,
 				'consent_api' => 'preferences',
+				'in_place'    => false,
 			),
 			'statistics'     => array(
 				'name'        => __( 'Statistics', 'silvertrail' ),
 				'description' => __( 'Show us how visitors use this site, so we can improve it.', 'silvertrail' ),
 				'locked'      => false,
 				'consent_api' => 'statistics',
+				'in_place'    => false,
 			),
 			'marketing'      => array(
 				'name'        => __( 'Marketing', 'silvertrail' ),
 				'description' => __( 'Measure ads and show you ads that fit your interests, also on other sites.', 'silvertrail' ),
 				'locked'      => false,
 				'consent_api' => 'marketing',
+				'in_place'    => false,
 			),
 			'external-media' => array(
 				'name'        => __( 'External media', 'silvertrail' ),
 				'description' => __( 'Videos, maps and posts embedded from other platforms. The platform can see your visit when they load.', 'silvertrail' ),
 				'locked'      => false,
 				'consent_api' => 'marketing',
+				'in_place'    => true,
 			),
 		);
 	}

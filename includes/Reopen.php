@@ -36,7 +36,7 @@ final class Reopen {
 
 	public static function button(): void {
 		$mode = Settings::get( 'floating_button' );
-		if ( 'never' === $mode || ! Config::needs_banner() ) {
+		if ( 'never' === $mode || array() === Config::consent_ids() ) {
 			return;
 		}
 		Templates::render(

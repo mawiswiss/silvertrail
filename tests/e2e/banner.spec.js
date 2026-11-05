@@ -1,6 +1,6 @@
 import { test, expect } from './test.js';
 
-const ALL_IDS = ['google-tag-manager', 'test-analytics', 'test-gated', 'test-video', 'test-pixel'];
+const ALL_IDS = ['google-tag-manager', 'youtube', 'google-maps', 'test-analytics', 'test-gated', 'test-video', 'test-pixel'];
 // Footer scripts print before the fixture's inline tags, and the after code waits for its file.
 const ALL_RAN = ['gated-src', 'gated-after', 'analytics', 'pixel'];
 
@@ -131,6 +131,17 @@ test.describe('banner', () => {
 
 		await page.reload();
 		await expect(frame).toHaveCount(0);
+	});
+
+	test('a YouTube embed waits behind a placeholder without any setup', async ({ page }) => {
+		await page.route('**/www.youtube-nocookie.com/**', (route) => route.fulfill({ contentType: 'text/html', body: '' }));
+		await page.goto('/?pagename=silvertrail-youtube');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+		await expect(page.locator('iframe[title="YouTube video"]')).toHaveCount(0);
+		await expect(page.getByText('YouTube', { exact: false }).first()).toBeVisible();
+		await page.getByRole('button', { name: 'Load content' }).click();
+		await expect(page.locator('iframe[title="YouTube video"]')).toHaveCount(1);
 	});
 
 	test('always allow on an embed stores consent for the service', async ({ page, context }) => {

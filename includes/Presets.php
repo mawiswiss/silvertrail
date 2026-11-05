@@ -11,7 +11,8 @@ namespace Silvertrail;
  * @phpstan-import-type Service from Config
  * @phpstan-type Preset array{
  *     service: Service,
- *     tag_id?: array{label: string, pattern: string, example: string}
+ *     tag_id?: array{label: string, pattern: string, example: string},
+ *     on_by_default?: bool
  * }
  */
 final class Presets {
@@ -102,7 +103,7 @@ final class Presets {
 				),
 			),
 			'youtube'            => array(
-				'service' => self::service(
+				'service'       => self::service(
 					'external-media',
 					'YouTube',
 					self::GOOGLE,
@@ -110,9 +111,10 @@ final class Presets {
 					'https://policies.google.com/privacy',
 					array( 'youtube.com', 'youtube-nocookie.com', 'youtu.be', 'ytimg.com' )
 				),
+				'on_by_default' => true,
 			),
 			'vimeo'              => array(
-				'service' => self::service(
+				'service'       => self::service(
 					'external-media',
 					'Vimeo',
 					'Vimeo.com, Inc., 330 West 34th Street, 5th Floor, New York, NY 10001, USA',
@@ -120,9 +122,10 @@ final class Presets {
 					'https://vimeo.com/privacy',
 					array( 'vimeo.com', 'vimeocdn.com' )
 				),
+				'on_by_default' => true,
 			),
 			'google-maps'        => array(
-				'service' => self::service(
+				'service'       => self::service(
 					'external-media',
 					'Google Maps',
 					self::GOOGLE,
@@ -130,6 +133,7 @@ final class Presets {
 					'https://policies.google.com/privacy',
 					array( 'maps.google.com', 'google.com/maps' )
 				),
+				'on_by_default' => true,
 			),
 		);
 	}
@@ -138,18 +142,25 @@ final class Presets {
 	 * @return array<string, Service>
 	 */
 	public static function enabled(): array {
-		$settings = Settings::get( 'presets' );
+		$settings = Settings::stored()['presets'];
 		$services = array();
 		foreach ( self::all() as $id => $preset ) {
-			$setting = is_array( $settings ) ? ( $settings[ $id ] ?? null ) : null;
-			if ( ! is_array( $setting ) || empty( $setting['enabled'] ) ) {
+			if ( ! self::switched_on( $id ) ) {
 				continue;
 			}
 			$service           = $preset['service'];
-			$service['tag_id'] = (string) ( $setting['tag_id'] ?? '' );
+			$service['tag_id'] = (string) ( $settings[ $id ]['tag_id'] ?? '' );
 			$services[ $id ]   = $service;
 		}
 		return $services;
+	}
+
+	/**
+	 * The admin's choice, or the preset's default until the Services tab is saved.
+	 */
+	public static function switched_on( string $id ): bool {
+		$enabled = Settings::stored()['presets'][ $id ]['enabled'] ?? null;
+		return null === $enabled ? ! empty( self::all()[ $id ]['on_by_default'] ) : (bool) $enabled;
 	}
 
 	/**

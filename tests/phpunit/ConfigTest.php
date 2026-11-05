@@ -23,16 +23,51 @@ final class ConfigTest extends WP_UnitTestCase {
 		parent::tear_down();
 	}
 
-	public function test_a_fresh_install_needs_no_banner(): void {
-		$this->assertSame( array( 'silvertrail' ), array_keys( Config::get()['services'] ) );
+	public function test_a_fresh_install_blocks_embeds_but_needs_no_banner(): void {
+		$this->assertSame( array( 'silvertrail', 'youtube', 'vimeo', 'google-maps' ), array_keys( Config::get()['services'] ) );
+		$this->assertSame( array( 'youtube', 'vimeo', 'google-maps' ), Config::consent_ids() );
 		$this->assertFalse( Config::needs_banner() );
+	}
+
+	public function test_an_embed_preset_stays_off_once_the_admin_turns_it_off(): void {
+		update_option( Settings::OPTION, array( 'presets' => array( 'youtube' => array( 'enabled' => false ) ) ) );
+
+		$this->assertArrayNotHasKey( 'youtube', Config::get()['services'] );
+		$this->assertArrayHasKey( 'vimeo', Config::get()['services'] );
+		delete_option( Settings::OPTION );
 	}
 
 	public function test_a_registered_service_needs_consent(): void {
 		$this->register( 'stats', array( 'group' => 'statistics' ) );
 
-		$this->assertSame( array( 'stats' ), Config::consent_ids() );
+		$this->assertContains( 'stats', Config::consent_ids() );
 		$this->assertTrue( Config::needs_banner() );
+	}
+
+	public function test_a_group_that_asks_in_place_needs_no_banner(): void {
+		add_action(
+			'silvertrail_register',
+			static function (): void {
+				silvertrail_register_group( 'posts', array( 'in_place' => true ) );
+			}
+		);
+		$this->register( 'social', array( 'group' => 'posts' ) );
+
+		$this->assertContains( 'social', Config::consent_ids() );
+		$this->assertFalse( Config::needs_banner() );
+	}
+
+	public function test_scripts_in_a_group_that_asks_in_place_are_reported(): void {
+		$this->setExpectedIncorrectUsage( 'silvertrail_config' );
+		$this->register(
+			'chat',
+			array(
+				'group'   => 'external-media',
+				'handles' => array( 'chat-widget' ),
+			)
+		);
+
+		$this->assertArrayHasKey( 'chat', Config::get()['services'] );
 	}
 
 	public function test_an_exempt_service_needs_no_banner(): void {
@@ -129,15 +164,15 @@ final class ConfigTest extends WP_UnitTestCase {
 			'video',
 			array(
 				'group' => 'external-media',
-				'hosts' => array( 'https://www.youtube.com', 'google.com/maps' ),
+				'hosts' => array( 'https://www.videos.example', 'example.org/maps' ),
 			)
 		);
 
-		$this->assertSame( 'video', Config::service_for_url( 'https://www.youtube.com/embed/abc' ) );
-		$this->assertSame( 'video', Config::service_for_url( '//m.youtube.com/watch?v=abc' ) );
-		$this->assertSame( 'video', Config::service_for_url( 'https://google.com/maps/embed?pb=1' ) );
-		$this->assertNull( Config::service_for_url( 'https://notyoutube.com/embed' ) );
-		$this->assertNull( Config::service_for_url( 'https://google.com/search?q=maps' ) );
+		$this->assertSame( 'video', Config::service_for_url( 'https://www.videos.example/embed/abc' ) );
+		$this->assertSame( 'video', Config::service_for_url( '//m.videos.example/watch?v=abc' ) );
+		$this->assertSame( 'video', Config::service_for_url( 'https://example.org/maps/embed?pb=1' ) );
+		$this->assertNull( Config::service_for_url( 'https://notvideos.example/embed' ) );
+		$this->assertNull( Config::service_for_url( 'https://example.org/search?q=maps' ) );
 	}
 
 	public function test_a_preset_id_in_code_turns_the_preset_on(): void {

@@ -164,14 +164,14 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		add_action(
 			'silvertrail_register',
 			static function (): void {
-				silvertrail_register_service( 'vimeo', array() );
+				silvertrail_register_service( 'google-analytics', array( 'tag_id' => 'G-CODE1' ) );
 			}
 		);
 		Config::reset();
 
 		$_GET['silvertrail-turn-on'] = 'youtube';
 		$this->assertSame( 'youtube', SettingsPage::turning_on() );
-		$_GET['silvertrail-turn-on'] = 'vimeo';
+		$_GET['silvertrail-turn-on'] = 'google-analytics';
 		$this->assertSame( '', SettingsPage::turning_on() );
 		$_GET['silvertrail-turn-on'] = 'hubspot';
 		$this->assertSame( '', SettingsPage::turning_on() );

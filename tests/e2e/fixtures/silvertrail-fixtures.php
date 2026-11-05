@@ -82,6 +82,7 @@ add_action(
 			'silvertrail-block'     => '<!-- wp:silvertrail/reopen-link {"text":"Cookie settings"} /-->',
 			'silvertrail-leak'      => 'This page loads a script from another host without asking.',
 			'silvertrail-vimeo'     => '<iframe src="https://player.vimeo.com/video/1" title="Vimeo video"></iframe>',
+			'silvertrail-youtube'   => '<iframe src="https://www.youtube-nocookie.com/embed/1" title="YouTube video"></iframe>',
 		);
 		foreach ( $pages as $slug => $content ) {
 			if ( get_page_by_path( $slug ) ) {
@@ -103,7 +104,8 @@ add_action(
 );
 
 // Lets a test switch settings per browser context without touching the shared database.
-// The GTM preset stays on for every test. Switching services per test would change the shared revision.
+// The presets are the same for every test, whatever an admin test saved: GTM on, Vimeo off so the
+// scan has a preset to suggest, the rest at their defaults. Switching services per test would change the shared revision.
 $silvertrail_test_settings = static function ( $value ) {
 	$value            = is_array( $value ) ? $value : array();
 	$value['presets'] = array(
@@ -111,7 +113,11 @@ $silvertrail_test_settings = static function ( $value ) {
 			'enabled' => true,
 			'tag_id'  => 'GTM-TEST123',
 		),
-	) + ( $value['presets'] ?? array() );
+		'vimeo'              => array(
+			'enabled' => false,
+			'tag_id'  => '',
+		),
+	);
 	if ( empty( $_COOKIE['silvertrail_test_settings'] ) ) {
 		return $value;
 	}
@@ -120,6 +126,19 @@ $silvertrail_test_settings = static function ( $value ) {
 };
 add_filter( 'option_silvertrail', $silvertrail_test_settings );
 add_filter( 'default_option_silvertrail', $silvertrail_test_settings );
+
+// Asks every group in place, as on a site with embeds only. The services and the revision stay the same.
+add_filter(
+	'silvertrail_config',
+	static function ( array $config ): array {
+		if ( ! empty( $_COOKIE['silvertrail_test_in_place'] ) ) {
+			foreach ( $config['groups'] as $id => $group ) {
+				$config['groups'][ $id ]['in_place'] = true;
+			}
+		}
+		return $config;
+	}
+);
 
 // An ungated script from another host, for the trail, the leak check and expect-no-leaks.
 add_action(

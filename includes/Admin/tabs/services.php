@@ -23,12 +23,12 @@ $silvertrail_trackers  = array_filter( $silvertrail_presets, static fn( array $p
 $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trackers );
 $silvertrail_in_code   = static fn( string $id ): bool => SettingsPage::in_code( $id );
 $silvertrail_turn_on   = SettingsPage::turning_on();
-$silvertrail_state     = static function ( string $id ) use ( $silvertrail_config, $silvertrail_presets, $silvertrail_stored ): string {
+$silvertrail_state     = static function ( string $id ) use ( $silvertrail_config, $silvertrail_presets ): string {
 	$service = $silvertrail_config['services'][ $id ] ?? null;
 	if ( null === $service ) {
-		return empty( $silvertrail_stored[ $id ]['enabled'] ) ? '' : __( 'Removed in code', 'silvertrail' );
+		return Presets::switched_on( $id ) ? __( 'Removed in code', 'silvertrail' ) : '';
 	}
-	if ( empty( $silvertrail_stored[ $id ]['enabled'] ) ) {
+	if ( ! Presets::switched_on( $id ) ) {
 		return __( 'On in code', 'silvertrail' );
 	}
 	$preset           = $silvertrail_presets[ $id ]['service'];
@@ -37,14 +37,14 @@ $silvertrail_state     = static function ( string $id ) use ( $silvertrail_confi
 	ksort( $service );
 	return $preset === $service ? '' : __( 'Changed in code', 'silvertrail' );
 };
-$silvertrail_toggle    = static function ( string $id, string $name, string $purpose, bool $focus = false ) use ( $silvertrail_stored, $silvertrail_state, $silvertrail_in_code, $silvertrail_turn_on ): void {
+$silvertrail_toggle    = static function ( string $id, string $name, string $purpose, bool $focus = false ) use ( $silvertrail_state, $silvertrail_in_code, $silvertrail_turn_on ): void {
 	$state   = $silvertrail_state( $id );
 	$in_code = $silvertrail_in_code( $id );
 	printf(
 		'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s%9$s> <strong>%5$s</strong></label> <code>%6$s</code>%7$s<p class="description">%8$s</p>',
 		esc_attr( "silvertrail-preset-{$id}" ),
 		esc_attr( SettingsPage::field( 'presets', $id, 'enabled' ) ),
-		checked( $in_code || ! empty( $silvertrail_stored[ $id ]['enabled'] ) || $silvertrail_turn_on === $id, true, false ),
+		checked( $in_code || Presets::switched_on( $id ) || $silvertrail_turn_on === $id, true, false ),
 		disabled( $in_code, true, false ),
 		esc_html( $name ),
 		esc_html( $id ),
@@ -99,7 +99,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Embeds', 'silvertrail' ); ?></h2>
-	<p><?php esc_html_e( 'Videos and maps from these providers show a placeholder until the visitor agrees.', 'silvertrail' ); ?></p>
+	<p><?php esc_html_e( 'Videos and maps from these providers show a placeholder and ask there, without opening the banner.', 'silvertrail' ); ?></p>
 	<table class="widefat striped">
 		<thead>
 			<tr>

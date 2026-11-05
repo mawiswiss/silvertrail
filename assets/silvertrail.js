@@ -284,7 +284,10 @@
 			'a[href$="#silvertrail"]:not([data-silvertrail-reopen]), [data-silvertrail-open]:not([data-silvertrail-reopen])',
 		);
 		document.querySelectorAll('[data-silvertrail-reopen]').forEach((button) => {
-			button.hidden = !decided() || (button.dataset.silvertrailReopen === 'auto' && linked !== null);
+			button.hidden =
+				read() === null ||
+				(config.needsBanner && !decided()) ||
+				(button.dataset.silvertrailReopen === 'auto' && linked !== null);
 		});
 	}
 

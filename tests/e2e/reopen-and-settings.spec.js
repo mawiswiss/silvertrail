@@ -112,6 +112,23 @@ test.describe('appearance settings', () => {
 		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
 		await expect(page.locator('#silvertrail-banner')).toBeVisible();
 		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
+		await expect(page.getByRole('button', { name: 'Privacy settings' })).toBeHidden();
+	});
+
+	test('a site with embeds only opens no banner and offers the reopen button after an embed choice', async ({ page, context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_in_place', value: '1', url: 'http://localhost:8892' }]);
+		await page.goto('/?pagename=silvertrail-embeds');
+		await expect(page.locator('#silvertrail-banner')).toBeHidden();
+		const reopen = page.getByRole('button', { name: 'Privacy settings' });
+		await expect(reopen).toBeHidden();
+
+		await page.getByRole('checkbox', { name: 'Always allow Test Video' }).check();
+		await page.getByRole('button', { name: 'Load content' }).click();
+		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
+		await expect(reopen).toBeVisible();
+
+		await reopen.click();
+		await expect(banner(page)).toBeVisible();
 	});
 
 	// The theme's own button and the page, read live so a saved style variation does not break the test.
