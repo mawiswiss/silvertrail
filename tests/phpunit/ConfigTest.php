@@ -125,6 +125,39 @@ final class ConfigTest extends WP_UnitTestCase {
 		$this->assertTrue( Config::get()['google']['url_passthrough'] );
 	}
 
+	public function test_a_misspelled_key_is_reported(): void {
+		$this->setExpectedIncorrectUsage( 'silvertrail_config' );
+		$this->register(
+			'chat',
+			array(
+				'group' => 'preferences',
+				'host'  => 'chat.example.org',
+			)
+		);
+
+		$this->assertSame( array(), Config::get()['services']['chat']['hosts'] );
+	}
+
+	public function test_a_tag_id_from_code_that_does_not_fit_is_reported(): void {
+		$this->setExpectedIncorrectUsage( 'silvertrail_config' );
+		$this->register( 'google-tag-manager', array( 'tag_id' => 'gtm-x' ) );
+
+		$this->assertSame( 'gtm-x', Config::get()['services']['google-tag-manager']['tag_id'] );
+	}
+
+	public function test_an_unknown_consent_mode_is_reported(): void {
+		$this->setExpectedIncorrectUsage( 'silvertrail_config' );
+		add_filter(
+			'silvertrail_config',
+			static function ( array $config ): array {
+				$config['google']['mode'] = 'full';
+				return $config;
+			}
+		);
+
+		$this->assertSame( 'basic', Config::get()['google']['mode'] );
+	}
+
 	public function test_the_filter_cannot_remove_the_own_cookie(): void {
 		add_filter(
 			'silvertrail_config',

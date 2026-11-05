@@ -46,6 +46,13 @@ final class Config {
 
 	private const ID_PATTERN = '/^[a-z0-9][a-z0-9_-]*$/';
 
+	private const KEYS = array(
+		'config'  => array( 'groups', 'services', 'google' ),
+		'group'   => array( 'name', 'description', 'locked', 'consent_api', 'in_place' ),
+		'service' => array( 'group', 'name', 'provider', 'purpose', 'privacy_url', 'cookies', 'expiry', 'hosts', 'handles', 'google', 'consent', 'tag_id' ),
+		'google'  => array( 'mode', 'url_passthrough' ),
+	);
+
 	/**
 	 * @var ConfigArray|null
 	 */
@@ -264,11 +271,33 @@ final class Config {
 	 * @return ConfigArray
 	 */
 	private static function validate( array $config ): array {
+		$consent_mode = is_array( $config['google'] ?? null ) ? $config['google'] : array();
+		$checks       = array(
+			'config' => $config,
+			'google' => $consent_mode,
+		);
+		foreach ( $checks as $type => $values ) {
+			$keys = self::unknown( $values, $type );
+			if ( '' !== $keys ) {
+				/* translators: 1: config or google, 2: list of keys */
+				self::wrong( sprintf( __( 'The %1$s array has unknown keys: %2$s.', 'silvertrail' ), $type, $keys ) );
+			}
+		}
+		$mode = $consent_mode['mode'] ?? 'basic';
+		if ( ! in_array( $mode, array( 'basic', 'advanced' ), true ) ) {
+			self::wrong( __( 'The Consent Mode must be basic or advanced, so Silvertrail uses basic.', 'silvertrail' ) );
+		}
+
 		$groups = array();
 		foreach ( (array) ( $config['groups'] ?? array() ) as $id => $group ) {
 			if ( ! is_string( $id ) || ! preg_match( self::ID_PATTERN, $id ) || ! is_array( $group ) ) {
 				self::wrong( __( 'Skipped a group with an invalid ID.', 'silvertrail' ) );
 				continue;
+			}
+			$keys = self::unknown( $group, 'group' );
+			if ( '' !== $keys ) {
+				/* translators: 1: group ID, 2: list of keys */
+				self::wrong( sprintf( __( 'The group "%1$s" has unknown keys: %2$s.', 'silvertrail' ), $id, $keys ) );
 			}
 			$groups[ $id ] = array(
 				'name'        => (string) ( $group['name'] ?? $id ),
@@ -286,6 +315,11 @@ final class Config {
 				self::wrong( __( 'Skipped a service with an invalid ID.', 'silvertrail' ) );
 				continue;
 			}
+			$keys = self::unknown( $service, 'service' );
+			if ( '' !== $keys ) {
+				/* translators: 1: service ID, 2: list of keys */
+				self::wrong( sprintf( __( 'The service "%1$s" has unknown keys: %2$s.', 'silvertrail' ), $id, $keys ) );
+			}
 			$group = (string) ( $service['group'] ?? '' );
 			if ( ! isset( $groups[ $group ] ) ) {
 				/* translators: 1: service ID, 2: group ID */
@@ -295,6 +329,16 @@ final class Config {
 			if ( $groups[ $group ]['in_place'] && ( array() !== self::strings( $service['handles'] ?? array() ) || '' !== (string) ( $service['tag_id'] ?? '' ) ) ) {
 				/* translators: 1: service ID, 2: group ID */
 				self::wrong( sprintf( __( 'The service "%1$s" loads scripts, but its group "%2$s" asks in place, so no banner asks for it. Move it to another group.', 'silvertrail' ), $id, $group ) );
+			}
+			if ( ! in_array( $service['consent'] ?? 'required', array( 'required', 'exempt' ), true ) ) {
+				/* translators: %s: service ID */
+				self::wrong( sprintf( __( 'The service "%s" sets consent to neither required nor exempt, so it needs consent.', 'silvertrail' ), $id ) );
+			}
+			$pattern = Presets::all()[ $id ]['tag_id']['pattern'] ?? null;
+			$tag_id  = (string) ( $service['tag_id'] ?? '' );
+			if ( null !== $pattern && ! Presets::switched_on( $id ) && ! preg_match( '/' . $pattern . '/', $tag_id ) ) {
+				/* translators: 1: service ID, 2: tag ID, 3: example ID */
+				self::wrong( sprintf( __( 'The service "%1$s" has the tag ID "%2$s", which does not look like %3$s, so its tag is not printed.', 'silvertrail' ), $id, $tag_id, Presets::all()[ $id ]['tag_id']['example'] ?? '' ) );
 			}
 			$google  = self::strings( $service['google'] ?? array() );
 			$unknown = array_diff( $google, self::GOOGLE_TYPES );
@@ -319,14 +363,12 @@ final class Config {
 		}
 		$services['silvertrail'] = self::own_service();
 
-		$mode = $config['google']['mode'] ?? 'basic';
-
 		return array(
 			'groups'   => $groups,
 			'services' => $services,
 			'google'   => array(
 				'mode'            => 'advanced' === $mode ? 'advanced' : 'basic',
-				'url_passthrough' => ! empty( $config['google']['url_passthrough'] ),
+				'url_passthrough' => ! empty( $consent_mode['url_passthrough'] ),
 			),
 		);
 	}
@@ -443,6 +485,14 @@ final class Config {
 			return false;
 		}
 		return '' === $pattern_path || str_starts_with( $target_path, $pattern_path );
+	}
+
+	/**
+	 * @param array<mixed> $values
+	 * @param 'config'|'group'|'service'|'google' $type
+	 */
+	private static function unknown( array $values, string $type ): string {
+		return implode( ', ', array_diff( array_map( 'strval', array_keys( $values ) ), self::KEYS[ $type ] ) );
 	}
 
 	private static function wrong( string $message ): void {
