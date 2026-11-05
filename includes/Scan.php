@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Silvertrail;
 
 /**
- * Shows a page as a first-time visitor sees it, for the scan on the Services tab.
+ * Shows a page as a first-time visitor sees it, for the scan on the Leak check tab.
  */
 final class Scan {
 
@@ -75,11 +75,13 @@ final class Scan {
 				'name'    => $preset['service']['name'],
 				'hosts'   => $preset['service']['hosts'],
 				'tracker' => isset( $preset['tag_id'] ),
+				'locked'  => Admin\SettingsPage::in_code( $id ),
 			);
 		}
 
 		return array(
 			'home'     => home_url( '/' ),
+			'settings' => Admin\SettingsPage::url(),
 			'param'    => self::PARAM,
 			'site'     => get_bloginfo( 'name' ),
 			'language' => get_bloginfo( 'language' ),
@@ -111,12 +113,11 @@ final class Scan {
 			/* translators: %s: service name */
 			'registered'        => __( 'This is %s, but it still loads before the visitor chooses. The theme or another plugin adds it directly.', 'silvertrail' ),
 			/* translators: %s: service name */
-			'presetEmbed'       => __( 'Looks like %s. Turn it on below, and a placeholder shows until the visitor agrees.', 'silvertrail' ),
+			'presetEmbed'       => __( 'Looks like %s. Turn it on under Services, and a placeholder shows until the visitor agrees.', 'silvertrail' ),
 			/* translators: %s: service name */
-			'presetTracker'     => __( 'Looks like %s, added by the theme or another plugin. Remove that code, then turn it on below with your ID, so Silvertrail holds it back.', 'silvertrail' ),
+			'presetTracker'     => __( 'Looks like %s, added by the theme or another plugin. Remove that code, then turn it on under Services with your ID, so Silvertrail holds it back.', 'silvertrail' ),
 			/* translators: %s: service name */
 			'turnOn'            => __( 'Turn on %s', 'silvertrail' ),
-			'turnedOn'          => __( 'Ticked below. Save Changes to apply.', 'silvertrail' ),
 			/* translators: %s: script handle */
 			'script'            => __( 'A script that WordPress loads as “%s”. Register a service in code with this script handle, and it waits for consent.', 'silvertrail' ),
 			'scriptRaw'         => __( 'A script written straight into the page. Mark it with data-silvertrail, as Help at the top right shows, and it waits for consent.', 'silvertrail' ),

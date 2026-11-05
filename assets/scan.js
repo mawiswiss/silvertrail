@@ -156,20 +156,14 @@
 		}
 	}
 
-	function presetButton(id) {
-		const checkbox = document.getElementById(`silvertrail-preset-${id}`);
-		if (!checkbox || checkbox.disabled) {
+	function presetLink(id) {
+		const preset = data.presets[id];
+		if (preset.locked) {
 			return '';
 		}
-		const button = element('button', { type: 'button', class: 'button button-small' }, format(texts.turnOn, data.presets[id].name));
-		button.addEventListener('click', () => {
-			checkbox.checked = true;
-			const target = document.getElementById(`silvertrail-${id}-id`) ?? checkbox;
-			target.scrollIntoView({ block: 'center' });
-			target.focus();
-			button.replaceWith(element('em', {}, texts.turnedOn));
-		});
-		return button;
+		const url = new URL(data.settings);
+		url.searchParams.set('silvertrail-turn-on', id);
+		return element('a', { href: url.href, class: 'button button-small' }, format(texts.turnOn, preset.name));
 	}
 
 	function list(items) {
@@ -185,7 +179,7 @@
 					element('br'),
 					item.advice,
 					' ',
-					item.preset ? presetButton(item.preset) : '',
+					item.preset ? presetLink(item.preset) : '',
 				),
 			),
 		);
@@ -300,5 +294,4 @@
 			scan();
 		}
 	});
-	root.hidden = false;
 })();

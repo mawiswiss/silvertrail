@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Silvertrail\Tests;
 
 use Silvertrail\Admin\SettingsPage;
+use Silvertrail\Config;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 use WP_UnitTestCase;
@@ -20,6 +21,9 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	}
 
 	public function tear_down(): void {
+		unset( $_GET['silvertrail-turn-on'] );
+		remove_all_actions( 'silvertrail_register' );
+		Config::reset();
 		remove_all_filters( 'silvertrail_translation' );
 		delete_option( Settings::OPTION );
 		parent::tear_down();
@@ -138,5 +142,22 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertSame( array( 'en_US' => array( 'title' => 'Saved' ) ), $saved['texts'] );
 		$this->assertCount( 2, get_settings_errors( Settings::OPTION ) );
 		$this->assertStringContainsString( '"bogus"', (string) SettingsPage::draft() );
+	}
+
+	public function test_the_leak_check_ticks_only_a_preset_that_code_leaves_alone(): void {
+		add_action(
+			'silvertrail_register',
+			static function (): void {
+				silvertrail_register_service( 'vimeo', array() );
+			}
+		);
+		Config::reset();
+
+		$_GET['silvertrail-turn-on'] = 'youtube';
+		$this->assertSame( 'youtube', SettingsPage::turning_on() );
+		$_GET['silvertrail-turn-on'] = 'vimeo';
+		$this->assertSame( '', SettingsPage::turning_on() );
+		$_GET['silvertrail-turn-on'] = 'hubspot';
+		$this->assertSame( '', SettingsPage::turning_on() );
 	}
 }

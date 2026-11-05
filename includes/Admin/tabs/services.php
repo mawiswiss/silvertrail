@@ -22,7 +22,8 @@ $silvertrail_group     = static fn( string $id ): string => $silvertrail_config[
 $silvertrail_codes     = static fn( array $items ): string => implode( ' ', array_map( static fn( $item ): string => '<code>' . esc_html( (string) $item ) . '</code>', $items ) );
 $silvertrail_trackers  = array_filter( $silvertrail_presets, static fn( array $preset ): bool => isset( $preset['tag_id'] ) );
 $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trackers );
-$silvertrail_in_code   = static fn( string $id ): bool => isset( $silvertrail_config['services'][ $id ] ) && empty( $silvertrail_stored[ $id ]['enabled'] );
+$silvertrail_in_code   = static fn( string $id ): bool => SettingsPage::in_code( $id );
+$silvertrail_turn_on   = SettingsPage::turning_on();
 $silvertrail_state     = static function ( string $id ) use ( $silvertrail_config, $silvertrail_presets, $silvertrail_stored ): string {
 	$service = $silvertrail_config['services'][ $id ] ?? null;
 	if ( null === $service ) {
@@ -37,22 +38,34 @@ $silvertrail_state     = static function ( string $id ) use ( $silvertrail_confi
 	ksort( $service );
 	return $preset === $service ? '' : __( 'Changed in code', 'silvertrail' );
 };
-$silvertrail_toggle    = static function ( string $id, string $name, string $purpose ) use ( $silvertrail_stored, $silvertrail_state, $silvertrail_in_code ): void {
+$silvertrail_toggle    = static function ( string $id, string $name, string $purpose, bool $focus = false ) use ( $silvertrail_stored, $silvertrail_state, $silvertrail_in_code, $silvertrail_turn_on ): void {
 	$state   = $silvertrail_state( $id );
 	$in_code = $silvertrail_in_code( $id );
 	printf(
-		'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s> <strong>%5$s</strong></label> <code>%6$s</code>%7$s<p class="description">%8$s</p>',
+		'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s%9$s> <strong>%5$s</strong></label> <code>%6$s</code>%7$s<p class="description">%8$s</p>',
 		esc_attr( "silvertrail-preset-{$id}" ),
 		esc_attr( SettingsPage::field( 'presets', $id, 'enabled' ) ),
-		checked( $in_code || ! empty( $silvertrail_stored[ $id ]['enabled'] ), true, false ),
+		checked( $in_code || ! empty( $silvertrail_stored[ $id ]['enabled'] ) || $silvertrail_turn_on === $id, true, false ),
 		disabled( $in_code, true, false ),
 		esc_html( $name ),
 		esc_html( $id ),
 		'' === $state ? '' : ' <strong class="post-state">' . esc_html( $state ) . '</strong>',
-		esc_html( $purpose )
+		esc_html( $purpose ),
+		$focus ? ' autofocus' : ''
 	);
 };
 ?>
+
+<?php if ( '' !== $silvertrail_turn_on ) : ?>
+	<div class="notice notice-info inline">
+		<p>
+			<?php
+			/* translators: %s: service name */
+			echo esc_html( sprintf( __( '%s is ticked. Save Changes to turn it on.', 'silvertrail' ), $silvertrail_presets[ $silvertrail_turn_on ]['service']['name'] ) );
+			?>
+		</p>
+	</div>
+<?php endif; ?>
 
 <?php if ( $silvertrail_asking > 0 ) : ?>
 	<div class="notice notice-success inline">
@@ -82,18 +95,6 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 		</p>
 	</div>
 <?php endif; ?>
-
-<div id="silvertrail-scan" hidden>
-	<h2><?php esc_html_e( 'What a visitor’s browser loads', 'silvertrail' ); ?></h2>
-	<p><?php esc_html_e( 'Opens a page as a first-time visitor who has not chosen yet. Lists every other server the page contacts and what to do about each.', 'silvertrail' ); ?></p>
-	<p class="description"><?php esc_html_e( 'Turn off ad blockers in this browser first. They hide requests that real visitors make.', 'silvertrail' ); ?></p>
-	<p>
-		<label for="silvertrail-scan-url"><?php esc_html_e( 'Page', 'silvertrail' ); ?></label>
-		<input type="text" id="silvertrail-scan-url" class="regular-text code" value="<?php echo esc_attr( home_url( '/' ) ); ?>" spellcheck="false">
-		<button type="button" class="button" data-silvertrail-scan-run><?php esc_html_e( 'Scan', 'silvertrail' ); ?></button>
-	</p>
-	<div data-silvertrail-scan-result aria-live="polite"></div>
-</div>
 
 <p>
 	<?php
@@ -137,6 +138,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 							placeholder="<?php echo esc_attr( $silvertrail_preset['tag_id']['example'] ); ?>"
 							pattern="<?php echo esc_attr( $silvertrail_preset['tag_id']['pattern'] ); ?>"
 							<?php disabled( $silvertrail_in_code( $silvertrail_id ) ); ?>
+							<?php echo $silvertrail_turn_on === $silvertrail_id ? 'autofocus' : ''; ?>
 						>
 					<?php endif; ?>
 				</td>
@@ -157,7 +159,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 	<tbody>
 		<?php foreach ( $silvertrail_embeds as $silvertrail_id => $silvertrail_preset ) : ?>
 			<tr>
-				<td><?php $silvertrail_toggle( $silvertrail_id, $silvertrail_preset['service']['name'], $silvertrail_preset['service']['purpose'] ); ?></td>
+				<td><?php $silvertrail_toggle( $silvertrail_id, $silvertrail_preset['service']['name'], $silvertrail_preset['service']['purpose'], $silvertrail_turn_on === $silvertrail_id ); ?></td>
 				<td><?php echo wp_kses_post( $silvertrail_codes( $silvertrail_config['services'][ $silvertrail_id ]['hosts'] ?? $silvertrail_preset['service']['hosts'] ) ); ?></td>
 			</tr>
 		<?php endforeach; ?>

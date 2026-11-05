@@ -125,7 +125,7 @@ With records turned on, every decision is posted to `/wp-json/silvertrail/v1/rec
 
 ## Check what leaks
 
-On the Services tab, **What a visitor's browser loads** opens a page of the site in a frame as a logged-out, first-time visitor who has not chosen yet. It lists every other server the page contacts before a choice and says what to do about each: turn on a matching preset, register a service in code, or host the file on the site. A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
+Under Settings › Silvertrail › Leak check, **What a visitor's browser loads** opens a page of the site in a frame as a logged-out, first-time visitor who has not chosen yet. It lists every other server the page contacts before a choice and says what to do about each: turn on a matching preset, register a service in code, or host the file on the site. Turning a preset on opens the Services tab with its box ticked, ready to save. A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
 
 The frame loads the page with `?silvertrail-scan`, which renders it without a logged-in user and without the visitor's stored choice. That only takes privileges away, so it needs no nonce. A page cache that ignores query strings would serve the cached page instead, so scan with the cache off or bypassed.
 

@@ -30,7 +30,7 @@ The banner puts "Accept all" and "Only essential" side by side at the same size.
 * A browser that sends Global Privacy Control gets "only essential" without a banner.
 * A site whose services are all marked exempt shows no banner at all.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
-* A scan on the Services tab opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the GitHub repository runs the same check in CI.
+* The Leak check tab opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the GitHub repository runs the same check in CI.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 
 = Page caching =

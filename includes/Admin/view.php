@@ -15,6 +15,7 @@ $silvertrail_tabs = array(
 	'services' => __( 'Services', 'silvertrail' ),
 	'banner'   => __( 'Banner', 'silvertrail' ),
 	'consent'  => __( 'Consent', 'silvertrail' ),
+	'check'    => __( 'Leak check', 'silvertrail' ),
 	'tools'    => __( 'Tools', 'silvertrail' ),
 );
 ?>
@@ -39,6 +40,10 @@ $silvertrail_tabs = array(
 			<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
 			<?php submit_button(); ?>
 		</form>
+	<?php endif; ?>
+
+	<?php if ( 'check' === $tab ) : ?>
+		<?php require __DIR__ . '/tabs/check.php'; ?>
 	<?php endif; ?>
 
 	<?php if ( 'tools' === $tab ) : ?>

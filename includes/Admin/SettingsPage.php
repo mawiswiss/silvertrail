@@ -24,6 +24,7 @@ final class SettingsPage {
 		'services' => array( 'presets' ),
 		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'texts', 'imprint_page', 'floating_button' ),
 		'consent'  => array( 'expiry_months', 'gpc', 'url_passthrough', 'records', 'retention_days', 'trail' ),
+		'check'    => array(),
 		'tools'    => array(),
 	);
 
@@ -58,7 +59,7 @@ final class SettingsPage {
 		if ( 'banner' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
 		}
-		if ( 'services' === self::tab() ) {
+		if ( 'check' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
 		}
 	}
@@ -108,6 +109,18 @@ final class SettingsPage {
 	public static function url( string $tab = 'services' ): string {
 		$url = admin_url( 'options-general.php?page=' . self::SLUG );
 		return 'services' === $tab ? $url : add_query_arg( 'tab', $tab, $url );
+	}
+
+	public static function in_code( string $id ): bool {
+		return isset( Config::get()['services'][ $id ] ) && empty( Settings::all()['presets'][ $id ]['enabled'] );
+	}
+
+	/**
+	 * The preset the leak check sent the admin here to tick. Nothing is stored until they save.
+	 */
+	public static function turning_on(): string {
+		$id = isset( $_GET['silvertrail-turn-on'] ) ? sanitize_key( wp_unslash( $_GET['silvertrail-turn-on'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- it only ticks a box in the form.
+		return isset( Presets::all()[ $id ] ) && ! self::in_code( $id ) ? $id : '';
 	}
 
 	public static function tab(): string {
