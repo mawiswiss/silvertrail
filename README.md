@@ -25,6 +25,19 @@ A service marked `'consent' => 'exempt'` never needs a decision. When every acti
 
 Keep the config the same on every request. Silvertrail asks visitors again whenever the set of services changes.
 
+## Change a service
+
+Register an existing ID again with only the fields to change. A preset's ID (`google-tag-manager`, `google-analytics`, `google-ads`, `linkedin-insight`, `meta-pixel`, `youtube`, `vimeo`, `google-maps`) turns the preset on with its defaults, so the admin's checkbox is not needed:
+
+```php
+add_action( 'silvertrail_register', function () {
+	silvertrail_register_service( 'google-tag-manager', [ 'tag_id' => 'GTM-XXXXXXX' ] );
+	silvertrail_register_service( 'youtube', [ 'cookies' => 'VISITOR_INFO1_LIVE, YSC' ] );
+} );
+```
+
+To remove a service, even one the admin turned on, unset it in the `silvertrail_config` filter. The settings page marks each preset that code turned on, changed or removed.
+
 ## Gate a script
 
 ```html

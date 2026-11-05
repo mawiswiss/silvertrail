@@ -232,8 +232,9 @@ final class Config {
 		foreach ( self::$registered_groups as $id => $args ) {
 			$config['groups'][ $id ] = array_replace( $config['groups'][ $id ] ?? array(), $args );
 		}
+		$presets = Presets::all();
 		foreach ( self::$registered_services as $id => $args ) {
-			$config['services'][ $id ] = array_replace( $config['services'][ $id ] ?? array(), $args );
+			$config['services'][ $id ] = array_replace( $config['services'][ $id ] ?? $presets[ $id ]['service'] ?? array(), $args );
 		}
 
 		/**

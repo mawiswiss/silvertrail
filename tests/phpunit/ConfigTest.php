@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Silvertrail\Tests;
 
 use Silvertrail\Config;
+use Silvertrail\Settings;
 use WP_UnitTestCase;
 
 final class ConfigTest extends WP_UnitTestCase {
@@ -122,6 +123,39 @@ final class ConfigTest extends WP_UnitTestCase {
 		$this->assertSame( 'video', Config::service_for_url( 'https://google.com/maps/embed?pb=1' ) );
 		$this->assertNull( Config::service_for_url( 'https://notyoutube.com/embed' ) );
 		$this->assertNull( Config::service_for_url( 'https://google.com/search?q=maps' ) );
+	}
+
+	public function test_a_preset_id_in_code_turns_the_preset_on(): void {
+		$this->register( 'google-tag-manager', array( 'tag_id' => 'GTM-CODE1' ) );
+
+		$service = Config::get()['services']['google-tag-manager'];
+
+		$this->assertSame( 'Google Tag Manager', $service['name'] );
+		$this->assertSame( 'marketing', $service['group'] );
+		$this->assertSame( 'GTM-CODE1', $service['tag_id'] );
+		$this->assertContains( 'googletagmanager.com/gtm.js', $service['hosts'] );
+	}
+
+	public function test_code_changes_only_the_given_fields_of_a_preset(): void {
+		update_option(
+			Settings::OPTION,
+			array(
+				'presets' => array(
+					'youtube' => array(
+						'enabled' => true,
+						'tag_id'  => '',
+					),
+				),
+			)
+		);
+		$this->register( 'youtube', array( 'cookies' => 'YSC' ) );
+
+		$service = Config::get()['services']['youtube'];
+
+		$this->assertSame( 'YSC', $service['cookies'] );
+		$this->assertSame( 'YouTube', $service['name'] );
+		$this->assertSame( 'external-media', $service['group'] );
+		delete_option( Settings::OPTION );
 	}
 
 	/**

@@ -31,11 +31,11 @@ function silvertrail_register_group( string $id, array $args ): void {
 }
 
 /**
- * Call on the silvertrail_register action.
+ * Call on the silvertrail_register action. For an ID that exists or names a preset, only the given fields change.
  *
- * @param array<string, mixed> $args group, name, provider, purpose, privacy_url, cookies, expiry, hosts, handles, google, consent.
+ * @param array<string, mixed> $args group, name, provider, purpose, privacy_url, cookies, expiry, hosts, handles, google, consent, tag_id.
  */
-function silvertrail_register_service( string $id, array $args ): void {
+function silvertrail_register_service( string $id, array $args = array() ): void {
 	Config::register_service( $id, $args );
 }
 

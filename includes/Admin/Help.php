@@ -24,6 +24,18 @@ add_action( 'silvertrail_register', function () {
 } );
 PHP;
 
+	private const ADJUST = <<<'PHP'
+add_action( 'silvertrail_register', function () {
+	silvertrail_register_service( 'google-tag-manager', [ 'tag_id' => 'GTM-XXXXXXX' ] );
+	silvertrail_register_service( 'youtube', [ 'cookies' => 'VISITOR_INFO1_LIVE, YSC' ] );
+} );
+
+add_filter( 'silvertrail_config', function ( $config ) {
+	unset( $config['services']['google-maps'] );
+	return $config;
+} );
+PHP;
+
 	// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- example markup, printed escaped.
 	private const SCRIPT = <<<'HTML'
 <script type="text/plain" data-silvertrail="hubspot" src="https://js.hs-scripts.com/123.js"></script>
@@ -61,6 +73,16 @@ SH;
 				'content' => self::section(
 					__( 'Register services in a plugin or the theme. The groups are essential, preferences, statistics, marketing and external-media. The silvertrail_config filter edits or removes anything at the end.', 'silvertrail' ),
 					self::SERVICE
+				),
+			)
+		);
+		$screen->add_help_tab(
+			array(
+				'id'      => 'silvertrail-adjust',
+				'title'   => __( 'Change a service', 'silvertrail' ),
+				'content' => self::section(
+					__( 'Register a service again by its ID with only the fields to change. A preset’s ID turns the preset on with its defaults, so trackers need only their tag_id. The silvertrail_config filter runs last and can edit or remove any service.', 'silvertrail' ),
+					self::ADJUST
 				),
 			)
 		);

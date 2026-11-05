@@ -22,6 +22,36 @@ $silvertrail_group     = static fn( string $id ): string => $silvertrail_config[
 $silvertrail_codes     = static fn( array $items ): string => implode( ' ', array_map( static fn( $item ): string => '<code>' . esc_html( (string) $item ) . '</code>', $items ) );
 $silvertrail_trackers  = array_filter( $silvertrail_presets, static fn( array $preset ): bool => isset( $preset['tag_id'] ) );
 $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trackers );
+$silvertrail_in_code   = static fn( string $id ): bool => isset( $silvertrail_config['services'][ $id ] ) && empty( $silvertrail_stored[ $id ]['enabled'] );
+$silvertrail_state     = static function ( string $id ) use ( $silvertrail_config, $silvertrail_presets, $silvertrail_stored ): string {
+	$service = $silvertrail_config['services'][ $id ] ?? null;
+	if ( null === $service ) {
+		return empty( $silvertrail_stored[ $id ]['enabled'] ) ? '' : __( 'Removed in code', 'silvertrail' );
+	}
+	if ( empty( $silvertrail_stored[ $id ]['enabled'] ) ) {
+		return __( 'On in code', 'silvertrail' );
+	}
+	$preset           = $silvertrail_presets[ $id ]['service'];
+	$preset['tag_id'] = $service['tag_id'];
+	ksort( $preset );
+	ksort( $service );
+	return $preset === $service ? '' : __( 'Changed in code', 'silvertrail' );
+};
+$silvertrail_toggle    = static function ( string $id, string $name, string $purpose ) use ( $silvertrail_stored, $silvertrail_state, $silvertrail_in_code ): void {
+	$state   = $silvertrail_state( $id );
+	$in_code = $silvertrail_in_code( $id );
+	printf(
+		'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s> <strong>%5$s</strong></label> <code>%6$s</code>%7$s<p class="description">%8$s</p>',
+		esc_attr( "silvertrail-preset-{$id}" ),
+		esc_attr( SettingsPage::field( 'presets', $id, 'enabled' ) ),
+		checked( $in_code || ! empty( $silvertrail_stored[ $id ]['enabled'] ), true, false ),
+		disabled( $in_code, true, false ),
+		esc_html( $name ),
+		esc_html( $id ),
+		'' === $state ? '' : ' <strong class="post-state">' . esc_html( $state ) . '</strong>',
+		esc_html( $purpose )
+	);
+};
 ?>
 
 <?php if ( $silvertrail_asking > 0 ) : ?>
@@ -53,6 +83,17 @@ $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trac
 	</div>
 <?php endif; ?>
 
+<p>
+	<?php
+	printf(
+		/* translators: 1: silvertrail_register_service(), 2: the silvertrail_config filter */
+		esc_html__( 'Change any service in code by its ID: %1$s with only the fields to change, or the %2$s filter to edit or remove anything at the end. Help, at the top right, shows both.', 'silvertrail' ),
+		'<code>silvertrail_register_service()</code>',
+		'<code>silvertrail_config</code>'
+	);
+	?>
+</p>
+
 <h2><?php esc_html_e( 'Trackers', 'silvertrail' ); ?></h2>
 <p><?php esc_html_e( 'Silvertrail prints the official tag and holds it back until the visitor agrees.', 'silvertrail' ); ?></p>
 <table class="widefat striped">
@@ -65,16 +106,13 @@ $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trac
 	</thead>
 	<tbody>
 		<?php foreach ( $silvertrail_trackers as $silvertrail_id => $silvertrail_preset ) : ?>
-			<?php $silvertrail_setting = $silvertrail_stored[ $silvertrail_id ] ?? array(); ?>
+			<?php
+			$silvertrail_live = $silvertrail_config['services'][ $silvertrail_id ] ?? null;
+			$silvertrail_tag  = $silvertrail_in_code( $silvertrail_id ) ? (string) ( $silvertrail_live['tag_id'] ?? '' ) : (string) ( $silvertrail_stored[ $silvertrail_id ]['tag_id'] ?? '' );
+			?>
 			<tr>
-				<td>
-					<label for="<?php echo esc_attr( "silvertrail-preset-{$silvertrail_id}" ); ?>">
-						<input type="checkbox" id="<?php echo esc_attr( "silvertrail-preset-{$silvertrail_id}" ); ?>" name="<?php echo esc_attr( SettingsPage::field( 'presets', $silvertrail_id, 'enabled' ) ); ?>" value="1" <?php checked( ! empty( $silvertrail_setting['enabled'] ) ); ?>>
-						<strong><?php echo esc_html( $silvertrail_preset['service']['name'] ); ?></strong>
-					</label>
-					<p class="description"><?php echo esc_html( $silvertrail_preset['service']['purpose'] ); ?></p>
-				</td>
-				<td><?php echo esc_html( $silvertrail_group( $silvertrail_preset['service']['group'] ) ); ?></td>
+				<td><?php $silvertrail_toggle( $silvertrail_id, $silvertrail_preset['service']['name'], $silvertrail_preset['service']['purpose'] ); ?></td>
+				<td><?php echo esc_html( $silvertrail_group( $silvertrail_live['group'] ?? $silvertrail_preset['service']['group'] ) ); ?></td>
 				<td>
 					<?php if ( isset( $silvertrail_preset['tag_id'] ) ) : ?>
 						<label class="screen-reader-text" for="<?php echo esc_attr( "silvertrail-{$silvertrail_id}-id" ); ?>"><?php echo esc_html( $silvertrail_preset['service']['name'] . ' ' . $silvertrail_preset['tag_id']['label'] ); ?></label>
@@ -83,9 +121,10 @@ $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trac
 							class="regular-text code"
 							id="<?php echo esc_attr( "silvertrail-{$silvertrail_id}-id" ); ?>"
 							name="<?php echo esc_attr( SettingsPage::field( 'presets', $silvertrail_id, 'tag_id' ) ); ?>"
-							value="<?php echo esc_attr( (string) ( $silvertrail_setting['tag_id'] ?? '' ) ); ?>"
+							value="<?php echo esc_attr( $silvertrail_tag ); ?>"
 							placeholder="<?php echo esc_attr( $silvertrail_preset['tag_id']['example'] ); ?>"
 							pattern="<?php echo esc_attr( $silvertrail_preset['tag_id']['pattern'] ); ?>"
+							<?php disabled( $silvertrail_in_code( $silvertrail_id ) ); ?>
 						>
 					<?php endif; ?>
 				</td>
@@ -105,16 +144,9 @@ $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trac
 	</thead>
 	<tbody>
 		<?php foreach ( $silvertrail_embeds as $silvertrail_id => $silvertrail_preset ) : ?>
-			<?php $silvertrail_setting = $silvertrail_stored[ $silvertrail_id ] ?? array(); ?>
 			<tr>
-				<td>
-					<label for="<?php echo esc_attr( "silvertrail-preset-{$silvertrail_id}" ); ?>">
-						<input type="checkbox" id="<?php echo esc_attr( "silvertrail-preset-{$silvertrail_id}" ); ?>" name="<?php echo esc_attr( SettingsPage::field( 'presets', $silvertrail_id, 'enabled' ) ); ?>" value="1" <?php checked( ! empty( $silvertrail_setting['enabled'] ) ); ?>>
-						<strong><?php echo esc_html( $silvertrail_preset['service']['name'] ); ?></strong>
-					</label>
-					<p class="description"><?php echo esc_html( $silvertrail_preset['service']['purpose'] ); ?></p>
-				</td>
-				<td><?php echo wp_kses_post( $silvertrail_codes( $silvertrail_preset['service']['hosts'] ) ); ?></td>
+				<td><?php $silvertrail_toggle( $silvertrail_id, $silvertrail_preset['service']['name'], $silvertrail_preset['service']['purpose'] ); ?></td>
+				<td><?php echo wp_kses_post( $silvertrail_codes( $silvertrail_config['services'][ $silvertrail_id ]['hosts'] ?? $silvertrail_preset['service']['hosts'] ) ); ?></td>
 			</tr>
 		<?php endforeach; ?>
 	</tbody>
@@ -132,7 +164,6 @@ $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trac
 		?>
 	</p>
 <?php else : ?>
-	<p><?php esc_html_e( 'These come from the theme or a plugin and change only there.', 'silvertrail' ); ?></p>
 	<table class="widefat striped">
 		<thead>
 			<tr>
@@ -147,7 +178,10 @@ $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trac
 				<tr>
 					<td>
 						<strong><?php echo esc_html( $silvertrail_service['name'] ); ?></strong>
-						<br><code><?php echo esc_html( $silvertrail_id ); ?></code>
+						<code><?php echo esc_html( $silvertrail_id ); ?></code>
+						<?php if ( '' !== $silvertrail_service['purpose'] ) : ?>
+							<p class="description"><?php echo esc_html( $silvertrail_service['purpose'] ); ?></p>
+						<?php endif; ?>
 					</td>
 					<td><?php echo esc_html( $silvertrail_group( $silvertrail_service['group'] ) ); ?></td>
 					<td><?php echo in_array( $silvertrail_id, $silvertrail_essential, true ) ? esc_html__( 'Not needed', 'silvertrail' ) : esc_html__( 'Required', 'silvertrail' ); ?></td>

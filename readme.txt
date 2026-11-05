@@ -67,6 +67,17 @@ Register it on the `silvertrail_register` action:
 
 The groups are `essential`, `preferences`, `statistics`, `marketing` and `external-media`. `silvertrail_register_group()` adds another one, and the `silvertrail_config` filter edits or removes anything at the end. Keep the config the same on every request, because Silvertrail asks every visitor again when the set of services changes.
 
+= How do I change or turn on a preset in code? =
+
+Register its ID again with only the fields to change. A preset's ID turns it on with its defaults:
+
+    add_action( 'silvertrail_register', function () {
+        silvertrail_register_service( 'google-tag-manager', array( 'tag_id' => 'GTM-XXXXXXX' ) );
+        silvertrail_register_service( 'youtube', array( 'cookies' => 'VISITOR_INFO1_LIVE, YSC' ) );
+    } );
+
+To remove a service, even one turned on in the settings, unset it in the `silvertrail_config` filter. The settings page marks each preset that code turned on, changed or removed.
+
 = How do I block a script in my theme? =
 
 Give it the type `text/plain` and the service ID:
