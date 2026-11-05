@@ -185,6 +185,10 @@ final class Config {
 		return self::$revision;
 	}
 
+	public static function stored_revision(): int {
+		return self::stored_version()['n'];
+	}
+
 	public static function ask_again(): int {
 		self::revision();
 		$stored       = self::stored_version();

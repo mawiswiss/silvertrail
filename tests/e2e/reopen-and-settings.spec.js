@@ -87,8 +87,18 @@ test.describe('appearance settings', () => {
 test.describe('settings page', () => {
 	test.use({ storageState: ADMIN_STATE });
 
-	test('saves and clamps the consent lifetime', async ({ page }) => {
+	test('opens on the services and switches tabs', async ({ page }) => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail');
+		await expect(page.getByText(/The banner is on\./)).toBeVisible();
+		await expect(page.getByRole('cell', { name: /Test Analytics/ })).toBeVisible();
+
+		await page.getByRole('link', { name: 'Banner', exact: true }).click();
+		await expect(page).toHaveURL(/tab=banner/);
+		await expect(page.locator('.wp-color-result')).toHaveCount(3);
+	});
+
+	test('saves and clamps the consent lifetime', async ({ page }) => {
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=consent');
 
 		const expiry = page.getByLabel('Keep a choice for');
 		await expiry.fill('40');
