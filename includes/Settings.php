@@ -22,13 +22,22 @@ namespace Silvertrail;
  *     records: bool,
  *     retention_days: int,
  *     gpc: bool,
- *     trail: bool,
- *     url_passthrough: bool
+ *     trail: bool
  * }
  */
 final class Settings {
 
 	public const OPTION = 'silvertrail';
+
+	/**
+	 * Settings with a code path of their own: presets through silvertrail_register_service(), texts through the theme's JSON.
+	 */
+	private const NOT_FILTERED = array( 'presets', 'texts' );
+
+	/**
+	 * @var array<string, true>
+	 */
+	private static array $reported = array();
 
 	/**
 	 * @return SettingsArray
@@ -48,20 +57,116 @@ final class Settings {
 			'retention_days'  => 365,
 			'gpc'             => true,
 			'trail'           => true,
-			'url_passthrough' => false,
 		);
+	}
+
+	/**
+	 * What the admin saved, without code.
+	 *
+	 * @return SettingsArray
+	 */
+	public static function stored(): array {
+		$defaults = self::defaults();
+		$stored   = get_option( self::OPTION, array() );
+		/** @var SettingsArray */
+		return array_replace( $defaults, array_intersect_key( is_array( $stored ) ? $stored : array(), $defaults ) );
 	}
 
 	/**
 	 * @return SettingsArray
 	 */
 	public static function all(): array {
-		$stored = get_option( self::OPTION, array() );
+		$stored = self::stored();
 		/** @var SettingsArray */
-		return array_replace( self::defaults(), is_array( $stored ) ? $stored : array() );
+		return array_replace( $stored, self::filtered( $stored, true ) );
 	}
 
 	public static function get( string $key ): mixed {
 		return self::all()[ $key ] ?? null;
+	}
+
+	/**
+	 * Whether code sets the value, so the admin cannot change it.
+	 */
+	public static function in_code( string $key ): bool {
+		if ( in_array( $key, self::NOT_FILTERED, true ) || ! has_filter( 'silvertrail_settings' ) ) {
+			return false;
+		}
+		$stored   = self::stored();
+		$defaults = self::defaults();
+		return ( self::filtered( $stored )[ $key ] ?? null ) !== ( $stored[ $key ] ?? null )
+			|| ( self::filtered( $defaults )[ $key ] ?? null ) !== ( $defaults[ $key ] ?? null );
+	}
+
+	/**
+	 * @param array<mixed> $values
+	 * @return array<string, mixed>
+	 */
+	public static function normalize( array $values ): array {
+		$defaults = self::defaults();
+		$clean    = array();
+		foreach ( $values as $key => $value ) {
+			$clean[ $key ] = match ( $key ) {
+				'layout'          => 'box' === $value ? 'box' : 'modal',
+				'appearance'      => in_array( $value, array( 'light', 'dark' ), true ) ? $value : 'theme',
+				'imprint_page'    => absint( $value ),
+				'expiry_months'   => self::clamp( $value, 1, 13, $defaults['expiry_months'] ),
+				'retention_days'  => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
+				'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
+				default           => $value,
+			};
+		}
+		return $clean;
+	}
+
+	/**
+	 * @param SettingsArray $values
+	 * @return array<string, mixed>
+	 */
+	private static function filtered( array $values, bool $report = false ): array {
+		$input = array_diff_key( $values, array_flip( self::NOT_FILTERED ) );
+		if ( ! has_filter( 'silvertrail_settings' ) ) {
+			return $input;
+		}
+
+		/**
+		 * Sets any admin setting in code. The admin then shows it as set in code.
+		 *
+		 * @param array<string, mixed> $settings Every setting except presets and texts.
+		 */
+		$filtered = apply_filters( 'silvertrail_settings', $input );
+		$filtered = is_array( $filtered ) ? $filtered : array();
+		$known    = array_intersect_key( $filtered, $input );
+		$clean    = self::normalize( $known );
+
+		if ( $report ) {
+			foreach ( array_diff_key( $filtered, $input ) as $key => $value ) {
+				/* translators: %s: setting key */
+				self::wrong( (string) $key, sprintf( __( 'The silvertrail_settings filter cannot set "%s".', 'silvertrail' ), $key ) );
+			}
+			foreach ( $known as $key => $value ) {
+				if ( $clean[ $key ] !== $value && ! ( is_scalar( $value ) && (string) $clean[ $key ] === (string) $value ) ) {
+					/* translators: 1: setting key, 2: the value used instead */
+					self::wrong( (string) $key, sprintf( __( 'The silvertrail_settings filter returned an invalid "%1$s", so Silvertrail uses %2$s.', 'silvertrail' ), $key, (string) wp_json_encode( $clean[ $key ] ) ) );
+				}
+			}
+		}
+		return $clean;
+	}
+
+	private static function clamp( mixed $value, int $min, int $max, int $fallback ): int {
+		return is_numeric( $value ) ? max( $min, min( $max, (int) $value ) ) : $fallback;
+	}
+
+	private static function wrong( string $key, string $message ): void {
+		if ( isset( self::$reported[ $key ] ) ) {
+			return;
+		}
+		self::$reported[ $key ] = true;
+		_doing_it_wrong( 'silvertrail_settings', esc_html( $message ), '0.1.0' );
+	}
+
+	public static function reset(): void {
+		self::$reported = array();
 	}
 }

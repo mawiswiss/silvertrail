@@ -75,6 +75,21 @@ final class ConfigTest extends WP_UnitTestCase {
 		$this->assertSame( array( 'ad_storage' ), Config::get()['services']['ads']['google'] );
 	}
 
+	public function test_url_passthrough_is_off_until_code_turns_it_on(): void {
+		$this->assertFalse( Config::get()['google']['url_passthrough'] );
+
+		Config::reset();
+		add_filter(
+			'silvertrail_config',
+			static function ( array $config ): array {
+				$config['google']['url_passthrough'] = true;
+				return $config;
+			}
+		);
+
+		$this->assertTrue( Config::get()['google']['url_passthrough'] );
+	}
+
 	public function test_the_filter_cannot_remove_the_own_cookie(): void {
 		add_filter(
 			'silvertrail_config',

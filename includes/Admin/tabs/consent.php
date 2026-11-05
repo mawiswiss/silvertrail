@@ -29,8 +29,7 @@ $silvertrail_settings = Settings::all();
 			<td>
 				<fieldset>
 					<legend class="screen-reader-text"><?php esc_html_e( 'Signals', 'silvertrail' ); ?></legend>
-					<?php SettingsPage::checkbox( 'gpc', __( 'Treat Global Privacy Control as “only essential” and show no banner', 'silvertrail' ) ); ?><br>
-					<?php SettingsPage::checkbox( 'url_passthrough', __( 'Pass Google ad click IDs in links while ads cookies are denied', 'silvertrail' ) ); ?>
+					<?php SettingsPage::checkbox( 'gpc', __( 'Treat Global Privacy Control as “only essential” and show no banner', 'silvertrail' ) ); ?>
 				</fieldset>
 			</td>
 		</tr>

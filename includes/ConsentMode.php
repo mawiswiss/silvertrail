@@ -42,7 +42,7 @@ final class ConsentMode {
 		$code  = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}';
 		$code .= 'gtag("consent","default",' . wp_json_encode( $defaults ) . ');';
 		$code .= 'gtag("set","ads_data_redaction",true);';
-		if ( Settings::get( 'url_passthrough' ) ) {
+		if ( Config::get()['google']['url_passthrough'] ) {
 			$code .= 'gtag("set","url_passthrough",true);';
 		}
 		$code .= sprintf(

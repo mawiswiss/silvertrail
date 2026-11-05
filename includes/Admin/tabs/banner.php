@@ -39,7 +39,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 	<h2><?php esc_html_e( 'Look', 'silvertrail' ); ?></h2>
 	<table class="form-table" role="presentation">
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Position', 'silvertrail' ); ?></th>
+			<th scope="row"><?php esc_html_e( 'Position', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( 'layout' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
 			<td>
 				<fieldset class="silvertrail-cards">
 					<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'silvertrail' ); ?></legend>
@@ -56,7 +56,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 							<rect class="silvertrail-sketch__button" x="36" y="50" width="22" height="8" rx="2"/>
 							<rect class="silvertrail-sketch__button" x="62" y="50" width="22" height="8" rx="2"/>
 						</svg>
-						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?>>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?> <?php disabled( Settings::in_code( 'layout' ) ); ?>>
 						<span class="silvertrail-card__name"><?php esc_html_e( 'Centered', 'silvertrail' ); ?></span>
 						<span class="silvertrail-card__hint"><?php esc_html_e( 'Dims the page', 'silvertrail' ); ?></span>
 					</label>
@@ -73,7 +73,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 							<rect class="silvertrail-sketch__button" x="67" y="61" width="19" height="7" rx="2"/>
 							<rect class="silvertrail-sketch__button" x="89" y="61" width="19" height="7" rx="2"/>
 						</svg>
-						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="box" <?php checked( $silvertrail_settings['layout'], 'box' ); ?>>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="box" <?php checked( $silvertrail_settings['layout'], 'box' ); ?> <?php disabled( Settings::in_code( 'layout' ) ); ?>>
 						<span class="silvertrail-card__name"><?php esc_html_e( 'Corner', 'silvertrail' ); ?></span>
 						<span class="silvertrail-card__hint"><?php esc_html_e( 'The page stays usable', 'silvertrail' ); ?></span>
 					</label>
@@ -81,7 +81,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></th>
+			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( 'appearance' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
 			<td>
 				<fieldset class="silvertrail-cards">
 					<legend class="screen-reader-text"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></legend>
@@ -92,7 +92,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 								<span class="silvertrail-swatch__text silvertrail-swatch__text--short"></span>
 								<span class="silvertrail-swatch__buttons"><span></span><span></span></span>
 							</span>
-							<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>" value="<?php echo esc_attr( $silvertrail_mode ); ?>" <?php checked( $silvertrail_settings['appearance'], $silvertrail_mode ); ?>>
+							<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>" value="<?php echo esc_attr( $silvertrail_mode ); ?>" <?php checked( $silvertrail_settings['appearance'], $silvertrail_mode ); ?> <?php disabled( Settings::in_code( 'appearance' ) ); ?>>
 							<span class="silvertrail-card__name"><?php echo esc_html( $silvertrail_label ); ?></span>
 							<span class="silvertrail-card__hint"><?php echo esc_html( $silvertrail_hint ); ?></span>
 						</label>
@@ -295,18 +295,20 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="silvertrail-imprint"><?php esc_html_e( 'Imprint page', 'silvertrail' ); ?></label></th>
+			<th scope="row"><label for="silvertrail-imprint"><?php esc_html_e( 'Imprint page', 'silvertrail' ); ?></label><?php echo SettingsPage::in_code_label( 'imprint_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
 			<td>
 				<?php
-				wp_dropdown_pages(
+				$silvertrail_pages = wp_dropdown_pages(
 					array(
 						'name'              => esc_attr( SettingsPage::field( 'imprint_page' ) ),
 						'id'                => 'silvertrail-imprint',
 						'selected'          => (int) $silvertrail_settings['imprint_page'],
 						'show_option_none'  => esc_html__( 'None', 'silvertrail' ),
 						'option_none_value' => '0',
+						'echo'              => false,
 					)
 				);
+				echo Settings::in_code( 'imprint_page' ) ? str_replace( '<select ', '<select disabled ', $silvertrail_pages ) : $silvertrail_pages; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- markup from wp_dropdown_pages().
 				?>
 			</td>
 		</tr>

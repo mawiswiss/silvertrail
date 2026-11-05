@@ -66,8 +66,17 @@ add_filter( 'silvertrail_design', function ( $design, $appearance ) {
 }, 10, 2 );
 PHP;
 
+	private const SETTINGS = <<<'PHP'
+add_filter( 'silvertrail_settings', function ( $settings ) {
+	$settings['expiry_months'] = 12;
+	$settings['records']       = true;
+	return $settings;
+} );
+PHP;
+
 	private const CLI = <<<'SH'
 wp silvertrail services
+wp silvertrail settings
 wp silvertrail validate
 wp silvertrail ask-again
 wp silvertrail records export --file=records.csv
@@ -133,9 +142,19 @@ SH;
 		);
 		$screen->add_help_tab(
 			array(
+				'id'      => 'silvertrail-settings',
+				'title'   => __( 'Settings in code', 'silvertrail' ),
+				'content' => self::section(
+					__( 'The silvertrail_settings filter sets any setting on this page and more: layout, appearance, require_choice, imprint_page, records, floating_button, load_css, expiry_months, retention_days, gpc and trail. A field set in code shows “Set in code” and cannot be changed here. wp silvertrail settings lists each value and where it comes from.', 'silvertrail' ),
+					self::SETTINGS
+				),
+			)
+		);
+		$screen->add_help_tab(
+			array(
 				'id'      => 'silvertrail-cli',
 				'title'   => __( 'WP-CLI', 'silvertrail' ),
-				'content' => self::section( __( 'List and check the services, ask everyone again, or export the records.', 'silvertrail' ), self::CLI ),
+				'content' => self::section( __( 'List the services and settings, check the config, ask everyone again, or export the records.', 'silvertrail' ), self::CLI ),
 			)
 		);
 		$screen->set_help_sidebar(

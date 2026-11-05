@@ -25,6 +25,8 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		remove_all_actions( 'silvertrail_register' );
 		Config::reset();
 		remove_all_filters( 'silvertrail_translation' );
+		remove_all_filters( 'silvertrail_settings' );
+		Settings::reset();
 		delete_option( Settings::OPTION );
 		parent::tear_down();
 	}
@@ -51,6 +53,21 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertTrue( $saved['records'] );
 		$this->assertFalse( $saved['trail'] );
 		$this->assertArrayNotHasKey( '_tab', $saved );
+	}
+
+	public function test_saving_keeps_the_admin_value_of_a_setting_in_code(): void {
+		update_option( Settings::OPTION, array_replace( Settings::defaults(), array( 'layout' => 'box' ) ) );
+		add_filter( 'silvertrail_settings', static fn( array $settings ): array => array( 'layout' => 'modal' ) + $settings );
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'       => 'banner',
+				'appearance' => 'dark',
+			)
+		);
+
+		$this->assertSame( 'box', $saved['layout'] );
+		$this->assertSame( 'dark', $saved['appearance'] );
 	}
 
 	public function test_a_saved_tab_survives_a_second_pass(): void {

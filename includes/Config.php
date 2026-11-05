@@ -26,7 +26,7 @@ namespace Silvertrail;
  * @phpstan-type ConfigArray array{
  *     groups: array<string, Group>,
  *     services: array<string, Service>,
- *     google: array{mode: 'basic'|'advanced'}
+ *     google: array{mode: 'basic'|'advanced', url_passthrough: bool}
  * }
  */
 final class Config {
@@ -224,7 +224,10 @@ final class Config {
 		$config = array(
 			'groups'   => self::default_groups(),
 			'services' => array( 'silvertrail' => self::own_service() ) + Presets::enabled(),
-			'google'   => array( 'mode' => 'basic' ),
+			'google'   => array(
+				'mode'            => 'basic',
+				'url_passthrough' => false,
+			),
 		);
 
 		do_action( 'silvertrail_register' );
@@ -307,7 +310,10 @@ final class Config {
 		return array(
 			'groups'   => $groups,
 			'services' => $services,
-			'google'   => array( 'mode' => 'advanced' === $mode ? 'advanced' : 'basic' ),
+			'google'   => array(
+				'mode'            => 'advanced' === $mode ? 'advanced' : 'basic',
+				'url_passthrough' => ! empty( $config['google']['url_passthrough'] ),
+			),
 		);
 	}
 

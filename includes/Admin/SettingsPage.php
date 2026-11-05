@@ -23,14 +23,14 @@ final class SettingsPage {
 	public const TABS = array(
 		'services' => array( 'presets' ),
 		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'texts', 'imprint_page', 'floating_button' ),
-		'consent'  => array( 'expiry_months', 'gpc', 'url_passthrough', 'records', 'retention_days', 'trail' ),
+		'consent'  => array( 'expiry_months', 'gpc', 'records', 'retention_days', 'trail' ),
 		'check'    => array(),
 		'tools'    => array(),
 	);
 
 	private const DRAFT = 'silvertrail_texts_draft_';
 
-	private const FLAGS = array( 'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail', 'url_passthrough' );
+	private const FLAGS = array( 'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail' );
 
 	/**
 	 * @var array<string, array<string, mixed>|false>
@@ -110,15 +110,21 @@ final class SettingsPage {
 
 	public static function checkbox( string $key, string $label, string $help = '' ): void {
 		printf(
-			'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s> %4$s</label>',
+			'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s> %5$s</label>%6$s',
 			esc_attr( 'silvertrail-' . str_replace( '_', '-', $key ) ),
 			esc_attr( self::field( $key ) ),
 			checked( ! empty( Settings::get( $key ) ), true, false ),
-			esc_html( $label )
+			disabled( Settings::in_code( $key ), true, false ),
+			esc_html( $label ),
+			self::in_code_label( $key ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
 		);
 		if ( '' !== $help ) {
 			echo '<p class="description">' . esc_html( $help ) . '</p>';
 		}
+	}
+
+	public static function in_code_label( string $key ): string {
+		return Settings::in_code( $key ) ? ' <strong class="post-state">' . esc_html__( 'Set in code', 'silvertrail' ) . '</strong>' : '';
 	}
 
 	public static function url( string $tab = 'services' ): string {
@@ -127,7 +133,7 @@ final class SettingsPage {
 	}
 
 	public static function in_code( string $id ): bool {
-		return isset( Config::get()['services'][ $id ] ) && empty( Settings::all()['presets'][ $id ]['enabled'] );
+		return isset( Config::get()['services'][ $id ] ) && empty( Settings::stored()['presets'][ $id ]['enabled'] );
 	}
 
 	/**
@@ -161,7 +167,9 @@ final class SettingsPage {
 		if ( ! isset( self::TABS[ $tab ] ) ) {
 			return $clean;
 		}
-		return array_replace( Settings::all(), array_intersect_key( $clean, array_flip( self::TABS[ $tab ] ) ) );
+		$posted = array_intersect_key( $clean, array_flip( self::TABS[ $tab ] ) );
+		$posted = array_filter( $posted, static fn( string $key ): bool => ! Settings::in_code( $key ), ARRAY_FILTER_USE_KEY );
+		return array_replace( Settings::stored(), $posted );
 	}
 
 	/**
@@ -189,20 +197,16 @@ final class SettingsPage {
 			);
 		}
 
-		$flags = array();
+		$values = array_diff_key( $defaults, array_flip( array( 'texts', 'presets' ) ) );
+		$values = array_replace( $values, array_intersect_key( $input, $values ) );
 		foreach ( self::FLAGS as $key ) {
-			$flags[ $key ] = ! empty( $input[ $key ] );
+			$values[ $key ] = ! empty( $input[ $key ] );
 		}
 
 		return array(
-			'layout'         => 'box' === ( $input['layout'] ?? '' ) ? 'box' : 'modal',
-			'appearance'     => in_array( $input['appearance'] ?? '', array( 'light', 'dark' ), true ) ? $input['appearance'] : 'theme',
-			'texts'          => self::texts( $input ),
-			'imprint_page'   => absint( $input['imprint_page'] ?? 0 ),
-			'presets'        => $presets,
-			'expiry_months'  => max( 1, min( 13, absint( $input['expiry_months'] ?? $defaults['expiry_months'] ) ) ),
-			'retention_days' => max( 30, min( 3650, absint( $input['retention_days'] ?? $defaults['retention_days'] ) ) ),
-		) + $flags;
+			'texts'   => self::texts( $input ),
+			'presets' => $presets,
+		) + Settings::normalize( $values );
 	}
 
 	/**
@@ -213,7 +217,7 @@ final class SettingsPage {
 	 */
 	private static function texts( array $input ): array {
 		$json   = $input['texts_json'] ?? null;
-		$stored = is_string( $json ) ? Settings::all()['texts'] : ( $input['texts'] ?? array() );
+		$stored = is_string( $json ) ? Settings::stored()['texts'] : ( $input['texts'] ?? array() );
 		$texts  = array();
 		foreach ( is_array( $stored ) ? $stored : array() as $locale => $custom ) {
 			if ( is_string( $locale ) && preg_match( '/^[A-Za-z0-9_]+$/', $locale ) && is_array( $custom ) ) {

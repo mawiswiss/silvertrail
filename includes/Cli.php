@@ -51,15 +51,53 @@ final class Cli {
 	}
 
 	/**
-	 * Builds the config and the texts of every installed language, and reports every problem in them.
+	 * Lists the settings, their values and where each comes from: code, admin or default.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--format=<format>]
+	 * : table, csv, json or yaml.
+	 * ---
+	 * default: table
+	 * ---
+	 *
+	 * @param list<string>          $args
+	 * @param array<string, string> $assoc_args
+	 */
+	public function settings( array $args, array $assoc_args ): void {
+		$format   = $assoc_args['format'] ?? 'table';
+		$defaults = Settings::defaults();
+		$stored   = Settings::stored();
+		$rows     = array();
+		foreach ( array_diff_key( Settings::all(), array_flip( array( 'presets', 'texts' ) ) ) as $key => $value ) {
+			if ( Settings::in_code( $key ) ) {
+				$source = 'code';
+			} elseif ( $stored[ $key ] !== $defaults[ $key ] ) {
+				$source = 'admin';
+			} else {
+				$source = 'default';
+			}
+			$rows[] = array(
+				'key'    => $key,
+				'value'  => in_array( $format, array( 'json', 'yaml' ), true ) ? $value : (string) wp_json_encode( $value ),
+				'source' => $source,
+			);
+		}
+		WP_CLI\Utils\format_items( $format, $rows, array( 'key', 'value', 'source' ) );
+	}
+
+	/**
+	 * Builds the settings, the config and the texts of every installed language, and reports every problem in them.
 	 */
 	public function validate(): void {
 		$problems = array();
 		$collect  = static function ( string $function_name, string $message ) use ( &$problems ): void {
-			$problems[] = wp_strip_all_tags( $message );
+			$problems[] = html_entity_decode( wp_strip_all_tags( $message ), ENT_QUOTES );
 		};
 		add_action( 'doing_it_wrong_run', $collect, 10, 2 );
 		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+		Settings::reset();
+		Settings::all();
 		Config::rebuild();
 		$count = count( Config::get()['services'] );
 		Texts::reset();
