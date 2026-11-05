@@ -19,5 +19,3 @@
 /phpunit.xml.dist
 /.phpunit.result.cache
 /playwright.config.js
-/testing
-/README.md
