@@ -1,10 +1,78 @@
 # Silvertrail
 
-A small cookie consent banner for WordPress. Nothing loads before yes, accept and reject weigh the same, and developers configure it in code.
+A cookie banner for WordPress that loads nothing before the visitor says yes and makes "Only essential" as easy as "Accept all". Activate it, tick the trackers the site uses, and it works. Everything else is code.
 
 Status: early development, not released.
 
-## Add a service
+## Why not just generate a banner?
+
+A generated banner shows a dialog. Silvertrail also does the work around it:
+
+- Nothing loads before yes. Marked scripts wait as `text/plain`, scripts that WordPress enqueues are held back by their handle, and embeds wait in a `<template>` behind a placeholder.
+- Page caches need no setup. The server renders every gated script and embed blocked, and the browser decides on each page view, so a cached page never hands one visitor's choice to the next.
+- A stale cached page neither asks again nor overwrites a newer choice.
+- Visitors are asked again by themselves when the set of services changes. A config that changes from one request to the next gets a warning, because it would ask on every page.
+- Gated scripts run in their original order, external and inline, including the code WordPress adds before and after an enqueued script.
+- Google Consent Mode v2 sets its default in `<head>` before any tag, with `wait_for_update` and ad data redaction, and a returning visitor's choice reaches Google before the tags load. Advanced mode is one line of code.
+- Every choice goes to the WP Consent API, so plugins that read the API follow it. A browser that sends Global Privacy Control gets "only essential" without a banner.
+- YouTube, Vimeo and Google Maps embeds are blocked as soon as the plugin is active, in posts, oEmbeds, HTML blocks, templates and widgets. Each embed asks on its placeholder, for this once or for good, and opens no banner.
+- Visitors can always change their mind. A small button appears on every page that has no link to the settings, and it steps aside on pages that have one.
+- "Accept all" and "Only essential" are the same button, side by side. The banner is a native `<dialog>`, and while a choice is required, neither Escape nor a click outside closes it.
+- The preferences show what the current page held back and which other servers it loaded from.
+- The Leak check opens any page as a first-time visitor and lists every server it contacts before a choice, with what to do about each. A Playwright helper runs the same check in CI.
+- Records, when turned on, keep a random ID, the choices and the time, never an IP address, and are deleted after a year.
+- Each site of a multisite network keeps its own cookie.
+- The plugin contacts no outside service, and uninstalling it removes its options, its table and its scheduled job.
+- The banner adds 4.6 KB of JavaScript and 1.7 KB of CSS, gzipped, and needs no jQuery.
+
+## Ready to go
+
+1. Install and activate the plugin.
+2. Under Settings › Silvertrail, tick the trackers the site uses, such as Google Tag Manager, and enter their IDs.
+
+Nothing else is needed. Embeds are blocked already, the banner takes its colours from the theme, and visitors get a button to change their choice.
+
+The admin holds only decisions: which services run, where the banner sits and how it looks, its texts, the imprint page, whether a choice is required and whether to keep records. Everything else has a default that fits most sites, and code changes it.
+
+## Built for developers
+
+Code wins over the admin, and the admin marks every field that code sets with "Set in code". Each concern has one place:
+
+| What | Where |
+| --- | --- |
+| Services and groups | `silvertrail_register` action with `silvertrail_register_service()` and `silvertrail_register_group()` |
+| Last word on services | `silvertrail_config` filter |
+| Settings | `silvertrail_settings` filter |
+| Look | the theme's `theme.json`, the `silvertrail_design` filter, the theme's `silvertrail/silvertrail.css`, template overrides |
+| Texts | the theme's `silvertrail/texts-{locale}.json`, the `silvertrail_translation` and `silvertrail_texts` filters |
+| Records | `silvertrail_recorded` action |
+| Browser | `window.silvertrail`, the `silvertrail:change` and `silvertrail:before-prompt` events |
+| Shell | `wp silvertrail services`, `settings`, `validate`, `ask-again` and `records export` |
+
+## Built for AI agents
+
+An agent working on a site finds everything it needs in the plugin folder. This README is the complete reference, and `styling.md` is the brief for styling the banner. Mistakes are loud: an unknown key, a tag ID that does not fit or an invalid setting triggers a `_doing_it_wrong` notice, and `wp silvertrail validate` lists them all. `wp silvertrail services` and `wp silvertrail settings --format=json` show what is active and where each value comes from.
+
+The admin writes prompts as well. The Banner tab copies a styling prompt with the theme's colours and fonts, and the Leak check writes one that asks for the provider, purpose and privacy policy of each service it found.
+
+To set up a site, give an agent something like this:
+
+```text
+Read wp-content/plugins/silvertrail/README.md. Then configure Silvertrail in a
+small plugin: turn on Google Tag Manager with the ID GTM-XXXXXXX, register
+HubSpot from js.hs-scripts.com as marketing, keep choices for 12 months, and
+run wp silvertrail validate until it reports no problem.
+```
+
+## What it does not do
+
+Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` event. It does not crawl the site for cookies. The Leak check looks at the page you choose and shows what it actually loads.
+
+# Reference
+
+## Services
+
+Register services on the `silvertrail_register` action:
 
 ```php
 add_action( 'silvertrail_register', function () {
@@ -15,19 +83,33 @@ add_action( 'silvertrail_register', function () {
 		'purpose'     => 'Tracks form conversions.',
 		'privacy_url' => 'https://legal.hubspot.com/privacy-policy',
 		'hosts'       => [ 'js.hs-scripts.com' ],
+		'handles'     => [ 'hubspot-tracking' ],
 	] );
 } );
 ```
 
-Groups: `essential`, `preferences`, `statistics`, `marketing`, `external-media`. Add your own with `silvertrail_register_group()`. The `silvertrail_config` filter edits or removes anything at the end.
+| Key | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `group` | string | none, required | The group the service belongs to. |
+| `name` | string | the ID | The name the banner shows. |
+| `provider` | string | `''` | The company behind the service, with its address. |
+| `purpose` | string | `''` | What the service does, in one sentence. |
+| `privacy_url` | string | `''` | The provider's privacy policy. |
+| `cookies` | string | `''` | The cookies it sets, as text. |
+| `expiry` | string | `''` | How long they last, as text. |
+| `hosts` | list | `[]` | Hosts, or host and path, such as `google.com/maps`. Embeds from them wait behind a placeholder, and the trail and the Leak check name requests to them. |
+| `handles` | list | `[]` | Script handles held back until consent, with their before and after code. |
+| `google` | list | `[]` | The Consent Mode types the service grants, such as `analytics_storage`. |
+| `consent` | `'required'` or `'exempt'` | `'required'` | An exempt service never needs a decision. |
+| `tag_id` | string | `''` | The ID of a tracker preset, such as `GTM-XXXXXXX`. |
 
-A service marked `'consent' => 'exempt'` never needs a decision. When every active service is exempt, no banner opens.
+Keep the config the same on every request, because Silvertrail asks every visitor again whenever the set of services changes. A banner opens only when at least one service outside the essential and in-place groups needs consent.
 
-Keep the config the same on every request. Silvertrail asks visitors again whenever the set of services changes.
+### Presets
 
-## Change a service
+Silvertrail ships presets for `google-tag-manager`, `google-analytics`, `google-ads`, `linkedin-insight`, `meta-pixel`, `youtube`, `vimeo` and `google-maps`. The tracker presets print the provider's official tag once their ID is set. The embed presets start switched on.
 
-Register an existing ID again with only the fields to change. A preset's ID (`google-tag-manager`, `google-analytics`, `google-ads`, `linkedin-insight`, `meta-pixel`, `youtube`, `vimeo`, `google-maps`) turns the preset on with its defaults, so the admin's checkbox is not needed:
+Registering a preset's ID turns it on with its defaults, and only the given fields change:
 
 ```php
 add_action( 'silvertrail_register', function () {
@@ -36,7 +118,74 @@ add_action( 'silvertrail_register', function () {
 } );
 ```
 
-To remove a service, even one the admin turned on, unset it in the `silvertrail_config` filter. The settings page marks each preset that code turned on, changed or removed.
+To remove a service, even one the admin turned on, unset it in the `silvertrail_config` filter:
+
+```php
+add_filter( 'silvertrail_config', function ( $config ) {
+	unset( $config['services']['google-maps'] );
+	return $config;
+} );
+```
+
+The Services tab marks each preset that code turned on, changed or removed.
+
+### Groups
+
+The groups are `essential`, `preferences`, `statistics`, `marketing` and `external-media`. Add your own, or change one, with `silvertrail_register_group()` on the same action:
+
+| Key | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `name` | string | the ID | The name the banner shows. |
+| `description` | string | `''` | One sentence under the name. |
+| `locked` | bool | `false` | A locked group is always on. `essential` is always locked. |
+| `consent_api` | string | `'marketing'` | The WP Consent API category: `functional`, `preferences`, `statistics`, `statistics-anonymous` or `marketing`. |
+| `in_place` | bool | `false` | Its services ask on their placeholder and never open the banner. `external-media` asks in place. |
+
+A group that asks in place suits embeds only. A service in it that lists `handles` or a `tag_id` gets a warning, because the banner never prompts for it.
+
+### The config filter
+
+The `silvertrail_config` filter receives `groups`, `services` and `google`, and runs last. Under `google`, `mode` is `basic` or `advanced`, and `url_passthrough` passes ad click IDs in links while ad cookies are denied:
+
+```php
+add_filter( 'silvertrail_config', function ( $config ) {
+	$config['google']['mode']            = 'advanced';
+	$config['google']['url_passthrough'] = true;
+	return $config;
+} );
+```
+
+Unknown keys, unknown Consent Mode types and a tracker ID from code that does not fit its preset each trigger a notice. `wp silvertrail validate` lists them.
+
+## Settings
+
+The `silvertrail_settings` filter sets any setting, and code wins over the admin. The admin shows a field that code sets as "Set in code" and keeps the admin's own value underneath.
+
+```php
+add_filter( 'silvertrail_settings', function ( $settings ) {
+	$settings['expiry_months'] = 12;
+	$settings['records']       = true;
+	return $settings;
+} );
+```
+
+| Key | Admin | Values | Default |
+| --- | --- | --- | --- |
+| `layout` | Banner | `'modal'` (centred) or `'box'` (corner) | `'modal'` |
+| `appearance` | Banner | `'theme'`, `'light'` or `'dark'` | `'theme'` |
+| `require_choice` | Banner | bool. Turned off, a click outside or Escape closes the banner without storing anything. | `true` |
+| `imprint_page` | Banner | page ID, `0` for none | `0` |
+| `records` | Tools | bool | `false` |
+| `floating_button` | code | `'auto'` shows it on pages without a link to `#silvertrail`, also `'always'` or `'never'` | `'auto'` |
+| `load_css` | code | bool. Turned off, the theme's `silvertrail/silvertrail.css` is the whole stylesheet. | `true` |
+| `expiry_months` | code | 1 to 13 | `6` |
+| `retention_days` | code | 30 to 3650 | `365` |
+| `gpc` | code | bool. Global Privacy Control counts as "only essential". | `true` |
+| `trail` | code | bool. The preferences list what the page held back and loaded. | `true` |
+
+An unknown key or an invalid value triggers a notice. An invalid value falls back to the nearest valid one, or to the default. `wp silvertrail settings` lists every value and whether it comes from code, the admin or the default.
+
+The presets and the texts are not in this filter. They have their own code paths, above and below.
 
 ## Gate a script
 
@@ -44,7 +193,11 @@ To remove a service, even one the admin turned on, unset it in the `silvertrail_
 <script type="text/plain" data-silvertrail="hubspot" src="https://js.hs-scripts.com/123.js"></script>
 ```
 
-The browser ignores the tag until the visitor consents to `hubspot`. Then Silvertrail swaps in a real script, keeping the order of inline and external scripts.
+The browser ignores the tag until the visitor agrees to `hubspot`. Then Silvertrail swaps in a real script and keeps the order of inline and external scripts. A script that WordPress enqueues needs no change: list its handle under the service's `handles`.
+
+## Links to the preferences
+
+Any link to `#silvertrail` opens the preferences, and so does any element with `data-silvertrail-open`. The `[silvertrail_link]` shortcode prints such a link, with its own text as `[silvertrail_link]Cookie settings[/silvertrail_link]`, and the Privacy settings link block does the same in the editor. The floating button steps aside on pages that have one.
 
 ## In the browser
 
@@ -62,11 +215,20 @@ window.addEventListener('silvertrail:before-prompt', (event) => {
 });
 ```
 
-Any link to `#silvertrail` opens the preferences.
+| Call | Returns or does |
+| --- | --- |
+| `has(id)` | Whether the visitor agreed to the service. Essential services are always `true`. |
+| `set(ids)` | Stores exactly these services as the choice. |
+| `grant(id)` | Adds one service to the choice, as "Always allow" on an embed does. |
+| `open()` | Opens the preferences. |
+| `decided()` | Whether the visitor made a full choice. A grant from an embed alone does not count. |
+| `trail()` | `{ held, loaded }`: the services the page held back and the other hosts it loaded from. |
+
+`silvertrail:change` fires on `window` after every choice, with `consents`, `silent` and `source` in its detail. `silvertrail:before-prompt` must be answered within three seconds, otherwise the banner opens.
 
 ## In PHP
 
-`silvertrail_has( 'hubspot' )` reads the cookie. Use it only on requests a page cache never serves, such as form posts. Pages render every gated thing blocked and the browser decides.
+`silvertrail_has( 'hubspot' )` reads the cookie. Use it only on requests a page cache never serves, such as form posts. Pages render every gated thing blocked, and the browser decides. `silvertrail_config()` returns the final config.
 
 ## Texts
 
@@ -113,9 +275,11 @@ add_filter( 'silvertrail_design', function ( $design, $appearance ) {
 
 Each key becomes a `--silvertrail-<key>` custom property: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding` and `button-weight`. A hex `accent` without its own `on-accent` gets black or white text, whichever reads better. Values with quotes, semicolons, braces or angle brackets are dropped.
 
-To change more than these values, add `silvertrail/silvertrail.css` to the theme. Silvertrail loads it after its own styles and the filter's values, so a rule with the same selector wins. With the default styles turned off, it is the whole stylesheet.
+To change more than these values, add `silvertrail/silvertrail.css` to the theme. Silvertrail loads it after its own styles and the filter's values, so a rule with the same selector wins. With `load_css` turned off in the `silvertrail_settings` filter, it is the whole stylesheet.
 
 [`styling.md`](styling.md) is the brief for an AI assistant that writes this file: the tokens, the classes and the rules a consent banner has to keep. Under Settings › Silvertrail › Banner › Custom styles, Copy prompt hands it over together with the theme's presets and the current file, and the assistant answers with the file.
+
+To change the markup, copy `templates/banner.php`, `templates/embed.php` or `templates/reopen-button.php` into the theme's `silvertrail/` folder and keep the `data-silvertrail-*` attributes.
 
 ## Google Consent Mode and the WP Consent API
 
@@ -125,18 +289,18 @@ Each group maps to a WP Consent API category through its `consent_api` key. A ca
 
 ## Records
 
-With records turned on, every decision is posted to `/wp-json/silvertrail/v1/record` and stored with a random consent ID, the choices and the time. No IP address is stored. The `silvertrail_recorded` action fires for every decision, whether records are on or not, so a site can keep them elsewhere. The data comes from the browser and is not verified.
+With records turned on under Tools, every decision is posted to `/wp-json/silvertrail/v1/record` and stored with a random consent ID, the choices and the time. No IP address is stored. Records are deleted after `retention_days`, and the Tools tab and `wp silvertrail records export` download them as CSV. The `silvertrail_recorded` action fires for every decision, whether records are on or not, so a site can keep them elsewhere. The data comes from the browser and is not verified.
 
-## Check what leaks
+## Leak check
 
-Under Settings › Silvertrail › Leak check, **What a visitor's browser loads** opens a page of the site in a frame as a logged-out, first-time visitor who has not chosen yet. It lists every other server the page contacts before a choice and says what to do about each: turn on a matching preset, register a service in code, or host the file on the site. Turning a preset on opens the Services tab with its box ticked, ready to save. A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
+Under Settings › Silvertrail › Leak check, "What a visitor's browser loads" opens a page of the site in a frame as a logged-out, first-time visitor who has not chosen yet. It lists every other server the page contacts before a choice and says what to do about each: turn on a matching preset, register a service in code, or host the file on the site. Turning a preset on opens the Services tab with its box ticked, ready to save. A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
 
 The frame loads the page with `?silvertrail-scan`, which renders it without a logged-in user and without the visitor's stored choice. That only takes privileges away, so it needs no nonce. A page cache that ignores query strings would serve the cached page instead, so scan with the cache off or bypassed.
 
-For CI, `testing/expect-no-leaks.mjs` gives a Playwright suite the same check. It lives in this repository and is not part of the release zip, so copy it into your tests or check out the repository:
+For CI, `testing/expect-no-leaks.mjs` in the plugin folder gives a Playwright suite the same check. Copy it next to your tests, or import it from the plugin folder:
 
 ```js
-import { expectNoLeaks } from './silvertrail/testing/expect-no-leaks.mjs';
+import { expectNoLeaks } from './expect-no-leaks.mjs';
 
 test('home page loads nothing before consent', async ({ page }) => {
 	await expectNoLeaks(page, '/', { allow: ['cdn.example.com'] });
@@ -147,6 +311,7 @@ test('home page loads nothing before consent', async ({ page }) => {
 
 ```bash
 wp silvertrail services
+wp silvertrail settings --format=json
 wp silvertrail validate
 wp silvertrail ask-again
 wp silvertrail records export --file=records.csv

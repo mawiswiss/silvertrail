@@ -20,7 +20,7 @@ The banner puts "Accept all" and "Only essential" side by side at the same size.
 
 * Scripts you mark with `type="text/plain" data-silvertrail="service"`. Silvertrail swaps in a real script after consent and keeps the order of inline and external scripts.
 * Script handles that a theme or plugin enqueues, once you list the handle under a service.
-* Embeds from YouTube, Vimeo, Google Maps and every host you register. They wait behind a placeholder that loads the embed once or remembers the service.
+* Embeds from YouTube, Vimeo and Google Maps from the moment the plugin is active, and from every host you register. They wait behind a placeholder that asks in place, loads the embed once or remembers the service, and opens no banner.
 * The official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel, once you turn on the preset and enter its ID.
 
 = What else it does =
@@ -28,9 +28,10 @@ The banner puts "Accept all" and "Only essential" side by side at the same size.
 * It sends Google Consent Mode v2 signals. Google tags stay blocked until consent, and developers can switch to Advanced mode in code.
 * It supports the WP Consent API, so other plugins that use the API read the visitor's choice.
 * A browser that sends Global Privacy Control gets "only essential" without a banner.
-* A site whose services are all marked exempt shows no banner at all.
+* A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
+* A small button lets visitors change their choice on every page without a link to the settings.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
-* The Leak check tab opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the GitHub repository runs the same check in CI.
+* The Leak check tab opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 
 = Page caching =
@@ -43,9 +44,10 @@ Silvertrail does not implement the IAB Transparency and Consent Framework, so an
 
 == Installation ==
 
-1. Install and activate the plugin.
-2. Go to Settings › Silvertrail, turn on the services the site uses and enter their IDs.
-3. Add a link to `#silvertrail` to a menu or the footer, or turn on the floating button, so visitors can change their choice later.
+1. Install and activate the plugin. YouTube, Vimeo and Google Maps embeds are blocked from now on.
+2. Go to Settings › Silvertrail, turn on the trackers the site uses and enter their IDs.
+
+Developers set everything else in code with the `silvertrail_settings` and `silvertrail_config` filters. The README.md in the plugin folder is the complete reference.
 
 == Frequently Asked Questions ==
 
@@ -120,26 +122,37 @@ A developer can put the same JSON into the theme as `silvertrail/texts-de_CH.jso
 
 The admin's edits win over the file, and the `silvertrail_texts` filter runs last. `wp silvertrail validate` reports unknown keys and broken files.
 
+= Can I set the settings in code? =
+
+Yes, every one of them, with the `silvertrail_settings` filter. The settings page then shows the field as set in code:
+
+    add_filter( 'silvertrail_settings', function ( $settings ) {
+        $settings['expiry_months'] = 12;
+        return $settings;
+    } );
+
+`wp silvertrail settings` lists every value and where it comes from.
+
 = I changed the services or asked everyone again, and nothing happened. Why? =
 
 Cached pages still carry the old version of the settings. Purge the page cache after changing services or after pressing "Ask everyone again", and visitors are asked on their next page view.
 
 = Does it work without a footer link? =
 
-Turn on the floating button in the settings. Otherwise any link to `#silvertrail`, the `[silvertrail_link]` shortcode and the Privacy settings link block all open the preferences.
+Yes. A small floating button reopens the preferences on every page without a link to `#silvertrail`. Any link to `#silvertrail`, the `[silvertrail_link]` shortcode and the Privacy settings link block open them too, and the button steps aside on those pages. Set `floating_button` to `always` or `never` with the `silvertrail_settings` filter.
 
 == Privacy ==
 
-Silvertrail sets one first-party cookie, `silvertrail` (on the other sites of a multisite network `silvertrail_` and the site ID), which holds the chosen services, the version of the settings and the time of the decision. It lasts six months by default, and the lifetime is a setting. With records turned on, the cookie also holds a random consent ID, and each decision is stored in a database table with that ID, the choices and the time. Silvertrail never stores an IP address or browser details. The plugin itself contacts no outside service. The services a site turns on load from their providers only after the visitor agrees, as the next section lists.
+Silvertrail sets one first-party cookie, `silvertrail` (on the other sites of a multisite network `silvertrail_` and the site ID), which holds the chosen services, the version of the settings and the time of the decision. It lasts six months by default, and a developer changes the lifetime with the `silvertrail_settings` filter. With records turned on, the cookie also holds a random consent ID, and each decision is stored in a database table with that ID, the choices and the time. Silvertrail never stores an IP address or browser details. The plugin itself contacts no outside service. The services a site turns on load from their providers only after the visitor agrees, as the next section lists.
 
 == External services ==
 
-Each preset below connects to its provider only when an admin turns it on, and only after the visitor agrees to that service. The provider then receives what a browser sends with every request, such as the IP address, the browser details and the address of the page, plus whatever its own code collects. In Consent Mode Advanced, which a developer turns on in code, the Google tags load before consent and send cookieless pings.
+Each tracker preset below connects to its provider only when an admin turns it on, and only after the visitor agrees to that service. The provider then receives what a browser sends with every request, such as the IP address, the browser details and the address of the page, plus whatever its own code collects. In Consent Mode Advanced, which a developer turns on in code, the Google tags load before consent and send cookieless pings.
 
 * Google Tag Manager, Google Analytics and Google Ads load the Google tag from googletagmanager.com with the ID entered in the settings. Provided by Google: [terms](https://policies.google.com/terms), [privacy policy](https://policies.google.com/privacy).
 * The LinkedIn Insight Tag loads from snap.licdn.com with the partner ID. Provided by LinkedIn: [terms](https://www.linkedin.com/legal/user-agreement), [privacy policy](https://www.linkedin.com/legal/privacy-policy).
 * The Meta Pixel loads from connect.facebook.net with the pixel ID. Provided by Meta: [terms](https://www.facebook.com/legal/terms), [privacy policy](https://www.facebook.com/privacy/policy/).
-* The YouTube, Vimeo and Google Maps presets load nothing themselves. They hold back embeds the site already contains and let the browser load them from youtube.com, vimeo.com or google.com once the visitor agrees. Provided by Google for YouTube ([terms](https://www.youtube.com/t/terms), [privacy policy](https://policies.google.com/privacy)) and Google Maps ([terms](https://maps.google.com/help/terms_maps/), [privacy policy](https://policies.google.com/privacy)), and by Vimeo ([terms](https://vimeo.com/terms), [privacy policy](https://vimeo.com/privacy)).
+* The YouTube, Vimeo and Google Maps presets start switched on, but they load nothing themselves. They hold back embeds the site already contains and let the browser load them from youtube.com, vimeo.com or google.com once the visitor agrees. Provided by Google for YouTube ([terms](https://www.youtube.com/t/terms), [privacy policy](https://policies.google.com/privacy)) and Google Maps ([terms](https://maps.google.com/help/terms_maps/), [privacy policy](https://policies.google.com/privacy)), and by Vimeo ([terms](https://vimeo.com/terms), [privacy policy](https://vimeo.com/privacy)).
 
 == Changelog ==
 
