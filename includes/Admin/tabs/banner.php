@@ -33,9 +33,21 @@ $silvertrail_colors      = array(
 		<td>
 			<fieldset>
 				<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'silvertrail' ); ?></legend>
-				<label><input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?>> <?php esc_html_e( 'Centered, the page waits for a choice', 'silvertrail' ); ?></label><br>
+				<label><input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?>> <?php esc_html_e( 'Centered over the page', 'silvertrail' ); ?></label><br>
 				<label><input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="box" <?php checked( $silvertrail_settings['layout'], 'box' ); ?>> <?php esc_html_e( 'Box in the corner, the page stays usable', 'silvertrail' ); ?></label>
 			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><?php esc_html_e( 'Closing', 'silvertrail' ); ?></th>
+		<td>
+			<?php
+			SettingsPage::checkbox(
+				'require_choice',
+				__( 'Require a choice before the banner closes', 'silvertrail' ),
+				__( 'Centered, the page stays blocked until the visitor chooses. Turn it off to let a click outside, Escape or the close button hide the banner. Nothing is stored then, and the banner shows again on the next page.', 'silvertrail' )
+			);
+			?>
 		</td>
 	</tr>
 	<tr>

@@ -11,6 +11,7 @@ namespace Silvertrail;
  * @phpstan-type PresetSetting array{enabled: bool, tag_id: string}
  * @phpstan-type SettingsArray array{
  *     layout: 'modal'|'box',
+ *     require_choice: bool,
  *     appearance: 'light'|'dark'|'auto',
  *     texts: array<string, array<string, string>>,
  *     colors: array{accent: string, background: string, text: string},
@@ -37,6 +38,7 @@ final class Settings {
 	public static function defaults(): array {
 		return array(
 			'layout'          => 'modal',
+			'require_choice'  => true,
 			'appearance'      => 'light',
 			'texts'           => array(),
 			'colors'          => array(

@@ -275,6 +275,10 @@
 		groupInput.indeterminate = states.some(Boolean) && !groupInput.checked;
 	}
 
+	function closable() {
+		return decided() || !config.require;
+	}
+
 	function showReopen() {
 		document.querySelectorAll('[data-silvertrail-reopen]').forEach((button) => {
 			button.hidden = !decided();
@@ -294,16 +298,19 @@
 		if (gpcNote) {
 			gpcNote.hidden = !(config.gpc && navigator.globalPrivacyControl === true);
 		}
-		const closable = decided();
-		banner.querySelector('[data-silvertrail-action="close"]').hidden = !closable;
+		const canClose = closable();
+		banner.querySelector('[data-silvertrail-action="close"]').hidden = !canClose;
 		if (isBox) {
 			if (typeof banner.showPopover === 'function') {
-				banner.matches(':popover-open') || banner.showPopover();
+				if (!banner.matches(':popover-open')) {
+					banner.popover = canClose ? 'auto' : 'manual';
+					banner.showPopover();
+				}
 			} else if (!banner.open) {
 				banner.show();
 			}
 		} else {
-			banner.setAttribute('closedby', closable ? 'closerequest' : 'none');
+			banner.setAttribute('closedby', canClose ? 'any' : 'none');
 			if (!banner.open) {
 				banner.showModal();
 			}
@@ -388,17 +395,34 @@
 			}
 		});
 
-		// Without closedby (Safari) Escape fires cancel, and a repeated Escape cannot be prevented, so a close without a decision reopens.
+		// Without closedby (Safari) Escape fires cancel, and a repeated Escape cannot be prevented, so a close while a choice is required reopens.
 		banner.addEventListener('cancel', (event) => {
-			if (!decided()) {
+			if (!closable()) {
 				event.preventDefault();
 			}
 		});
 		banner.addEventListener('close', () => {
-			if (!decided()) {
+			if (!closable()) {
 				show('entrance');
 			}
 		});
+
+		// Safari has no closedby, so a press and release on the backdrop closes the modal here.
+		if (!isBox && !('closedBy' in HTMLDialogElement.prototype)) {
+			const outside = (event) => {
+				const r = banner.getBoundingClientRect();
+				return event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom;
+			};
+			let pressedOutside = false;
+			banner.addEventListener('pointerdown', (event) => {
+				pressedOutside = outside(event);
+			});
+			banner.addEventListener('pointerup', (event) => {
+				if (pressedOutside && outside(event) && closable()) {
+					hide();
+				}
+			});
+		}
 	}
 
 	// Lets a site decide before the banner opens, for example by region.

@@ -42,6 +42,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$this->assertSame( 'box', $saved['layout'] );
 		$this->assertFalse( $saved['load_css'], 'An unchecked box on the saved tab turns off.' );
+		$this->assertFalse( $saved['require_choice'] );
 		$this->assertTrue( $saved['presets']['youtube']['enabled'] );
 		$this->assertTrue( $saved['records'] );
 		$this->assertTrue( $saved['leak_check'] );

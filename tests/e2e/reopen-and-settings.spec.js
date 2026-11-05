@@ -44,6 +44,41 @@ test.describe('reopen', () => {
 	});
 });
 
+test.describe('closing', () => {
+	test('a required choice keeps the banner open on a click outside', async ({ page, context }) => {
+		await withSettings(context, { layout: 'modal', require_choice: true });
+		await page.goto('/');
+		await page.mouse.click(5, 5);
+
+		await expect(banner(page)).toBeVisible();
+	});
+
+	test('without a required choice a click outside closes the banner and stores nothing', async ({ page, context }) => {
+		await withSettings(context, { layout: 'modal', require_choice: false });
+		await page.goto('/');
+		await expect(banner(page)).toBeVisible();
+		expect(await page.evaluate(() => document.getElementById('silvertrail-banner').matches(':modal'))).toBe(true);
+		await page.mouse.click(5, 5);
+
+		await expect(banner(page)).toBeHidden();
+		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
+		await page.reload();
+		await expect(banner(page)).toBeVisible();
+		await page.getByRole('button', { name: 'Close' }).click();
+		await expect(banner(page)).toBeHidden();
+		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
+	});
+
+	test('without a required choice the box closes on a click outside', async ({ page, context }) => {
+		await withSettings(context, { layout: 'box', require_choice: false });
+		await page.goto('/');
+		await expect(banner(page)).toBeVisible();
+		await page.mouse.click(5, 5);
+
+		await expect(banner(page)).toBeHidden();
+	});
+});
+
 test.describe('appearance settings', () => {
 	test('the box layout leaves the page usable', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });

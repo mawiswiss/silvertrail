@@ -160,6 +160,7 @@ final class Frontend {
 			'google'      => (object) ConsentMode::map(),
 			'consentApi'  => ConsentApi::map(),
 			'gpc'         => (bool) Settings::get( 'gpc' ),
+			'require'     => (bool) Settings::get( 'require_choice' ),
 			'check'       => LeakCheck::active(),
 			'record'      => Records::listening() ? rest_url( 'silvertrail/v1/record' ) : '',
 			'recordIds'   => Records::enabled(),
