@@ -56,17 +56,20 @@ final class SettingsPage {
 		if ( null !== $screen ) {
 			Help::add( $screen );
 		}
-		if ( 'banner' === self::tab() ) {
-			add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
-		}
+		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
 		if ( 'check' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
 		}
 	}
 
 	public static function enqueue(): void {
-		self::$editor = wp_enqueue_code_editor( array( 'type' => 'application/json' ) );
-		$deps         = false === self::$editor ? array() : array( 'code-editor' );
+		$deps = array();
+		wp_enqueue_style( 'silvertrail-admin', plugins_url( 'assets/admin.css', SILVERTRAIL_FILE ), array(), SILVERTRAIL_VERSION );
+		if ( 'banner' === self::tab() ) {
+			self::$editor = wp_enqueue_code_editor( array( 'type' => 'application/json' ) );
+			$deps         = false === self::$editor ? $deps : array( 'code-editor' );
+			wp_add_inline_style( 'silvertrail-admin', wp_get_global_stylesheet( array( 'variables' ) ) );
+		}
 		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), $deps, SILVERTRAIL_VERSION, true );
 	}
 

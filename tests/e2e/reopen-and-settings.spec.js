@@ -169,4 +169,13 @@ test.describe('settings page', () => {
 		await page.getByRole('button', { name: 'Save Changes' }).click();
 		await expect(expiry).toHaveValue('6');
 	});
+
+	test('the banner tab shows position and appearance as cards', async ({ page, context }) => {
+		await withSettings(context, { layout: 'box', appearance: 'dark' });
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+
+		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
+		await expect(page.getByRole('radio', { name: 'Dark' })).toBeChecked();
+		await expect(page.getByRole('radio', { name: 'Like the theme' })).not.toBeChecked();
+	});
 });

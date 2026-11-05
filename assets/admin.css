@@ -1,0 +1,160 @@
+.silvertrail-section.card {
+	max-width: none;
+	margin-top: 16px;
+	padding: 4px 24px 12px;
+
+	> h2 {
+		margin: 16px 0 8px;
+	}
+
+	> .form-table:last-child {
+		margin-bottom: 0;
+	}
+
+	.notice {
+		margin: 12px 0;
+	}
+}
+
+@media screen and (min-width: 783px) {
+	.form-table.silvertrail-facts :is(th, td) {
+		padding-block: 8px;
+	}
+}
+
+.silvertrail-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+	gap: 12px;
+	max-width: 35rem;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+/* Core sets labels in a form-table fieldset to inline-block, with a margin it marks !important. */
+.silvertrail-cards > .silvertrail-card {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	align-content: start;
+	align-items: center;
+	gap: 2px 8px;
+	box-sizing: border-box;
+	padding: 8px 8px 12px;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	background: #fff;
+	cursor: pointer;
+
+	&:hover {
+		border-color: #949494;
+	}
+
+	&:has(:checked) {
+		border-color: var(--wp-admin-theme-color);
+		box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
+	}
+
+	&:has(:focus-visible) {
+		outline: 2px solid var(--wp-admin-theme-color);
+		outline-offset: 2px;
+	}
+
+	input {
+		margin: 0 0 0 4px;
+	}
+}
+
+.silvertrail-card__preview {
+	grid-column: 1 / -1;
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	margin-bottom: 10px;
+	overflow: hidden;
+	border-radius: 4px;
+	outline: 1px solid rgb(0 0 0 / 0.1);
+	outline-offset: -1px;
+}
+
+.silvertrail-card__name {
+	font-weight: 600;
+}
+
+.silvertrail-card__hint {
+	grid-column: 2;
+	color: #757575;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.silvertrail-sketch__page {
+	fill: #f6f7f7;
+}
+
+.silvertrail-sketch__content {
+	fill: #dcdcde;
+}
+
+.silvertrail-sketch__backdrop {
+	fill: rgb(0 0 0 / 0.35);
+}
+
+.silvertrail-sketch__banner {
+	fill: #fff;
+	stroke: #8c8f94;
+}
+
+.silvertrail-sketch__text {
+	fill: #a7aaad;
+}
+
+.silvertrail-sketch__button {
+	fill: var(--wp-admin-theme-color);
+}
+
+/* The fallbacks repeat the default colours in silvertrail.css, for themes without theme.json. */
+.silvertrail-swatch {
+	--fallback-background: #ffffff;
+	--fallback-text: #1d2327;
+	--fallback-accent: #2f4858;
+
+	display: grid;
+	align-content: center;
+	gap: 6px;
+	padding: 0 14px;
+	background: var(--silvertrail-background, var(--fallback-background));
+}
+
+.silvertrail-swatch--dark {
+	--fallback-background: #1d2226;
+	--fallback-text: #eef1f3;
+	--fallback-accent: #c3d0da;
+}
+
+.silvertrail-swatch__text {
+	height: 5px;
+	border-radius: 1px;
+	background: var(--silvertrail-text, var(--fallback-text));
+	opacity: 0.8;
+}
+
+.silvertrail-swatch__text--short {
+	width: 60%;
+	opacity: 0.5;
+}
+
+.silvertrail-swatch__buttons {
+	display: flex;
+	gap: 4px;
+	margin-top: 6px;
+
+	span {
+		flex: 1;
+		height: 12px;
+		border-radius: min(var(--silvertrail-radius, 2px), 6px);
+		background: var(--silvertrail-accent, var(--fallback-accent));
+	}
+}

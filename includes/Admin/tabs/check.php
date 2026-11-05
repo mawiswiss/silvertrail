@@ -8,7 +8,7 @@ declare(strict_types=1);
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<section id="silvertrail-scan">
+<section id="silvertrail-scan" class="card silvertrail-section">
 	<h2><?php esc_html_e( 'What a visitor’s browser loads', 'silvertrail' ); ?></h2>
 	<p><?php esc_html_e( 'Opens a page as a first-time visitor who has not chosen yet. Lists every other server the page contacts and what to do about each.', 'silvertrail' ); ?></p>
 	<p class="hide-if-js"><?php esc_html_e( 'The check runs in this browser and needs JavaScript.', 'silvertrail' ); ?></p>

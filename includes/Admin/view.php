@@ -22,6 +22,7 @@ $silvertrail_tabs = array(
 <div class="wrap">
 	<h1>Silvertrail</h1>
 	<hr class="wp-header-end">
+	<?php require __DIR__ . '/notices.php'; ?>
 
 	<nav class="nav-tab-wrapper" aria-label="<?php esc_attr_e( 'Silvertrail settings', 'silvertrail' ); ?>">
 		<?php foreach ( $silvertrail_tabs as $silvertrail_id => $silvertrail_label ) : ?>

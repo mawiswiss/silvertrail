@@ -14,12 +14,12 @@ final class Design {
 	/**
 	 * @return array<string, string>
 	 */
-	public static function tokens(): array {
-		return self::resolve()[0];
+	public static function tokens( string $mode = '' ): array {
+		return self::resolve( '' === $mode ? Frontend::appearance() : $mode )[0];
 	}
 
 	public static function css(): string {
-		list( $tokens, $scheme ) = self::resolve();
+		list( $tokens, $scheme ) = self::resolve( Frontend::appearance() );
 		$rules                   = array();
 		foreach ( $tokens as $key => $value ) {
 			$rules[] = "--silvertrail-{$key}:{$value}";
@@ -33,8 +33,7 @@ final class Design {
 	/**
 	 * @return array{0: array<string, string>, 1: string}
 	 */
-	private static function resolve(): array {
-		$mode                      = Frontend::appearance();
+	private static function resolve( string $mode ): array {
 		list( $tokens, $resolved ) = self::theme( $mode );
 		$filtered                  = apply_filters( 'silvertrail_design', $tokens, $mode );
 		$filtered                  = self::valid( is_array( $filtered ) ? $filtered : array() );

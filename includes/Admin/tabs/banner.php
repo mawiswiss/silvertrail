@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 use Silvertrail\Admin\SettingsPage;
+use Silvertrail\Design;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 
@@ -19,188 +20,252 @@ $silvertrail_current     = array_replace( $silvertrail_base, Texts::custom( $sil
 $silvertrail_changed     = array_keys( array_diff_assoc( $silvertrail_current, $silvertrail_base ) );
 $silvertrail_translation = Texts::translation( $silvertrail_locale );
 $silvertrail_editor      = SettingsPage::editor();
+$silvertrail_appearances = array(
+	'theme' => array( __( 'Like the theme', 'silvertrail' ), __( 'As the theme sets it', 'silvertrail' ) ),
+	'light' => array( __( 'Light', 'silvertrail' ), __( 'Its lightest color behind', 'silvertrail' ) ),
+	'dark'  => array( __( 'Dark', 'silvertrail' ), __( 'Its darkest color behind', 'silvertrail' ) ),
+);
+$silvertrail_swatch      = static function ( string $mode ): string {
+	$tokens = array_intersect_key( Design::tokens( $mode ), array_flip( array( 'background', 'text', 'accent', 'on-accent', 'radius' ) ) );
+	return implode( ';', array_map( static fn( string $key, string $value ): string => "--silvertrail-{$key}:{$value}", array_keys( $tokens ), $tokens ) );
+};
 ?>
 
-<h2><?php esc_html_e( 'Layout', 'silvertrail' ); ?></h2>
-<table class="form-table" role="presentation">
-	<tr>
-		<th scope="row"><?php esc_html_e( 'Position', 'silvertrail' ); ?></th>
-		<td>
-			<fieldset>
-				<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'silvertrail' ); ?></legend>
-				<label><input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?>> <?php esc_html_e( 'Centered over the page', 'silvertrail' ); ?></label><br>
-				<label><input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="box" <?php checked( $silvertrail_settings['layout'], 'box' ); ?>> <?php esc_html_e( 'Box in the corner, the page stays usable', 'silvertrail' ); ?></label>
-			</fieldset>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row"><?php esc_html_e( 'Closing', 'silvertrail' ); ?></th>
-		<td>
-			<?php
-			SettingsPage::checkbox(
-				'require_choice',
-				__( 'Require a choice before the banner closes', 'silvertrail' ),
-				__( 'Centered, the page stays blocked until the visitor chooses. Turn it off to let a click outside, Escape or the close button hide the banner. Nothing is stored then, and the banner shows again on the next page.', 'silvertrail' )
-			);
-			?>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row"><label for="silvertrail-appearance"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></label></th>
-		<td>
-			<select id="silvertrail-appearance" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>">
-				<option value="theme" <?php selected( $silvertrail_settings['appearance'], 'theme' ); ?>><?php esc_html_e( 'Like the theme', 'silvertrail' ); ?></option>
-				<option value="light" <?php selected( $silvertrail_settings['appearance'], 'light' ); ?>><?php esc_html_e( 'Light', 'silvertrail' ); ?></option>
-				<option value="dark" <?php selected( $silvertrail_settings['appearance'], 'dark' ); ?>><?php esc_html_e( 'Dark', 'silvertrail' ); ?></option>
-			</select>
-			<p class="description"><?php esc_html_e( 'The banner takes its colors, corners and buttons from the theme. Light and Dark keep the theme’s colors and put the lightest or the darkest one in the background. Developers set their own colors with the silvertrail_design filter.', 'silvertrail' ); ?></p>
-		</td>
-	</tr>
-</table>
+<section class="card silvertrail-section">
+	<h2><?php esc_html_e( 'Look', 'silvertrail' ); ?></h2>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Position', 'silvertrail' ); ?></th>
+			<td>
+				<fieldset class="silvertrail-cards">
+					<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'silvertrail' ); ?></legend>
+					<label class="silvertrail-card">
+						<svg class="silvertrail-card__preview silvertrail-sketch" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+							<rect class="silvertrail-sketch__page" width="120" height="80"/>
+							<rect class="silvertrail-sketch__content" x="10" y="10" width="50" height="5" rx="2"/>
+							<rect class="silvertrail-sketch__content" x="10" y="21" width="100" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="28" width="90" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__backdrop" width="120" height="80"/>
+							<rect class="silvertrail-sketch__banner" x="30" y="16" width="60" height="48" rx="3"/>
+							<rect class="silvertrail-sketch__text" x="36" y="23" width="30" height="4" rx="2"/>
+							<rect class="silvertrail-sketch__text" x="36" y="31" width="46" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__button" x="36" y="50" width="22" height="8" rx="2"/>
+							<rect class="silvertrail-sketch__button" x="62" y="50" width="22" height="8" rx="2"/>
+						</svg>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?>>
+						<span class="silvertrail-card__name"><?php esc_html_e( 'Centered', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'Dims the page', 'silvertrail' ); ?></span>
+					</label>
+					<label class="silvertrail-card">
+						<svg class="silvertrail-card__preview silvertrail-sketch" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+							<rect class="silvertrail-sketch__page" width="120" height="80"/>
+							<rect class="silvertrail-sketch__content" x="10" y="10" width="50" height="5" rx="2"/>
+							<rect class="silvertrail-sketch__content" x="10" y="21" width="100" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="28" width="90" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="35" width="40" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__banner" x="62" y="38" width="52" height="36" rx="3"/>
+							<rect class="silvertrail-sketch__text" x="67" y="44" width="26" height="4" rx="2"/>
+							<rect class="silvertrail-sketch__text" x="67" y="51" width="40" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__button" x="67" y="61" width="19" height="7" rx="2"/>
+							<rect class="silvertrail-sketch__button" x="89" y="61" width="19" height="7" rx="2"/>
+						</svg>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="box" <?php checked( $silvertrail_settings['layout'], 'box' ); ?>>
+						<span class="silvertrail-card__name"><?php esc_html_e( 'Corner', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'The page stays usable', 'silvertrail' ); ?></span>
+					</label>
+				</fieldset>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></th>
+			<td>
+				<fieldset class="silvertrail-cards">
+					<legend class="screen-reader-text"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></legend>
+					<?php foreach ( $silvertrail_appearances as $silvertrail_mode => list( $silvertrail_label, $silvertrail_hint ) ) : ?>
+						<label class="silvertrail-card">
+							<span class="<?php echo esc_attr( "silvertrail-card__preview silvertrail-swatch silvertrail-swatch--{$silvertrail_mode}" ); ?>" style="<?php echo esc_attr( $silvertrail_swatch( $silvertrail_mode ) ); ?>" aria-hidden="true">
+								<span class="silvertrail-swatch__text"></span>
+								<span class="silvertrail-swatch__text silvertrail-swatch__text--short"></span>
+								<span class="silvertrail-swatch__buttons"><span></span><span></span></span>
+							</span>
+							<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>" value="<?php echo esc_attr( $silvertrail_mode ); ?>" <?php checked( $silvertrail_settings['appearance'], $silvertrail_mode ); ?>>
+							<span class="silvertrail-card__name"><?php echo esc_html( $silvertrail_label ); ?></span>
+							<span class="silvertrail-card__hint"><?php echo esc_html( $silvertrail_hint ); ?></span>
+						</label>
+					<?php endforeach; ?>
+				</fieldset>
+				<p class="description"><?php esc_html_e( 'All three take colors, corners and buttons from the theme.', 'silvertrail' ); ?></p>
+			</td>
+		</tr>
+	</table>
+</section>
 
-<h2><?php esc_html_e( 'Styles', 'silvertrail' ); ?></h2>
-<table class="form-table" role="presentation">
-	<tr>
-		<th scope="row"><?php esc_html_e( 'Default styles', 'silvertrail' ); ?></th>
-		<td>
-			<?php
-			SettingsPage::checkbox(
-				'load_css',
-				__( 'Load the default styles', 'silvertrail' ),
-				__( 'Turn them off to style the banner yourself with the --silvertrail-* custom properties.', 'silvertrail' )
-			);
-			?>
-		</td>
-	</tr>
-</table>
-
-<h2><?php esc_html_e( 'Texts', 'silvertrail' ); ?></h2>
-<table class="form-table" role="presentation">
-	<tr>
-		<th scope="row">
-			<label for="silvertrail-texts">
+<section class="card silvertrail-section">
+	<h2><?php esc_html_e( 'Styles', 'silvertrail' ); ?></h2>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Default styles', 'silvertrail' ); ?></th>
+			<td>
 				<?php
-				/* translators: %s: locale, for example de_CH */
-				echo esc_html( sprintf( __( 'Texts in %s', 'silvertrail' ), $silvertrail_locale ) );
+				SettingsPage::checkbox(
+					'load_css',
+					__( 'Load the default styles', 'silvertrail' ),
+					__( 'Turn them off to style the banner yourself with the --silvertrail-* custom properties.', 'silvertrail' )
+				);
 				?>
-			</label>
-		</th>
-		<td>
-			<textarea
-				id="silvertrail-texts"
-				class="large-text code"
-				rows="16"
-				spellcheck="false"
-				name="<?php echo esc_attr( SettingsPage::field( 'texts_json' ) ); ?>"
-				<?php if ( '' !== $silvertrail_editor ) : ?>
-					data-silvertrail-editor="<?php echo esc_attr( $silvertrail_editor ); ?>"
+			</td>
+		</tr>
+	</table>
+</section>
+
+<section class="card silvertrail-section">
+	<h2><?php esc_html_e( 'Behavior', 'silvertrail' ); ?></h2>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Closing', 'silvertrail' ); ?></th>
+			<td>
+				<?php
+				SettingsPage::checkbox(
+					'require_choice',
+					__( 'Require a choice before the banner closes', 'silvertrail' ),
+					__( 'Turned off, a click outside or Escape closes it without storing anything, and it asks again on the next page.', 'silvertrail' )
+				);
+				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Reopen', 'silvertrail' ); ?></th>
+			<td>
+				<?php
+				SettingsPage::checkbox(
+					'floating_button',
+					__( 'Show a small button that reopens the settings', 'silvertrail' ),
+					__( 'Or link to #silvertrail, or use the [silvertrail_link] shortcode or the Privacy settings link block.', 'silvertrail' )
+				);
+				?>
+			</td>
+		</tr>
+	</table>
+</section>
+
+<section class="card silvertrail-section">
+	<h2><?php esc_html_e( 'Texts', 'silvertrail' ); ?></h2>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row">
+				<label for="silvertrail-texts">
+					<?php
+					/* translators: %s: locale, for example de_CH */
+					echo esc_html( sprintf( __( 'Texts in %s', 'silvertrail' ), $silvertrail_locale ) );
+					?>
+				</label>
+			</th>
+			<td>
+				<textarea
+					id="silvertrail-texts"
+					class="large-text code"
+					rows="16"
+					spellcheck="false"
+					name="<?php echo esc_attr( SettingsPage::field( 'texts_json' ) ); ?>"
+					<?php if ( '' !== $silvertrail_editor ) : ?>
+						data-silvertrail-editor="<?php echo esc_attr( $silvertrail_editor ); ?>"
+					<?php endif; ?>
+				><?php echo esc_textarea( SettingsPage::draft() ?? (string) wp_json_encode( $silvertrail_current, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ); ?></textarea>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: 1: embed_text, 2: embed_remember */
+						esc_html__( 'Change a value and save. Remove a key to follow the translation again. Keep %%s in %1$s and %2$s, where the service name goes.', 'silvertrail' ),
+						'<code>embed_text</code>',
+						'<code>embed_remember</code>'
+					);
+					?>
+				</p>
+				<?php if ( array() !== $silvertrail_changed ) : ?>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: list of text keys */
+							esc_html__( 'Changed here: %s', 'silvertrail' ),
+							wp_kses_post( implode( ', ', array_map( static fn( string $key ): string => '<code>' . esc_html( $key ) . '</code>', $silvertrail_changed ) ) )
+						);
+						?>
+					</p>
 				<?php endif; ?>
-			><?php echo esc_textarea( SettingsPage::draft() ?? (string) wp_json_encode( $silvertrail_current, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ); ?></textarea>
-			<p class="description"><?php esc_html_e( 'Every banner text as JSON, ready to copy and paste. Change a value and save. Remove a key, or put its default back, to follow the translation again.', 'silvertrail' ); ?></p>
-			<p class="description">
-				<?php
-				printf(
-					/* translators: 1: embed_text, 2: embed_remember */
-					esc_html__( 'Keep %%s in %1$s and %2$s, where the service name goes.', 'silvertrail' ),
-					'<code>embed_text</code>',
-					'<code>embed_remember</code>'
-				);
-				?>
-			</p>
-			<?php if ( array() !== $silvertrail_changed ) : ?>
-				<p class="description">
-					<?php
-					printf(
-						/* translators: %s: list of text keys */
-						esc_html__( 'Changed here: %s', 'silvertrail' ),
-						wp_kses_post( implode( ', ', array_map( static fn( string $key ): string => '<code>' . esc_html( $key ) . '</code>', $silvertrail_changed ) ) )
-					);
-					?>
-				</p>
-			<?php endif; ?>
-			<?php if ( null !== $silvertrail_translation ) : ?>
-				<p class="description">
-					<?php
-					printf(
-						/* translators: %s: file path or filter name */
-						esc_html__( 'The defaults come from the developer translation in %s.', 'silvertrail' ),
-						'<code>' . esc_html( str_replace( wp_normalize_path( ABSPATH ), '', wp_normalize_path( $silvertrail_translation['from'] ) ) ) . '</code>'
-					);
-					?>
-				</p>
-			<?php else : ?>
-				<p class="description">
-					<?php
-					printf(
-						/* translators: %s: file name */
-						esc_html__( 'Developers can ship this JSON in the theme as %s.', 'silvertrail' ),
-						'<code>' . esc_html( "silvertrail/texts-{$silvertrail_locale}.json" ) . '</code>'
-					);
-					?>
-				</p>
-			<?php endif; ?>
-			<?php if ( has_filter( 'silvertrail_texts' ) ) : ?>
-				<p class="description">
-					<?php
-					printf(
-						/* translators: %s: the silvertrail_texts filter */
-						esc_html__( 'Code changes some texts after these, through the %s filter.', 'silvertrail' ),
-						'<code>silvertrail_texts</code>'
-					);
-					?>
-				</p>
-			<?php endif; ?>
-		</td>
-	</tr>
-</table>
+				<?php if ( null !== $silvertrail_translation ) : ?>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: file path or filter name */
+							esc_html__( 'The defaults come from the developer translation in %s.', 'silvertrail' ),
+							'<code>' . esc_html( str_replace( wp_normalize_path( ABSPATH ), '', wp_normalize_path( $silvertrail_translation['from'] ) ) ) . '</code>'
+						);
+						?>
+					</p>
+				<?php else : ?>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: file name */
+							esc_html__( 'Developers can ship this JSON in the theme as %s.', 'silvertrail' ),
+							'<code>' . esc_html( "silvertrail/texts-{$silvertrail_locale}.json" ) . '</code>'
+						);
+						?>
+					</p>
+				<?php endif; ?>
+				<?php if ( has_filter( 'silvertrail_texts' ) ) : ?>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: the silvertrail_texts filter */
+							esc_html__( 'Code changes some texts after these, through the %s filter.', 'silvertrail' ),
+							'<code>silvertrail_texts</code>'
+						);
+						?>
+					</p>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
+</section>
 
-<h2><?php esc_html_e( 'Links', 'silvertrail' ); ?></h2>
-<table class="form-table" role="presentation">
-	<tr>
-		<th scope="row"><?php esc_html_e( 'Privacy policy', 'silvertrail' ); ?></th>
-		<td>
-			<?php if ( '' !== get_privacy_policy_url() ) : ?>
-				<a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php echo esc_html( get_the_title( $silvertrail_privacy ) ); ?></a>
-			<?php else : ?>
-				<?php esc_html_e( 'None published', 'silvertrail' ); ?>
-			<?php endif; ?>
-			<p class="description">
+<section class="card silvertrail-section">
+	<h2><?php esc_html_e( 'Links', 'silvertrail' ); ?></h2>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Privacy policy', 'silvertrail' ); ?></th>
+			<td>
+				<?php if ( '' !== get_privacy_policy_url() ) : ?>
+					<a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php echo esc_html( get_the_title( $silvertrail_privacy ) ); ?></a>
+				<?php else : ?>
+					<?php esc_html_e( 'None published', 'silvertrail' ); ?>
+				<?php endif; ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: link to the privacy settings */
+						esc_html__( 'Choose the page under %s.', 'silvertrail' ),
+						'<a href="' . esc_url( admin_url( 'options-privacy.php' ) ) . '">' . esc_html__( 'Settings › Privacy', 'silvertrail' ) . '</a>'
+					);
+					?>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><label for="silvertrail-imprint"><?php esc_html_e( 'Imprint page', 'silvertrail' ); ?></label></th>
+			<td>
 				<?php
-				printf(
-					/* translators: %s: link to the privacy settings */
-					esc_html__( 'Choose the page under %s.', 'silvertrail' ),
-					'<a href="' . esc_url( admin_url( 'options-privacy.php' ) ) . '">' . esc_html__( 'Settings › Privacy', 'silvertrail' ) . '</a>'
+				wp_dropdown_pages(
+					array(
+						'name'              => esc_attr( SettingsPage::field( 'imprint_page' ) ),
+						'id'                => 'silvertrail-imprint',
+						'selected'          => (int) $silvertrail_settings['imprint_page'],
+						'show_option_none'  => esc_html__( 'None', 'silvertrail' ),
+						'option_none_value' => '0',
+					)
 				);
 				?>
-			</p>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row"><label for="silvertrail-imprint"><?php esc_html_e( 'Imprint page', 'silvertrail' ); ?></label></th>
-		<td>
-			<?php
-			wp_dropdown_pages(
-				array(
-					'name'              => esc_attr( SettingsPage::field( 'imprint_page' ) ),
-					'id'                => 'silvertrail-imprint',
-					'selected'          => (int) $silvertrail_settings['imprint_page'],
-					'show_option_none'  => esc_html__( 'None', 'silvertrail' ),
-					'option_none_value' => '0',
-				)
-			);
-			?>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row"><?php esc_html_e( 'Reopen', 'silvertrail' ); ?></th>
-		<td>
-			<?php
-			SettingsPage::checkbox(
-				'floating_button',
-				__( 'Show a small button that reopens the settings', 'silvertrail' ),
-				__( 'Without it, link to #silvertrail in a menu or footer, or use the shortcode [silvertrail_link] or the Privacy settings link block.', 'silvertrail' )
-			);
-			?>
-		</td>
-	</tr>
-</table>
+			</td>
+		</tr>
+	</table>
+</section>
