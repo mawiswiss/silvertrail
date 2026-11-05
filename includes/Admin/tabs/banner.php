@@ -150,15 +150,6 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			<?php endif; ?>
 		><?php echo esc_textarea( StylingPrompt::text() ); ?></textarea>
 	</details>
-	<div class="silvertrail-section__footer">
-		<?php
-		SettingsPage::checkbox(
-			'load_css',
-			__( 'Load the default styles', 'silvertrail' ),
-			__( 'Turn them off when the theme’s stylesheet styles the banner entirely.', 'silvertrail' )
-		);
-		?>
-	</div>
 </section>
 
 <section class="card silvertrail-section">

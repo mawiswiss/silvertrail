@@ -163,19 +163,19 @@ test.describe('settings page', () => {
 		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
 	});
 
-	test('saves and clamps the consent lifetime', async ({ page }) => {
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=consent');
+	test('turns records on in the tools tab', async ({ page }) => {
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
 
-		const expiry = page.getByLabel('Keep a choice for');
-		await expiry.fill('40');
-		await expiry.evaluate((input) => input.removeAttribute('max'));
+		const records = page.getByLabel('Keep a record of each decision');
+		await records.check();
 		await page.getByRole('button', { name: 'Save Changes' }).click();
 		await expect(page.getByText('Settings saved.')).toBeVisible();
-		await expect(expiry).toHaveValue('13');
+		await expect(records).toBeChecked();
+		await expect(page.getByRole('button', { name: 'Download CSV' })).toBeVisible();
 
-		await expiry.fill('6');
+		await records.uncheck();
 		await page.getByRole('button', { name: 'Save Changes' }).click();
-		await expect(expiry).toHaveValue('6');
+		await expect(page.getByText('Records are off. Turn them on above.')).toBeVisible();
 	});
 
 	test('the banner tab shows position and appearance as cards', async ({ page, context }) => {

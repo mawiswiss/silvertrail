@@ -106,7 +106,7 @@ The banner takes its colours, corners and buttons from the theme's `theme.json`.
 
 For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The `styling.md` file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts.
 
-You can also turn off the default styles in the settings, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
+You can also turn off the default styles with `load_css` in the `silvertrail_settings` filter, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
 = How do I change the texts? =
 

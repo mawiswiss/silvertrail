@@ -5,7 +5,6 @@
 
 declare(strict_types=1);
 
-use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 use Silvertrail\Settings;
 
@@ -32,15 +31,7 @@ defined( 'ABSPATH' ) || exit;
 			<?php submit_button( __( 'Download CSV', 'silvertrail' ), 'secondary' ); ?>
 		</form>
 	<?php else : ?>
-		<p>
-			<?php
-			printf(
-				/* translators: %s: link to the Consent tab */
-				esc_html__( 'Records are off. Turn them on under %s.', 'silvertrail' ),
-				'<a href="' . esc_url( SettingsPage::url( 'consent' ) ) . '">' . esc_html__( 'Consent', 'silvertrail' ) . '</a>'
-			);
-			?>
-		</p>
+		<p><?php esc_html_e( 'Records are off. Turn them on above.', 'silvertrail' ); ?></p>
 	<?php endif; ?>
 </section>
 

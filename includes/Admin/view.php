@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
 $silvertrail_tabs = array(
 	'services' => __( 'Services', 'silvertrail' ),
 	'banner'   => __( 'Banner', 'silvertrail' ),
-	'consent'  => __( 'Consent', 'silvertrail' ),
 	'check'    => __( 'Leak check', 'silvertrail' ),
 	'tools'    => __( 'Tools', 'silvertrail' ),
 );
