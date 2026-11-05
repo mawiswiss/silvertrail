@@ -11,23 +11,18 @@ use Silvertrail\Texts;
 
 defined( 'ABSPATH' ) || exit;
 
-$silvertrail_settings = Settings::all();
-$silvertrail_defaults = Texts::defaults();
-$silvertrail_privacy  = (int) get_option( 'wp_page_for_privacy_policy' );
-$silvertrail_colors   = array(
+$silvertrail_settings    = Settings::all();
+$silvertrail_privacy     = (int) get_option( 'wp_page_for_privacy_policy' );
+$silvertrail_locale      = get_locale();
+$silvertrail_base        = Texts::base( $silvertrail_locale );
+$silvertrail_current     = array_replace( $silvertrail_base, Texts::custom( $silvertrail_locale ) );
+$silvertrail_changed     = array_keys( array_diff_assoc( $silvertrail_current, $silvertrail_base ) );
+$silvertrail_translation = Texts::translation( $silvertrail_locale );
+$silvertrail_editor      = SettingsPage::editor();
+$silvertrail_colors      = array(
 	'accent'     => __( 'Button color', 'silvertrail' ),
 	'background' => __( 'Background color', 'silvertrail' ),
 	'text'       => __( 'Text color', 'silvertrail' ),
-);
-$silvertrail_texts    = array(
-	'title'             => __( 'Title', 'silvertrail' ),
-	'intro'             => __( 'Intro', 'silvertrail' ),
-	'accept_all'        => __( 'Accept button', 'silvertrail' ),
-	'reject_all'        => __( 'Reject button', 'silvertrail' ),
-	'preferences'       => __( 'Preferences button', 'silvertrail' ),
-	'preferences_intro' => __( 'Preferences intro', 'silvertrail' ),
-	'save'              => __( 'Save button', 'silvertrail' ),
-	'reopen'            => __( 'Reopen link', 'silvertrail' ),
 );
 ?>
 
@@ -87,28 +82,83 @@ $silvertrail_texts    = array(
 <p class="description"><?php esc_html_e( 'Leave a color empty for the default.', 'silvertrail' ); ?></p>
 
 <h2><?php esc_html_e( 'Texts', 'silvertrail' ); ?></h2>
-<p>
-	<?php
-	printf(
-		/* translators: %s: the silvertrail_texts filter */
-		esc_html__( 'Empty fields use the translated default shown in grey. The %s filter changes every text, these and all others.', 'silvertrail' ),
-		'<code>silvertrail_texts</code>'
-	);
-	?>
-</p>
 <table class="form-table" role="presentation">
-	<?php foreach ( SettingsPage::EDITABLE_TEXTS as $silvertrail_key ) : ?>
-		<tr>
-			<th scope="row"><label for="<?php echo esc_attr( "silvertrail-text-{$silvertrail_key}" ); ?>"><?php echo esc_html( $silvertrail_texts[ $silvertrail_key ] ?? $silvertrail_key ); ?></label></th>
-			<td>
-				<?php if ( in_array( $silvertrail_key, array( 'intro', 'preferences_intro' ), true ) ) : ?>
-					<textarea id="<?php echo esc_attr( "silvertrail-text-{$silvertrail_key}" ); ?>" class="large-text" rows="2" name="<?php echo esc_attr( SettingsPage::field( 'texts', $silvertrail_key ) ); ?>" placeholder="<?php echo esc_attr( $silvertrail_defaults[ $silvertrail_key ] ); ?>"><?php echo esc_textarea( $silvertrail_settings['texts'][ $silvertrail_key ] ?? '' ); ?></textarea>
-				<?php else : ?>
-					<input type="text" id="<?php echo esc_attr( "silvertrail-text-{$silvertrail_key}" ); ?>" class="regular-text" name="<?php echo esc_attr( SettingsPage::field( 'texts', $silvertrail_key ) ); ?>" value="<?php echo esc_attr( $silvertrail_settings['texts'][ $silvertrail_key ] ?? '' ); ?>" placeholder="<?php echo esc_attr( $silvertrail_defaults[ $silvertrail_key ] ); ?>">
+	<tr>
+		<th scope="row">
+			<label for="silvertrail-texts">
+				<?php
+				/* translators: %s: locale, for example de_CH */
+				echo esc_html( sprintf( __( 'Texts in %s', 'silvertrail' ), $silvertrail_locale ) );
+				?>
+			</label>
+		</th>
+		<td>
+			<textarea
+				id="silvertrail-texts"
+				class="large-text code"
+				rows="16"
+				spellcheck="false"
+				name="<?php echo esc_attr( SettingsPage::field( 'texts_json' ) ); ?>"
+				<?php if ( '' !== $silvertrail_editor ) : ?>
+					data-silvertrail-editor="<?php echo esc_attr( $silvertrail_editor ); ?>"
 				<?php endif; ?>
-			</td>
-		</tr>
-	<?php endforeach; ?>
+			><?php echo esc_textarea( SettingsPage::draft() ?? (string) wp_json_encode( $silvertrail_current, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ); ?></textarea>
+			<p class="description"><?php esc_html_e( 'Every banner text as JSON, ready to copy and paste. Change a value and save. Remove a key, or put its default back, to follow the translation again.', 'silvertrail' ); ?></p>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: 1: embed_text, 2: embed_remember */
+					esc_html__( 'Keep %%s in %1$s and %2$s, where the service name goes.', 'silvertrail' ),
+					'<code>embed_text</code>',
+					'<code>embed_remember</code>'
+				);
+				?>
+			</p>
+			<?php if ( array() !== $silvertrail_changed ) : ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: list of text keys */
+						esc_html__( 'Changed here: %s', 'silvertrail' ),
+						wp_kses_post( implode( ', ', array_map( static fn( string $key ): string => '<code>' . esc_html( $key ) . '</code>', $silvertrail_changed ) ) )
+					);
+					?>
+				</p>
+			<?php endif; ?>
+			<?php if ( null !== $silvertrail_translation ) : ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: file path or filter name */
+						esc_html__( 'The defaults come from the developer translation in %s.', 'silvertrail' ),
+						'<code>' . esc_html( str_replace( wp_normalize_path( ABSPATH ), '', wp_normalize_path( $silvertrail_translation['from'] ) ) ) . '</code>'
+					);
+					?>
+				</p>
+			<?php else : ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: file name */
+						esc_html__( 'Developers can ship this JSON in the theme as %s.', 'silvertrail' ),
+						'<code>' . esc_html( "silvertrail/texts-{$silvertrail_locale}.json" ) . '</code>'
+					);
+					?>
+				</p>
+			<?php endif; ?>
+			<?php if ( has_filter( 'silvertrail_texts' ) ) : ?>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: the silvertrail_texts filter */
+						esc_html__( 'Code changes some texts after these, through the %s filter.', 'silvertrail' ),
+						'<code>silvertrail_texts</code>'
+					);
+					?>
+				</p>
+			<?php endif; ?>
+		</td>
+	</tr>
 </table>
 
 <h2><?php esc_html_e( 'Links', 'silvertrail' ); ?></h2>

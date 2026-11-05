@@ -95,6 +95,7 @@ test.describe('settings page', () => {
 		await page.getByRole('link', { name: 'Banner', exact: true }).click();
 		await expect(page).toHaveURL(/tab=banner/);
 		await expect(page.locator('.wp-color-result')).toHaveCount(3);
+		await expect(page.locator('.CodeMirror')).toContainText('"accept_all": "Accept all"');
 	});
 
 	test('saves and clamps the consent lifetime', async ({ page }) => {

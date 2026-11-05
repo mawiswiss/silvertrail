@@ -12,7 +12,7 @@ namespace Silvertrail;
  * @phpstan-type SettingsArray array{
  *     layout: 'modal'|'box',
  *     appearance: 'light'|'dark'|'auto',
- *     texts: array<string, string>,
+ *     texts: array<string, array<string, string>>,
  *     colors: array{accent: string, background: string, text: string},
  *     floating_button: bool,
  *     load_css: bool,

@@ -39,6 +39,13 @@ window.addEventListener('silvertrail:change', (event) => {
 });
 JS;
 
+	private const TEXTS = <<<'PHP'
+// From a plugin instead of the theme:
+add_filter( 'silvertrail_translation', function ( $translation, $locale ) {
+	return __DIR__ . "/texts/{$locale}.json";
+}, 10, 2 );
+PHP;
+
 	private const CLI = <<<'SH'
 wp silvertrail services
 wp silvertrail validate
@@ -72,6 +79,16 @@ SH;
 				'id'      => 'silvertrail-browser',
 				'title'   => __( 'JavaScript', 'silvertrail' ),
 				'content' => self::section( __( 'Read and react to choices in the browser.', 'silvertrail' ), self::BROWSER ),
+			)
+		);
+		$screen->add_help_tab(
+			array(
+				'id'      => 'silvertrail-texts',
+				'title'   => __( 'Texts', 'silvertrail' ),
+				'content' => self::section(
+					__( 'Put the JSON from the Banner tab into the theme as silvertrail/texts-{locale}.json, or as silvertrail/texts.json for every language. A child theme wins over its parent. The silvertrail_translation filter can return another path or an array. The admin’s edits win over the file, and the silvertrail_texts filter runs last.', 'silvertrail' ),
+					self::TEXTS
+				),
 			)
 		);
 		$screen->add_help_tab(

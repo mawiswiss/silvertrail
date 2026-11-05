@@ -55,6 +55,35 @@ Any link to `#silvertrail` opens the preferences.
 
 `silvertrail_has( 'hubspot' )` reads the cookie. Use it only on requests a page cache never serves, such as form posts. Pages render every gated thing blocked and the browser decides.
 
+## Texts
+
+Texts stack up in this order, and the later one wins:
+
+1. The English source and its official translation from translate.wordpress.org.
+2. A developer translation from the theme: `silvertrail/texts-{locale}.json`, such as `silvertrail/texts-de_CH.json`, else `silvertrail/texts.json` for every language. A child theme wins over its parent.
+3. The admin's edits under Settings › Silvertrail › Banner, stored per language.
+4. The `silvertrail_texts` filter.
+
+```json
+{
+	"title": "Datenschutz",
+	"accept_all": "Alle akzeptieren",
+	"embed_remember": "%s immer zulassen"
+}
+```
+
+The admin sees the same JSON with every key, ready to copy into the file. `embed_text` and `embed_remember` keep their `%s`, where the service name goes. `wp silvertrail validate` reports unknown keys and broken files.
+
+To ship the translation from a plugin instead, return another path or an array in the `silvertrail_translation` filter. It receives the theme's file, or `''`, and the locale:
+
+```php
+add_filter( 'silvertrail_translation', function ( $translation, $locale ) {
+	return __DIR__ . "/texts/{$locale}.json";
+}, 10, 2 );
+```
+
+A missing file is skipped.
+
 ## Google Consent Mode and the WP Consent API
 
 A service lists the Consent Mode types it grants, for example `'google' => [ 'analytics_storage' ]`. Silvertrail prints the default (everything denied except `security_storage`) first in `<head>` and sends an update after every decision. Google tags stay blocked until consent. Set `$config['google']['mode'] = 'advanced'` in the `silvertrail_config` filter to load them before consent, so they send cookieless pings.

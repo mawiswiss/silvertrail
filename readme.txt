@@ -93,6 +93,18 @@ In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and th
 
 The colours come from `--silvertrail-*` custom properties. You can also turn off the default styles in the settings, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
+= How do I change the texts? =
+
+Under Settings › Silvertrail › Banner, every text of the site language is one JSON object. Change a value and save, or paste a whole set. Remove a key to follow the translation again.
+
+A developer can put the same JSON into the theme as `silvertrail/texts-de_CH.json` for one language, or `silvertrail/texts.json` for every language. A child theme wins over its parent. From a plugin, return another path or an array in the `silvertrail_translation` filter:
+
+    add_filter( 'silvertrail_translation', function ( $translation, $locale ) {
+        return __DIR__ . "/texts/{$locale}.json";
+    }, 10, 2 );
+
+The admin's edits win over the file, and the `silvertrail_texts` filter runs last. `wp silvertrail validate` reports unknown keys and broken files.
+
 = I changed the services or asked everyone again, and nothing happened. Why? =
 
 Cached pages still carry the old version of the settings. Purge the page cache after changing services or after pressing "Ask everyone again", and visitors are asked on their next page view.

@@ -51,7 +51,7 @@ final class Cli {
 	}
 
 	/**
-	 * Builds the config and reports every problem in it.
+	 * Builds the config and the texts of every installed language, and reports every problem in them.
 	 */
 	public function validate(): void {
 		$problems = array();
@@ -62,6 +62,14 @@ final class Cli {
 		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 		Config::rebuild();
 		$count = count( Config::get()['services'] );
+		Texts::reset();
+		foreach ( array_unique( array_merge( array( 'en_US', get_locale() ), get_available_languages() ) ) as $locale ) {
+			$translation = Texts::translation( $locale );
+			if ( null !== $translation ) {
+				WP_CLI::log( sprintf( 'Texts for %s come from %s.', $locale, $translation['from'] ) );
+			}
+			Texts::base( $locale );
+		}
 		remove_action( 'doing_it_wrong_run', $collect );
 		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 

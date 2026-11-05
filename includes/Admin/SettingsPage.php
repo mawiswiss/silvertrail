@@ -10,15 +10,11 @@ namespace Silvertrail\Admin;
 use Silvertrail\Config;
 use Silvertrail\Presets;
 use Silvertrail\Settings;
+use Silvertrail\Texts;
 
 final class SettingsPage {
 
 	public const SLUG = 'silvertrail';
-
-	/**
-	 * Texts an admin may change. Every other label stays with the translation.
-	 */
-	public const EDITABLE_TEXTS = array( 'title', 'intro', 'accept_all', 'reject_all', 'preferences', 'preferences_intro', 'save', 'reopen' );
 
 	/**
 	 * The settings each tab posts. Saving one tab keeps the others as stored.
@@ -30,7 +26,14 @@ final class SettingsPage {
 		'tools'    => array( 'leak_check' ),
 	);
 
+	private const DRAFT = 'silvertrail_texts_draft_';
+
 	private const FLAGS = array( 'floating_button', 'load_css', 'records', 'leak_check', 'gpc', 'trail', 'url_passthrough' );
+
+	/**
+	 * @var array<string, mixed>|false
+	 */
+	private static array|false $editor = false;
 
 	public static function register(): void {
 		add_action( 'admin_menu', array( self::class, 'menu' ) );
@@ -58,7 +61,16 @@ final class SettingsPage {
 
 	public static function enqueue(): void {
 		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), array( 'wp-color-picker' ), SILVERTRAIL_VERSION, true );
+		self::$editor = wp_enqueue_code_editor( array( 'type' => 'application/json' ) );
+		$deps         = false === self::$editor ? array( 'wp-color-picker' ) : array( 'wp-color-picker', 'code-editor' );
+		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), $deps, SILVERTRAIL_VERSION, true );
+	}
+
+	/**
+	 * Settings for the JSON code editor, empty when the user turned syntax highlighting off.
+	 */
+	public static function editor(): string {
+		return false === self::$editor ? '' : (string) wp_json_encode( self::$editor );
 	}
 
 	public static function setting(): void {
@@ -112,7 +124,7 @@ final class SettingsPage {
 	 * @return array<string, mixed>
 	 */
 	public static function sanitize( mixed $input ): array {
-		$input = is_array( $input ) ? wp_unslash( $input ) : array();
+		$input = is_array( $input ) ? $input : array();
 		$clean = self::clean( $input );
 		$tab   = is_string( $input['_tab'] ?? null ) ? $input['_tab'] : '';
 		if ( ! isset( self::TABS[ $tab ] ) ) {
@@ -127,14 +139,6 @@ final class SettingsPage {
 	 */
 	private static function clean( array $input ): array {
 		$defaults = Settings::defaults();
-
-		$texts = array();
-		foreach ( self::EDITABLE_TEXTS as $key ) {
-			$text = sanitize_text_field( (string) ( $input['texts'][ $key ] ?? '' ) );
-			if ( '' !== $text ) {
-				$texts[ $key ] = $text;
-			}
-		}
 
 		$colors = array();
 		foreach ( array_keys( $defaults['colors'] ) as $key ) {
@@ -167,13 +171,68 @@ final class SettingsPage {
 		return array(
 			'layout'         => 'box' === ( $input['layout'] ?? '' ) ? 'box' : 'modal',
 			'appearance'     => in_array( $input['appearance'] ?? '', array( 'dark', 'auto' ), true ) ? $input['appearance'] : 'light',
-			'texts'          => $texts,
+			'texts'          => self::texts( $input ),
 			'colors'         => $colors,
 			'imprint_page'   => absint( $input['imprint_page'] ?? 0 ),
 			'presets'        => $presets,
 			'expiry_months'  => max( 1, min( 13, absint( $input['expiry_months'] ?? $defaults['expiry_months'] ) ) ),
 			'retention_days' => max( 30, min( 3650, absint( $input['retention_days'] ?? $defaults['retention_days'] ) ) ),
 		) + $flags;
+	}
+
+	/**
+	 * The admin's text edits per language. A posted JSON replaces those of the site language.
+	 *
+	 * @param array<mixed> $input
+	 * @return array<string, array<string, string>>
+	 */
+	private static function texts( array $input ): array {
+		$json   = $input['texts_json'] ?? null;
+		$stored = is_string( $json ) ? Settings::all()['texts'] : ( $input['texts'] ?? array() );
+		$texts  = array();
+		foreach ( is_array( $stored ) ? $stored : array() as $locale => $custom ) {
+			if ( is_string( $locale ) && preg_match( '/^[A-Za-z0-9_]+$/', $locale ) && is_array( $custom ) ) {
+				$texts[ $locale ] = array_filter( array_map( 'sanitize_text_field', Texts::validate( $custom )[0] ) );
+			}
+		}
+		if ( ! is_string( $json ) ) {
+			return array_filter( $texts );
+		}
+
+		$locale  = get_locale();
+		$decoded = json_decode( $json, true );
+		if ( ! is_array( $decoded ) ) {
+			add_settings_error( Settings::OPTION, 'silvertrail-texts', __( 'The texts are not valid JSON, so they were not saved. The editor still holds them.', 'silvertrail' ) );
+			set_transient( self::DRAFT . get_current_user_id(), $json, 5 * MINUTE_IN_SECONDS );
+			return array_filter( $texts );
+		}
+
+		list( $valid, $problems ) = Texts::validate( $decoded );
+		foreach ( $problems as $problem ) {
+			/* translators: %s: what is wrong with a text */
+			add_settings_error( Settings::OPTION, 'silvertrail-texts', sprintf( __( 'Not saved: %s', 'silvertrail' ), $problem ) );
+		}
+		if ( array() !== $problems ) {
+			set_transient( self::DRAFT . get_current_user_id(), $json, 5 * MINUTE_IN_SECONDS );
+		}
+		$base             = Texts::base( $locale );
+		$texts[ $locale ] = array();
+		foreach ( $valid as $key => $text ) {
+			$text = sanitize_text_field( $text );
+			if ( '' !== $text && sanitize_text_field( $base[ $key ] ) !== $text ) {
+				$texts[ $locale ][ $key ] = $text;
+			}
+		}
+		return array_filter( $texts );
+	}
+
+	/**
+	 * Texts that were not valid JSON, so the admin can fix them instead of typing them again.
+	 */
+	public static function draft(): ?string {
+		$draft = get_transient( self::DRAFT . get_current_user_id() );
+		delete_transient( self::DRAFT . get_current_user_id() );
+		return is_string( $draft ) ? $draft : null;
 	}
 
 	public static function ask_again(): void {

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-05T10:16:44+00:00\n"
+"POT-Creation-Date: 2026-11-05T11:48:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -39,210 +39,227 @@ msgstr ""
 msgid "https://marcwieland.name"
 msgstr ""
 
-#: includes/Admin/Help.php:53
+#: includes/Admin/Help.php:60
 msgid "Add a service"
 msgstr ""
 
-#: includes/Admin/Help.php:55
+#: includes/Admin/Help.php:62
 msgid "Register services in a plugin or the theme. The groups are essential, preferences, statistics, marketing and external-media. The silvertrail_config filter edits or removes anything at the end."
 msgstr ""
 
-#: includes/Admin/Help.php:63
+#: includes/Admin/Help.php:70
 msgid "Gate a script"
 msgstr ""
 
-#: includes/Admin/Help.php:65
+#: includes/Admin/Help.php:72
 msgid "The browser ignores the tag until the visitor agrees to the service. Scripts enqueued with a handle listed under handles are gated without changes. Any link to #silvertrail opens the preferences."
 msgstr ""
 
-#: includes/Admin/Help.php:73
+#: includes/Admin/Help.php:80
 msgid "JavaScript"
 msgstr ""
 
-#: includes/Admin/Help.php:74
+#: includes/Admin/Help.php:81
 msgid "Read and react to choices in the browser."
 msgstr ""
 
-#: includes/Admin/Help.php:80
+#: includes/Admin/Help.php:87
+#: includes/Admin/tabs/banner.php:84
+msgid "Texts"
+msgstr ""
+
+#: includes/Admin/Help.php:89
+msgid "Put the JSON from the Banner tab into the theme as silvertrail/texts-{locale}.json, or as silvertrail/texts.json for every language. A child theme wins over its parent. The silvertrail_translation filter can return another path or an array. The admin’s edits win over the file, and the silvertrail_texts filter runs last."
+msgstr ""
+
+#: includes/Admin/Help.php:97
 msgid "WP-CLI"
 msgstr ""
 
-#: includes/Admin/Help.php:81
+#: includes/Admin/Help.php:98
 msgid "List and check the services, ask everyone again, or export the records."
 msgstr ""
 
-#: includes/Admin/Help.php:85
+#: includes/Admin/Help.php:102
 msgid "For more information:"
 msgstr ""
 
-#: includes/Admin/Help.php:86
+#: includes/Admin/Help.php:103
 msgid "Documentation on GitHub"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:108
+#: includes/Admin/SettingsPage.php:120
 msgid "Settings"
 msgstr ""
 
 #. translators: 1: service name, 2: example ID
-#: includes/Admin/SettingsPage.php:153
+#: includes/Admin/SettingsPage.php:157
 #, php-format
 msgid "%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:181
+#: includes/Admin/SettingsPage.php:205
+msgid "The texts are not valid JSON, so they were not saved. The editor still holds them."
+msgstr ""
+
+#. translators: %s: what is wrong with a text
+#: includes/Admin/SettingsPage.php:213
+#, php-format
+msgid "Not saved: %s"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:240
 #: includes/Records.php:196
 msgid "You are not allowed to do this."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:18
+#: includes/Admin/tabs/banner.php:23
 msgid "Button color"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:19
+#: includes/Admin/tabs/banner.php:24
 msgid "Background color"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:20
+#: includes/Admin/tabs/banner.php:25
 msgid "Text color"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:23
-msgid "Title"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:24
-msgid "Intro"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:25
-msgid "Accept button"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:26
-msgid "Reject button"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:27
-msgid "Preferences button"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:28
-msgid "Preferences intro"
-msgstr ""
-
 #: includes/Admin/tabs/banner.php:29
-msgid "Save button"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:30
-msgid "Reopen link"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:34
 msgid "Layout"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:37
-#: includes/Admin/tabs/banner.php:40
+#: includes/Admin/tabs/banner.php:32
+#: includes/Admin/tabs/banner.php:35
 msgid "Position"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:41
+#: includes/Admin/tabs/banner.php:36
 msgid "Centered, the page waits for a choice"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:42
+#: includes/Admin/tabs/banner.php:37
 msgid "Box in the corner, the page stays usable"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:47
+#: includes/Admin/tabs/banner.php:42
 msgid "Appearance"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:50
+#: includes/Admin/tabs/banner.php:45
 msgid "Light"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:51
+#: includes/Admin/tabs/banner.php:46
 msgid "Dark"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:52
+#: includes/Admin/tabs/banner.php:47
 msgid "Follow the visitor’s system"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:58
+#: includes/Admin/tabs/banner.php:53
 msgid "Styles"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:61
+#: includes/Admin/tabs/banner.php:56
 msgid "Default styles"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:66
+#: includes/Admin/tabs/banner.php:61
 msgid "Load the default styles"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:67
+#: includes/Admin/tabs/banner.php:62
 msgid "Turn them off to style the banner yourself with the --silvertrail-* custom properties."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:87
+#: includes/Admin/tabs/banner.php:82
 msgid "Leave a color empty for the default."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:89
-msgid "Texts"
+#. translators: %s: locale, for example de_CH
+#: includes/Admin/tabs/banner.php:91
+#, php-format
+msgid "Texts in %s"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:106
+msgid "Every banner text as JSON, ready to copy and paste. Change a value and save. Remove a key, or put its default back, to follow the translation again."
+msgstr ""
+
+#. translators: 1: embed_text, 2: embed_remember
+#: includes/Admin/tabs/banner.php:111
+#, php-format
+msgid "Keep %%s in %1$s and %2$s, where the service name goes."
+msgstr ""
+
+#. translators: %s: list of text keys
+#: includes/Admin/tabs/banner.php:122
+#, php-format
+msgid "Changed here: %s"
+msgstr ""
+
+#. translators: %s: file path or filter name
+#: includes/Admin/tabs/banner.php:133
+#, php-format
+msgid "The defaults come from the developer translation in %s."
+msgstr ""
+
+#. translators: %s: file name
+#: includes/Admin/tabs/banner.php:143
+#, php-format
+msgid "Developers can ship this JSON in the theme as %s."
 msgstr ""
 
 #. translators: %s: the silvertrail_texts filter
-#: includes/Admin/tabs/banner.php:94
+#: includes/Admin/tabs/banner.php:154
 #, php-format
-msgid "Empty fields use the translated default shown in grey. The %s filter changes every text, these and all others."
+msgid "Code changes some texts after these, through the %s filter."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:114
+#: includes/Admin/tabs/banner.php:164
 msgid "Links"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:117
-#: includes/Texts.php:29
-#: includes/Texts.php:30
+#: includes/Admin/tabs/banner.php:167
+#: includes/Texts.php:45
+#: includes/Texts.php:46
 msgid "Privacy policy"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:122
+#: includes/Admin/tabs/banner.php:172
 msgid "None published"
 msgstr ""
 
 #. translators: %s: link to the privacy settings
-#: includes/Admin/tabs/banner.php:128
+#: includes/Admin/tabs/banner.php:178
 #, php-format
 msgid "Choose the page under %s."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:129
+#: includes/Admin/tabs/banner.php:179
 #: includes/Admin/tabs/services.php:49
 msgid "Settings › Privacy"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:136
+#: includes/Admin/tabs/banner.php:186
 msgid "Imprint page"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:144
+#: includes/Admin/tabs/banner.php:194
 msgid "None"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:152
+#: includes/Admin/tabs/banner.php:202
 msgid "Reopen"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:157
+#: includes/Admin/tabs/banner.php:207
 msgid "Show a small button that reopens the settings"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:158
+#: includes/Admin/tabs/banner.php:208
 msgid "Without it, link to #silvertrail in a menu or footer, or use the shortcode [silvertrail_link] or the Privacy settings link block."
 msgstr ""
 
@@ -304,7 +321,7 @@ msgid "Transparency"
 msgstr ""
 
 #: includes/Admin/tabs/consent.php:58
-#: includes/Texts.php:39
+#: includes/Texts.php:55
 msgid "On this page"
 msgstr ""
 
@@ -517,80 +534,80 @@ msgstr ""
 msgid "The registered services flipped back and forth within a minute. They must not depend on the current request, or visitors are asked again on every page."
 msgstr ""
 
-#: includes/Config.php:217
+#: includes/Config.php:221
 msgid "Read the Silvertrail config on init or later."
 msgstr ""
 
-#: includes/Config.php:253
+#: includes/Config.php:257
 msgid "Skipped a group with an invalid ID."
 msgstr ""
 
-#: includes/Config.php:268
+#: includes/Config.php:272
 msgid "Skipped a service with an invalid ID."
 msgstr ""
 
 #. translators: 1: service ID, 2: group ID
-#: includes/Config.php:274
+#: includes/Config.php:278
 #, php-format
 msgid "Skipped the service \"%1$s\" because its group \"%2$s\" does not exist."
 msgstr ""
 
 #. translators: 1: service ID, 2: list of consent types
-#: includes/Config.php:281
+#: includes/Config.php:285
 #, php-format
 msgid "The service \"%1$s\" names unknown Consent Mode types: %2$s."
 msgstr ""
 
-#: includes/Config.php:315
+#: includes/Config.php:319
 msgid "Essential"
 msgstr ""
 
-#: includes/Config.php:316
+#: includes/Config.php:320
 msgid "Needed for the site to work. They are always on."
 msgstr ""
 
-#: includes/Config.php:321
+#: includes/Config.php:325
 msgid "Preferences"
 msgstr ""
 
-#: includes/Config.php:322
+#: includes/Config.php:326
 msgid "Remember your settings, such as a language or a filled-in form."
 msgstr ""
 
-#: includes/Config.php:327
+#: includes/Config.php:331
 msgid "Statistics"
 msgstr ""
 
-#: includes/Config.php:328
+#: includes/Config.php:332
 msgid "Show us how visitors use this site, so we can improve it."
 msgstr ""
 
-#: includes/Config.php:333
+#: includes/Config.php:337
 msgid "Marketing"
 msgstr ""
 
-#: includes/Config.php:334
+#: includes/Config.php:338
 msgid "Measure ads and show you ads that fit your interests, also on other sites."
 msgstr ""
 
-#: includes/Config.php:339
+#: includes/Config.php:343
 msgid "External media"
 msgstr ""
 
-#: includes/Config.php:340
+#: includes/Config.php:344
 msgid "Videos, maps and posts embedded from other platforms. The platform can see your visit when they load."
 msgstr ""
 
-#: includes/Config.php:355
+#: includes/Config.php:359
 msgid "The owner of this site"
 msgstr ""
 
-#: includes/Config.php:356
+#: includes/Config.php:360
 msgid "Stores your consent choices."
 msgstr ""
 
 #. translators: %d: number of months
-#: includes/Config.php:360
+#: includes/Config.php:364
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
@@ -638,7 +655,7 @@ msgid "Cookies of other sites and HttpOnly cookies are not visible from here."
 msgstr ""
 
 #: includes/LeakCheck.php:59
-#: includes/Texts.php:24
+#: includes/Texts.php:40
 msgid "Close"
 msgstr ""
 
@@ -702,90 +719,120 @@ msgstr ""
 msgid "When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period."
 msgstr ""
 
-#: includes/Texts.php:17
-#: includes/Texts.php:37
+#: includes/Texts.php:33
+#: includes/Texts.php:53
 #: blocks/reopen-link/editor.js:11
 msgid "Privacy settings"
 msgstr ""
 
-#: includes/Texts.php:18
+#: includes/Texts.php:34
 msgid "We use cookies and similar technologies. Some are needed for this site to work. Everything else only runs if you agree."
 msgstr ""
 
-#: includes/Texts.php:19
+#: includes/Texts.php:35
 msgid "Accept all"
 msgstr ""
 
-#: includes/Texts.php:20
+#: includes/Texts.php:36
 msgid "Only essential"
 msgstr ""
 
-#: includes/Texts.php:21
+#: includes/Texts.php:37
 msgid "Choose"
 msgstr ""
 
-#: includes/Texts.php:22
+#: includes/Texts.php:38
 msgid "Choose what may run on this site. You can change it at any time."
 msgstr ""
 
-#: includes/Texts.php:23
+#: includes/Texts.php:39
 msgid "Save choices"
 msgstr ""
 
-#: includes/Texts.php:25
+#: includes/Texts.php:41
 msgid "Provider"
 msgstr ""
 
-#: includes/Texts.php:26
+#: includes/Texts.php:42
 msgid "Purpose"
 msgstr ""
 
-#: includes/Texts.php:27
+#: includes/Texts.php:43
 msgid "Cookies"
 msgstr ""
 
-#: includes/Texts.php:28
+#: includes/Texts.php:44
 msgid "Lifetime"
 msgstr ""
 
-#: includes/Texts.php:31
+#: includes/Texts.php:47
 msgid "Imprint"
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Texts.php:33
+#: includes/Texts.php:49
 #, php-format
 msgid "This content comes from %s. Loading it tells them about your visit."
 msgstr ""
 
-#: includes/Texts.php:34
+#: includes/Texts.php:50
 msgid "Load content"
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Texts.php:36
+#: includes/Texts.php:52
 #, php-format
 msgid "Always allow %s"
 msgstr ""
 
-#: includes/Texts.php:38
+#: includes/Texts.php:54
 msgid "Your browser sends Global Privacy Control, so only essential services run. You can still allow more here."
 msgstr ""
 
-#: includes/Texts.php:40
+#: includes/Texts.php:56
 msgid "Held back"
 msgstr ""
 
-#: includes/Texts.php:41
+#: includes/Texts.php:57
 msgid "Loaded from"
 msgstr ""
 
-#: includes/Texts.php:42
+#: includes/Texts.php:58
 msgid "not listed here"
 msgstr ""
 
-#: includes/Texts.php:43
+#: includes/Texts.php:59
 msgid "Nothing from other sites."
+msgstr ""
+
+#. translators: 1: where the translation comes from, 2: what is wrong
+#: includes/Texts.php:90
+#, php-format
+msgid "The Silvertrail translation from %1$s: %2$s"
+msgstr ""
+
+#. translators: %s: file path
+#: includes/Texts.php:139
+#, php-format
+msgid "The Silvertrail translation %s is not a JSON object."
+msgstr ""
+
+#. translators: %s: text key
+#: includes/Texts.php:161
+#, php-format
+msgid "%s is not a Silvertrail text."
+msgstr ""
+
+#. translators: %s: text key
+#: includes/Texts.php:166
+#, php-format
+msgid "%s must be a string."
+msgstr ""
+
+#. translators: %s: text key
+#: includes/Texts.php:174
+#, php-format
+msgid "%s needs exactly one %%s where the service name goes, and no other %% sign."
 msgstr ""
 
 #. translators: %d: number of services

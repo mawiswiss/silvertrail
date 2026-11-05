@@ -7,7 +7,23 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+/**
+ * Texts stack up from the English source with its official translation, through the
+ * developer translation and the admin's edits, to the silvertrail_texts filter.
+ */
 final class Texts {
+
+	private const PLACEHOLDER = '/%(?:\d+\$)?s/';
+
+	/**
+	 * @var array<string, array<mixed>|null>
+	 */
+	private static array $files = array();
+
+	/**
+	 * @var array<string, true>
+	 */
+	private static array $reported = array();
 
 	/**
 	 * @return array<string, string>
@@ -48,21 +64,140 @@ final class Texts {
 	 * @return array<string, string>
 	 */
 	public static function all(): array {
-		$defaults = self::defaults();
-
-		$custom = Settings::get( 'texts' );
-		if ( is_array( $custom ) ) {
-			foreach ( $custom as $key => $text ) {
-				if ( isset( $defaults[ $key ] ) && is_string( $text ) && '' !== trim( $text ) ) {
-					$defaults[ $key ] = $text;
-				}
-			}
-		}
+		$locale = determine_locale();
+		$texts  = array_replace( self::base( $locale ), self::custom( $locale ) );
 
 		/**
 		 * @param array<string, string> $texts
 		 */
-		$texts = apply_filters( 'silvertrail_texts', $defaults );
-		return is_array( $texts ) ? array_map( 'strval', $texts + $defaults ) : $defaults;
+		$filtered = apply_filters( 'silvertrail_texts', $texts );
+		return is_array( $filtered ) ? array_map( 'strval', $filtered + $texts ) : $texts;
+	}
+
+	/**
+	 * The texts in a language before the admin's edits.
+	 *
+	 * @return array<string, string>
+	 */
+	public static function base( string $locale ): array {
+		$switched = switch_to_locale( $locale );
+		$texts    = self::defaults();
+		$source   = self::translation( $locale );
+		if ( null !== $source ) {
+			list( $valid, $problems ) = self::validate( $source['texts'] );
+			foreach ( $problems as $problem ) {
+				/* translators: 1: where the translation comes from, 2: what is wrong */
+				self::report( sprintf( __( 'The Silvertrail translation from %1$s: %2$s', 'silvertrail' ), $source['from'], $problem ) );
+			}
+			$texts = array_replace( $texts, $valid );
+		}
+		if ( $switched ) {
+			restore_previous_locale();
+		}
+		return $texts;
+	}
+
+	/**
+	 * The admin's edits in a language.
+	 *
+	 * @return array<string, string>
+	 */
+	public static function custom( string $locale ): array {
+		$stored = Settings::get( 'texts' );
+		$texts  = is_array( $stored ) && is_array( $stored[ $locale ] ?? null ) ? $stored[ $locale ] : array();
+		return self::validate( $texts )[0];
+	}
+
+	/**
+	 * Where the developer translation for a language comes from, and its texts.
+	 *
+	 * @return array{from: string, texts: array<mixed>}|null
+	 */
+	public static function translation( string $locale ): ?array {
+		/**
+		 * A developer translation: a path to a JSON file, or an array of texts.
+		 *
+		 * @param string|array<string, string> $translation The theme's silvertrail/texts-{locale}.json or silvertrail/texts.json, or ''.
+		 * @param string                       $locale
+		 */
+		$translation = apply_filters( 'silvertrail_translation', locate_template( array( "silvertrail/texts-{$locale}.json", 'silvertrail/texts.json' ) ), $locale );
+		if ( is_array( $translation ) ) {
+			return array() === $translation ? null : array(
+				'from'  => 'silvertrail_translation',
+				'texts' => $translation,
+			);
+		}
+		if ( ! is_string( $translation ) || '' === $translation || ! is_readable( $translation ) ) {
+			return null;
+		}
+		if ( ! array_key_exists( $translation, self::$files ) ) {
+			$decoded                     = json_decode( (string) file_get_contents( $translation ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file.
+			self::$files[ $translation ] = is_array( $decoded ) ? $decoded : null;
+		}
+		if ( null === self::$files[ $translation ] ) {
+			/* translators: %s: file path */
+			self::report( sprintf( __( 'The Silvertrail translation %s is not a JSON object.', 'silvertrail' ), $translation ) );
+			return null;
+		}
+		return array(
+			'from'  => $translation,
+			'texts' => self::$files[ $translation ],
+		);
+	}
+
+	/**
+	 * Keeps the known keys with usable text, and says what is wrong with the rest.
+	 *
+	 * @param array<mixed> $texts
+	 * @return array{0: array<string, string>, 1: list<string>}
+	 */
+	public static function validate( array $texts ): array {
+		$defaults = self::defaults();
+		$valid    = array();
+		$problems = array();
+		foreach ( $texts as $key => $text ) {
+			if ( ! isset( $defaults[ $key ] ) ) {
+				/* translators: %s: text key */
+				$problems[] = sprintf( __( '%s is not a Silvertrail text.', 'silvertrail' ), $key );
+				continue;
+			}
+			if ( ! is_string( $text ) ) {
+				/* translators: %s: text key */
+				$problems[] = sprintf( __( '%s must be a string.', 'silvertrail' ), $key );
+				continue;
+			}
+			if ( '' === trim( $text ) ) {
+				continue;
+			}
+			if ( ! self::placeholders_match( $defaults[ $key ], $text ) ) {
+				/* translators: %s: text key */
+				$problems[] = sprintf( __( '%s needs exactly one %%s where the service name goes, and no other %% sign.', 'silvertrail' ), $key );
+				continue;
+			}
+			$valid[ (string) $key ] = $text;
+		}
+		return array( $valid, $problems );
+	}
+
+	public static function reset(): void {
+		self::$files    = array();
+		self::$reported = array();
+	}
+
+	private static function placeholders_match( string $original, string $text ): bool {
+		$expected = preg_match_all( self::PLACEHOLDER, $original );
+		if ( 0 === $expected ) {
+			return true;
+		}
+		$rest = (string) preg_replace( array( '/%%/', self::PLACEHOLDER ), '', $text );
+		return preg_match_all( self::PLACEHOLDER, $text ) === $expected && ! str_contains( $rest, '%' );
+	}
+
+	private static function report( string $message ): void {
+		if ( isset( self::$reported[ $message ] ) ) {
+			return;
+		}
+		self::$reported[ $message ] = true;
+		_doing_it_wrong( __CLASS__, esc_html( $message ), '0.1.0' );
 	}
 }

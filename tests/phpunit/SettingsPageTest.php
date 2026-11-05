@@ -6,11 +6,21 @@ namespace Silvertrail\Tests;
 
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Settings;
+use Silvertrail\Texts;
 use WP_UnitTestCase;
 
 final class SettingsPageTest extends WP_UnitTestCase {
 
+	public function set_up(): void {
+		parent::set_up();
+		require_once ABSPATH . 'wp-admin/includes/template.php';
+		Texts::reset();
+		$GLOBALS['wp_settings_errors'] = array();
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+	}
+
 	public function tear_down(): void {
+		remove_all_filters( 'silvertrail_translation' );
 		delete_option( Settings::OPTION );
 		parent::tear_down();
 	}
@@ -60,5 +70,72 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$this->assertSame( 'box', $saved['layout'] );
 		$this->assertFalse( $saved['records'] );
+	}
+
+	public function test_posted_json_keeps_only_what_differs_from_the_translation(): void {
+		add_filter( 'silvertrail_translation', static fn() => array( 'intro' => 'Developer intro' ) );
+		$texts          = Texts::base( 'en_US' );
+		$texts['title'] = 'Your "privacy" choices';
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'       => 'banner',
+				'texts_json' => (string) wp_json_encode( $texts ),
+			)
+		);
+
+		$this->assertSame( array( 'en_US' => array( 'title' => 'Your "privacy" choices' ) ), $saved['texts'] );
+	}
+
+	public function test_posted_json_keeps_the_other_languages(): void {
+		$stored          = Settings::defaults();
+		$stored['texts'] = array( 'de_CH' => array( 'title' => 'Datenschutz' ) );
+		update_option( Settings::OPTION, $stored );
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'       => 'banner',
+				'texts_json' => '{ "title": "Privacy" }',
+			)
+		);
+
+		$this->assertSame(
+			array(
+				'de_CH' => array( 'title' => 'Datenschutz' ),
+				'en_US' => array( 'title' => 'Privacy' ),
+			),
+			$saved['texts']
+		);
+	}
+
+	public function test_invalid_json_keeps_the_stored_texts_and_the_draft(): void {
+		$stored          = Settings::defaults();
+		$stored['texts'] = array( 'en_US' => array( 'title' => 'Kept' ) );
+		update_option( Settings::OPTION, $stored );
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'       => 'banner',
+				'texts_json' => '{ "title": "Broken", ',
+			)
+		);
+
+		$this->assertSame( array( 'en_US' => array( 'title' => 'Kept' ) ), $saved['texts'] );
+		$this->assertSame( 'silvertrail-texts', get_settings_errors( Settings::OPTION )[0]['code'] );
+		$this->assertSame( '{ "title": "Broken", ', SettingsPage::draft() );
+		$this->assertNull( SettingsPage::draft() );
+	}
+
+	public function test_broken_entries_are_reported_and_the_rest_is_saved(): void {
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'       => 'banner',
+				'texts_json' => '{ "title": "Saved", "bogus": "x", "embed_text": "no placeholder" }',
+			)
+		);
+
+		$this->assertSame( array( 'en_US' => array( 'title' => 'Saved' ) ), $saved['texts'] );
+		$this->assertCount( 2, get_settings_errors( Settings::OPTION ) );
+		$this->assertStringContainsString( '"bogus"', (string) SettingsPage::draft() );
 	}
 }
