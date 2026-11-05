@@ -35,7 +35,8 @@ final class Reopen {
 	}
 
 	public static function button(): void {
-		if ( ! Settings::get( 'floating_button' ) || ! Config::needs_banner() ) {
+		$mode = Settings::get( 'floating_button' );
+		if ( 'never' === $mode || ! Config::needs_banner() ) {
 			return;
 		}
 		Templates::render(
@@ -43,6 +44,7 @@ final class Reopen {
 			array(
 				'label'      => Texts::all()['reopen'],
 				'appearance' => Frontend::appearance(),
+				'mode'       => (string) $mode,
 			)
 		);
 	}

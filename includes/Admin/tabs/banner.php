@@ -179,13 +179,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Reopen', 'silvertrail' ); ?></th>
 			<td>
-				<?php
-				SettingsPage::checkbox(
-					'floating_button',
-					__( 'Show a small button that reopens the settings', 'silvertrail' ),
-					__( 'Or link to #silvertrail, or use the [silvertrail_link] shortcode or the Privacy settings link block.', 'silvertrail' )
-				);
-				?>
+				<p><?php esc_html_e( 'A small button reopens the settings on every page without a link to #silvertrail. Add such a link to the footer with the [silvertrail_link] shortcode or the Privacy settings link block.', 'silvertrail' ); ?></p>
 			</td>
 		</tr>
 	</table>

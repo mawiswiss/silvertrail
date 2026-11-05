@@ -14,7 +14,7 @@ namespace Silvertrail;
  *     require_choice: bool,
  *     appearance: 'theme'|'light'|'dark',
  *     texts: array<string, array<string, string>>,
- *     floating_button: bool,
+ *     floating_button: 'auto'|'always'|'never',
  *     load_css: bool,
  *     imprint_page: int,
  *     presets: array<string, PresetSetting>,
@@ -48,7 +48,7 @@ final class Settings {
 			'require_choice'  => true,
 			'appearance'      => 'theme',
 			'texts'           => array(),
-			'floating_button' => false,
+			'floating_button' => 'auto',
 			'load_css'        => true,
 			'imprint_page'    => 0,
 			'presets'         => array(),
@@ -69,7 +69,7 @@ final class Settings {
 		$defaults = self::defaults();
 		$stored   = get_option( self::OPTION, array() );
 		/** @var SettingsArray */
-		return array_replace( $defaults, array_intersect_key( is_array( $stored ) ? $stored : array(), $defaults ) );
+		return self::normalize( array_replace( $defaults, array_intersect_key( is_array( $stored ) ? $stored : array(), $defaults ) ) );
 	}
 
 	/**
@@ -112,7 +112,8 @@ final class Settings {
 				'imprint_page'    => absint( $value ),
 				'expiry_months'   => self::clamp( $value, 1, 13, $defaults['expiry_months'] ),
 				'retention_days'  => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
-				'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
+				'floating_button' => self::floating_button( $value ),
+				'require_choice', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
 				default           => $value,
 			};
 		}
@@ -152,6 +153,13 @@ final class Settings {
 			}
 		}
 		return $clean;
+	}
+
+	private static function floating_button( mixed $value ): string {
+		if ( true === $value ) {
+			return 'always';
+		}
+		return in_array( $value, array( 'always', 'never' ), true ) ? $value : 'auto';
 	}
 
 	private static function clamp( mixed $value, int $min, int $max, int $fallback ): int {

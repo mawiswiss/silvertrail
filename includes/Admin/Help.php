@@ -145,7 +145,7 @@ SH;
 				'id'      => 'silvertrail-settings',
 				'title'   => __( 'Settings in code', 'silvertrail' ),
 				'content' => self::section(
-					__( 'The silvertrail_settings filter sets any setting on this page and more: layout, appearance, require_choice, imprint_page, records, floating_button, load_css, expiry_months, retention_days, gpc and trail. A field set in code shows “Set in code” and cannot be changed here. wp silvertrail settings lists each value and where it comes from.', 'silvertrail' ),
+					__( 'The silvertrail_settings filter sets any setting on this page and more: layout, appearance, require_choice, imprint_page, records, floating_button (auto, always or never), load_css, expiry_months, retention_days, gpc and trail. A field set in code shows “Set in code” and cannot be changed here. wp silvertrail settings lists each value and where it comes from.', 'silvertrail' ),
 					self::SETTINGS
 				),
 			)

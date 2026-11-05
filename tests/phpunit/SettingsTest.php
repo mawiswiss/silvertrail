@@ -37,15 +37,17 @@ final class SettingsTest extends WP_UnitTestCase {
 		$this->setExpectedIncorrectUsage( 'silvertrail_settings' );
 		$this->set(
 			array(
-				'expiry_months' => 24,
-				'layout'        => 'sidebar',
-				'records'       => 1,
+				'expiry_months'   => 24,
+				'layout'          => 'sidebar',
+				'records'         => 1,
+				'floating_button' => true,
 			)
 		);
 
 		$this->assertSame( 13, Settings::get( 'expiry_months' ) );
 		$this->assertSame( 'modal', Settings::get( 'layout' ) );
 		$this->assertTrue( Settings::get( 'records' ) );
+		$this->assertSame( 'always', Settings::get( 'floating_button' ) );
 	}
 
 	public function test_unknown_keys_presets_and_texts_are_refused(): void {

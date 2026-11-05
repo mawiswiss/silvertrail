@@ -2,10 +2,11 @@
 /**
  * The floating button that reopens the preferences. Copy it to your theme as
  * silvertrail/reopen-button.php to change it, and keep the data-silvertrail-* attributes.
+ * In auto mode it stays hidden on pages with another link to #silvertrail.
  *
  * @package Silvertrail
  *
- * @var array{label: string, appearance: string} $args
+ * @var array{label: string, appearance: string, mode: string} $args
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -14,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 	type="button"
 	class="silvertrail-reopen"
 	data-silvertrail-open
-	data-silvertrail-reopen
+	data-silvertrail-reopen="<?php echo esc_attr( $args['mode'] ); ?>"
 	data-silvertrail-appearance="<?php echo esc_attr( $args['appearance'] ); ?>"
 	aria-label="<?php echo esc_attr( $args['label'] ); ?>"
 	hidden

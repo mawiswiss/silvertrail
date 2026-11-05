@@ -22,7 +22,7 @@ final class SettingsPage {
 	 */
 	public const TABS = array(
 		'services' => array( 'presets' ),
-		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'texts', 'imprint_page', 'floating_button' ),
+		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'texts', 'imprint_page' ),
 		'consent'  => array( 'expiry_months', 'gpc', 'records', 'retention_days', 'trail' ),
 		'check'    => array(),
 		'tools'    => array(),
@@ -30,7 +30,7 @@ final class SettingsPage {
 
 	private const DRAFT = 'silvertrail_texts_draft_';
 
-	private const FLAGS = array( 'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail' );
+	private const FLAGS = array( 'require_choice', 'load_css', 'records', 'gpc', 'trail' );
 
 	/**
 	 * @var array<string, array<string, mixed>|false>
