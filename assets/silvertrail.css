@@ -49,12 +49,15 @@
 }
 
 .silvertrail {
+	--silvertrail-gutter: 1.5rem;
+
 	box-sizing: border-box;
 	width: calc(100% - 2rem);
 	max-width: var(--silvertrail-width);
 	max-height: calc(100dvh - 2rem);
 	padding: 0;
 	overflow-y: auto;
+	scroll-padding-bottom: 12rem;
 	border: 1px solid var(--silvertrail-line);
 	border-radius: var(--silvertrail-radius);
 	background: var(--silvertrail-background);
@@ -88,7 +91,7 @@
 }
 
 .silvertrail__inner {
-	padding: 1.5rem;
+	padding: var(--silvertrail-gutter) var(--silvertrail-gutter) 0;
 }
 
 .silvertrail__title {
@@ -108,12 +111,38 @@
 	color: var(--silvertrail-muted);
 }
 
+.silvertrail__footer {
+	position: sticky;
+	bottom: 0;
+	margin: 0 calc(-1 * var(--silvertrail-gutter));
+	padding: 1rem var(--silvertrail-gutter) var(--silvertrail-gutter);
+	border-top: 1px solid var(--silvertrail-line);
+	background: var(--silvertrail-background);
+}
+
+@supports (container-type: scroll-state) {
+	.silvertrail {
+		container: silvertrail / scroll-state;
+	}
+
+	.silvertrail__footer {
+		border-top-color: transparent;
+		transition: border-color 0.2s, box-shadow 0.2s;
+	}
+
+	@container silvertrail scroll-state(scrollable: bottom) {
+		.silvertrail__footer {
+			border-top-color: var(--silvertrail-line);
+			box-shadow: 0 -0.5rem 1rem -0.75rem rgb(0 0 0 / 0.25);
+		}
+	}
+}
+
 .silvertrail__actions {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 0.5rem;
-	margin-top: 1.25rem;
 }
 
 .silvertrail__button {
@@ -138,6 +167,12 @@
 	text-decoration: underline;
 	text-underline-offset: 0.2em;
 	cursor: pointer;
+}
+
+.silvertrail__save {
+	display: block;
+	margin: 0 0 1rem;
+	padding-inline: 0;
 }
 
 .silvertrail__button:focus-visible,
@@ -375,7 +410,7 @@
 		width: auto;
 	}
 
-	.silvertrail__inner {
-		padding: 1.25rem;
+	.silvertrail {
+		--silvertrail-gutter: 1.25rem;
 	}
 }

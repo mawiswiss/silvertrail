@@ -46,6 +46,17 @@ test.describe('banner', () => {
 		await expect.poll(() => ran(page)).toEqual(['gated-src', 'gated-after', 'analytics']);
 	});
 
+	test('the buttons stay in view while the preferences scroll', async ({ page }) => {
+		await page.setViewportSize({ width: 375, height: 500 });
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Choose' }).click();
+
+		await expect(page.getByRole('button', { name: 'Save choices' })).not.toBeInViewport();
+		await expect(page.getByRole('button', { name: 'Accept all' })).toBeInViewport();
+		await page.getByRole('button', { name: 'Save choices' }).scrollIntoViewIfNeeded();
+		await expect(page.getByRole('button', { name: 'Only essential' })).toBeInViewport();
+	});
+
 	test('escape does not dismiss the banner without a choice', async ({ page }) => {
 		await page.goto('/');
 		await page.keyboard.press('Escape');
