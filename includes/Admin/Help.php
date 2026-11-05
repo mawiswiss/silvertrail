@@ -126,7 +126,7 @@ SH;
 				'id'      => 'silvertrail-design',
 				'title'   => __( 'Design', 'silvertrail' ),
 				'content' => self::section(
-					__( 'The banner takes its colors, corners and buttons from the theme’s theme.json. The silvertrail_design filter changes any of them. Its keys are background, text, muted, line, accent, on-accent, radius, button-padding and button-weight, and each becomes a --silvertrail-<key> custom property.', 'silvertrail' ),
+					__( 'The banner takes its colors, corners and buttons from the theme’s theme.json. The silvertrail_design filter changes any of them. Its keys are background, text, muted, line, accent, on-accent, radius, button-padding and button-weight, and each becomes a --silvertrail-<key> custom property. For anything else, the theme adds silvertrail/silvertrail.css, which loads last. styling.md in the plugin folder is the brief for an AI assistant that writes it.', 'silvertrail' ),
 					self::DESIGN
 				),
 			)

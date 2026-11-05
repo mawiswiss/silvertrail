@@ -227,21 +227,16 @@
 		}
 		const text = element('textarea', { class: 'large-text code', rows: '12', readonly: '', id: 'silvertrail-scan-report' });
 		text.value = handover;
-		const copy = element('button', { type: 'button', class: 'button' }, texts.copy);
-		copy.addEventListener('click', async () => {
-			text.select();
-			try {
-				await navigator.clipboard.writeText(text.value);
-			} catch {
-				document.execCommand('copy');
-			}
-			copy.textContent = texts.copied;
-		});
 		parts.push(
 			element('h3', {}, element('label', { for: 'silvertrail-scan-report' }, texts.report)),
 			element('p', { class: 'description' }, texts.reportHelp),
 			text,
-			element('p', {}, copy),
+			element(
+				'p',
+				{ class: 'copy-to-clipboard-container' },
+				element('button', { type: 'button', class: 'button', 'data-silvertrail-copy': 'silvertrail-scan-report' }, texts.copy),
+				element('span', { class: 'success hidden', 'aria-hidden': 'true' }, texts.copied),
+			),
 		);
 		output.replaceChildren(...parts);
 	}

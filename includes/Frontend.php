@@ -9,6 +9,8 @@ namespace Silvertrail;
 
 final class Frontend {
 
+	public const THEME_CSS = 'silvertrail/silvertrail.css';
+
 	public static function register(): void {
 		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue' ) );
 		add_action( 'wp_footer', array( self::class, 'render' ) );
@@ -29,12 +31,19 @@ final class Frontend {
 		);
 		wp_add_inline_script( 'silvertrail', 'window.silvertrailConfig = ' . wp_json_encode( self::script_data(), JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
 
+		$after = array();
 		if ( Settings::get( 'load_css' ) ) {
 			wp_enqueue_style( 'silvertrail', $base . 'silvertrail.css', array(), self::version( 'silvertrail.css' ) );
 			$design = Design::css();
 			if ( '' !== $design ) {
 				wp_add_inline_style( 'silvertrail', $design );
 			}
+			$after = array( 'silvertrail' );
+		}
+
+		$theme_css = get_theme_file_path( self::THEME_CSS );
+		if ( is_file( $theme_css ) ) {
+			wp_enqueue_style( 'silvertrail-theme', get_theme_file_uri( self::THEME_CSS ), $after, (string) filemtime( $theme_css ) );
 		}
 	}
 

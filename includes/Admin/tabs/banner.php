@@ -6,26 +6,30 @@
 declare(strict_types=1);
 
 use Silvertrail\Admin\SettingsPage;
+use Silvertrail\Admin\StylingPrompt;
 use Silvertrail\Design;
+use Silvertrail\Frontend;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 
 defined( 'ABSPATH' ) || exit;
 
-$silvertrail_settings    = Settings::all();
-$silvertrail_privacy     = (int) get_option( 'wp_page_for_privacy_policy' );
-$silvertrail_locale      = get_locale();
-$silvertrail_base        = Texts::base( $silvertrail_locale );
-$silvertrail_current     = array_replace( $silvertrail_base, Texts::custom( $silvertrail_locale ) );
-$silvertrail_changed     = array_keys( array_diff_assoc( $silvertrail_current, $silvertrail_base ) );
-$silvertrail_translation = Texts::translation( $silvertrail_locale );
-$silvertrail_editor      = SettingsPage::editor();
-$silvertrail_appearances = array(
+$silvertrail_settings      = Settings::all();
+$silvertrail_privacy       = (int) get_option( 'wp_page_for_privacy_policy' );
+$silvertrail_locale        = get_locale();
+$silvertrail_base          = Texts::base( $silvertrail_locale );
+$silvertrail_current       = array_replace( $silvertrail_base, Texts::custom( $silvertrail_locale ) );
+$silvertrail_changed       = array_keys( array_diff_assoc( $silvertrail_current, $silvertrail_base ) );
+$silvertrail_translation   = Texts::translation( $silvertrail_locale );
+$silvertrail_editor        = SettingsPage::editor( 'json' );
+$silvertrail_prompt_editor = SettingsPage::editor( 'markdown' );
+$silvertrail_theme_css     = is_file( get_theme_file_path( Frontend::THEME_CSS ) );
+$silvertrail_appearances   = array(
 	'theme' => array( __( 'Like the theme', 'silvertrail' ), __( 'As the theme sets it', 'silvertrail' ) ),
 	'light' => array( __( 'Light', 'silvertrail' ), __( 'Its lightest color behind', 'silvertrail' ) ),
 	'dark'  => array( __( 'Dark', 'silvertrail' ), __( 'Its darkest color behind', 'silvertrail' ) ),
 );
-$silvertrail_swatch      = static function ( string $mode ): string {
+$silvertrail_swatch        = static function ( string $mode ): string {
 	$tokens = array_intersect_key( Design::tokens( $mode ), array_flip( array( 'background', 'text', 'accent', 'on-accent', 'radius' ) ) );
 	return implode( ';', array_map( static fn( string $key, string $value ): string => "--silvertrail-{$key}:{$value}", array_keys( $tokens ), $tokens ) );
 };
@@ -101,21 +105,60 @@ $silvertrail_swatch      = static function ( string $mode ): string {
 </section>
 
 <section class="card silvertrail-section">
-	<h2><?php esc_html_e( 'Styles', 'silvertrail' ); ?></h2>
-	<table class="form-table" role="presentation">
-		<tr>
-			<th scope="row"><?php esc_html_e( 'Default styles', 'silvertrail' ); ?></th>
-			<td>
-				<?php
-				SettingsPage::checkbox(
-					'load_css',
-					__( 'Load the default styles', 'silvertrail' ),
-					__( 'Turn them off to style the banner yourself with the --silvertrail-* custom properties.', 'silvertrail' )
-				);
-				?>
-			</td>
-		</tr>
-	</table>
+	<h2><?php esc_html_e( 'Custom styles', 'silvertrail' ); ?></h2>
+	<p><?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?></p>
+	<div class="<?php echo esc_attr( $silvertrail_theme_css ? 'notice notice-success notice-alt inline' : 'notice notice-info notice-alt inline' ); ?>">
+		<p>
+			<?php
+			printf(
+				/* translators: %s: silvertrail/silvertrail.css */
+				$silvertrail_theme_css ? esc_html__( 'The theme adds %s. It loads after the default styles.', 'silvertrail' ) : esc_html__( 'The theme has no %s yet.', 'silvertrail' ),
+				'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
+			);
+			?>
+		</p>
+	</div>
+	<ol class="silvertrail-steps">
+		<li>
+			<?php esc_html_e( 'Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet.', 'silvertrail' ); ?>
+			<span class="copy-to-clipboard-container hide-if-no-js">
+				<button type="button" class="button" data-silvertrail-copy="silvertrail-styling-prompt"><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
+				<span class="success hidden" aria-hidden="true"><?php esc_html_e( 'Copied', 'silvertrail' ); ?></span>
+			</span>
+		</li>
+		<li><?php esc_html_e( 'Paste it into an AI assistant and describe the look you want. A screenshot of the site helps.', 'silvertrail' ); ?></li>
+		<li>
+			<?php
+			printf(
+				/* translators: %s: silvertrail/silvertrail.css */
+				esc_html__( 'Save its answer in the theme as %s.', 'silvertrail' ),
+				'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
+			);
+			?>
+		</li>
+	</ol>
+	<details class="silvertrail-disclosure">
+		<summary><?php esc_html_e( 'Show the prompt', 'silvertrail' ); ?></summary>
+		<label for="silvertrail-styling-prompt" class="screen-reader-text"><?php esc_html_e( 'Prompt for an AI assistant', 'silvertrail' ); ?></label>
+		<textarea
+			id="silvertrail-styling-prompt"
+			class="large-text code"
+			rows="16"
+			readonly
+			<?php if ( '' !== $silvertrail_prompt_editor ) : ?>
+				data-silvertrail-editor="<?php echo esc_attr( $silvertrail_prompt_editor ); ?>"
+			<?php endif; ?>
+		><?php echo esc_textarea( StylingPrompt::text() ); ?></textarea>
+	</details>
+	<div class="silvertrail-section__footer">
+		<?php
+		SettingsPage::checkbox(
+			'load_css',
+			__( 'Load the default styles', 'silvertrail' ),
+			__( 'Turn them off when the theme’s stylesheet styles the banner entirely.', 'silvertrail' )
+		);
+		?>
+	</div>
 </section>
 
 <section class="card silvertrail-section">

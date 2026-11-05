@@ -59,6 +59,8 @@ test.describe('visitor scan', () => {
 		expect(prompt).toContain('- Test Analytics');
 		expect(prompt).not.toContain('- Google Tag Manager');
 		expect(prompt).toContain('Provider: the company');
+		await scan.getByRole('button', { name: 'Copy prompt' }).click();
+		await expect(scan.getByText('Copied', { exact: true })).toBeVisible();
 
 		await url.fill('/?pagename=silvertrail-vimeo');
 		await run.click();

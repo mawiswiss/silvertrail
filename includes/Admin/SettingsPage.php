@@ -33,9 +33,9 @@ final class SettingsPage {
 	private const FLAGS = array( 'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail', 'url_passthrough' );
 
 	/**
-	 * @var array<string, mixed>|false
+	 * @var array<string, array<string, mixed>|false>
 	 */
-	private static array|false $editor = false;
+	private static array $editors = array();
 
 	public static function register(): void {
 		add_action( 'admin_menu', array( self::class, 'menu' ) );
@@ -63,21 +63,33 @@ final class SettingsPage {
 	}
 
 	public static function enqueue(): void {
-		$deps = array();
+		$deps = array( 'clipboard', 'wp-a11y' );
 		wp_enqueue_style( 'silvertrail-admin', plugins_url( 'assets/admin.css', SILVERTRAIL_FILE ), array(), SILVERTRAIL_VERSION );
 		if ( 'banner' === self::tab() ) {
-			self::$editor = wp_enqueue_code_editor( array( 'type' => 'application/json' ) );
-			$deps         = false === self::$editor ? $deps : array( 'code-editor' );
+			self::$editors = array(
+				'json'     => wp_enqueue_code_editor( array( 'type' => 'application/json' ) ),
+				'markdown' => wp_enqueue_code_editor(
+					array(
+						'type'       => 'text/x-markdown',
+						'codemirror' => array(
+							'readOnly'     => true,
+							'lineWrapping' => true,
+						),
+					)
+				),
+			);
+			$deps          = array_filter( self::$editors ) === array() ? $deps : array( ...$deps, 'code-editor' );
 			wp_add_inline_style( 'silvertrail-admin', wp_get_global_stylesheet( array( 'variables' ) ) );
 		}
 		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), $deps, SILVERTRAIL_VERSION, true );
 	}
 
 	/**
-	 * Settings for the JSON code editor, empty when the user turned syntax highlighting off.
+	 * Settings for a code editor, empty when the user turned syntax highlighting off.
 	 */
-	public static function editor(): string {
-		return false === self::$editor ? '' : (string) wp_json_encode( self::$editor );
+	public static function editor( string $type ): string {
+		$settings = self::$editors[ $type ] ?? false;
+		return false === $settings ? '' : (string) wp_json_encode( $settings );
 	}
 
 	public static function setting(): void {

@@ -152,7 +152,7 @@ test.describe('settings page', () => {
 
 		await page.getByRole('link', { name: 'Banner', exact: true }).click();
 		await expect(page).toHaveURL(/tab=banner/);
-		await expect(page.locator('.CodeMirror')).toContainText('"accept_all": "Accept all"');
+		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
 	});
 
 	test('saves and clamps the consent lifetime', async ({ page }) => {
@@ -177,5 +177,22 @@ test.describe('settings page', () => {
 		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
 		await expect(page.getByRole('radio', { name: 'Dark' })).toBeChecked();
 		await expect(page.getByRole('radio', { name: 'Like the theme' })).not.toBeChecked();
+	});
+
+	test('the banner tab hands an AI assistant the styling brief', async ({ page, context }) => {
+		await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+
+		await page.getByText('Show the prompt').click();
+		const prompt = page.locator('#silvertrail-styling-prompt');
+		await expect(prompt).toHaveValue(/^## Brief for the AI[\s\S]*## This site[\s\S]*--silvertrail-background/);
+		const preview = page.locator('.CodeMirror', { hasText: '## Brief for the AI' });
+		await expect(preview).toBeVisible();
+		await expect(preview.getByLabel('Prompt for an AI assistant')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Copy prompt' }).click();
+		await expect(page.locator('#wpbody-content').getByText('Copied', { exact: true })).toBeVisible();
+		await expect(page.locator('#a11y-speak-polite')).toHaveText('Copied');
+		expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(await prompt.inputValue());
 	});
 });

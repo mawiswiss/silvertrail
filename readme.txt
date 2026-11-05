@@ -102,7 +102,11 @@ In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and th
 
 = Can I change the look? =
 
-The banner takes its colours, corners and buttons from the theme's `theme.json`. The Light and Dark appearance keeps the theme's colours with the lightest or the darkest one in the background. In code, the `silvertrail_design` filter sets any colour, the corner radius and the button padding and weight. You can also turn off the default styles in the settings, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
+The banner takes its colours, corners and buttons from the theme's `theme.json`. The Light and Dark appearance keeps the theme's colours with the lightest or the darkest one in the background. In code, the `silvertrail_design` filter sets any colour, the corner radius and the button padding and weight.
+
+For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The `styling.md` file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts.
+
+You can also turn off the default styles in the settings, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
 = How do I change the texts? =
 

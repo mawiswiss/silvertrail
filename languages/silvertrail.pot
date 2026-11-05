@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Silvertrail 0.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wt\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/silvertrail\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-05T17:26:27+00:00\n"
+"POT-Creation-Date: 2026-11-05T17:03:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -72,7 +72,7 @@ msgid "Read and react to choices in the browser."
 msgstr ""
 
 #: includes/Admin/Help.php:117
-#: includes/Admin/tabs/banner.php:152
+#: includes/Admin/tabs/banner.php:195
 msgid "Texts"
 msgstr ""
 
@@ -85,7 +85,7 @@ msgid "Design"
 msgstr ""
 
 #: includes/Admin/Help.php:129
-msgid "The banner takes its colors, corners and buttons from the theme’s theme.json. The silvertrail_design filter changes any of them. Its keys are background, text, muted, line, accent, on-accent, radius, button-padding and button-weight, and each becomes a --silvertrail-<key> custom property."
+msgid "The banner takes its colors, corners and buttons from the theme’s theme.json. The silvertrail_design filter changes any of them. Its keys are background, text, muted, line, accent, on-accent, radius, button-padding and button-weight, and each becomes a --silvertrail-<key> custom property. For anything else, the theme adds silvertrail/silvertrail.css, which loads last. styling.md in the plugin folder is the brief for an AI assistant that writes it."
 msgstr ""
 
 #: includes/Admin/Help.php:137
@@ -129,7 +129,7 @@ msgid "No privacy policy page is published, so the banner cannot link to one. Ch
 msgstr ""
 
 #: includes/Admin/notices.php:54
-#: includes/Admin/tabs/banner.php:248
+#: includes/Admin/tabs/banner.php:291
 msgid "Settings › Privacy"
 msgstr ""
 
@@ -137,194 +137,239 @@ msgstr ""
 msgid "Every visitor will be asked again on their next page view."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:139
+#: includes/Admin/SettingsPage.php:151
 msgid "Settings"
 msgstr ""
 
 #. translators: 1: service name, 2: example ID
-#: includes/Admin/SettingsPage.php:171
+#: includes/Admin/SettingsPage.php:183
 #, php-format
 msgid "%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:218
+#: includes/Admin/SettingsPage.php:230
 msgid "The texts are not valid JSON, so they were not saved. The editor still holds them."
 msgstr ""
 
 #. translators: %s: what is wrong with a text
-#: includes/Admin/SettingsPage.php:226
+#: includes/Admin/SettingsPage.php:238
 #, php-format
 msgid "Not saved: %s"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:253
+#: includes/Admin/SettingsPage.php:265
 #: includes/Records.php:196
 msgid "You are not allowed to do this."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:24
+#: includes/Admin/tabs/banner.php:28
 msgid "Like the theme"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:24
+#: includes/Admin/tabs/banner.php:28
 msgid "As the theme sets it"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:25
+#: includes/Admin/tabs/banner.php:29
 msgid "Light"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:25
+#: includes/Admin/tabs/banner.php:29
 msgid "Its lightest color behind"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:26
+#: includes/Admin/tabs/banner.php:30
 msgid "Dark"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:26
+#: includes/Admin/tabs/banner.php:30
 msgid "Its darkest color behind"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:35
+#: includes/Admin/tabs/banner.php:39
 msgid "Look"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:38
-#: includes/Admin/tabs/banner.php:41
+#: includes/Admin/tabs/banner.php:42
+#: includes/Admin/tabs/banner.php:45
 msgid "Position"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:56
+#: includes/Admin/tabs/banner.php:60
 msgid "Centered"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:57
+#: includes/Admin/tabs/banner.php:61
 msgid "Dims the page"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:73
+#: includes/Admin/tabs/banner.php:77
 msgid "Corner"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:74
+#: includes/Admin/tabs/banner.php:78
 msgid "The page stays usable"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:80
-#: includes/Admin/tabs/banner.php:83
+#: includes/Admin/tabs/banner.php:84
+#: includes/Admin/tabs/banner.php:87
 msgid "Appearance"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:97
+#: includes/Admin/tabs/banner.php:101
 msgid "All three take colors, corners and buttons from the theme."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:104
-msgid "Styles"
+#: includes/Admin/tabs/banner.php:108
+msgid "Custom styles"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:107
-msgid "Default styles"
+#: includes/Admin/tabs/banner.php:109
+msgid "For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:112
-msgid "Load the default styles"
+#. translators: %s: silvertrail/silvertrail.css
+#: includes/Admin/tabs/banner.php:115
+#, php-format
+msgid "The theme adds %s. It loads after the default styles."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:113
-msgid "Turn them off to style the banner yourself with the --silvertrail-* custom properties."
+#. translators: %s: silvertrail/silvertrail.css
+#: includes/Admin/tabs/banner.php:115
+#, php-format
+msgid "The theme has no %s yet."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:122
-msgid "Behavior"
+#: includes/Admin/tabs/banner.php:123
+msgid "Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet."
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:125
-msgid "Closing"
+#: includes/Scan.php:135
+msgid "Copy prompt"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:130
-msgid "Require a choice before the banner closes"
+#: includes/Admin/tabs/banner.php:126
+#: includes/Scan.php:136
+msgid "Copied"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:131
-msgid "Turned off, a click outside or Escape closes it without storing anything, and it asks again on the next page."
+#: includes/Admin/tabs/banner.php:129
+msgid "Paste it into an AI assistant and describe the look you want. A screenshot of the site helps."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:137
-msgid "Reopen"
+#. translators: %s: silvertrail/silvertrail.css
+#: includes/Admin/tabs/banner.php:134
+#, php-format
+msgid "Save its answer in the theme as %s."
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:141
+msgid "Show the prompt"
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:142
+#: includes/Scan.php:133
+msgid "Prompt for an AI assistant"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:157
+msgid "Load the default styles"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:158
+msgid "Turn them off when the theme’s stylesheet styles the banner entirely."
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:165
+msgid "Behavior"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:168
+msgid "Closing"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:173
+msgid "Require a choice before the banner closes"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:174
+msgid "Turned off, a click outside or Escape closes it without storing anything, and it asks again on the next page."
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:180
+msgid "Reopen"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:185
 msgid "Show a small button that reopens the settings"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:143
+#: includes/Admin/tabs/banner.php:186
 msgid "Or link to #silvertrail, or use the [silvertrail_link] shortcode or the Privacy settings link block."
 msgstr ""
 
 #. translators: %s: locale, for example de_CH
-#: includes/Admin/tabs/banner.php:159
+#: includes/Admin/tabs/banner.php:202
 #, php-format
 msgid "Texts in %s"
 msgstr ""
 
 #. translators: 1: embed_text, 2: embed_remember
-#: includes/Admin/tabs/banner.php:178
+#: includes/Admin/tabs/banner.php:221
 #, php-format
 msgid "Change a value and save. Remove a key to follow the translation again. Keep %%s in %1$s and %2$s, where the service name goes."
 msgstr ""
 
 #. translators: %s: list of text keys
-#: includes/Admin/tabs/banner.php:189
+#: includes/Admin/tabs/banner.php:232
 #, php-format
 msgid "Changed here: %s"
 msgstr ""
 
 #. translators: %s: file path or filter name
-#: includes/Admin/tabs/banner.php:200
+#: includes/Admin/tabs/banner.php:243
 #, php-format
 msgid "The defaults come from the developer translation in %s."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/Admin/tabs/banner.php:210
+#: includes/Admin/tabs/banner.php:253
 #, php-format
 msgid "Developers can ship this JSON in the theme as %s."
 msgstr ""
 
 #. translators: %s: the silvertrail_texts filter
-#: includes/Admin/tabs/banner.php:221
+#: includes/Admin/tabs/banner.php:264
 #, php-format
 msgid "Code changes some texts after these, through the %s filter."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:233
+#: includes/Admin/tabs/banner.php:276
 msgid "Links"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:236
+#: includes/Admin/tabs/banner.php:279
 #: includes/Texts.php:45
 #: includes/Texts.php:46
 msgid "Privacy policy"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:241
+#: includes/Admin/tabs/banner.php:284
 msgid "None published"
 msgstr ""
 
 #. translators: %s: link to the privacy settings
-#: includes/Admin/tabs/banner.php:247
+#: includes/Admin/tabs/banner.php:290
 #, php-format
 msgid "Choose the page under %s."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:255
+#: includes/Admin/tabs/banner.php:298
 msgid "Imprint page"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:263
+#: includes/Admin/tabs/banner.php:306
 #: includes/Scan.php:108
 msgid "None"
 msgstr ""
@@ -853,20 +898,8 @@ msgstr ""
 msgid "requested by another script"
 msgstr ""
 
-#: includes/Scan.php:133
-msgid "Prompt for an AI assistant"
-msgstr ""
-
 #: includes/Scan.php:134
 msgid "Paste it into ChatGPT or another assistant to get the provider, purpose and privacy policy of each service for the banner."
-msgstr ""
-
-#: includes/Scan.php:135
-msgid "Copy prompt"
-msgstr ""
-
-#: includes/Scan.php:136
-msgid "Copied"
 msgstr ""
 
 #. translators: 1: site name, 2: site address, 3: page address

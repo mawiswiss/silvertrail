@@ -113,6 +113,10 @@ add_filter( 'silvertrail_design', function ( $design, $appearance ) {
 
 Each key becomes a `--silvertrail-<key>` custom property: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding` and `button-weight`. A hex `accent` without its own `on-accent` gets black or white text, whichever reads better. Values with quotes, semicolons, braces or angle brackets are dropped.
 
+To change more than these values, add `silvertrail/silvertrail.css` to the theme. Silvertrail loads it after its own styles and the filter's values, so a rule with the same selector wins. With the default styles turned off, it is the whole stylesheet.
+
+[`styling.md`](styling.md) is the brief for an AI assistant that writes this file: the tokens, the classes and the rules a consent banner has to keep. Under Settings › Silvertrail › Banner › Custom styles, Copy prompt hands it over together with the theme's presets and the current file, and the assistant answers with the file.
+
 ## Google Consent Mode and the WP Consent API
 
 A service lists the Consent Mode types it grants, for example `'google' => [ 'analytics_storage' ]`. Silvertrail prints the default (everything denied except `security_storage`) first in `<head>` and sends an update after every decision. Google tags stay blocked until consent. Set `$config['google']['mode'] = 'advanced'` in the `silvertrail_config` filter to load them before consent, so they send cookieless pings.
