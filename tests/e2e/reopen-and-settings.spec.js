@@ -106,16 +106,39 @@ test.describe('appearance settings', () => {
 		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
 	});
 
-	test('dark appearance and a custom accent colour', async ({ page, context }) => {
-		await withSettings(context, { appearance: 'dark', colors: { accent: '#cc0000', background: '', text: '' } });
+	// The theme's own button and the page, read live so a saved style variation does not break the test.
+	const colors = (page) =>
+		page.evaluate(() => {
+			const probe = document.body.appendChild(document.createElement('button'));
+			probe.className = 'wp-element-button';
+			const style = (el) => getComputedStyle(el);
+			const button = style(document.querySelector('[data-silvertrail-action="accept-all"]'));
+			const banner = style(document.getElementById('silvertrail-banner'));
+			const lightness = (rgb) => rgb.match(/\d+/g).slice(0, 3).reduce((sum, value) => sum + Number(value), 0);
+			return {
+				banner: { background: banner.backgroundColor, button: button.backgroundColor, label: button.color, radius: button.borderRadius },
+				theme: { background: style(document.body).backgroundColor, button: style(probe).backgroundColor, label: style(probe).color, radius: style(probe).borderRadius },
+				darkBackground: lightness(banner.backgroundColor) < lightness(banner.color),
+				scheme: banner.colorScheme,
+			};
+		});
+
+	test('the banner takes the theme colours', async ({ page, context }) => {
+		await withSettings(context, { appearance: 'theme' });
 		await page.goto('/');
 
-		const colors = await page.evaluate(() => {
-			const box = getComputedStyle(document.getElementById('silvertrail-banner'));
-			const button = getComputedStyle(document.querySelector('[data-silvertrail-action="accept-all"]'));
-			return { background: box.backgroundColor, button: button.backgroundColor, label: button.color };
-		});
-		expect(colors).toEqual({ background: 'rgb(29, 34, 38)', button: 'rgb(204, 0, 0)', label: 'rgb(255, 255, 255)' });
+		const { banner, theme } = await colors(page);
+		expect(banner).toEqual(theme);
+	});
+
+	test('dark appearance puts a dark background behind light text', async ({ page, context }) => {
+		await withSettings(context, { appearance: 'dark' });
+		await page.goto('/');
+
+		const { banner, darkBackground, scheme } = await colors(page);
+		expect(darkBackground).toBe(true);
+		expect(scheme).toBe('dark');
+		expect(banner.button).not.toBe(banner.background);
 	});
 });
 
@@ -129,7 +152,6 @@ test.describe('settings page', () => {
 
 		await page.getByRole('link', { name: 'Banner', exact: true }).click();
 		await expect(page).toHaveURL(/tab=banner/);
-		await expect(page.locator('.wp-color-result')).toHaveCount(3);
 		await expect(page.locator('.CodeMirror')).toContainText('"accept_all": "Accept all"');
 	});
 

@@ -58,6 +58,14 @@ add_filter( 'silvertrail_translation', function ( $translation, $locale ) {
 }, 10, 2 );
 PHP;
 
+	private const DESIGN = <<<'PHP'
+add_filter( 'silvertrail_design', function ( $design, $appearance ) {
+	$design['accent'] = 'dark' === $appearance ? '#ff8a80' : '#c62828';
+	$design['radius'] = '0.25rem';
+	return $design;
+}, 10, 2 );
+PHP;
+
 	private const CLI = <<<'SH'
 wp silvertrail services
 wp silvertrail validate
@@ -110,6 +118,16 @@ SH;
 				'content' => self::section(
 					__( 'Put the JSON from the Banner tab into the theme as silvertrail/texts-{locale}.json, or as silvertrail/texts.json for every language. A child theme wins over its parent. The silvertrail_translation filter can return another path or an array. The admin’s edits win over the file, and the silvertrail_texts filter runs last.', 'silvertrail' ),
 					self::TEXTS
+				),
+			)
+		);
+		$screen->add_help_tab(
+			array(
+				'id'      => 'silvertrail-design',
+				'title'   => __( 'Design', 'silvertrail' ),
+				'content' => self::section(
+					__( 'The banner takes its colors, corners and buttons from the theme’s theme.json. The silvertrail_design filter changes any of them. Its keys are background, text, muted, line, accent, on-accent, radius, button-padding and button-weight, and each becomes a --silvertrail-<key> custom property.', 'silvertrail' ),
+					self::DESIGN
 				),
 			)
 		);

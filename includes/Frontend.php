@@ -31,9 +31,9 @@ final class Frontend {
 
 		if ( Settings::get( 'load_css' ) ) {
 			wp_enqueue_style( 'silvertrail', $base . 'silvertrail.css', array(), self::version( 'silvertrail.css' ) );
-			$colors = self::color_css();
-			if ( '' !== $colors ) {
-				wp_add_inline_style( 'silvertrail', $colors );
+			$design = Design::css();
+			if ( '' !== $design ) {
+				wp_add_inline_style( 'silvertrail', $design );
 			}
 		}
 	}
@@ -75,40 +75,6 @@ final class Frontend {
 		);
 	}
 
-	private static function color_css(): string {
-		$colors = Settings::get( 'colors' );
-		$colors = is_array( $colors ) ? array_map( static fn ( $color ): string => (string) sanitize_hex_color( (string) $color ), $colors ) : array();
-		$rules  = array();
-		if ( '' !== ( $colors['accent'] ?? '' ) ) {
-			$rules[] = '--silvertrail-accent:' . $colors['accent'];
-			$rules[] = '--silvertrail-on-accent:' . self::readable_on( $colors['accent'] );
-		}
-		if ( '' !== ( $colors['background'] ?? '' ) ) {
-			$rules[] = '--silvertrail-background:' . $colors['background'];
-		}
-		if ( '' !== ( $colors['text'] ?? '' ) ) {
-			$rules[] = '--silvertrail-text:' . $colors['text'];
-			$rules[] = '--silvertrail-muted:color-mix(in srgb,' . $colors['text'] . ' 75%,transparent)';
-		}
-		return array() === $rules ? '' : '.silvertrail,.silvertrail-embed,.silvertrail-reopen{' . implode( ';', $rules ) . '}';
-	}
-
-	private static function readable_on( string $hex ): string {
-		$hex = ltrim( $hex, '#' );
-		if ( 3 === strlen( $hex ) ) {
-			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
-		}
-		$channels  = array_map(
-			static function ( string $pair ): float {
-				$value = hexdec( $pair ) / 255;
-				return $value <= 0.03928 ? $value / 12.92 : ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
-			},
-			str_split( $hex, 2 )
-		);
-		$luminance = 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
-		return $luminance > 0.179 ? '#111111' : '#ffffff';
-	}
-
 	private static function version( string $asset ): string {
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			return (string) filemtime( dirname( SILVERTRAIL_FILE ) . '/assets/' . $asset );
@@ -131,7 +97,7 @@ final class Frontend {
 
 	public static function appearance(): string {
 		$appearance = Settings::get( 'appearance' );
-		return in_array( $appearance, array( 'dark', 'auto' ), true ) ? $appearance : 'light';
+		return in_array( $appearance, array( 'light', 'dark' ), true ) ? $appearance : 'theme';
 	}
 
 	/**

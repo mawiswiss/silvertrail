@@ -1,25 +1,12 @@
 .silvertrail,
 .silvertrail-embed,
 .silvertrail-reopen {
-	--silvertrail-accent-light: #2f4858;
-	--silvertrail-accent-dark: #c3d0da;
-	--silvertrail-on-accent-light: #ffffff;
-	--silvertrail-on-accent-dark: #14191d;
-	--silvertrail-background-light: #ffffff;
-	--silvertrail-background-dark: #1d2226;
-	--silvertrail-text-light: #1d2327;
-	--silvertrail-text-dark: #eef1f3;
-	--silvertrail-muted-light: #56616b;
-	--silvertrail-muted-dark: #a9b3bb;
-	--silvertrail-line-light: #dce1e5;
-	--silvertrail-line-dark: #3b434a;
-
-	--silvertrail-accent: var(--silvertrail-accent-light);
-	--silvertrail-on-accent: var(--silvertrail-on-accent-light);
-	--silvertrail-background: var(--silvertrail-background-light);
-	--silvertrail-text: var(--silvertrail-text-light);
-	--silvertrail-muted: var(--silvertrail-muted-light);
-	--silvertrail-line: var(--silvertrail-line-light);
+	--silvertrail-accent: #2f4858;
+	--silvertrail-on-accent: #ffffff;
+	--silvertrail-background: #ffffff;
+	--silvertrail-text: #1d2327;
+	--silvertrail-muted: color-mix(in srgb, var(--silvertrail-text) 72%, var(--silvertrail-background));
+	--silvertrail-line: color-mix(in srgb, var(--silvertrail-text) 18%, var(--silvertrail-background));
 	--silvertrail-radius: 0.5rem;
 	--silvertrail-width: 34rem;
 
@@ -27,25 +14,11 @@
 }
 
 [data-silvertrail-appearance="dark"] {
-	--silvertrail-accent: var(--silvertrail-accent-dark);
-	--silvertrail-on-accent: var(--silvertrail-on-accent-dark);
-	--silvertrail-background: var(--silvertrail-background-dark);
-	--silvertrail-text: var(--silvertrail-text-dark);
-	--silvertrail-muted: var(--silvertrail-muted-dark);
-	--silvertrail-line: var(--silvertrail-line-dark);
+	--silvertrail-accent: #c3d0da;
+	--silvertrail-on-accent: #14191d;
+	--silvertrail-background: #1d2226;
+	--silvertrail-text: #eef1f3;
 	color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-	[data-silvertrail-appearance="auto"] {
-		--silvertrail-accent: var(--silvertrail-accent-dark);
-		--silvertrail-on-accent: var(--silvertrail-on-accent-dark);
-		--silvertrail-background: var(--silvertrail-background-dark);
-		--silvertrail-text: var(--silvertrail-text-dark);
-		--silvertrail-muted: var(--silvertrail-muted-dark);
-		--silvertrail-line: var(--silvertrail-line-dark);
-		color-scheme: dark;
-	}
 }
 
 .silvertrail {
@@ -147,13 +120,13 @@
 
 .silvertrail__button {
 	flex: 1 1 10rem;
-	padding: 0.7rem 1rem;
+	padding: var(--silvertrail-button-padding, 0.7rem 1rem);
 	border: 2px solid var(--silvertrail-accent);
 	border-radius: var(--silvertrail-radius);
 	background: var(--silvertrail-accent);
 	color: var(--silvertrail-on-accent);
 	font: inherit;
-	font-weight: 600;
+	font-weight: var(--silvertrail-button-weight, 600);
 	cursor: pointer;
 }
 
@@ -380,13 +353,13 @@
 }
 
 .silvertrail-embed__button {
-	padding: 0.6rem 1rem;
+	padding: var(--silvertrail-button-padding, 0.6rem 1rem);
 	border: 2px solid var(--silvertrail-accent);
 	border-radius: var(--silvertrail-radius);
 	background: var(--silvertrail-accent);
 	color: var(--silvertrail-on-accent);
 	font: inherit;
-	font-weight: 600;
+	font-weight: var(--silvertrail-button-weight, 600);
 	cursor: pointer;
 }
 

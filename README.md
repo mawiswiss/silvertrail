@@ -97,6 +97,22 @@ add_filter( 'silvertrail_translation', function ( $translation, $locale ) {
 
 A missing file is skipped.
 
+## Design
+
+The banner, the embed placeholders and the floating button take their colours, corners and button shape from the theme's `theme.json`, including the active style variation. Under Settings › Silvertrail › Banner, Light and Dark keep the theme's colours and put the lightest or the darkest one in the background. Classic themes without `theme.json` get a neutral palette.
+
+Set your own design with the `silvertrail_design` filter. It receives the values for the chosen appearance and the appearance itself (`theme`, `light` or `dark`). Its result is final:
+
+```php
+add_filter( 'silvertrail_design', function ( $design, $appearance ) {
+	$design['accent'] = 'dark' === $appearance ? '#ff8a80' : '#c62828';
+	$design['radius'] = '0.25rem';
+	return $design;
+}, 10, 2 );
+```
+
+Each key becomes a `--silvertrail-<key>` custom property: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding` and `button-weight`. A hex `accent` without its own `on-accent` gets black or white text, whichever reads better. Values with quotes, semicolons, braces or angle brackets are dropped.
+
 ## Google Consent Mode and the WP Consent API
 
 A service lists the Consent Mode types it grants, for example `'google' => [ 'analytics_storage' ]`. Silvertrail prints the default (everything denied except `security_storage`) first in `<head>` and sends an update after every decision. Google tags stay blocked until consent. Set `$config['google']['mode'] = 'advanced'` in the `silvertrail_config` filter to load them before consent, so they send cookieless pings.

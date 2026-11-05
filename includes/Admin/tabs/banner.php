@@ -19,11 +19,6 @@ $silvertrail_current     = array_replace( $silvertrail_base, Texts::custom( $sil
 $silvertrail_changed     = array_keys( array_diff_assoc( $silvertrail_current, $silvertrail_base ) );
 $silvertrail_translation = Texts::translation( $silvertrail_locale );
 $silvertrail_editor      = SettingsPage::editor();
-$silvertrail_colors      = array(
-	'accent'     => __( 'Button color', 'silvertrail' ),
-	'background' => __( 'Background color', 'silvertrail' ),
-	'text'       => __( 'Text color', 'silvertrail' ),
-);
 ?>
 
 <h2><?php esc_html_e( 'Layout', 'silvertrail' ); ?></h2>
@@ -54,10 +49,11 @@ $silvertrail_colors      = array(
 		<th scope="row"><label for="silvertrail-appearance"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></label></th>
 		<td>
 			<select id="silvertrail-appearance" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>">
+				<option value="theme" <?php selected( $silvertrail_settings['appearance'], 'theme' ); ?>><?php esc_html_e( 'Like the theme', 'silvertrail' ); ?></option>
 				<option value="light" <?php selected( $silvertrail_settings['appearance'], 'light' ); ?>><?php esc_html_e( 'Light', 'silvertrail' ); ?></option>
 				<option value="dark" <?php selected( $silvertrail_settings['appearance'], 'dark' ); ?>><?php esc_html_e( 'Dark', 'silvertrail' ); ?></option>
-				<option value="auto" <?php selected( $silvertrail_settings['appearance'], 'auto' ); ?>><?php esc_html_e( 'Follow the visitor’s system', 'silvertrail' ); ?></option>
 			</select>
+			<p class="description"><?php esc_html_e( 'The banner takes its colors, corners and buttons from the theme. Light and Dark keep the theme’s colors and put the lightest or the darkest one in the background. Developers set their own colors with the silvertrail_design filter.', 'silvertrail' ); ?></p>
 		</td>
 	</tr>
 </table>
@@ -76,22 +72,7 @@ $silvertrail_colors      = array(
 			?>
 		</td>
 	</tr>
-	<?php foreach ( $silvertrail_colors as $silvertrail_key => $silvertrail_label ) : ?>
-		<tr>
-			<th scope="row"><label for="<?php echo esc_attr( "silvertrail-color-{$silvertrail_key}" ); ?>"><?php echo esc_html( $silvertrail_label ); ?></label></th>
-			<td>
-				<input
-					type="text"
-					class="silvertrail-color"
-					id="<?php echo esc_attr( "silvertrail-color-{$silvertrail_key}" ); ?>"
-					name="<?php echo esc_attr( SettingsPage::field( 'colors', $silvertrail_key ) ); ?>"
-					value="<?php echo esc_attr( $silvertrail_settings['colors'][ $silvertrail_key ] ?? '' ); ?>"
-				>
-			</td>
-		</tr>
-	<?php endforeach; ?>
 </table>
-<p class="description"><?php esc_html_e( 'Leave a color empty for the default.', 'silvertrail' ); ?></p>
 
 <h2><?php esc_html_e( 'Texts', 'silvertrail' ); ?></h2>
 <table class="form-table" role="presentation">

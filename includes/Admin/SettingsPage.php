@@ -21,7 +21,7 @@ final class SettingsPage {
 	 */
 	public const TABS = array(
 		'services' => array( 'presets' ),
-		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'colors', 'texts', 'imprint_page', 'floating_button' ),
+		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'texts', 'imprint_page', 'floating_button' ),
 		'consent'  => array( 'expiry_months', 'gpc', 'url_passthrough', 'records', 'retention_days', 'trail' ),
 		'tools'    => array( 'leak_check' ),
 	);
@@ -60,9 +60,8 @@ final class SettingsPage {
 	}
 
 	public static function enqueue(): void {
-		wp_enqueue_style( 'wp-color-picker' );
 		self::$editor = wp_enqueue_code_editor( array( 'type' => 'application/json' ) );
-		$deps         = false === self::$editor ? array( 'wp-color-picker' ) : array( 'wp-color-picker', 'code-editor' );
+		$deps         = false === self::$editor ? array() : array( 'code-editor' );
 		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), $deps, SILVERTRAIL_VERSION, true );
 	}
 
@@ -140,11 +139,6 @@ final class SettingsPage {
 	private static function clean( array $input ): array {
 		$defaults = Settings::defaults();
 
-		$colors = array();
-		foreach ( array_keys( $defaults['colors'] ) as $key ) {
-			$colors[ $key ] = (string) sanitize_hex_color( (string) ( $input['colors'][ $key ] ?? '' ) );
-		}
-
 		$presets = array();
 		foreach ( Presets::all() as $id => $preset ) {
 			$tag_id = strtoupper( sanitize_text_field( (string) ( $input['presets'][ $id ]['tag_id'] ?? '' ) ) );
@@ -170,9 +164,8 @@ final class SettingsPage {
 
 		return array(
 			'layout'         => 'box' === ( $input['layout'] ?? '' ) ? 'box' : 'modal',
-			'appearance'     => in_array( $input['appearance'] ?? '', array( 'dark', 'auto' ), true ) ? $input['appearance'] : 'light',
+			'appearance'     => in_array( $input['appearance'] ?? '', array( 'light', 'dark' ), true ) ? $input['appearance'] : 'theme',
 			'texts'          => self::texts( $input ),
-			'colors'         => $colors,
 			'imprint_page'   => absint( $input['imprint_page'] ?? 0 ),
 			'presets'        => $presets,
 			'expiry_months'  => max( 1, min( 13, absint( $input['expiry_months'] ?? $defaults['expiry_months'] ) ) ),

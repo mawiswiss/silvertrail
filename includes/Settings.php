@@ -12,9 +12,8 @@ namespace Silvertrail;
  * @phpstan-type SettingsArray array{
  *     layout: 'modal'|'box',
  *     require_choice: bool,
- *     appearance: 'light'|'dark'|'auto',
+ *     appearance: 'theme'|'light'|'dark',
  *     texts: array<string, array<string, string>>,
- *     colors: array{accent: string, background: string, text: string},
  *     floating_button: bool,
  *     load_css: bool,
  *     imprint_page: int,
@@ -39,13 +38,8 @@ final class Settings {
 		return array(
 			'layout'          => 'modal',
 			'require_choice'  => true,
-			'appearance'      => 'light',
+			'appearance'      => 'theme',
 			'texts'           => array(),
-			'colors'          => array(
-				'accent'     => '',
-				'background' => '',
-				'text'       => '',
-			),
 			'floating_button' => false,
 			'load_css'        => true,
 			'imprint_page'    => 0,
