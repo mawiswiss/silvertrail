@@ -32,12 +32,14 @@ $silvertrail_tabs = array(
 		<?php endforeach; ?>
 	</nav>
 
-	<form method="post" action="options.php">
-		<?php settings_fields( SettingsPage::SLUG ); ?>
-		<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
-		<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
-		<?php submit_button(); ?>
-	</form>
+	<?php if ( array() !== SettingsPage::TABS[ $tab ] ) : ?>
+		<form method="post" action="options.php">
+			<?php settings_fields( SettingsPage::SLUG ); ?>
+			<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
+			<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
+			<?php submit_button(); ?>
+		</form>
+	<?php endif; ?>
 
 	<?php if ( 'tools' === $tab ) : ?>
 		<?php require __DIR__ . '/tabs/tools-actions.php'; ?>

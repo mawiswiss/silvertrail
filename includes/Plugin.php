@@ -17,7 +17,7 @@ final class Plugin {
 		ConsentMode::register();
 		ConsentApi::register();
 		Reopen::register();
-		LeakCheck::register();
+		Scan::register();
 		Records::register();
 		Cli::register();
 		if ( is_admin() ) {

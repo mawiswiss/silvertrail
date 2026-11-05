@@ -13,26 +13,6 @@ test.describe('transparency', () => {
 		await expect(trail).toContainText('127.0.0.1 (not listed here)');
 	});
 
-	test('the leak check lists requests made before consent', async ({ browser }) => {
-		const context = await browser.newContext({ storageState: ADMIN_STATE });
-		const page = await context.newPage();
-		await context.addCookies([
-			{ name: 'silvertrail_test_settings', value: JSON.stringify({ leak_check: true }), url: 'http://localhost:8892' },
-		]);
-
-		await page.goto('/?pagename=silvertrail-leak&silvertrail-check=1');
-		const panel = page.getByRole('complementary', { name: 'Silvertrail leak check' });
-		await expect(panel).toBeVisible();
-		await expect(panel).toContainText('127.0.0.1: not listed, gate it or register a service');
-		await expect(page.getByRole('dialog', { name: 'Privacy settings' })).toBeHidden();
-
-		// Logged in, the admin bar still loads the avatar from Gravatar, so the home page is not clean.
-		await page.goto('/?silvertrail-check=1');
-		await expect(panel).toContainText('secure.gravatar.com');
-		await expect(panel).not.toContainText('127.0.0.1');
-		await context.close();
-	});
-
 	test('expect-no-leaks catches an ungated script and passes a clean page', async ({ page }) => {
 		expect(await collectLeaks(page, '/?pagename=silvertrail-leak', { wait: 300 })).toEqual(['127.0.0.1']);
 		await expectNoLeaks(page, '/', { wait: 300 });
@@ -54,5 +34,39 @@ test.describe('transparency', () => {
 		expect(body.i).toMatch(/^[a-f0-9]{32}$/);
 		const stored = (await context.cookies()).find((c) => c.name === 'silvertrail');
 		expect(JSON.parse(decodeURIComponent(stored.value)).i).toBe(body.i);
+	});
+});
+
+test.describe('visitor scan', () => {
+	test.use({ storageState: ADMIN_STATE });
+
+	test('lists what a logged-out visitor loads before choosing', async ({ page }) => {
+		await page.route('**/player.vimeo.com/**', (route) => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Vimeo</title>' }));
+		await page.goto('/wp-admin/options-general.php?page=silvertrail');
+		const scan = page.locator('#silvertrail-scan');
+		const url = scan.getByLabel('Page', { exact: true });
+		const run = scan.getByRole('button', { name: 'Scan', exact: true });
+
+		await url.fill('/?pagename=silvertrail-leak');
+		await run.click();
+		const early = scan.locator('ul').first();
+		await expect(early).toContainText('127.0.0.1', { timeout: 15000 });
+		await expect(early).toContainText('A script written straight into the page.');
+		await expect(scan).not.toContainText('gravatar');
+		await expect(scan).toContainText('Test Analytics');
+		const prompt = await scan.getByLabel('Prompt for an AI assistant').inputValue();
+		expect(prompt).toContain('Connections to other servers:\n- 127.0.0.1: script');
+		expect(prompt).toContain('- Test Analytics');
+		expect(prompt).not.toContain('- Google Tag Manager');
+		expect(prompt).toContain('Provider: the company');
+
+		await url.fill('/?pagename=silvertrail-vimeo');
+		await run.click();
+		await scan.getByRole('button', { name: 'Turn on Vimeo' }).click({ timeout: 15000 });
+		await expect(page.locator('#silvertrail-preset-vimeo')).toBeChecked();
+
+		await url.fill('/');
+		await run.click();
+		await expect(scan).toContainText('Clean.', { timeout: 15000 });
 	});
 });

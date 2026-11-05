@@ -83,6 +83,18 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 	</div>
 <?php endif; ?>
 
+<div id="silvertrail-scan" hidden>
+	<h2><?php esc_html_e( 'What a visitor’s browser loads', 'silvertrail' ); ?></h2>
+	<p><?php esc_html_e( 'Opens a page as a first-time visitor who has not chosen yet. Lists every other server the page contacts and what to do about each.', 'silvertrail' ); ?></p>
+	<p class="description"><?php esc_html_e( 'Turn off ad blockers in this browser first. They hide requests that real visitors make.', 'silvertrail' ); ?></p>
+	<p>
+		<label for="silvertrail-scan-url"><?php esc_html_e( 'Page', 'silvertrail' ); ?></label>
+		<input type="text" id="silvertrail-scan-url" class="regular-text code" value="<?php echo esc_attr( home_url( '/' ) ); ?>" spellcheck="false">
+		<button type="button" class="button" data-silvertrail-scan-run><?php esc_html_e( 'Scan', 'silvertrail' ); ?></button>
+	</p>
+	<div data-silvertrail-scan-result aria-live="polite"></div>
+</div>
+
 <p>
 	<?php
 	printf(

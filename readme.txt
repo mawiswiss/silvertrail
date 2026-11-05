@@ -30,7 +30,7 @@ The banner puts "Accept all" and "Only essential" side by side at the same size.
 * A browser that sends Global Privacy Control gets "only essential" without a banner.
 * A site whose services are all marked exempt shows no banner at all.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
-* Admins get a leak check that lists the requests a page makes to other hosts before consent. A Playwright helper in the GitHub repository runs the same check in CI.
+* A scan on the Services tab opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the GitHub repository runs the same check in CI.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 
 = Page caching =
@@ -39,7 +39,7 @@ The server renders every gated script and embed blocked, whatever the visitor ch
 
 = What it does not do =
 
-Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` hook, as the FAQ shows. It has no cookie scanner, because the leak check shows what a page actually loads.
+Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` hook, as the FAQ shows. It does not crawl the site for cookies. The scan checks the page you choose and shows what it actually loads.
 
 == Installation ==
 

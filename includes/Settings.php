@@ -21,7 +21,6 @@ namespace Silvertrail;
  *     expiry_months: int,
  *     records: bool,
  *     retention_days: int,
- *     leak_check: bool,
  *     gpc: bool,
  *     trail: bool,
  *     url_passthrough: bool
@@ -47,7 +46,6 @@ final class Settings {
 			'expiry_months'   => 6,
 			'records'         => false,
 			'retention_days'  => 365,
-			'leak_check'      => false,
 			'gpc'             => true,
 			'trail'           => true,
 			'url_passthrough' => false,

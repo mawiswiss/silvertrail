@@ -125,7 +125,9 @@ With records turned on, every decision is posted to `/wp-json/silvertrail/v1/rec
 
 ## Check what leaks
 
-Turn on the leak check in the settings and open any page with `?silvertrail-check` as an admin. A panel lists the hosts the page contacted before consent.
+On the Services tab, **What a visitor's browser loads** opens a page of the site in a frame as a logged-out, first-time visitor who has not chosen yet. It lists every other server the page contacts before a choice and says what to do about each: turn on a matching preset, register a service in code, or host the file on the site. A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
+
+The frame loads the page with `?silvertrail-scan`, which renders it without a logged-in user and without the visitor's stored choice. That only takes privileges away, so it needs no nonce. A page cache that ignores query strings would serve the cached page instead, so scan with the cache off or bypassed.
 
 For CI, `testing/expect-no-leaks.mjs` gives a Playwright suite the same check. It lives in this repository and is not part of the release zip, so copy it into your tests or check out the repository:
 

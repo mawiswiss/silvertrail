@@ -9,6 +9,7 @@ namespace Silvertrail\Admin;
 
 use Silvertrail\Config;
 use Silvertrail\Presets;
+use Silvertrail\Scan;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 
@@ -23,12 +24,12 @@ final class SettingsPage {
 		'services' => array( 'presets' ),
 		'banner'   => array( 'layout', 'require_choice', 'appearance', 'load_css', 'texts', 'imprint_page', 'floating_button' ),
 		'consent'  => array( 'expiry_months', 'gpc', 'url_passthrough', 'records', 'retention_days', 'trail' ),
-		'tools'    => array( 'leak_check' ),
+		'tools'    => array(),
 	);
 
 	private const DRAFT = 'silvertrail_texts_draft_';
 
-	private const FLAGS = array( 'require_choice', 'floating_button', 'load_css', 'records', 'leak_check', 'gpc', 'trail', 'url_passthrough' );
+	private const FLAGS = array( 'require_choice', 'floating_button', 'load_css', 'records', 'gpc', 'trail', 'url_passthrough' );
 
 	/**
 	 * @var array<string, mixed>|false
@@ -56,6 +57,9 @@ final class SettingsPage {
 		}
 		if ( 'banner' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
+		}
+		if ( 'services' === self::tab() ) {
+			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
 		}
 	}
 

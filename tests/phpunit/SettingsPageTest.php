@@ -30,7 +30,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$stored['presets']['youtube']['enabled'] = true;
 		$stored['presets']['youtube']['tag_id']  = '';
 		$stored['records']                       = true;
-		$stored['leak_check']                    = true;
+		$stored['trail']                         = false;
 		update_option( Settings::OPTION, $stored );
 
 		$saved = SettingsPage::sanitize(
@@ -45,7 +45,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertFalse( $saved['require_choice'] );
 		$this->assertTrue( $saved['presets']['youtube']['enabled'] );
 		$this->assertTrue( $saved['records'] );
-		$this->assertTrue( $saved['leak_check'] );
+		$this->assertFalse( $saved['trail'] );
 		$this->assertArrayNotHasKey( '_tab', $saved );
 	}
 

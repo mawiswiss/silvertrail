@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Silvertrail 0.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/design-check\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/silvertrail\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-05T12:42:47+00:00\n"
+"POT-Creation-Date: 2026-11-05T13:37:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -104,27 +104,27 @@ msgstr ""
 msgid "Documentation on GitHub"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:119
+#: includes/Admin/SettingsPage.php:123
 msgid "Settings"
 msgstr ""
 
 #. translators: 1: service name, 2: example ID
-#: includes/Admin/SettingsPage.php:151
+#: includes/Admin/SettingsPage.php:155
 #, php-format
 msgid "%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:198
+#: includes/Admin/SettingsPage.php:202
 msgid "The texts are not valid JSON, so they were not saved. The editor still holds them."
 msgstr ""
 
 #. translators: %s: what is wrong with a text
-#: includes/Admin/SettingsPage.php:206
+#: includes/Admin/SettingsPage.php:210
 #, php-format
 msgid "Not saved: %s"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:233
+#: includes/Admin/SettingsPage.php:237
 #: includes/Records.php:196
 msgid "You are not allowed to do this."
 msgstr ""
@@ -264,6 +264,7 @@ msgid "Imprint page"
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:187
+#: includes/Scan.php:106
 msgid "None"
 msgstr ""
 
@@ -375,77 +376,97 @@ msgstr ""
 msgid "No privacy policy page is published, so the banner cannot link to one. Choose it under %s."
 msgstr ""
 
+#: includes/Admin/tabs/services.php:87
+msgid "What a visitor’s browser loads"
+msgstr ""
+
+#: includes/Admin/tabs/services.php:88
+msgid "Opens a page as a first-time visitor who has not chosen yet. Lists every other server the page contacts and what to do about each."
+msgstr ""
+
+#: includes/Admin/tabs/services.php:89
+msgid "Turn off ad blockers in this browser first. They hide requests that real visitors make."
+msgstr ""
+
+#: includes/Admin/tabs/services.php:91
+msgid "Page"
+msgstr ""
+
+#: includes/Admin/tabs/services.php:93
+msgid "Scan"
+msgstr ""
+
 #. translators: 1: silvertrail_register_service(), 2: the silvertrail_config filter
-#: includes/Admin/tabs/services.php:90
+#: includes/Admin/tabs/services.php:102
 #, php-format
 msgid "Change any service in code by its ID: %1$s with only the fields to change, or the %2$s filter to edit or remove anything at the end. Help, at the top right, shows both."
 msgstr ""
 
-#: includes/Admin/tabs/services.php:97
+#: includes/Admin/tabs/services.php:109
 msgid "Trackers"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:98
+#: includes/Admin/tabs/services.php:110
 msgid "Silvertrail prints the official tag and holds it back until the visitor agrees."
 msgstr ""
 
-#: includes/Admin/tabs/services.php:102
-#: includes/Admin/tabs/services.php:141
-#: includes/Admin/tabs/services.php:170
+#: includes/Admin/tabs/services.php:114
+#: includes/Admin/tabs/services.php:153
+#: includes/Admin/tabs/services.php:182
 msgid "Service"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:103
-#: includes/Admin/tabs/services.php:171
+#: includes/Admin/tabs/services.php:115
+#: includes/Admin/tabs/services.php:183
 msgid "Group"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:104
+#: includes/Admin/tabs/services.php:116
 msgid "ID"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:136
+#: includes/Admin/tabs/services.php:148
 msgid "Embeds"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:137
+#: includes/Admin/tabs/services.php:149
 msgid "Videos and maps from these providers show a placeholder until the visitor agrees."
 msgstr ""
 
-#: includes/Admin/tabs/services.php:142
+#: includes/Admin/tabs/services.php:154
 msgid "Hosts"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:155
+#: includes/Admin/tabs/services.php:167
 msgid "Registered in code"
 msgstr ""
 
 #. translators: %s: the silvertrail_register action
-#: includes/Admin/tabs/services.php:161
+#: includes/Admin/tabs/services.php:173
 #, php-format
 msgid "Nothing yet. Register your own services on the %s action. Help, at the top right, shows how."
 msgstr ""
 
-#: includes/Admin/tabs/services.php:172
+#: includes/Admin/tabs/services.php:184
 #: includes/Admin/tabs/tools-actions.php:40
 #: includes/Admin/view.php:17
 msgid "Consent"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:173
+#: includes/Admin/tabs/services.php:185
 msgid "Blocks"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:187
+#: includes/Admin/tabs/services.php:199
 msgid "Not needed"
 msgstr ""
 
-#: includes/Admin/tabs/services.php:187
+#: includes/Admin/tabs/services.php:199
 msgid "Required"
 msgstr ""
 
 #. translators: %s: script handles
-#: includes/Admin/tabs/services.php:196
+#: includes/Admin/tabs/services.php:208
 #, php-format
 msgid "Script handles: %s"
 msgstr ""
@@ -521,27 +542,6 @@ msgstr ""
 
 #: includes/Admin/tabs/tools-actions.php:80
 msgid "Not installed"
-msgstr ""
-
-#: includes/Admin/tabs/tools.php:14
-#: includes/LeakCheck.php:75
-msgid "Leak check"
-msgstr ""
-
-#: includes/Admin/tabs/tools.php:17
-msgid "Admin panel"
-msgstr ""
-
-#: includes/Admin/tabs/tools.php:19
-msgid "Show admins what a page loads before consent"
-msgstr ""
-
-#: includes/Admin/tabs/tools.php:19
-msgid "Open any page with ?silvertrail-check to see the panel. Visitors never see it."
-msgstr ""
-
-#: includes/Admin/tabs/tools.php:21
-msgid "Check the home page"
 msgstr ""
 
 #: includes/Admin/view.php:15
@@ -644,55 +644,6 @@ msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/LeakCheck.php:49
-msgid "Silvertrail leak check"
-msgstr ""
-
-#: includes/LeakCheck.php:50
-msgid "This view acts as if the visitor had not decided yet."
-msgstr ""
-
-#: includes/LeakCheck.php:51
-msgid "No requests to other hosts before consent."
-msgstr ""
-
-#: includes/LeakCheck.php:52
-msgid "essential, fine"
-msgstr ""
-
-#: includes/LeakCheck.php:53
-msgid "loaded before consent"
-msgstr ""
-
-#: includes/LeakCheck.php:54
-msgid "not listed, gate it or register a service"
-msgstr ""
-
-#: includes/LeakCheck.php:55
-msgid "Cookies this page can read"
-msgstr ""
-
-#: includes/LeakCheck.php:56
-msgid "Browser storage keys"
-msgstr ""
-
-#: includes/LeakCheck.php:57
-msgid "none"
-msgstr ""
-
-#: includes/LeakCheck.php:58
-msgid "Cookies of other sites and HttpOnly cookies are not visible from here."
-msgstr ""
-
-#: includes/LeakCheck.php:59
-#: includes/Texts.php:40
-msgid "Close"
-msgstr ""
-
-#: includes/LeakCheck.php:60
-msgid "Requests to other hosts"
-msgstr ""
-
 #: includes/Presets.php:31
 msgid "Loads the tags configured in this site’s Google Tag Manager container."
 msgstr ""
@@ -749,6 +700,180 @@ msgstr ""
 msgid "When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period."
 msgstr ""
 
+#: includes/Scan.php:97
+msgid "Opening the page as a first-time visitor…"
+msgstr ""
+
+#: includes/Scan.php:98
+msgid "Only pages of this site can be scanned."
+msgstr ""
+
+#: includes/Scan.php:99
+msgid "Could not read that page. It may refuse to be shown in a frame, or Silvertrail does not run on it."
+msgstr ""
+
+#: includes/Scan.php:100
+msgid "Clean. Before choosing, the visitor’s browser contacts no other server that needs consent."
+msgstr ""
+
+#: includes/Scan.php:101
+msgid "Before choosing, the visitor’s browser already contacts these servers. Each line says what to do."
+msgstr ""
+
+#: includes/Scan.php:102
+msgid "Loads before the visitor chooses"
+msgstr ""
+
+#: includes/Scan.php:103
+msgid "Waits until the visitor agrees"
+msgstr ""
+
+#: includes/Scan.php:104
+msgid "Loads early, which is fine"
+msgstr ""
+
+#: includes/Scan.php:105
+msgid "Cookies and storage the page set before a choice"
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:108
+#, php-format
+msgid "%s is marked as essential, so it needs no consent."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:110
+#, php-format
+msgid "%s runs in Consent Mode Advanced. It sends only cookieless pings until the visitor agrees."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:112
+#, php-format
+msgid "This is %s, but it still loads before the visitor chooses. The theme or another plugin adds it directly."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:114
+#, php-format
+msgid "Looks like %s. Turn it on below, and a placeholder shows until the visitor agrees."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:116
+#, php-format
+msgid "Looks like %s, added by the theme or another plugin. Remove that code, then turn it on below with your ID, so Silvertrail holds it back."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:118
+#, php-format
+msgid "Turn on %s"
+msgstr ""
+
+#: includes/Scan.php:119
+msgid "Ticked below. Save Changes to apply."
+msgstr ""
+
+#. translators: %s: script handle
+#: includes/Scan.php:121
+#, php-format
+msgid "A script that WordPress loads as “%s”. Register a service in code with this script handle, and it waits for consent."
+msgstr ""
+
+#: includes/Scan.php:122
+msgid "A script written straight into the page. Mark it with data-silvertrail, as Help at the top right shows, and it waits for consent."
+msgstr ""
+
+#: includes/Scan.php:123
+msgid "An embedded frame. Register its host as a service in code, and a placeholder shows until the visitor agrees."
+msgstr ""
+
+#: includes/Scan.php:124
+msgid "Fonts or styles. They cannot wait for consent, so host them on this site instead."
+msgstr ""
+
+#: includes/Scan.php:125
+msgid "Images. They cannot wait for consent, so host them on this site instead."
+msgstr ""
+
+#: includes/Scan.php:126
+msgid "Requested by another script on the page. Hold back that script, and this waits too."
+msgstr ""
+
+#: includes/Scan.php:127
+msgid "script"
+msgstr ""
+
+#: includes/Scan.php:128
+msgid "embedded frame"
+msgstr ""
+
+#: includes/Scan.php:129
+msgid "fonts or styles"
+msgstr ""
+
+#: includes/Scan.php:130
+msgid "images"
+msgstr ""
+
+#: includes/Scan.php:131
+msgid "requested by another script"
+msgstr ""
+
+#: includes/Scan.php:132
+msgid "Prompt for an AI assistant"
+msgstr ""
+
+#: includes/Scan.php:133
+msgid "Paste it into ChatGPT or another assistant to get the provider, purpose and privacy policy of each service for the banner."
+msgstr ""
+
+#: includes/Scan.php:134
+msgid "Copy prompt"
+msgstr ""
+
+#: includes/Scan.php:135
+msgid "Copied"
+msgstr ""
+
+#. translators: 1: site name, 2: site address, 3: page address
+#: includes/Scan.php:137
+#, php-format
+msgid "My website %1$s (%2$s) has a cookie banner that lists each service with its provider, purpose and privacy policy. Opening %3$s as a first-time visitor found the following."
+msgstr ""
+
+#: includes/Scan.php:138
+msgid "Connections to other servers"
+msgstr ""
+
+#: includes/Scan.php:139
+msgid "Services that wait for consent and still lack details"
+msgstr ""
+
+#: includes/Scan.php:140
+msgid "Cookies and storage the page set"
+msgstr ""
+
+#. translators: %s: language code such as de-CH
+#: includes/Scan.php:142
+#, php-format
+msgid ""
+"For each service behind these entries, give me these three lines. Group entries that belong to the same service.\n"
+"Provider: the company's name and postal address\n"
+"Purpose: one short sentence a visitor understands\n"
+"Privacy policy: the address of the provider's privacy policy\n"
+"\n"
+"Example:\n"
+"Google Tag Manager\n"
+"Provider: Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland\n"
+"Purpose: Loads the tags configured in this site's Google Tag Manager container.\n"
+"Privacy policy: https://business.safety.google/privacy/\n"
+"\n"
+"If you cannot tell what an entry is, say so instead of guessing. Write the purpose in the language %s."
+msgstr ""
+
 #: includes/Texts.php:33
 #: includes/Texts.php:53
 #: blocks/reopen-link/editor.js:11
@@ -777,6 +902,10 @@ msgstr ""
 
 #: includes/Texts.php:39
 msgid "Save choices"
+msgstr ""
+
+#: includes/Texts.php:40
+msgid "Close"
 msgstr ""
 
 #: includes/Texts.php:41

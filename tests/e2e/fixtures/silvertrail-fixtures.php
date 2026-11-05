@@ -81,6 +81,7 @@ add_action(
 			'silvertrail-shortcode' => '[silvertrail_link]',
 			'silvertrail-block'     => '<!-- wp:silvertrail/reopen-link {"text":"Cookie settings"} /-->',
 			'silvertrail-leak'      => 'This page loads a script from another host without asking.',
+			'silvertrail-vimeo'     => '<iframe src="https://player.vimeo.com/video/1" title="Vimeo video"></iframe>',
 		);
 		foreach ( $pages as $slug => $content ) {
 			if ( get_page_by_path( $slug ) ) {
