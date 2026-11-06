@@ -197,6 +197,20 @@ test.describe('settings page', () => {
 		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
 	});
 
+	test('highlights a linked section until the next action', async ({ page }) => {
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner#silvertrail-links');
+		const links = page.locator('#silvertrail-links');
+		await expect(links).toHaveClass(/silvertrail-section--highlighted/);
+		await page.keyboard.press('Shift');
+		await expect(links).not.toHaveClass(/silvertrail-section--highlighted/);
+
+		await page.evaluate(() => (location.hash = '#silvertrail-texts'));
+		const texts = page.locator('#silvertrail-texts');
+		await expect(texts).toHaveClass(/silvertrail-section--highlighted/);
+		await page.getByRole('heading', { name: 'Silvertrail', exact: true }).click();
+		await expect(texts).not.toHaveClass(/silvertrail-section--highlighted/);
+	});
+
 	test('opens the developer help at the matching tab', async ({ page }) => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail');
 

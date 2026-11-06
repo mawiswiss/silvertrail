@@ -50,3 +50,28 @@ document.addEventListener('click', (event) => {
 	tab?.focus({ preventScroll: true });
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+const highlighted = 'silvertrail-section--highlighted';
+let highlight;
+
+function clearHighlight() {
+	highlight?.abort();
+	document.querySelector(`.${highlighted}`)?.classList.remove(highlighted);
+}
+
+function highlightSection() {
+	clearHighlight();
+	const section = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+	if (!section?.classList.contains('silvertrail-section')) {
+		return;
+	}
+	section.classList.add(highlighted);
+	highlight = new AbortController();
+	for (const type of ['pointerdown', 'keydown', 'input']) {
+		document.addEventListener(type, clearHighlight, { capture: true, signal: highlight.signal });
+	}
+}
+
+highlightSection();
+window.addEventListener('hashchange', highlightSection);
+window.addEventListener('pageshow', (event) => event.persisted && clearHighlight());
