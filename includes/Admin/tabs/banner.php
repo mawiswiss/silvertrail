@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+use Silvertrail\Admin\Notices;
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Admin\StylingPrompt;
 use Silvertrail\Design;
@@ -247,12 +248,13 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 	<?php SettingsPage::save( 'behavior' ); ?>
 </section>
 
-<section class="card silvertrail-section">
+<section class="card silvertrail-section" id="silvertrail-texts">
 	<h2><?php esc_html_e( 'Texts', 'silvertrail' ); ?></h2>
+	<?php Notices::card( 'texts' ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row">
-				<label for="silvertrail-texts">
+				<label for="silvertrail-texts-json">
 					<?php
 					/* translators: %s: locale, for example de_CH */
 					echo esc_html( sprintf( __( 'Texts in %s', 'silvertrail' ), $silvertrail_locale ) );
@@ -284,7 +286,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 					</li>
 				</ul>
 				<textarea
-					id="silvertrail-texts"
+					id="silvertrail-texts-json"
 					class="large-text code"
 					rows="16"
 					spellcheck="false"
@@ -343,8 +345,9 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 	<?php SettingsPage::save( 'texts' ); ?>
 </section>
 
-<section class="card silvertrail-section">
+<section class="card silvertrail-section" id="silvertrail-links">
 	<h2><?php esc_html_e( 'Links', 'silvertrail' ); ?></h2>
+	<?php Notices::card( 'links' ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Privacy policy', 'silvertrail' ); ?></th>

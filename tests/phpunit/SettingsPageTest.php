@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Silvertrail\Tests;
 
+use Silvertrail\Admin\Notices;
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 use Silvertrail\Design;
@@ -30,6 +31,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		Settings::reset();
 		delete_option( Settings::OPTION );
 		delete_option( SettingsPage::LICENSE_SEEN );
+		Notices::reset();
 		parent::tear_down();
 	}
 
@@ -238,6 +240,38 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, SettingsPage::footer() );
 	}
 
+	public function test_the_overview_links_each_warning_to_its_card(): void {
+		update_option( 'wp_page_for_privacy_policy', 0 );
+
+		$this->assertSame(
+			array(
+				'type'    => 'warning',
+				'summary' => 'No privacy policy page is published.',
+				'url'     => SettingsPage::url( 'banner' ) . '#silvertrail-links',
+				'where'   => 'Banner › Links',
+			),
+			Notices::overview( 'services' )[0]
+		);
+		$this->assertSame( '#silvertrail-links', Notices::overview( 'banner' )[0]['url'] );
+		$this->assertStringContainsString( 'options-privacy.php', $this->card( 'links' ) );
+	}
+
+	public function test_a_save_error_moves_from_the_top_into_its_card(): void {
+		add_settings_error( 'general', 'core', 'Core message' );
+		add_settings_error( Settings::OPTION, 'silvertrail-google-analytics', 'Google Analytics needs an ID like G-XXXXXXXXXX.' );
+		add_settings_error( Settings::OPTION, 'silvertrail-texts', 'Not saved: one' );
+		add_settings_error( Settings::OPTION, 'silvertrail-texts', 'Not saved: two' );
+
+		Notices::take_errors();
+
+		$this->assertSame( array( 'core' ), array_column( get_settings_errors(), 'code' ) );
+		$this->assertStringContainsString( 'notice-error inline', $this->card( 'trackers' ) );
+		$this->assertStringContainsString( 'Not saved: two', $this->card( 'texts' ) );
+		$summaries = array_column( Notices::overview( 'services' ), 'summary' );
+		$this->assertContains( 'Google Analytics needs a valid ID.', $summaries );
+		$this->assertCount( 1, array_keys( $summaries, 'Some texts were not saved.', true ) );
+	}
+
 	public function test_the_switch_changes_only_whether_silvertrail_is_on(): void {
 		update_option( Settings::OPTION, array_replace( Settings::defaults(), array( 'layout' => 'box' ) ) );
 
@@ -265,7 +299,13 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 	private function notices( string $tab ): string {
 		ob_start();
-		require dirname( SILVERTRAIL_FILE ) . '/includes/Admin/notices.php';
+		require dirname( SILVERTRAIL_FILE ) . '/includes/Admin/status.php';
+		return (string) ob_get_clean();
+	}
+
+	private function card( string $card ): string {
+		ob_start();
+		Notices::card( $card );
 		return (string) ob_get_clean();
 	}
 

@@ -11,11 +11,6 @@ use Silvertrail\Admin\SettingsPage;
 
 defined( 'ABSPATH' ) || exit;
 
-$silvertrail_tabs = array(
-	'services' => __( 'Services', 'silvertrail' ),
-	'banner'   => __( 'Banner', 'silvertrail' ),
-	'tools'    => __( 'Tools', 'silvertrail' ),
-);
 $silvertrail_help = array(
 	'services' => 'silvertrail-service',
 	'banner'   => 'silvertrail-settings',
@@ -25,10 +20,10 @@ $silvertrail_help = array(
 <div class="wrap">
 	<h1>Silvertrail</h1>
 	<hr class="wp-header-end">
-	<?php require __DIR__ . '/notices.php'; ?>
+	<?php require __DIR__ . '/status.php'; ?>
 
 	<nav class="nav-tab-wrapper" aria-label="<?php esc_attr_e( 'Silvertrail settings', 'silvertrail' ); ?>">
-		<?php foreach ( $silvertrail_tabs as $silvertrail_id => $silvertrail_label ) : ?>
+		<?php foreach ( SettingsPage::tabs() as $silvertrail_id => $silvertrail_label ) : ?>
 			<a
 				href="<?php echo esc_url( SettingsPage::url( $silvertrail_id ) ); ?>"
 				class="nav-tab<?php echo $tab === $silvertrail_id ? ' nav-tab-active' : ''; ?>"

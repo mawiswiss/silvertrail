@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+use Silvertrail\Admin\Notices;
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 use Silvertrail\Presets;
@@ -55,8 +56,9 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 };
 ?>
 
-<section class="card silvertrail-section">
+<section class="card silvertrail-section" id="silvertrail-trackers">
 	<h2><?php esc_html_e( 'Trackers', 'silvertrail' ); ?></h2>
+	<?php Notices::card( 'trackers' ); ?>
 	<p><?php esc_html_e( 'Silvertrail prints the official tag and holds it back until the visitor agrees.', 'silvertrail' ); ?></p>
 	<table class="widefat striped">
 		<thead>
@@ -98,8 +100,9 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 	<?php SettingsPage::save( 'trackers' ); ?>
 </section>
 
-<section class="card silvertrail-section">
+<section class="card silvertrail-section" id="silvertrail-embeds">
 	<h2><?php esc_html_e( 'Embeds', 'silvertrail' ); ?></h2>
+	<?php Notices::card( 'embeds' ); ?>
 	<p><?php esc_html_e( 'Videos and maps from these providers show a placeholder and ask there, without opening the banner.', 'silvertrail' ); ?></p>
 	<table class="widefat striped">
 		<thead>

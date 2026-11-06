@@ -1,27 +1,58 @@
 .silvertrail-status {
-	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 14px;
-	align-items: start;
-	margin: 16px 0 12px;
-	padding: 14px 20px;
+	--silvertrail-indent: 76px;
+
+	margin: 20px 0 16px;
+	overflow: hidden;
 	border: 1px solid #c3c4c7;
 	border-radius: 8px;
 	background: #fff;
 
 	h2 {
 		margin: 0;
-		font-size: 14px;
+		font-size: 16px;
 		line-height: 1.4;
 	}
 
-	p,
+	p {
+		margin: 4px 0 0;
+		font-size: 14px;
+	}
+}
+
+.silvertrail-status__main {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 16px;
+	align-items: start;
+	padding: 20px 24px;
+
 	form {
 		margin: 2px 0 0;
 	}
 }
 
-.silvertrail-status__todo::before {
+.silvertrail-status__todo {
+	display: grid;
+	gap: 8px;
+	margin: 0;
+	padding: 16px 24px 18px var(--silvertrail-indent);
+	border-top: 1px solid #f0f0f1;
+	font-size: 14px;
+	list-style: none;
+
+	li {
+		margin: 0;
+		text-indent: -16px;
+		padding-left: 16px;
+	}
+
+	a {
+		margin-left: 4px;
+		white-space: nowrap;
+	}
+}
+
+.silvertrail-status__item::before {
 	content: "";
 	display: inline-block;
 	width: 8px;
@@ -32,9 +63,12 @@
 	vertical-align: 1px;
 }
 
+.silvertrail-status__item--error::before {
+	background: #d63638;
+}
+
 .silvertrail-status__license {
-	margin-top: 10px;
-	padding-top: 10px;
+	padding: 12px 24px 14px var(--silvertrail-indent);
 	border-top: 1px solid #f0f0f1;
 	color: #646970;
 	font-size: 12px;
@@ -42,6 +76,12 @@
 	.button-link {
 		margin-left: 4px;
 		font-size: 12px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.silvertrail-status {
+		--silvertrail-indent: 24px;
 	}
 }
 
@@ -97,6 +137,7 @@
 
 .silvertrail-section.card {
 	max-width: none;
+	scroll-margin-top: 56px;
 	margin-top: 16px;
 	padding: 4px 24px 12px;
 
@@ -115,6 +156,11 @@
 
 	.notice {
 		margin: 12px 0;
+	}
+
+	&:target {
+		border-color: var(--wp-admin-theme-color);
+		box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
 	}
 }
 

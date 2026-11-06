@@ -5,13 +5,15 @@
 
 declare(strict_types=1);
 
+use Silvertrail\Admin\Notices;
 use Silvertrail\Config;
 
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<section class="card silvertrail-section">
+<section class="card silvertrail-section" id="silvertrail-ask-again">
 	<h2><?php esc_html_e( 'Ask everyone again', 'silvertrail' ); ?></h2>
+	<?php Notices::card( 'ask-again' ); ?>
 	<p><?php esc_html_e( 'Silvertrail asks again by itself when services are added or removed. Use this after changing what a service does.', 'silvertrail' ); ?></p>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<input type="hidden" name="action" value="silvertrail_ask_again">
@@ -26,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 				</td>
 			</tr>
 		</table>
-		<?php submit_button( __( 'Ask everyone again', 'silvertrail' ), 'secondary', 'submit', true, array( 'id' => 'silvertrail-ask-again' ) ); ?>
+		<?php submit_button( __( 'Ask everyone again', 'silvertrail' ), 'secondary', 'submit', true, array( 'id' => 'silvertrail-ask-again-submit' ) ); ?>
 	</form>
 </section>
 

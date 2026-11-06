@@ -61,6 +61,7 @@ final class SettingsPage {
 			Help::add( $screen );
 		}
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
+		add_action( 'all_admin_notices', array( Notices::class, 'take_errors' ) );
 		add_filter( 'admin_footer_text', array( self::class, 'footer' ) );
 		if ( 'tools' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
@@ -165,6 +166,17 @@ final class SettingsPage {
 	public static function turning_on(): string {
 		$id = isset( $_GET['silvertrail-turn-on'] ) ? sanitize_key( wp_unslash( $_GET['silvertrail-turn-on'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- it only ticks a box in the form.
 		return isset( Presets::all()[ $id ] ) && ! self::in_code( $id ) ? $id : '';
+	}
+
+	/**
+	 * @return array<string, string>
+	 */
+	public static function tabs(): array {
+		return array(
+			'services' => __( 'Services', 'silvertrail' ),
+			'banner'   => __( 'Banner', 'silvertrail' ),
+			'tools'    => __( 'Tools', 'silvertrail' ),
+		);
 	}
 
 	public static function tab(): string {
@@ -303,7 +315,7 @@ final class SettingsPage {
 		}
 		check_admin_referer( 'silvertrail_ask_again' );
 		Config::ask_again();
-		wp_safe_redirect( add_query_arg( 'silvertrail-asked', '1', self::url( 'tools' ) ) );
+		wp_safe_redirect( add_query_arg( 'silvertrail-asked', '1', self::url( 'tools' ) . '#silvertrail-ask-again' ) );
 		exit;
 	}
 
