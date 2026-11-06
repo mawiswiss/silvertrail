@@ -72,14 +72,14 @@ $silvertrail_overview = Notices::overview( $tab );
 			<?php endforeach; ?>
 		</ul>
 	<?php endif; ?>
-
-	<?php if ( ! get_option( SettingsPage::LICENSE_SEEN ) ) : ?>
-		<form class="silvertrail-status__license" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="silvertrail_license_seen">
-			<?php wp_nonce_field( 'silvertrail_license_seen', '_silvertrail_license' ); ?>
-			<?php echo esc_html( Plugin::license() ); ?>
-			<a href="<?php echo esc_url( SILVERTRAIL_LICENSE_URL ); ?>"><?php esc_html_e( 'Site license', 'silvertrail' ); ?></a>
-			<button type="submit" class="button-link"><?php esc_html_e( 'Dismiss', 'silvertrail' ); ?></button>
-		</form>
-	<?php endif; ?>
 </section>
+
+<?php if ( ! get_option( SettingsPage::LICENSE_SEEN ) ) : ?>
+	<form class="silvertrail-license" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<input type="hidden" name="action" value="silvertrail_license_seen">
+		<?php wp_nonce_field( 'silvertrail_license_seen', '_silvertrail_license' ); ?>
+		<p><?php echo esc_html( Plugin::license() ); ?></p>
+		<a class="button" href="<?php echo esc_url( SILVERTRAIL_LICENSE_URL ); ?>"><?php esc_html_e( 'Site license', 'silvertrail' ); ?></a>
+		<button type="submit" class="notice-dismiss"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss', 'silvertrail' ); ?></span></button>
+	</form>
+<?php endif; ?>

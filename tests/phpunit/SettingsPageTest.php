@@ -230,14 +230,15 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( 'site-editor.php', $html );
 	}
 
-	public function test_the_license_line_shows_on_every_tab_until_dismissed(): void {
+	public function test_the_license_line_shows_on_every_tab_until_dismissed_then_in_the_footer(): void {
 		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'services' ) );
 		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'tools' ) );
+		$this->assertSame( 'Thank you', SettingsPage::footer( 'Thank you' ) );
 
 		update_option( SettingsPage::LICENSE_SEEN, true );
 
 		$this->assertStringNotContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'services' ) );
-		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, SettingsPage::footer() );
+		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, SettingsPage::footer( 'Thank you' ) );
 	}
 
 	public function test_the_overview_links_each_warning_to_its_card(): void {

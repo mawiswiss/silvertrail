@@ -349,7 +349,10 @@ final class SettingsPage {
 		exit;
 	}
 
-	public static function footer(): string {
+	public static function footer( string $text ): string {
+		if ( ! get_option( self::LICENSE_SEEN ) ) {
+			return $text;
+		}
 		return esc_html( Plugin::license() ) . ' <a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Site license', 'silvertrail' ) . '</a>';
 	}
 
