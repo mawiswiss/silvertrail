@@ -191,7 +191,7 @@ final class SettingsPage {
 	public static function action_links( array $links ): array {
 		return array(
 			'settings' => '<a href="' . esc_url( self::url() ) . '">' . esc_html__( 'Settings', 'silvertrail' ) . '</a>',
-			'license'  => '<a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Site license', 'silvertrail' ) . '</a>',
+			'license'  => '<a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Support Silvertrail', 'silvertrail' ) . '</a>',
 		) + $links;
 	}
 
@@ -358,7 +358,7 @@ final class SettingsPage {
 		if ( ! get_option( self::LICENSE_SEEN ) ) {
 			return $text;
 		}
-		return esc_html( Plugin::license() ) . ' <a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Site license', 'silvertrail' ) . '</a>';
+		return esc_html( Plugin::license() ) . ' <a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Support Silvertrail', 'silvertrail' ) . '</a>';
 	}
 
 	public static function render(): void {

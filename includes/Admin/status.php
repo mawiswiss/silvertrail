@@ -79,7 +79,7 @@ $silvertrail_overview = Notices::overview( $tab );
 		<input type="hidden" name="action" value="silvertrail_license_seen">
 		<?php wp_nonce_field( 'silvertrail_license_seen', '_silvertrail_license' ); ?>
 		<p><?php echo esc_html( Plugin::license() ); ?></p>
-		<a class="button" href="<?php echo esc_url( SILVERTRAIL_LICENSE_URL ); ?>"><?php esc_html_e( 'Site license', 'silvertrail' ); ?></a>
+		<a class="button button-primary" href="<?php echo esc_url( SILVERTRAIL_LICENSE_URL ); ?>"><?php esc_html_e( 'Support Silvertrail', 'silvertrail' ); ?></a>
 		<button type="submit" class="notice-dismiss"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss', 'silvertrail' ); ?></span></button>
 	</form>
 <?php endif; ?>
