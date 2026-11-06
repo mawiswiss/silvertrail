@@ -112,7 +112,7 @@ You can also turn off the default styles with `load_css` in the `silvertrail_set
 
 = How do I change the texts? =
 
-Under Settings › Silvertrail › Banner, every text of the site language is one JSON object. Change a value and save, or paste a whole set. Remove a key to follow the translation again.
+Under Settings › Silvertrail › Banner, every text of the site language is one JSON object. Change the text in quotes after the colon and save, or paste a whole set. Delete a line to bring back its default text.
 
 A developer can put the same JSON into the theme as `silvertrail/texts-de_CH.json` for one language, or `silvertrail/texts.json` for every language. A child theme wins over its parent. From a plugin, return another path or an array in the `silvertrail_translation` filter:
 

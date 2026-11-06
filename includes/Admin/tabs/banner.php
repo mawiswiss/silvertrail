@@ -199,6 +199,29 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 				</label>
 			</th>
 			<td>
+				<ul class="ul-disc silvertrail-howto">
+					<li>
+						<?php
+						printf(
+							/* translators: %s: one line of the texts, for example "accept_all": "Accept all" */
+							esc_html__( 'Change only the text in quotes after the colon, as in %s, then save.', 'silvertrail' ),
+							'<code>' . esc_html( '"accept_all": ' . wp_json_encode( $silvertrail_current['accept_all'], JSON_UNESCAPED_UNICODE ) ) . '</code>'
+						);
+						?>
+					</li>
+					<li><?php esc_html_e( 'Delete a line to bring back its default text.', 'silvertrail' ); ?></li>
+					<li>
+						<?php
+						printf(
+							/* translators: 1: %s, 2: embed_text, 3: embed_remember */
+							esc_html__( 'Keep %1$s in %2$s and %3$s. The service name goes there.', 'silvertrail' ),
+							'<code>%s</code>',
+							'<code>embed_text</code>',
+							'<code>embed_remember</code>'
+						);
+						?>
+					</li>
+				</ul>
 				<textarea
 					id="silvertrail-texts"
 					class="large-text code"
@@ -209,16 +232,6 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						data-silvertrail-editor="<?php echo esc_attr( $silvertrail_editor ); ?>"
 					<?php endif; ?>
 				><?php echo esc_textarea( SettingsPage::draft() ?? (string) wp_json_encode( $silvertrail_current, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ); ?></textarea>
-				<p class="description">
-					<?php
-					printf(
-						/* translators: 1: embed_text, 2: embed_remember */
-						esc_html__( 'Change a value and save. Remove a key to follow the translation again. Keep %%s in %1$s and %2$s, where the service name goes.', 'silvertrail' ),
-						'<code>embed_text</code>',
-						'<code>embed_remember</code>'
-					);
-					?>
-				</p>
 				<?php if ( array() !== $silvertrail_changed ) : ?>
 					<p class="description">
 						<?php

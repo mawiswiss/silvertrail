@@ -217,3 +217,11 @@
 		margin-bottom: 12px;
 	}
 }
+
+.silvertrail-howto {
+	margin-top: 0;
+
+	li {
+		margin-bottom: 4px;
+	}
+}
