@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Silvertrail;
 
 /**
- * Shows a page as a first-time visitor sees it, for the scan on the Leak check tab.
+ * Shows a page as a first-time visitor sees it, for the leak check on the Tools tab.
  */
 final class Scan {
 

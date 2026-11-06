@@ -23,7 +23,6 @@ final class SettingsPage {
 	public const TABS = array(
 		'services' => array( 'presets' ),
 		'banner'   => array( 'layout', 'require_choice', 'appearance', 'texts', 'imprint_page' ),
-		'check'    => array(),
 		'tools'    => array( 'records' ),
 	);
 
@@ -56,7 +55,7 @@ final class SettingsPage {
 			Help::add( $screen );
 		}
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
-		if ( 'check' === self::tab() ) {
+		if ( 'tools' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
 		}
 	}

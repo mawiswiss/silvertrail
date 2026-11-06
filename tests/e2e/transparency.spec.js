@@ -42,7 +42,7 @@ test.describe('visitor scan', () => {
 
 	test('lists what a logged-out visitor loads before choosing', async ({ page }) => {
 		await page.route('**/player.vimeo.com/**', (route) => route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Vimeo</title>' }));
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=check');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
 		const scan = page.locator('#silvertrail-scan');
 		const url = scan.getByLabel('Page', { exact: true });
 		const run = scan.getByRole('button', { name: 'Scan', exact: true });

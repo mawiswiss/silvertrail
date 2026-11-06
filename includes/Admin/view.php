@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
 $silvertrail_tabs = array(
 	'services' => __( 'Services', 'silvertrail' ),
 	'banner'   => __( 'Banner', 'silvertrail' ),
-	'check'    => __( 'Leak check', 'silvertrail' ),
 	'tools'    => __( 'Tools', 'silvertrail' ),
 );
 ?>
@@ -33,18 +32,16 @@ $silvertrail_tabs = array(
 		<?php endforeach; ?>
 	</nav>
 
-	<?php if ( array() !== SettingsPage::TABS[ $tab ] ) : ?>
-		<form method="post" action="options.php">
-			<?php settings_fields( SettingsPage::SLUG ); ?>
-			<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
-			<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
-			<?php submit_button(); ?>
-		</form>
+	<?php if ( 'tools' === $tab ) : ?>
+		<?php require __DIR__ . '/tabs/tools-check.php'; ?>
 	<?php endif; ?>
 
-	<?php if ( 'check' === $tab ) : ?>
-		<?php require __DIR__ . '/tabs/check.php'; ?>
-	<?php endif; ?>
+	<form method="post" action="options.php">
+		<?php settings_fields( SettingsPage::SLUG ); ?>
+		<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
+		<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
+		<?php submit_button(); ?>
+	</form>
 
 	<?php if ( 'tools' === $tab ) : ?>
 		<?php require __DIR__ . '/tabs/tools-actions.php'; ?>

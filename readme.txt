@@ -31,7 +31,7 @@ The banner puts "Accept all" and "Only essential" side by side at the same size.
 * A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
 * A small button lets visitors change their choice on every page without a link to the settings.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
-* The Leak check tab opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
+* The Leak check, under Tools, opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 
 = Page caching =
