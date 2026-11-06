@@ -128,6 +128,17 @@ final class SettingsPage {
 		submit_button( '', 'primary', 'submit', true, array( 'id' => "silvertrail-save-{$card}" ) );
 	}
 
+	/**
+	 * A button that opens a tab of the Help panel, which needs JavaScript like the panel itself.
+	 */
+	public static function help_button( string $tab, string $label ): string {
+		return sprintf(
+			'<button type="button" class="button-link hide-if-no-js" data-silvertrail-help="%1$s">%2$s</button>',
+			esc_attr( $tab ),
+			esc_html( $label )
+		);
+	}
+
 	public static function in_code_label( string $key ): string {
 		return Settings::in_code( $key ) ? ' <strong class="post-state">' . esc_html__( 'Set in code', 'silvertrail' ) . '</strong>' : '';
 	}

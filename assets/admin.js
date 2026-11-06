@@ -35,3 +35,18 @@ new ClipboardJS('[data-silvertrail-copy]', {
 	clearTimeout(success.timer);
 	success.timer = setTimeout(() => success.classList.add('hidden'), 3000);
 });
+
+document.addEventListener('click', (event) => {
+	const trigger = event.target.closest('[data-silvertrail-help]');
+	const toggle = document.getElementById('contextual-help-link');
+	if (!trigger || !toggle) {
+		return;
+	}
+	if (toggle.getAttribute('aria-expanded') !== 'true') {
+		toggle.click();
+	}
+	const tab = document.querySelector(`#tab-link-${trigger.dataset.silvertrailHelp} a`);
+	tab?.click();
+	tab?.focus({ preventScroll: true });
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+});

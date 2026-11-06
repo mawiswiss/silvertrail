@@ -16,6 +16,11 @@ $silvertrail_tabs = array(
 	'banner'   => __( 'Banner', 'silvertrail' ),
 	'tools'    => __( 'Tools', 'silvertrail' ),
 );
+$silvertrail_help = array(
+	'services' => 'silvertrail-service',
+	'banner'   => 'silvertrail-settings',
+	'tools'    => 'silvertrail-cli',
+);
 ?>
 <div class="wrap">
 	<h1>Silvertrail</h1>
@@ -31,6 +36,11 @@ $silvertrail_tabs = array(
 			><?php echo esc_html( $silvertrail_label ); ?></a>
 		<?php endforeach; ?>
 	</nav>
+
+	<p>
+		<?php esc_html_e( 'Everything here also works in code.', 'silvertrail' ); ?>
+		<?php echo SettingsPage::help_button( $silvertrail_help[ $tab ], __( 'Developer help', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
+	</p>
 
 	<?php if ( 'tools' === $tab ) : ?>
 		<?php require __DIR__ . '/tabs/tools-check.php'; ?>

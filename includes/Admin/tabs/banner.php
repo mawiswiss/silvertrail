@@ -107,7 +107,10 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Custom styles', 'silvertrail' ); ?></h2>
-	<p><?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?></p>
+	<p>
+		<?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?>
+		<?php echo SettingsPage::help_button( 'silvertrail-design', __( 'Design in code', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
+	</p>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Theme stylesheet', 'silvertrail' ); ?></th>
@@ -255,6 +258,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 							esc_html__( 'Developers can ship this JSON in the theme as %s.', 'silvertrail' ),
 							'<code>' . esc_html( "silvertrail/texts-{$silvertrail_locale}.json" ) . '</code>'
 						);
+						echo ' ' . SettingsPage::help_button( 'silvertrail-texts', __( 'Show how', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
 						?>
 					</p>
 				<?php endif; ?>

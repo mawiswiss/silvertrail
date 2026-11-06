@@ -126,10 +126,11 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 		<?php
 		printf(
 			/* translators: 1: silvertrail_register_service(), 2: the silvertrail_config filter */
-			esc_html__( 'Change any service in code by its ID: %1$s with only the fields to change, or the %2$s filter to edit or remove anything at the end. Help, at the top right, shows both.', 'silvertrail' ),
+			esc_html__( 'Change any service in code by its ID: %1$s with only the fields to change, or the %2$s filter to edit or remove anything at the end.', 'silvertrail' ),
 			'<code>silvertrail_register_service()</code>',
 			'<code>silvertrail_config</code>'
 		);
+		echo ' ' . SettingsPage::help_button( 'silvertrail-adjust', __( 'Show the example', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
 		?>
 	</p>
 	<?php if ( array() === $silvertrail_code ) : ?>
@@ -137,9 +138,10 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 			<?php
 			printf(
 				/* translators: %s: the silvertrail_register action */
-				esc_html__( 'Nothing yet. Register your own services on the %s action. Help, at the top right, shows how.', 'silvertrail' ),
+				esc_html__( 'Nothing yet. Register your own services on the %s action.', 'silvertrail' ),
 				'<code>silvertrail_register</code>'
 			);
+			echo ' ' . SettingsPage::help_button( 'silvertrail-service', __( 'Show the example', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
 			?>
 		</p>
 	<?php else : ?>

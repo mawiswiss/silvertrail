@@ -180,6 +180,20 @@ test.describe('settings page', () => {
 		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
 	});
 
+	test('opens the developer help at the matching tab', async ({ page }) => {
+		await page.goto('/wp-admin/options-general.php?page=silvertrail');
+
+		await page.getByRole('button', { name: 'Show the example' }).click();
+		await expect(page.locator('#tab-panel-silvertrail-adjust')).toBeVisible();
+		await page.getByRole('button', { name: 'Developer help' }).click();
+		await expect(page.locator('#tab-panel-silvertrail-service')).toBeVisible();
+		await expect(page.locator('#tab-panel-silvertrail-adjust')).toBeHidden();
+
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.getByRole('button', { name: 'Developer help' }).click();
+		await expect(page.locator('#tab-panel-silvertrail-settings')).toBeVisible();
+	});
+
 	test('a setting from code shows as set in code and cannot be changed', async ({ page, context }) => {
 		await context.addCookies([
 			{ name: 'silvertrail_test_code', value: JSON.stringify({ layout: 'box', records: true }), url: 'http://localhost:8892' },
