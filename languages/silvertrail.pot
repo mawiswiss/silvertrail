@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-06T04:06:34+00:00\n"
+"POT-Creation-Date: 2026-11-06T13:58:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -120,7 +120,7 @@ msgid "The `silvertrail_settings` filter sets any setting. A field set in code s
 msgstr ""
 
 #: includes/Admin/Help.php:154
-msgid "On this page: `layout`, `appearance`, `require_choice`, `imprint_page`, `records`."
+msgid "On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `records`."
 msgstr ""
 
 #: includes/Admin/Help.php:155
@@ -229,22 +229,32 @@ msgstr ""
 msgid "Check and run Silvertrail from the command line. `services` and `settings` take `--format=json` for scripts."
 msgstr ""
 
-#. translators: %s: service name
-#: includes/Admin/notices.php:30
-#, php-format
-msgid "%s is ticked. Save Changes to turn it on."
+#: includes/Admin/notices.php:35
+msgid "Silvertrail is on"
+msgstr ""
+
+#: includes/Admin/notices.php:35
+msgid "Silvertrail is off"
+msgstr ""
+
+#: includes/Admin/notices.php:41
+msgid "Visitors get no banner, nothing is blocked, and none of its tags load."
+msgstr ""
+
+#: includes/Admin/notices.php:42
+msgid "Preview the home page"
 msgstr ""
 
 #. translators: %s: number of services
-#: includes/Admin/notices.php:41
+#: includes/Admin/notices.php:45
 #, php-format
-msgid "The banner is on. It asks about %s service."
-msgid_plural "The banner is on. It asks about %s services."
+msgid "The banner asks about %s service."
+msgid_plural "The banner asks about %s services."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of services
-#: includes/Admin/notices.php:44
+#: includes/Admin/notices.php:48
 #, php-format
 msgid "%s more asks on its placeholder."
 msgid_plural "%s more ask on their placeholder."
@@ -252,67 +262,80 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of services
-#: includes/Admin/notices.php:54
+#: includes/Admin/notices.php:52
 #, php-format
-msgid "No banner opens. %s service asks on its placeholder, so only pages with such an embed ask anything."
-msgid_plural "No banner opens. %s services ask on their placeholder, so only pages with such an embed ask anything."
+msgid "No banner opens. %s service asks on its placeholder."
+msgid_plural "No banner opens. %s services ask on their placeholder."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Admin/notices.php:60
-msgid "No service needs consent yet, so no banner opens. Turn on a service below or register one in code."
+#: includes/Admin/notices.php:54
+msgid "Nothing needs consent yet, so no banner opens."
+msgstr ""
+
+#: includes/Admin/notices.php:56
+msgid "Turn on a service"
 msgstr ""
 
 #. translators: %s: link to the privacy settings
-#: includes/Admin/notices.php:70
+#: includes/Admin/notices.php:66
 #, php-format
-msgid "No privacy policy page is published, so the banner cannot link to one. Choose it under %s."
+msgid "Publish a privacy policy page under %s, so the banner can link to it."
 msgstr ""
 
-#: includes/Admin/notices.php:71
+#: includes/Admin/notices.php:67
 #: includes/Admin/tabs/banner.php:362
 msgid "Settings › Privacy"
 msgstr ""
 
-#: includes/Admin/notices.php:87
-msgid "Dismiss"
-msgstr ""
-
-#: includes/Admin/notices.php:94
-msgid "Every visitor will be asked again on their next page view."
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:147
-msgid "Set in code"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:178
-msgid "Settings"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:179
+#: includes/Admin/notices.php:77
+#: includes/Admin/SettingsPage.php:182
+#: includes/Admin/SettingsPage.php:341
 msgid "Site license"
 msgstr ""
 
+#: includes/Admin/notices.php:78
+msgid "Dismiss"
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Admin/notices.php:89
+#, php-format
+msgid "%s is ticked. Save Changes to turn it on."
+msgstr ""
+
+#: includes/Admin/notices.php:96
+msgid "Every visitor will be asked again on their next page view."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:150
+msgid "Set in code"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:181
+msgid "Settings"
+msgstr ""
+
 #. translators: 1: service name, 2: example ID
-#: includes/Admin/SettingsPage.php:214
+#: includes/Admin/SettingsPage.php:218
 #, php-format
 msgid "%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:263
+#: includes/Admin/SettingsPage.php:267
 msgid "The texts are not valid JSON, so they were not saved. The editor still holds them."
 msgstr ""
 
 #. translators: %s: what is wrong with a text
-#: includes/Admin/SettingsPage.php:271
+#: includes/Admin/SettingsPage.php:275
 #, php-format
 msgid "Not saved: %s"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:298
-#: includes/Admin/SettingsPage.php:308
-#: includes/Records.php:196
+#: includes/Admin/SettingsPage.php:302
+#: includes/Admin/SettingsPage.php:312
+#: includes/Admin/SettingsPage.php:321
+#: includes/Records.php:199
 msgid "You are not allowed to do this."
 msgstr ""
 
@@ -913,7 +936,7 @@ msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Plugin.php:37
+#: includes/Plugin.php:56
 msgid "Silvertrail is free on your own site. When you are paid to put it on a client’s site, buy a site license."
 msgstr ""
 
@@ -969,7 +992,7 @@ msgstr ""
 msgid "Shows embedded maps."
 msgstr ""
 
-#: includes/Records.php:217
+#: includes/Records.php:220
 msgid "When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period."
 msgstr ""
 
@@ -1132,13 +1155,13 @@ msgid ""
 msgstr ""
 
 #. translators: %s: setting key
-#: includes/Settings.php:146
+#: includes/Settings.php:148
 #, php-format
 msgid "The silvertrail_settings filter cannot set \"%s\"."
 msgstr ""
 
 #. translators: 1: setting key, 2: the value used instead
-#: includes/Settings.php:151
+#: includes/Settings.php:153
 #, php-format
 msgid "The silvertrail_settings filter returned an invalid \"%1$s\", so Silvertrail uses %2$s."
 msgstr ""
