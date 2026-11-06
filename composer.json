@@ -10,6 +10,12 @@
             "homepage": "https://marcwieland.name"
         }
     ],
+    "funding": [
+        {
+            "type": "polar",
+            "url": "https://polar.sh/silvertrail"
+        }
+    ],
     "require": {
         "php": ">=8.1"
     },

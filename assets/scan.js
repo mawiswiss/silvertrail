@@ -214,6 +214,9 @@
 		const early = scan.items.filter((item) => item.early);
 		const fine = scan.items.filter((item) => !item.early);
 		const parts = [early.length > 0 ? notice('warning', texts.attention) : notice('success', texts.clean)];
+		if (early.length === 0) {
+			parts[0].append(element('p', {}, texts.license, ' ', element('a', { href: data.license }, data.license)));
+		}
 		if (early.length > 0) {
 			parts.push(element('h3', {}, texts.early), list(early));
 		}

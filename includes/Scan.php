@@ -83,6 +83,7 @@ final class Scan {
 			'home'     => home_url( '/' ),
 			'settings' => Admin\SettingsPage::url(),
 			'param'    => self::PARAM,
+			'license'  => SILVERTRAIL_LICENSE_URL,
 			'site'     => get_bloginfo( 'name' ),
 			'language' => get_bloginfo( 'language' ),
 			'services' => $services,
@@ -96,6 +97,7 @@ final class Scan {
 	 */
 	private static function texts(): array {
 		return array(
+			'license'           => Plugin::license(),
 			'scanning'          => __( 'Opening the page as a first-time visitor…', 'silvertrail' ),
 			'foreign'           => __( 'Only pages of this site can be scanned.', 'silvertrail' ),
 			'failed'            => __( 'Could not read that page. It may refuse to be shown in a frame, or Silvertrail does not run on it.', 'silvertrail' ),

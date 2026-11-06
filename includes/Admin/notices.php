@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
+use Silvertrail\Plugin;
 use Silvertrail\Presets;
 
 defined( 'ABSPATH' ) || exit;
@@ -71,6 +72,20 @@ $silvertrail_turn_on  = SettingsPage::turning_on();
 				);
 				?>
 			</p>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( ! get_option( SettingsPage::LICENSE_SEEN ) ) : ?>
+		<div class="notice notice-info inline">
+			<p>
+				<?php echo esc_html( Plugin::license() ); ?>
+				<a href="<?php echo esc_url( SILVERTRAIL_LICENSE_URL ); ?>"><?php echo esc_html( SILVERTRAIL_LICENSE_URL ); ?></a>
+			</p>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="silvertrail_license_seen">
+				<?php wp_nonce_field( 'silvertrail_license_seen' ); ?>
+				<p><button type="submit" class="button-link"><?php esc_html_e( 'Dismiss', 'silvertrail' ); ?></button></p>
+			</form>
 		</div>
 	<?php endif; ?>
 <?php endif; ?>

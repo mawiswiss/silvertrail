@@ -19,8 +19,9 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-const SILVERTRAIL_VERSION = '0.1.0';
-const SILVERTRAIL_FILE    = __FILE__;
+const SILVERTRAIL_VERSION     = '0.1.0';
+const SILVERTRAIL_FILE        = __FILE__;
+const SILVERTRAIL_LICENSE_URL = 'https://polar.sh/silvertrail';
 
 spl_autoload_register(
 	static function ( string $class_name ): void {
@@ -38,3 +39,4 @@ require __DIR__ . '/includes/functions.php';
 
 Silvertrail\Plugin::boot();
 register_activation_hook( __FILE__, array( Silvertrail\Records::class, 'sync' ) );
+register_activation_hook( __FILE__, array( Silvertrail\Plugin::class, 'activated' ) );

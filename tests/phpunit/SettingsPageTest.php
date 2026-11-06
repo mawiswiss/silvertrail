@@ -29,6 +29,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		remove_all_filters( 'silvertrail_settings' );
 		Settings::reset();
 		delete_option( Settings::OPTION );
+		delete_option( SettingsPage::LICENSE_SEEN );
 		parent::tear_down();
 	}
 
@@ -225,6 +226,21 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
 		$this->assertStringContainsString( 'Twenty Twenty-One has no <code>theme.json</code>', $html );
 		$this->assertStringNotContainsString( 'site-editor.php', $html );
+	}
+
+	public function test_the_license_notice_shows_until_dismissed(): void {
+		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'services' ) );
+		$this->assertStringNotContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'tools' ) );
+
+		update_option( SettingsPage::LICENSE_SEEN, true );
+
+		$this->assertStringNotContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'services' ) );
+	}
+
+	private function notices( string $tab ): string {
+		ob_start();
+		require dirname( SILVERTRAIL_FILE ) . '/includes/Admin/notices.php';
+		return (string) ob_get_clean();
 	}
 
 	private function banner_tab( string $theme ): string {

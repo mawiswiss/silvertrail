@@ -1,5 +1,6 @@
 === Silvertrail ===
 Contributors: mawiswiss
+Donate link: https://polar.sh/silvertrail
 Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
 Tested up to: 7.1
@@ -41,6 +42,10 @@ The server renders every gated script and embed blocked, whatever the visitor ch
 = What it does not do =
 
 Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` hook, as the FAQ shows. It does not crawl the site for cookies. The scan checks the page you choose and shows what it actually loads.
+
+= Free, and a license for client sites =
+
+Silvertrail is free on your own site. When you are paid to put it on a client's site, buy a site license at https://polar.sh/silvertrail: 29 a year per site, or 199 a year for an agency with any number of sites, in dollars or euros. The license pays for the upkeep. It adds nothing and withholds nothing, and nothing checks whether you bought one.
 
 == Installation ==
 

@@ -118,6 +118,7 @@ final class Cli {
 			WP_CLI::error( sprintf( '%d problem(s) found.', count( $problems ) ) );
 		}
 		WP_CLI::success( sprintf( 'The config is valid: %d services.', $count ) );
+		WP_CLI::log( Plugin::license() . ' ' . SILVERTRAIL_LICENSE_URL );
 	}
 
 	/**

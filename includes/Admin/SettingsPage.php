@@ -18,6 +18,8 @@ final class SettingsPage {
 
 	public const SLUG = 'silvertrail';
 
+	public const LICENSE_SEEN = 'silvertrail_license_seen';
+
 	/**
 	 * The settings each tab posts. Saving one tab keeps the others as stored.
 	 */
@@ -40,6 +42,7 @@ final class SettingsPage {
 		add_action( 'admin_menu', array( self::class, 'menu' ) );
 		add_action( 'admin_init', array( self::class, 'setting' ) );
 		add_action( 'admin_post_silvertrail_ask_again', array( self::class, 'ask_again' ) );
+		add_action( 'admin_post_silvertrail_license_seen', array( self::class, 'license_seen' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( SILVERTRAIL_FILE ), array( self::class, 'action_links' ) );
 	}
 
@@ -171,7 +174,10 @@ final class SettingsPage {
 	 * @return array<string, string>
 	 */
 	public static function action_links( array $links ): array {
-		return array( 'settings' => '<a href="' . esc_url( self::url() ) . '">' . esc_html__( 'Settings', 'silvertrail' ) . '</a>' ) + $links;
+		return array(
+			'settings' => '<a href="' . esc_url( self::url() ) . '">' . esc_html__( 'Settings', 'silvertrail' ) . '</a>',
+			'license'  => '<a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Site license', 'silvertrail' ) . '</a>',
+		) + $links;
 	}
 
 	/**
@@ -294,6 +300,16 @@ final class SettingsPage {
 		check_admin_referer( 'silvertrail_ask_again' );
 		Config::ask_again();
 		wp_safe_redirect( add_query_arg( 'silvertrail-asked', '1', self::url( 'tools' ) ) );
+		exit;
+	}
+
+	public static function license_seen(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'silvertrail' ), 403 );
+		}
+		check_admin_referer( 'silvertrail_license_seen' );
+		update_option( self::LICENSE_SEEN, true, false );
+		wp_safe_redirect( self::url() );
 		exit;
 	}
 
