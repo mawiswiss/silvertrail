@@ -138,6 +138,10 @@ Yes, every one of them, with the `silvertrail_settings` filter. The settings pag
 
 `wp silvertrail settings` lists every value and where it comes from.
 
+= Can I set it up before visitors see it? =
+
+Yes. Switch Silvertrail off at the top of Settings › Silvertrail. It then adds nothing to the site: no banner, no blocking, none of its tags. Add `?silvertrail-preview` to any URL to see that page as visitors will get it, and switch Silvertrail on when everything fits.
+
 = I changed the services or asked everyone again, and nothing happened. Why? =
 
 Cached pages still carry the old version of the settings. Purge the page cache after changing services or after pressing "Ask everyone again", and visitors are asked on their next page view.

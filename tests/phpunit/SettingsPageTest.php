@@ -228,13 +228,39 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( 'site-editor.php', $html );
 	}
 
-	public function test_the_license_notice_shows_until_dismissed(): void {
+	public function test_the_license_line_shows_on_every_tab_until_dismissed(): void {
 		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'services' ) );
-		$this->assertStringNotContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'tools' ) );
+		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'tools' ) );
 
 		update_option( SettingsPage::LICENSE_SEEN, true );
 
 		$this->assertStringNotContainsString( SILVERTRAIL_LICENSE_URL, $this->notices( 'services' ) );
+		$this->assertStringContainsString( SILVERTRAIL_LICENSE_URL, SettingsPage::footer() );
+	}
+
+	public function test_the_switch_changes_only_whether_silvertrail_is_on(): void {
+		update_option( Settings::OPTION, array_replace( Settings::defaults(), array( 'layout' => 'box' ) ) );
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'    => 'switch',
+				'enabled' => false,
+				'layout'  => 'modal',
+			)
+		);
+
+		$this->assertFalse( $saved['enabled'] );
+		$this->assertSame( 'box', $saved['layout'] );
+	}
+
+	public function test_switched_off_the_status_offers_a_preview(): void {
+		update_option( Settings::OPTION, array( 'enabled' => false ) );
+
+		$html = $this->notices( 'banner' );
+
+		$this->assertStringContainsString( 'Silvertrail is off', $html );
+		$this->assertStringContainsString( '?silvertrail-preview=1', $html );
+		$this->assertStringContainsString( 'aria-pressed="false"', $html );
 	}
 
 	private function notices( string $tab ): string {

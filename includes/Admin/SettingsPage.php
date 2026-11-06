@@ -9,6 +9,7 @@ namespace Silvertrail\Admin;
 
 use Silvertrail\Config;
 use Silvertrail\Design;
+use Silvertrail\Plugin;
 use Silvertrail\Presets;
 use Silvertrail\Scan;
 use Silvertrail\Settings;
@@ -43,6 +44,7 @@ final class SettingsPage {
 		add_action( 'admin_init', array( self::class, 'setting' ) );
 		add_action( 'admin_post_silvertrail_ask_again', array( self::class, 'ask_again' ) );
 		add_action( 'admin_post_silvertrail_license_seen', array( self::class, 'license_seen' ) );
+		add_action( 'admin_post_silvertrail_toggle', array( self::class, 'toggle' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( SILVERTRAIL_FILE ), array( self::class, 'action_links' ) );
 	}
 
@@ -59,6 +61,7 @@ final class SettingsPage {
 			Help::add( $screen );
 		}
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
+		add_filter( 'admin_footer_text', array( self::class, 'footer' ) );
 		if ( 'tools' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
 		}
@@ -187,10 +190,11 @@ final class SettingsPage {
 		$input = is_array( $input ) ? $input : array();
 		$clean = self::clean( $input );
 		$tab   = is_string( $input['_tab'] ?? null ) ? $input['_tab'] : '';
-		if ( ! isset( self::TABS[ $tab ] ) ) {
+		$keys  = 'switch' === $tab ? array( 'enabled' ) : ( self::TABS[ $tab ] ?? null );
+		if ( null === $keys ) {
 			return $clean;
 		}
-		$posted = array_intersect_key( $clean, array_flip( self::TABS[ $tab ] ) );
+		$posted = array_intersect_key( $clean, array_flip( $keys ) );
 		$posted = array_filter( $posted, static fn( string $key ): bool => ! Settings::in_code( $key ), ARRAY_FILTER_USE_KEY );
 		return array_replace( Settings::stored(), $posted );
 	}
@@ -307,10 +311,34 @@ final class SettingsPage {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You are not allowed to do this.', 'silvertrail' ), 403 );
 		}
-		check_admin_referer( 'silvertrail_license_seen' );
+		check_admin_referer( 'silvertrail_license_seen', '_silvertrail_license' );
 		update_option( self::LICENSE_SEEN, true, false );
-		wp_safe_redirect( self::url() );
+		self::back();
+	}
+
+	public static function toggle(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do this.', 'silvertrail' ), 403 );
+		}
+		check_admin_referer( 'silvertrail_toggle', '_silvertrail_toggle' );
+		update_option(
+			Settings::OPTION,
+			array(
+				'_tab'    => 'switch',
+				'enabled' => ! empty( $_POST['enabled'] ),
+			)
+		);
+		self::back();
+	}
+
+	private static function back(): never {
+		$referer = wp_get_referer();
+		wp_safe_redirect( false === $referer ? self::url() : $referer );
 		exit;
+	}
+
+	public static function footer(): string {
+		return esc_html( Plugin::license() ) . ' <a href="' . esc_url( SILVERTRAIL_LICENSE_URL ) . '">' . esc_html__( 'Site license', 'silvertrail' ) . '</a>';
 	}
 
 	public static function render(): void {

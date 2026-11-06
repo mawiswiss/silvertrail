@@ -188,7 +188,8 @@ test.describe('settings page', () => {
 
 	test('opens on the services and switches tabs', async ({ page }) => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail');
-		await expect(page.getByText(/The banner is on\./)).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Silvertrail is on', pressed: true })).toBeVisible();
+		await expect(page.getByText(/The banner asks about \d+ services\./)).toBeVisible();
 		await expect(page.getByRole('cell', { name: /Test Analytics/ })).toBeVisible();
 
 		await page.getByRole('link', { name: 'Banner', exact: true }).click();
