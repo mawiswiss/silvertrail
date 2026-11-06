@@ -34,6 +34,7 @@ $silvertrail_appearances   = $silvertrail_theme_json ? array(
 	'light' => array( __( 'Light', 'silvertrail' ), __( 'Dark text on white', 'silvertrail' ) ),
 	'dark'  => array( __( 'Dark', 'silvertrail' ), __( 'Light text on dark gray', 'silvertrail' ) ),
 );
+$silvertrail_floating      = 'never' === $silvertrail_settings['floating_button'] ? 'never' : $silvertrail_settings['floating_position'];
 $silvertrail_one_look      = has_filter( 'silvertrail_design' ) && Design::tokens( 'light' ) === Design::tokens( 'dark' );
 $silvertrail_now           = Frontend::appearance();
 $silvertrail_tokens        = Design::tokens( $silvertrail_now );
@@ -179,6 +180,65 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						<?php endforeach; ?>
 					</fieldset>
 				<?php endif; ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Floating button', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( Settings::in_code( 'floating_button' ) ? 'floating_button' : 'floating_position' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
+			<td>
+				<fieldset class="silvertrail-cards">
+					<legend class="screen-reader-text"><?php esc_html_e( 'Floating button', 'silvertrail' ); ?></legend>
+					<label class="silvertrail-card">
+						<svg class="silvertrail-card__preview silvertrail-sketch" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+							<rect class="silvertrail-sketch__page" width="120" height="80"/>
+							<rect class="silvertrail-sketch__content" x="10" y="10" width="50" height="5" rx="2"/>
+							<rect class="silvertrail-sketch__content" x="10" y="21" width="100" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="28" width="90" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="35" width="40" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="66" width="24" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__button" x="38" y="66" width="26" height="3" rx="1.5"/>
+						</svg>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'floating' ) ); ?>" value="never" <?php checked( $silvertrail_floating, 'never' ); ?> <?php disabled( Settings::in_code( 'floating_button' ) ); ?>>
+						<span class="silvertrail-card__name"><?php esc_html_e( 'Off', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'Only links open the settings', 'silvertrail' ); ?></span>
+					</label>
+					<label class="silvertrail-card">
+						<svg class="silvertrail-card__preview silvertrail-sketch" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+							<rect class="silvertrail-sketch__page" width="120" height="80"/>
+							<rect class="silvertrail-sketch__content" x="10" y="10" width="50" height="5" rx="2"/>
+							<rect class="silvertrail-sketch__content" x="10" y="21" width="100" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="28" width="90" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="35" width="40" height="3" rx="1.5"/>
+							<circle class="silvertrail-sketch__reopen" cx="15" cy="66" r="7"/>
+						</svg>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'floating' ) ); ?>" value="left" <?php checked( $silvertrail_floating, 'left' ); ?> <?php disabled( Settings::in_code( 'floating_button' ) || Settings::in_code( 'floating_position' ) ); ?>>
+						<span class="silvertrail-card__name"><?php esc_html_e( 'Bottom left', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'On pages without a link', 'silvertrail' ); ?></span>
+					</label>
+					<label class="silvertrail-card">
+						<svg class="silvertrail-card__preview silvertrail-sketch" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+							<rect class="silvertrail-sketch__page" width="120" height="80"/>
+							<rect class="silvertrail-sketch__content" x="10" y="10" width="50" height="5" rx="2"/>
+							<rect class="silvertrail-sketch__content" x="10" y="21" width="100" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="28" width="90" height="3" rx="1.5"/>
+							<rect class="silvertrail-sketch__content" x="10" y="35" width="40" height="3" rx="1.5"/>
+							<circle class="silvertrail-sketch__reopen" cx="105" cy="66" r="7"/>
+						</svg>
+						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'floating' ) ); ?>" value="right" <?php checked( $silvertrail_floating, 'right' ); ?> <?php disabled( Settings::in_code( 'floating_button' ) || Settings::in_code( 'floating_position' ) ); ?>>
+						<span class="silvertrail-card__name"><?php esc_html_e( 'Bottom right', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'On pages without a link', 'silvertrail' ); ?></span>
+					</label>
+				</fieldset>
+				<p class="description">
+					<?php
+					printf(
+						/* translators: 1: .silvertrail-reopen, 2: the silvertrail_reopen_icon filter */
+						esc_html__( 'Style it through %1$s and swap its icon with the %2$s filter.', 'silvertrail' ),
+						'<code>.silvertrail-reopen</code>',
+						'<code>silvertrail_reopen_icon</code>'
+					);
+					echo ' ' . SettingsPage::help_button( 'silvertrail-floating', __( 'Show how', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
+					?>
+				</p>
 			</td>
 		</tr>
 	</table>
@@ -402,7 +462,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 					'<code>[silvertrail_link]</code>'
 				);
 				?>
-				<p class="description"><?php esc_html_e( 'Pages without such a link show a small floating button instead.', 'silvertrail' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Every page needs one, unless the floating button is on.', 'silvertrail' ); ?></p>
 			</td>
 		</tr>
 	</table>

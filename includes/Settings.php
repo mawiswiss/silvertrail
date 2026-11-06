@@ -16,6 +16,7 @@ namespace Silvertrail;
  *     appearance: 'theme'|'light'|'dark',
  *     texts: array<string, array<string, string>>,
  *     floating_button: 'auto'|'always'|'never',
+ *     floating_position: 'left'|'right',
  *     load_css: bool,
  *     imprint_page: int,
  *     presets: array<string, PresetSetting>,
@@ -45,20 +46,21 @@ final class Settings {
 	 */
 	public static function defaults(): array {
 		return array(
-			'enabled'         => true,
-			'layout'          => 'modal',
-			'require_choice'  => true,
-			'appearance'      => 'theme',
-			'texts'           => array(),
-			'floating_button' => 'auto',
-			'load_css'        => true,
-			'imprint_page'    => 0,
-			'presets'         => array(),
-			'expiry_months'   => 6,
-			'records'         => false,
-			'retention_days'  => 365,
-			'gpc'             => true,
-			'trail'           => true,
+			'enabled'           => true,
+			'layout'            => 'modal',
+			'require_choice'    => true,
+			'appearance'        => 'theme',
+			'texts'             => array(),
+			'floating_button'   => 'never',
+			'floating_position' => 'left',
+			'load_css'          => true,
+			'imprint_page'      => 0,
+			'presets'           => array(),
+			'expiry_months'     => 6,
+			'records'           => false,
+			'retention_days'    => 365,
+			'gpc'               => true,
+			'trail'             => true,
 		);
 	}
 
@@ -109,14 +111,15 @@ final class Settings {
 		$clean    = array();
 		foreach ( $values as $key => $value ) {
 			$clean[ $key ] = match ( $key ) {
-				'layout'          => 'box' === $value ? 'box' : 'modal',
-				'appearance'      => in_array( $value, array( 'light', 'dark' ), true ) ? $value : 'theme',
-				'imprint_page'    => absint( $value ),
-				'expiry_months'   => self::clamp( $value, 1, 13, $defaults['expiry_months'] ),
-				'retention_days'  => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
-				'floating_button' => self::floating_button( $value ),
+				'layout'            => 'box' === $value ? 'box' : 'modal',
+				'appearance'        => in_array( $value, array( 'light', 'dark' ), true ) ? $value : 'theme',
+				'imprint_page'      => absint( $value ),
+				'expiry_months'     => self::clamp( $value, 1, 13, $defaults['expiry_months'] ),
+				'retention_days'    => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
+				'floating_button'   => self::floating_button( $value ),
+				'floating_position' => 'right' === $value ? 'right' : 'left',
 				'enabled', 'require_choice', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
-				default           => $value,
+				default             => $value,
 			};
 		}
 		return $clean;

@@ -9,7 +9,18 @@ const withSettings = (context, settings) =>
 const banner = (page) => page.getByRole('dialog', { name: 'Privacy settings' });
 
 test.describe('reopen', () => {
-	test('the floating button appears after a choice and reopens the preferences', async ({ page }) => {
+	test('with the floating button off, only the link reopens the preferences', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'never' });
+		await page.goto('/?pagename=silvertrail-shortcode');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+		await expect(page.locator('.silvertrail-reopen')).toHaveCount(0);
+		await page.getByRole('link', { name: 'Privacy settings' }).click();
+		await expect(banner(page)).toBeVisible();
+	});
+
+	test('the floating button appears after a choice and reopens the preferences', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'auto' });
 		await page.goto('/');
 		const button = page.getByRole('button', { name: 'Privacy settings' });
 		await expect(button).toBeHidden();
@@ -19,7 +30,20 @@ test.describe('reopen', () => {
 		await expect(banner(page)).toBeVisible();
 	});
 
-	test('the shortcode link reopens the preferences and replaces the floating button', async ({ page }) => {
+	test('the floating button sits in the corner the settings pick, with its icon', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'auto', floating_position: 'right' });
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+		const box = await page.getByRole('button', { name: 'Privacy settings' }).boundingBox();
+		const width = page.viewportSize().width;
+		expect(box.x + box.width).toBeGreaterThan(width - 40);
+		const icon = await page.locator('.silvertrail-reopen svg').boundingBox();
+		expect(icon.width).toBeGreaterThan(10);
+	});
+
+	test('the shortcode link reopens the preferences and replaces the floating button', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'auto' });
 		await page.goto('/?pagename=silvertrail-shortcode');
 		await page.getByRole('button', { name: 'Only essential' }).first().click();
 		await expect(page.getByRole('button', { name: 'Privacy settings' })).toBeHidden();
@@ -132,6 +156,7 @@ test.describe('appearance settings', () => {
 	});
 
 	test('a site with embeds only opens no banner and offers the reopen button after an embed choice', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'auto' });
 		await context.addCookies([{ name: 'silvertrail_test_in_place', value: '1', url: 'http://localhost:8892' }]);
 		await page.goto('/?pagename=silvertrail-embeds');
 		await expect(page.locator('#silvertrail-banner')).toBeHidden();
@@ -231,7 +256,7 @@ test.describe('settings page', () => {
 		]);
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
 
-		await expect(page.locator('th', { hasText: 'Position' })).toContainText('Set in code');
+		await expect(page.locator('th', { hasText: /^Position/ })).toContainText('Set in code');
 		await expect(page.locator('th', { hasText: 'Appearance' })).not.toContainText('Set in code');
 		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
 		await expect(page.getByRole('radio', { name: 'Corner' })).toBeDisabled();

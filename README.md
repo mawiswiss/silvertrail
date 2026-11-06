@@ -35,10 +35,11 @@ That is the whole business model. There is no pro version and no hosted service,
 
 1. Install and activate the plugin.
 2. Under Settings › Silvertrail, tick the trackers the site uses, such as Google Tag Manager, and enter their IDs.
+3. Put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer, so visitors can change their choice. Or turn on the floating button under Settings › Silvertrail › Banner › Look.
 
-Nothing else is needed. Embeds are blocked already, the banner takes its colours from the theme, and visitors get a button to change their choice.
+Nothing else is needed. Embeds are blocked already, and the banner takes its colours from the theme.
 
-The admin holds only decisions: which services run, where the banner sits and how it looks, its texts, the imprint page, whether a choice is required and whether to keep records. Everything else has a default that fits most sites, and code changes it.
+The admin holds only decisions: which services run, where the banner sits and how it looks, its texts, the imprint page, the floating button, whether a choice is required and whether to keep records. Everything else has a default that fits most sites, and code changes it.
 
 ## Built for developers
 
@@ -49,7 +50,7 @@ Code wins over the admin, and the admin marks every field that code sets with "S
 | Services and groups | `silvertrail_register` action with `silvertrail_register_service()` and `silvertrail_register_group()` |
 | Last word on services | `silvertrail_config` filter |
 | Settings | `silvertrail_settings` filter |
-| Look | the theme's `theme.json`, the `silvertrail_design` filter, the theme's `silvertrail/silvertrail.css`, template overrides |
+| Look | the theme's `theme.json`, the `silvertrail_design` and `silvertrail_reopen_icon` filters, the theme's `silvertrail/silvertrail.css`, template overrides |
 | Texts | the theme's `silvertrail/texts-{locale}.json`, the `silvertrail_translation` and `silvertrail_texts` filters |
 | Records | `silvertrail_recorded` action |
 | Browser | `window.silvertrail`, the `silvertrail:change` and `silvertrail:before-prompt` events |
@@ -188,8 +189,9 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 | `appearance` | Banner | `'light'` or `'dark'`. The default `'theme'` takes whichever the theme is. | `'theme'` |
 | `require_choice` | Banner | bool. Turned off, a click outside or Escape closes the banner without storing anything. | `true` |
 | `imprint_page` | Banner | page ID, `0` for none | `0` |
+| `floating_button` | Banner | `'never'`, `'auto'` for pages without a link to `#silvertrail`, or `'always'` | `'never'` |
+| `floating_position` | Banner | `'left'` or `'right'`, the bottom corner of the floating button | `'left'` |
 | `records` | Tools | bool | `false` |
-| `floating_button` | code | `'auto'` shows it on pages without a link to `#silvertrail`, also `'always'` or `'never'` | `'auto'` |
 | `load_css` | code | bool. Turned off, the theme's `silvertrail/silvertrail.css` is the whole stylesheet. | `true` |
 | `expiry_months` | code | 1 to 13 | `6` |
 | `retention_days` | code | 30 to 3650 | `365` |
@@ -212,7 +214,17 @@ The browser ignores the tag until the visitor agrees to `hubspot`. Then Silvertr
 
 ## Links to the preferences
 
-Any link to `#silvertrail` opens the preferences, and so does any element with `data-silvertrail-open`. The `[silvertrail_link]` shortcode prints such a link, with its own text as `[silvertrail_link]Cookie settings[/silvertrail_link]`, and the Privacy settings link block does the same in the editor. The floating button steps aside on pages that have one.
+Any link to `#silvertrail` opens the preferences, and so does any element with `data-silvertrail-open`. The `[silvertrail_link]` shortcode prints such a link, with its own text as `[silvertrail_link]Cookie settings[/silvertrail_link]`, and the Privacy settings link block does the same in the editor. Visitors need a way back to their choice on every page, so put one in the footer.
+
+The floating button is off by default. Turned on under Settings › Silvertrail › Banner › Look, or with `floating_button` set to `'auto'`, it sits in a bottom corner of every page without such a link. `'always'` shows it next to a link too, and `floating_position` picks the left or the right corner. The `silvertrail_reopen_icon` filter swaps its icon for inline SVG or an `<img>`, and the button keeps its label for screen readers:
+
+```php
+add_filter( 'silvertrail_reopen_icon', function () {
+	return '<img src="' . esc_url( get_theme_file_uri( 'images/privacy.svg' ) ) . '" alt="">';
+} );
+```
+
+The theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`, `.silvertrail-reopen--left` and `.silvertrail-reopen--right`.
 
 ## In the browser
 

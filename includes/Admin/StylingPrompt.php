@@ -24,6 +24,9 @@ final class StylingPrompt {
 			'',
 			'- Theme: ' . wp_get_theme()->get( 'Name' ) . ( wp_theme_has_theme_json() ? ', with theme.json' : ', without theme.json' ),
 			'- Position: ' . ( 'box' === $settings['layout'] ? 'box in the corner' : 'centred' ) . ', appearance: ' . Frontend::appearance(),
+			'never' === $settings['floating_button']
+				? '- Floating button: off, so `.silvertrail-reopen` needs no rules.'
+				: "- Floating button: on, in the bottom {$settings['floating_position']} corner (`.silvertrail-reopen--{$settings['floating_position']}`), " . ( 'always' === $settings['floating_button'] ? 'on every page' : 'on pages without a link to `#silvertrail`' ) . '. Style it with the banner.',
 		);
 
 		$tokens = array();

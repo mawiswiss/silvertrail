@@ -50,6 +50,20 @@ final class StylingTest extends WP_UnitTestCase {
 		}
 	}
 
+	public function test_the_prompt_covers_the_floating_button_only_when_it_is_on(): void {
+		$this->assertStringContainsString( '- Floating button: off', StylingPrompt::text() );
+
+		update_option(
+			Settings::OPTION,
+			array(
+				'floating_button'   => 'auto',
+				'floating_position' => 'right',
+			)
+		);
+
+		$this->assertStringContainsString( '- Floating button: on, in the bottom right corner (`.silvertrail-reopen--right`), on pages without a link', StylingPrompt::text() );
+	}
+
 	public function test_the_theme_stylesheet_loads_after_the_default_styles(): void {
 		$this->theme_css( '.silvertrail { box-shadow: none; }' );
 

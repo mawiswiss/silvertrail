@@ -290,7 +290,8 @@
 	fill: #a7aaad;
 }
 
-.silvertrail-sketch__button {
+.silvertrail-sketch__button,
+.silvertrail-sketch__reopen {
 	fill: var(--wp-admin-theme-color);
 }
 

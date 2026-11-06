@@ -26,7 +26,7 @@ final class SettingsPage {
 	 */
 	public const TABS = array(
 		'services' => array( 'presets' ),
-		'banner'   => array( 'layout', 'require_choice', 'appearance', 'texts', 'imprint_page' ),
+		'banner'   => array( 'layout', 'require_choice', 'appearance', 'texts', 'imprint_page', 'floating_button', 'floating_position' ),
 		'tools'    => array( 'records' ),
 	);
 
@@ -230,6 +230,10 @@ final class SettingsPage {
 		$values = array_replace( $values, array_intersect_key( $input, $values ) );
 		foreach ( self::FLAGS as $key ) {
 			$values[ $key ] = ! empty( $input[ $key ] );
+		}
+		if ( isset( $input['floating'] ) ) {
+			$values['floating_button']   = 'never' === $input['floating'] ? 'never' : 'auto';
+			$values['floating_position'] = $input['floating'];
 		}
 
 		$values = Settings::normalize( $values );

@@ -30,7 +30,7 @@ The banner puts "Accept all" and "Only essential" side by side at the same size.
 * It supports the WP Consent API, so other plugins that use the API read the visitor's choice.
 * A browser that sends Global Privacy Control gets "only essential" without a banner.
 * A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
-* A small button lets visitors change their choice on every page without a link to the settings.
+* A link, block or shortcode reopens the preferences, and an optional floating button does the same in a corner of the page.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
 * The Leak check, under Tools, opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
@@ -148,7 +148,7 @@ Cached pages still carry the old version of the settings. Purge the page cache a
 
 = Does it work without a footer link? =
 
-Yes. A small floating button reopens the preferences on every page without a link to `#silvertrail`. Any link to `#silvertrail`, the `[silvertrail_link]` shortcode and the Privacy settings link block open them too, and the button steps aside on those pages. Set `floating_button` to `always` or `never` with the `silvertrail_settings` filter.
+Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Banner › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
 
 == Privacy ==
 

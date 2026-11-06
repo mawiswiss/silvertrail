@@ -50,7 +50,7 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
     .silvertrail__legal > a
   .silvertrail__close
 .silvertrail-embed > .silvertrail-embed__inner > .silvertrail-embed__text, .silvertrail-embed__button, .silvertrail-embed__remember
-.silvertrail-reopen
+.silvertrail-reopen                  floating button, plus .silvertrail-reopen--left or .silvertrail-reopen--right
 ```
 
 ### Rules

@@ -321,6 +321,18 @@
 	cursor: pointer;
 }
 
+.silvertrail-reopen--right {
+	right: 1rem;
+	left: auto;
+}
+
+.silvertrail-reopen > :is(svg, img) {
+	display: block;
+	width: 1.375rem;
+	height: 1.375rem;
+	object-fit: contain;
+}
+
 .silvertrail-reopen[hidden] {
 	display: none;
 }

@@ -289,6 +289,42 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertSame( '', $this->card( 'trackers' ) );
 	}
 
+	public function test_the_floating_button_cards_follow_the_settings(): void {
+		$this->assertSame( 'never', $this->floating_choice() );
+
+		update_option(
+			Settings::OPTION,
+			array(
+				'floating_button'   => 'auto',
+				'floating_position' => 'right',
+			)
+		);
+		$this->assertSame( 'right', $this->floating_choice() );
+
+		add_filter( 'silvertrail_settings', static fn( array $settings ): array => array( 'floating_button' => 'always' ) + $settings );
+		$this->assertMatchesRegularExpression( '/name="silvertrail\[floating\]" value="never"[^>]*disabled/', $this->banner_tab( 'twentytwentyfive' ) );
+	}
+
+	public function test_the_banner_tab_saves_the_floating_button(): void {
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'     => 'banner',
+				'floating' => 'right',
+			)
+		);
+		$this->assertSame( 'auto', $saved['floating_button'] );
+		$this->assertSame( 'right', $saved['floating_position'] );
+
+		update_option( Settings::OPTION, $saved );
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'     => 'banner',
+				'floating' => 'never',
+			)
+		);
+		$this->assertSame( 'never', $saved['floating_button'] );
+	}
+
 	public function test_the_switch_changes_only_whether_silvertrail_is_on(): void {
 		update_option( Settings::OPTION, array_replace( Settings::defaults(), array( 'layout' => 'box' ) ) );
 
@@ -324,6 +360,11 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		ob_start();
 		Notices::card( $card );
 		return (string) ob_get_clean();
+	}
+
+	private function floating_choice(): string {
+		preg_match( '/name="silvertrail\[floating\]" value="(\w+)"\s+checked/', $this->banner_tab( 'twentytwentyfive' ), $match );
+		return $match[1] ?? '';
 	}
 
 	private function banner_tab( string $theme ): string {

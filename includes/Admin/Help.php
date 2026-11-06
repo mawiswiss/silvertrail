@@ -73,6 +73,12 @@ PHP;
 [silvertrail_link]Cookie settings[/silvertrail_link]
 HTML;
 
+	private const FLOATING = <<<'PHP'
+add_filter( 'silvertrail_reopen_icon', function () {
+	return '<img src="' . esc_url( get_theme_file_uri( 'images/privacy.svg' ) ) . '" alt="">';
+} );
+PHP;
+
 	private const BROWSER = <<<'JS'
 window.silvertrail.has('hubspot');
 window.silvertrail.open();
@@ -151,8 +157,8 @@ SH;
 				'intro' => __( 'The `silvertrail_settings` filter sets any setting. A field set in code shows “Set in code” on this page and cannot be changed here.', 'silvertrail' ),
 				'code'  => self::SETTINGS,
 				'notes' => array(
-					__( 'On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `records`.', 'silvertrail' ),
-					__( 'Only in code: `floating_button` (`auto`, `always` or `never`), `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`.', 'silvertrail' ),
+					__( 'On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`.', 'silvertrail' ),
+					__( 'Only in code: `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`.', 'silvertrail' ),
 					__( '`wp silvertrail settings` lists each value and where it comes from.', 'silvertrail' ),
 				),
 			),
@@ -184,7 +190,17 @@ SH;
 				'code'  => self::LINKS,
 				'notes' => array(
 					__( 'The `[silvertrail_link]` shortcode and the Privacy settings link block print such a link.', 'silvertrail' ),
-					__( 'The floating button steps aside on pages that have one. `floating_button` in the `silvertrail_settings` filter sets it to `always` or `never`.', 'silvertrail' ),
+					__( 'Every page needs such a link, unless the floating button is on.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-floating' => array(
+				'title' => __( 'Floating button', 'silvertrail' ),
+				'intro' => __( 'The `silvertrail_reopen_icon` filter swaps the icon of the floating button for inline SVG or an `<img>`. The button keeps its label for screen readers.', 'silvertrail' ),
+				'code'  => self::FLOATING,
+				'notes' => array(
+					__( '`floating_button`: `never`, the default, `auto` for pages without a link to `#silvertrail`, or `always`.', 'silvertrail' ),
+					__( '`floating_position`: `left` or `right`.', 'silvertrail' ),
+					__( 'Style it in the theme’s `silvertrail/silvertrail.css` through `.silvertrail-reopen`, `.silvertrail-reopen--left` and `.silvertrail-reopen--right`.', 'silvertrail' ),
 				),
 			),
 			'silvertrail-browser'  => array(
