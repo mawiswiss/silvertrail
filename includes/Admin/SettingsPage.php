@@ -200,15 +200,24 @@ final class SettingsPage {
 	 */
 	public static function sanitize( mixed $input ): array {
 		$input = is_array( $input ) ? $input : array();
-		$clean = self::clean( $input );
 		$tab   = is_string( $input['_tab'] ?? null ) ? $input['_tab'] : '';
 		$keys  = 'switch' === $tab ? array( 'enabled' ) : ( self::TABS[ $tab ] ?? null );
 		if ( null === $keys ) {
-			return $clean;
+			// A new option runs through here twice: add_option() sanitizes the saved value again, with _tab and the defaults gone.
+			return self::changed( self::clean( $input + Settings::defaults() ) );
 		}
-		$posted = array_intersect_key( $clean, array_flip( $keys ) );
+		$posted = array_intersect_key( self::clean( $input ), array_flip( $keys ) );
 		$posted = array_filter( $posted, static fn( string $key ): bool => ! Settings::in_code( $key ), ARRAY_FILTER_USE_KEY );
-		return array_replace( Settings::stored(), $posted );
+		return self::changed( array_replace( Settings::saved(), $posted ) );
+	}
+
+	/**
+	 * @param array<string, mixed> $values
+	 * @return array<string, mixed>
+	 */
+	private static function changed( array $values ): array {
+		$defaults = Settings::defaults();
+		return array_filter( $values, static fn( mixed $value, string $key ): bool => ( $defaults[ $key ] ?? null ) !== $value, ARRAY_FILTER_USE_BOTH );
 	}
 
 	/**

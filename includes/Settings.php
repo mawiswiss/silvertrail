@@ -70,10 +70,18 @@ final class Settings {
 	 * @return SettingsArray
 	 */
 	public static function stored(): array {
-		$defaults = self::defaults();
-		$stored   = get_option( self::OPTION, array() );
 		/** @var SettingsArray */
-		return self::normalize( array_replace( $defaults, array_intersect_key( is_array( $stored ) ? $stored : array(), $defaults ) ) );
+		return self::normalize( array_replace( self::defaults(), self::saved() ) );
+	}
+
+	/**
+	 * Only what the admin changed. A setting left at its default follows a new default.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public static function saved(): array {
+		$saved = get_option( self::OPTION, array() );
+		return array_intersect_key( is_array( $saved ) ? $saved : array(), self::defaults() );
 	}
 
 	/**

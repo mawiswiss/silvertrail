@@ -77,7 +77,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		switch_theme( 'twentytwentyfive' );
 		Design::reset();
 
-		$this->assertSame( 'theme', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'light' ) )['appearance'] );
+		$this->assertArrayNotHasKey( 'appearance', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'light' ) ), 'Following the theme is the default.' );
 		$this->assertSame( 'dark', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'dark' ) )['appearance'] );
 	}
 
@@ -96,13 +96,13 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertTrue( $second['presets']['youtube']['enabled'] );
 	}
 
-	public function test_without_a_tab_every_setting_comes_from_the_input(): void {
+	public function test_without_a_tab_a_missing_setting_falls_back_to_its_default(): void {
 		update_option( Settings::OPTION, array_replace( Settings::defaults(), array( 'records' => true ) ) );
 
 		$saved = SettingsPage::sanitize( array( 'layout' => 'box' ) );
 
 		$this->assertSame( 'box', $saved['layout'] );
-		$this->assertFalse( $saved['records'] );
+		$this->assertArrayNotHasKey( 'records', $saved, 'A missing setting falls back to its default.' );
 	}
 
 	public function test_posted_json_keeps_only_what_differs_from_the_translation(): void {
@@ -322,7 +322,22 @@ final class SettingsPageTest extends WP_UnitTestCase {
 				'floating' => 'never',
 			)
 		);
-		$this->assertSame( 'never', $saved['floating_button'] );
+		$this->assertArrayNotHasKey( 'floating_button', $saved );
+		$this->assertArrayNotHasKey( 'floating_position', $saved );
+	}
+
+	public function test_a_save_keeps_only_what_differs_from_the_defaults(): void {
+		update_option( Settings::OPTION, Settings::defaults() + array( 'expiry_months' => 6 ) );
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'           => 'banner',
+				'layout'         => 'box',
+				'require_choice' => '1',
+			)
+		);
+
+		$this->assertSame( array( 'layout' => 'box' ), $saved );
 	}
 
 	public function test_the_switch_changes_only_whether_silvertrail_is_on(): void {
