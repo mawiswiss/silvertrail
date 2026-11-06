@@ -291,7 +291,7 @@ test.describe('settings page', () => {
 		await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
 
-		await page.getByText('Show the prompt').click();
+		await page.locator('summary', { hasText: 'Show the prompt' }).click();
 		const prompt = page.locator('#silvertrail-styling-prompt');
 		await expect(prompt).toHaveValue(/^## Brief for the AI[\s\S]*## This site[\s\S]*--silvertrail-background/);
 		const preview = page.locator('.CodeMirror', { hasText: '## Brief for the AI' });

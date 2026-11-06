@@ -211,18 +211,23 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						?>
 					</li>
 				</ol>
-				<details class="silvertrail-disclosure">
-					<summary><?php esc_html_e( 'Show the prompt', 'silvertrail' ); ?></summary>
-					<label for="silvertrail-styling-prompt" class="screen-reader-text"><?php esc_html_e( 'Prompt for an AI assistant', 'silvertrail' ); ?></label>
-					<textarea
-						id="silvertrail-styling-prompt"
-						class="large-text code"
-						rows="16"
-						readonly
-						<?php if ( '' !== $silvertrail_prompt_editor ) : ?>
-							data-silvertrail-editor="<?php echo esc_attr( $silvertrail_prompt_editor ); ?>"
-						<?php endif; ?>
-					><?php echo esc_textarea( StylingPrompt::text() ); ?></textarea>
+				<details class="health-check-accordion silvertrail-accordion">
+					<summary class="health-check-accordion-trigger">
+						<span class="title"><?php esc_html_e( 'Show the prompt', 'silvertrail' ); ?></span>
+						<span class="icon"></span>
+					</summary>
+					<div class="health-check-accordion-panel">
+						<label for="silvertrail-styling-prompt" class="screen-reader-text"><?php esc_html_e( 'Prompt for an AI assistant', 'silvertrail' ); ?></label>
+						<textarea
+							id="silvertrail-styling-prompt"
+							class="large-text code"
+							rows="16"
+							readonly
+							<?php if ( '' !== $silvertrail_prompt_editor ) : ?>
+								data-silvertrail-editor="<?php echo esc_attr( $silvertrail_prompt_editor ); ?>"
+							<?php endif; ?>
+						><?php echo esc_textarea( StylingPrompt::text() ); ?></textarea>
+					</div>
 				</details>
 			</td>
 		</tr>
