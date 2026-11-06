@@ -5,3 +5,7 @@
 /playwright-report/
 /.phpunit.result.cache
 /.wp-env.override.json
+
+# AI
+.claude/settings.local.json
+.claude/worktrees/

@@ -19,3 +19,5 @@
 /phpunit.xml.dist
 /.phpunit.result.cache
 /playwright.config.js
+/AGENTS.md
+/.claude
