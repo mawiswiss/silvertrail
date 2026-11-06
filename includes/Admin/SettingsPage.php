@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Silvertrail\Admin;
 
 use Silvertrail\Config;
+use Silvertrail\Design;
 use Silvertrail\Presets;
 use Silvertrail\Scan;
 use Silvertrail\Settings;
@@ -219,10 +220,16 @@ final class SettingsPage {
 			$values[ $key ] = ! empty( $input[ $key ] );
 		}
 
+		$values = Settings::normalize( $values );
+		// The theme's own scheme stays 'theme', so the banner follows a later theme switch.
+		if ( Design::scheme() === $values['appearance'] ) {
+			$values['appearance'] = 'theme';
+		}
+
 		return array(
 			'texts'   => self::texts( $input ),
 			'presets' => $presets,
-		) + Settings::normalize( $values );
+		) + $values;
 	}
 
 	/**

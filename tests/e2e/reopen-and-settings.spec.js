@@ -253,7 +253,7 @@ test.describe('settings page', () => {
 
 		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
 		await expect(page.getByRole('radio', { name: 'Dark' })).toBeChecked();
-		await expect(page.getByRole('radio', { name: 'Like the theme' })).not.toBeChecked();
+		await expect(page.getByRole('radio', { name: 'Light' })).not.toBeChecked();
 	});
 
 	test('the banner tab hands an AI assistant the styling brief', async ({ page, context }) => {

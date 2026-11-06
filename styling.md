@@ -56,7 +56,7 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
 ### Rules
 
 - Accept all and Only essential must look identical. Style both through `.silvertrail__button`, and never tell them apart with `[data-silvertrail-action]`, an ID, `:first-child`, `:nth-child()` or `order`.
-- Select only these classes, plus `[data-silvertrail-appearance="theme|light|dark"]` to scope colours to the appearance the site owner picked.
+- Select only these classes, plus `[data-silvertrail-appearance="light|dark"]` to scope colours to the appearance the site owner picked.
 - Load nothing: no `@import`, no `@font-face`, no `url()`. A consent banner must not contact anyone before a choice. Use the theme's presets, `var(--wp--preset--color--<slug>)` and `var(--wp--preset--font-family--<slug>)`.
 - Contrast meets WCAG AA: 4.5:1 for text and button labels, 3:1 for borders and focus outlines. Keep every focus outline visible.
 - Never hide, fade or clip content, and keep text at 0.875rem or larger. When you set `display` on a class, also set `[hidden] { display: none }` for it.

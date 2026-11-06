@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Silvertrail\Tests;
 
 use Silvertrail\Design;
+use Silvertrail\Frontend;
 use Silvertrail\Settings;
 use WP_UnitTestCase;
 
@@ -17,6 +18,7 @@ final class DesignTest extends WP_UnitTestCase {
 
 	public function tear_down(): void {
 		remove_all_filters( 'silvertrail_design' );
+		remove_all_filters( 'wp_theme_json_data_theme' );
 		delete_option( Settings::OPTION );
 		$this->use_theme( WP_DEFAULT_THEME );
 		parent::tear_down();
@@ -55,6 +57,23 @@ final class DesignTest extends WP_UnitTestCase {
 		update_option( Settings::OPTION, array( 'appearance' => 'light' ) );
 
 		$this->assertSame( $theme, Design::tokens() );
+	}
+
+	public function test_a_dark_theme_keeps_its_colours_by_default(): void {
+		$this->dark_theme();
+
+		$this->assertSame( 'dark', Frontend::appearance() );
+		$this->assertSame( '#111111', Design::tokens()['background'] );
+		$this->assertSame( '#eeeeee', Design::tokens()['text'] );
+		$this->assertStringContainsString( 'color-scheme:dark', Design::css() );
+	}
+
+	public function test_light_on_a_dark_theme_puts_a_light_colour_behind(): void {
+		$this->dark_theme();
+		update_option( Settings::OPTION, array( 'appearance' => 'light' ) );
+
+		$this->assertNotSame( '#111111', Design::tokens()['background'] );
+		$this->assertStringContainsString( 'color-scheme:light', Design::css() );
 	}
 
 	public function test_the_filter_wins_and_unsafe_values_are_dropped(): void {
@@ -117,8 +136,28 @@ final class DesignTest extends WP_UnitTestCase {
 		return Design::tokens();
 	}
 
+	private function dark_theme(): void {
+		add_filter(
+			'wp_theme_json_data_theme',
+			static fn( $data ) => $data->update_with(
+				array(
+					'version' => 3,
+					'styles'  => array(
+						'color' => array(
+							'background' => '#111111',
+							'text'       => '#eeeeee',
+						),
+					),
+				)
+			)
+		);
+		wp_clean_theme_json_cache();
+		Design::reset();
+	}
+
 	private function use_theme( string $theme ): void {
 		switch_theme( $theme );
 		wp_clean_theme_json_cache();
+		Design::reset();
 	}
 }

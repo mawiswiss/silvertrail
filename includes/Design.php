@@ -12,10 +12,26 @@ final class Design {
 	public const TOKENS = array( 'background', 'text', 'muted', 'line', 'accent', 'on-accent', 'radius', 'button-padding', 'button-weight' );
 
 	/**
+	 * @var array<string, string>
+	 */
+	private static array $schemes = array();
+
+	/**
 	 * @return array<string, string>
 	 */
 	public static function tokens( string $mode = '' ): array {
 		return self::resolve( '' === $mode ? Frontend::appearance() : $mode )[0];
+	}
+
+	/**
+	 * Whether the theme itself is light or dark, judged by its background.
+	 */
+	public static function scheme(): string {
+		return self::$schemes[ get_stylesheet() ] ??= self::own( self::theme( '' )[1] );
+	}
+
+	public static function reset(): void {
+		self::$schemes = array();
 	}
 
 	public static function css(): string {
@@ -51,11 +67,7 @@ final class Design {
 		if ( null === $background && ! $changed( 'background' ) ) {
 			$background = self::luminance( $resolved['background'] ?? '' );
 		}
-		if ( null === $background ) {
-			$scheme = 'theme' === $mode ? '' : $mode;
-		} else {
-			$scheme = $background > 0.179 ? 'light' : 'dark';
-		}
+		$scheme = null === $background ? '' : ( $background > 0.179 ? 'light' : 'dark' );
 		return array( $filtered, $scheme );
 	}
 
@@ -87,7 +99,7 @@ final class Design {
 			'button-weight'  => $weight,
 		);
 
-		if ( 'theme' !== $mode ) {
+		if ( '' !== $mode && self::own( $values ) !== $mode ) {
 			$lightest = 'background';
 			$darkest  = 'text';
 			$known    = array_filter( array_map( array( self::class, 'luminance' ), $values ), 'is_float' );
@@ -127,6 +139,14 @@ final class Design {
 			}
 		}
 		return array( self::valid( $tokens ), $values );
+	}
+
+	/**
+	 * @param array<string, string> $values
+	 */
+	private static function own( array $values ): string {
+		$background = self::luminance( $values['background'] ?? '' );
+		return null !== $background && $background <= 0.179 ? 'dark' : 'light';
 	}
 
 	/**

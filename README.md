@@ -172,7 +172,7 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 | Key | Admin | Values | Default |
 | --- | --- | --- | --- |
 | `layout` | Banner | `'modal'` (centred) or `'box'` (corner) | `'modal'` |
-| `appearance` | Banner | `'theme'`, `'light'` or `'dark'` | `'theme'` |
+| `appearance` | Banner | `'light'` or `'dark'`. The default `'theme'` takes whichever the theme is. | `'theme'` |
 | `require_choice` | Banner | bool. Turned off, a click outside or Escape closes the banner without storing anything. | `true` |
 | `imprint_page` | Banner | page ID, `0` for none | `0` |
 | `records` | Tools | bool | `false` |
@@ -261,9 +261,9 @@ A missing file is skipped.
 
 ## Design
 
-The banner, the embed placeholders and the floating button take their colours, corners and button shape from the theme's `theme.json`, including the active style variation. Under Settings › Silvertrail › Banner, Light and Dark keep the theme's colours and put the lightest or the darkest one in the background. Classic themes without `theme.json` get a neutral palette.
+The banner, the embed placeholders and the floating button take their colours, corners and button shape from the theme's `theme.json`, including the active style variation. Under Settings › Silvertrail › Banner, the appearance that matches the theme keeps its colours as they are. The other one puts the theme's lightest or darkest colour in the background. Classic themes without `theme.json` get a neutral light or dark palette.
 
-Set your own design with the `silvertrail_design` filter. It receives the values for the chosen appearance and the appearance itself (`theme`, `light` or `dark`). Its result is final:
+Set your own design with the `silvertrail_design` filter. It receives the values for the chosen appearance and the appearance itself, `light` or `dark`. Its result is final. When it returns the same colours for both, the admin drops the choice:
 
 ```php
 add_filter( 'silvertrail_design', function ( $design, $appearance ) {

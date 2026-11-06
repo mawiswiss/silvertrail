@@ -24,11 +24,16 @@ $silvertrail_translation   = Texts::translation( $silvertrail_locale );
 $silvertrail_editor        = SettingsPage::editor( 'json' );
 $silvertrail_prompt_editor = SettingsPage::editor( 'markdown' );
 $silvertrail_theme_css     = is_file( get_theme_file_path( Frontend::THEME_CSS ) );
-$silvertrail_appearances   = array(
-	'theme' => array( __( 'Like the theme', 'silvertrail' ), __( 'As the theme sets it', 'silvertrail' ) ),
-	'light' => array( __( 'Light', 'silvertrail' ), __( 'Its lightest color behind', 'silvertrail' ) ),
-	'dark'  => array( __( 'Dark', 'silvertrail' ), __( 'Its darkest color behind', 'silvertrail' ) ),
+$silvertrail_theme_json    = wp_theme_has_theme_json();
+$silvertrail_as_theme      = __( 'As the theme sets it', 'silvertrail' );
+$silvertrail_appearances   = $silvertrail_theme_json ? array(
+	'light' => array( __( 'Light', 'silvertrail' ), 'light' === Design::scheme() ? $silvertrail_as_theme : __( 'Its lightest color behind', 'silvertrail' ) ),
+	'dark'  => array( __( 'Dark', 'silvertrail' ), 'dark' === Design::scheme() ? $silvertrail_as_theme : __( 'Its darkest color behind', 'silvertrail' ) ),
+) : array(
+	'light' => array( __( 'Light', 'silvertrail' ), __( 'Dark text on white', 'silvertrail' ) ),
+	'dark'  => array( __( 'Dark', 'silvertrail' ), __( 'Light text on dark gray', 'silvertrail' ) ),
 );
+$silvertrail_one_look      = has_filter( 'silvertrail_design' ) && Design::tokens( 'light' ) === Design::tokens( 'dark' );
 $silvertrail_swatch        = static function ( string $mode ): string {
 	$tokens = array_intersect_key( Design::tokens( $mode ), array_flip( array( 'background', 'text', 'accent', 'on-accent', 'radius' ) ) );
 	return implode( ';', array_map( static fn( string $key, string $value ): string => "--silvertrail-{$key}:{$value}", array_keys( $tokens ), $tokens ) );
@@ -83,22 +88,40 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( 'appearance' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
 			<td>
-				<fieldset class="silvertrail-cards">
-					<legend class="screen-reader-text"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></legend>
-					<?php foreach ( $silvertrail_appearances as $silvertrail_mode => list( $silvertrail_label, $silvertrail_hint ) ) : ?>
-						<label class="silvertrail-card">
-							<span class="<?php echo esc_attr( "silvertrail-card__preview silvertrail-swatch silvertrail-swatch--{$silvertrail_mode}" ); ?>" style="<?php echo esc_attr( $silvertrail_swatch( $silvertrail_mode ) ); ?>" aria-hidden="true">
-								<span class="silvertrail-swatch__text"></span>
-								<span class="silvertrail-swatch__text silvertrail-swatch__text--short"></span>
-								<span class="silvertrail-swatch__buttons"><span></span><span></span></span>
-							</span>
-							<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>" value="<?php echo esc_attr( $silvertrail_mode ); ?>" <?php checked( $silvertrail_settings['appearance'], $silvertrail_mode ); ?> <?php disabled( Settings::in_code( 'appearance' ) ); ?>>
-							<span class="silvertrail-card__name"><?php echo esc_html( $silvertrail_label ); ?></span>
-							<span class="silvertrail-card__hint"><?php echo esc_html( $silvertrail_hint ); ?></span>
-						</label>
-					<?php endforeach; ?>
-				</fieldset>
-				<p class="description"><?php esc_html_e( 'All three take colors, corners and buttons from the theme.', 'silvertrail' ); ?></p>
+				<?php if ( $silvertrail_one_look ) : ?>
+					<p>
+						<?php
+						/* translators: %s: silvertrail_design */
+						printf( esc_html__( 'The %s filter gives light and dark the same colors, so there is nothing to choose.', 'silvertrail' ), '<code>silvertrail_design</code>' );
+						?>
+					</p>
+				<?php else : ?>
+					<fieldset class="silvertrail-cards">
+						<legend class="screen-reader-text"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?></legend>
+						<?php foreach ( $silvertrail_appearances as $silvertrail_mode => list( $silvertrail_label, $silvertrail_hint ) ) : ?>
+							<label class="silvertrail-card">
+								<span class="<?php echo esc_attr( "silvertrail-card__preview silvertrail-swatch silvertrail-swatch--{$silvertrail_mode}" ); ?>" style="<?php echo esc_attr( $silvertrail_swatch( $silvertrail_mode ) ); ?>" aria-hidden="true">
+									<span class="silvertrail-swatch__text"></span>
+									<span class="silvertrail-swatch__text silvertrail-swatch__text--short"></span>
+									<span class="silvertrail-swatch__buttons"><span></span><span></span></span>
+								</span>
+								<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'appearance' ) ); ?>" value="<?php echo esc_attr( $silvertrail_mode ); ?>" <?php checked( Frontend::appearance(), $silvertrail_mode ); ?> <?php disabled( Settings::in_code( 'appearance' ) ); ?>>
+								<span class="silvertrail-card__name"><?php echo esc_html( $silvertrail_label ); ?></span>
+								<span class="silvertrail-card__hint"><?php echo esc_html( $silvertrail_hint ); ?></span>
+							</label>
+						<?php endforeach; ?>
+					</fieldset>
+					<p class="description">
+						<?php
+						if ( $silvertrail_theme_json ) {
+							esc_html_e( 'Both take colors, corners and buttons from the theme.', 'silvertrail' );
+						} else {
+							/* translators: %s: theme.json */
+							printf( esc_html__( 'The theme has no %s, so the banner uses its own colors.', 'silvertrail' ), '<code>theme.json</code>' );
+						}
+						?>
+					</p>
+				<?php endif; ?>
 			</td>
 		</tr>
 	</table>

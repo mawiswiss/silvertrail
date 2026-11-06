@@ -6,6 +6,7 @@ namespace Silvertrail\Tests;
 
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
+use Silvertrail\Design;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 use WP_UnitTestCase;
@@ -67,6 +68,14 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$this->assertSame( 'box', $saved['layout'] );
 		$this->assertSame( 'dark', $saved['appearance'] );
+	}
+
+	public function test_the_theme_own_scheme_is_saved_as_following_the_theme(): void {
+		switch_theme( 'twentytwentyfive' );
+		Design::reset();
+
+		$this->assertSame( 'theme', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'light' ) )['appearance'] );
+		$this->assertSame( 'dark', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'dark' ) )['appearance'] );
 	}
 
 	public function test_a_saved_tab_survives_a_second_pass(): void {
@@ -175,5 +184,52 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertSame( '', SettingsPage::turning_on() );
 		$_GET['silvertrail-turn-on'] = 'hubspot';
 		$this->assertSame( '', SettingsPage::turning_on() );
+	}
+
+	public function test_the_theme_own_scheme_is_checked_by_default(): void {
+		$html = $this->banner_tab( 'twentytwentyfive' );
+
+		$this->assertStringNotContainsString( 'value="theme"', $html );
+		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
+		$this->assertStringContainsString( 'As the theme sets it', $html );
+	}
+
+	public function test_a_design_in_code_with_one_look_leaves_nothing_to_choose(): void {
+		add_filter(
+			'silvertrail_design',
+			static fn( array $design ): array => array(
+				'background' => '#000000',
+				'text'       => '#ffffff',
+				'accent'     => '#ffcc00',
+				'on-accent'  => '#000000',
+			) + $design
+		);
+
+		$html = $this->banner_tab( 'twentytwentyfive' );
+		remove_all_filters( 'silvertrail_design' );
+
+		$this->assertStringNotContainsString( 'value="dark"', $html );
+		$this->assertStringContainsString( 'nothing to choose', $html );
+	}
+
+	public function test_a_classic_theme_offers_light_and_dark_only(): void {
+		$html = $this->banner_tab( 'twentytwentyone' );
+
+		$this->assertStringNotContainsString( 'value="theme"', $html );
+		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
+		$this->assertStringContainsString( 'uses its own colors', $html );
+	}
+
+	private function banner_tab( string $theme ): string {
+		switch_theme( $theme );
+		wp_clean_theme_json_cache();
+		Design::reset();
+		ob_start();
+		require dirname( SILVERTRAIL_FILE ) . '/includes/Admin/tabs/banner.php';
+		$html = (string) ob_get_clean();
+		switch_theme( WP_DEFAULT_THEME );
+		wp_clean_theme_json_cache();
+		Design::reset();
+		return $html;
 	}
 }

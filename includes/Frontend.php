@@ -106,7 +106,7 @@ final class Frontend {
 
 	public static function appearance(): string {
 		$appearance = Settings::get( 'appearance' );
-		return in_array( $appearance, array( 'light', 'dark' ), true ) ? $appearance : 'theme';
+		return in_array( $appearance, array( 'light', 'dark' ), true ) ? $appearance : Design::scheme();
 	}
 
 	/**
