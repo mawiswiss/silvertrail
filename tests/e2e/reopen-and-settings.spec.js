@@ -218,6 +218,21 @@ test.describe('settings page', () => {
 		await expect(page.getByText('Records are off. Turn them on above.')).toBeVisible();
 	});
 
+	test('asks before leaving a tab with unsaved changes', async ({ page }) => {
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await expect(page.getByRole('button', { name: 'Save Changes' })).toHaveCount(4);
+
+		await page.getByRole('radio', { name: 'Dark' }).check();
+		let asked = '';
+		page.once('dialog', async (dialog) => {
+			asked = dialog.type();
+			await dialog.dismiss();
+		});
+		await page.getByRole('navigation', { name: 'Silvertrail settings' }).getByRole('link', { name: 'Tools' }).click();
+		await expect.poll(() => asked).toBe('beforeunload');
+		await expect(page).toHaveURL(/tab=banner/);
+	});
+
 	test('the banner tab shows position and appearance as cards', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box', appearance: 'dark' });
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');

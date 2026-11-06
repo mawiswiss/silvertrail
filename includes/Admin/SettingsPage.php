@@ -121,6 +121,13 @@ final class SettingsPage {
 		}
 	}
 
+	/**
+	 * Each card's button saves the whole tab, because the tab is one form.
+	 */
+	public static function save( string $card ): void {
+		submit_button( '', 'primary', 'submit', true, array( 'id' => "silvertrail-save-{$card}" ) );
+	}
+
 	public static function in_code_label( string $key ): string {
 		return Settings::in_code( $key ) ? ' <strong class="post-state">' . esc_html__( 'Set in code', 'silvertrail' ) . '</strong>' : '';
 	}

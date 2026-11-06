@@ -38,4 +38,5 @@ defined( 'ABSPATH' ) || exit;
 			</td>
 		</tr>
 	</table>
+	<?php SettingsPage::save( 'records' ); ?>
 </section>

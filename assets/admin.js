@@ -6,10 +6,21 @@ document.querySelectorAll('[data-silvertrail-editor]').forEach((textarea) => {
 	}
 	if (!textarea.readOnly) {
 		editor.codemirror.setSize(null, 'auto');
+		editor.codemirror.on('change', () => textarea.dispatchEvent(new Event('input', { bubbles: true })));
 		return;
 	}
 	editor.codemirror.setSize(null, '28em');
 	textarea.closest('details')?.addEventListener('toggle', () => editor.codemirror.refresh());
+});
+
+const settings = document.querySelector('form[action="options.php"]');
+let unsaved = false;
+settings?.addEventListener('input', () => (unsaved = true));
+settings?.addEventListener('submit', () => (unsaved = false));
+window.addEventListener('beforeunload', (event) => {
+	if (unsaved) {
+		event.preventDefault();
+	}
 });
 
 // ClipboardJS delegates from document.body, so it also handles the buttons the scan adds later.

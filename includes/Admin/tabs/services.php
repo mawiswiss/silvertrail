@@ -95,6 +95,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+	<?php SettingsPage::save( 'trackers' ); ?>
 </section>
 
 <section class="card silvertrail-section">
@@ -116,6 +117,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+	<?php SettingsPage::save( 'embeds' ); ?>
 </section>
 
 <section class="card silvertrail-section">

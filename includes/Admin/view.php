@@ -40,7 +40,6 @@ $silvertrail_tabs = array(
 		<?php settings_fields( SettingsPage::SLUG ); ?>
 		<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
 		<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
-		<?php submit_button(); ?>
 	</form>
 
 	<?php if ( 'tools' === $tab ) : ?>

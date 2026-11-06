@@ -102,6 +102,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 	</table>
+	<?php SettingsPage::save( 'look' ); ?>
 </section>
 
 <section class="card silvertrail-section">
@@ -182,6 +183,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 	</table>
+	<?php SettingsPage::save( 'behavior' ); ?>
 </section>
 
 <section class="card silvertrail-section">
@@ -263,6 +265,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 	</table>
+	<?php SettingsPage::save( 'texts' ); ?>
 </section>
 
 <section class="card silvertrail-section">
@@ -306,4 +309,5 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 	</table>
+	<?php SettingsPage::save( 'links' ); ?>
 </section>
