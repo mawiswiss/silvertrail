@@ -92,6 +92,19 @@
 	}
 }
 
+.silvertrail-in-code {
+	float: right;
+	margin: 0;
+	padding: 6px 0;
+	color: #646970;
+}
+
+@media screen and (max-width: 782px) {
+	.silvertrail-in-code {
+		display: none;
+	}
+}
+
 @media screen and (max-width: 600px) {
 	.silvertrail-status {
 		--silvertrail-indent: 24px;

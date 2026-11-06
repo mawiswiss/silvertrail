@@ -30,12 +30,11 @@ $silvertrail_help = array(
 				<?php echo $tab === $silvertrail_id ? 'aria-current="page"' : ''; ?>
 			><?php echo esc_html( $silvertrail_label ); ?></a>
 		<?php endforeach; ?>
+		<p class="silvertrail-in-code">
+			<?php esc_html_e( 'Everything here also works in code.', 'silvertrail' ); ?>
+			<?php echo SettingsPage::help_button( $silvertrail_help[ $tab ], __( 'Developer help', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
+		</p>
 	</nav>
-
-	<p>
-		<?php esc_html_e( 'Everything here also works in code.', 'silvertrail' ); ?>
-		<?php echo SettingsPage::help_button( $silvertrail_help[ $tab ], __( 'Developer help', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
-	</p>
 
 	<?php if ( 'tools' === $tab ) : ?>
 		<?php require __DIR__ . '/tabs/tools-check.php'; ?>
