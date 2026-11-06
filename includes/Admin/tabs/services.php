@@ -42,7 +42,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 	$state   = $silvertrail_state( $id );
 	$in_code = $silvertrail_in_code( $id );
 	printf(
-		'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s%9$s> <strong>%5$s</strong></label> <code>%6$s</code>%7$s<p class="description">%8$s</p>',
+		'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s%9$s> <strong>%5$s</strong> <code>%6$s</code></label>%7$s<p class="description">%8$s</p>',
 		esc_attr( "silvertrail-preset-{$id}" ),
 		esc_attr( SettingsPage::field( 'presets', $id, 'enabled' ) ),
 		checked( $in_code || Presets::switched_on( $id ) || $silvertrail_turn_on === $id, true, false ),
@@ -60,7 +60,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 	<h2><?php esc_html_e( 'Trackers', 'silvertrail' ); ?></h2>
 	<?php Notices::card( 'trackers' ); ?>
 	<p><?php esc_html_e( 'Silvertrail prints the official tag and holds it back until the visitor agrees.', 'silvertrail' ); ?></p>
-	<table class="widefat striped">
+	<table class="silvertrail-list">
 		<thead>
 			<tr>
 				<th scope="col"><?php esc_html_e( 'Service', 'silvertrail' ); ?></th>
@@ -104,7 +104,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 	<h2><?php esc_html_e( 'Embeds', 'silvertrail' ); ?></h2>
 	<?php Notices::card( 'embeds' ); ?>
 	<p><?php esc_html_e( 'Videos and maps from these providers show a placeholder and ask there, without opening the banner.', 'silvertrail' ); ?></p>
-	<table class="widefat striped">
+	<table class="silvertrail-list">
 		<thead>
 			<tr>
 				<th scope="col"><?php esc_html_e( 'Service', 'silvertrail' ); ?></th>
@@ -148,7 +148,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 			?>
 		</p>
 	<?php else : ?>
-		<table class="widefat striped">
+		<table class="silvertrail-list">
 			<thead>
 				<tr>
 					<th scope="col"><?php esc_html_e( 'Service', 'silvertrail' ); ?></th>
