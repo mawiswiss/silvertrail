@@ -20,6 +20,7 @@ add_action( 'silvertrail_register', function () {
 		'purpose'     => 'Tracks form conversions.',
 		'privacy_url' => 'https://legal.hubspot.com/privacy-policy',
 		'hosts'       => [ 'js.hs-scripts.com' ],
+		'handles'     => [ 'hubspot-tracking' ],
 	] );
 } );
 PHP;
@@ -42,21 +43,21 @@ PHP;
 HTML;
 	// phpcs:enable
 
-	private const BROWSER = <<<'JS'
-window.silvertrail.has('hubspot');
-window.silvertrail.open();
-
-window.addEventListener('silvertrail:change', (event) => {
-	console.log(event.detail.consents);
-});
-JS;
-
-	private const TEXTS = <<<'PHP'
-// From a plugin instead of the theme:
-add_filter( 'silvertrail_translation', function ( $translation, $locale ) {
-	return __DIR__ . "/texts/{$locale}.json";
-}, 10, 2 );
+	private const SETTINGS = <<<'PHP'
+add_filter( 'silvertrail_settings', function ( $settings ) {
+	$settings['expiry_months'] = 12;
+	$settings['records']       = true;
+	return $settings;
+} );
 PHP;
+
+	private const TEXTS = <<<'JSON'
+{
+	"title": "Datenschutz",
+	"accept_all": "Alle akzeptieren",
+	"embed_remember": "%s immer zulassen"
+}
+JSON;
 
 	private const DESIGN = <<<'PHP'
 add_filter( 'silvertrail_design', function ( $design, $appearance ) {
@@ -66,104 +67,158 @@ add_filter( 'silvertrail_design', function ( $design, $appearance ) {
 }, 10, 2 );
 PHP;
 
-	private const SETTINGS = <<<'PHP'
-add_filter( 'silvertrail_settings', function ( $settings ) {
-	$settings['expiry_months'] = 12;
-	$settings['records']       = true;
-	return $settings;
-} );
-PHP;
+	private const LINKS = <<<'HTML'
+<a href="#silvertrail">Privacy settings</a>
+
+[silvertrail_link]Cookie settings[/silvertrail_link]
+HTML;
+
+	private const BROWSER = <<<'JS'
+window.silvertrail.has('hubspot');
+window.silvertrail.open();
+
+window.addEventListener('silvertrail:change', (event) => {
+	console.log(event.detail.consents);
+});
+
+window.addEventListener('silvertrail:before-prompt', (event) => {
+	event.detail.respondWith(fetch('/my-region-check').then((r) => r.text()));
+});
+JS;
 
 	private const CLI = <<<'SH'
-wp silvertrail services
-wp silvertrail settings
-wp silvertrail validate
-wp silvertrail ask-again
+wp silvertrail services      # every service and what it blocks
+wp silvertrail settings      # every setting and where it comes from
+wp silvertrail validate      # mistakes in the settings, the config and the texts
+wp silvertrail ask-again     # asks every visitor again
 wp silvertrail records export --file=records.csv
 SH;
 
 	public static function add( WP_Screen $screen ): void {
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-service',
-				'title'   => __( 'Add a service', 'silvertrail' ),
-				'content' => self::section(
-					__( 'Register services in a plugin or the theme. The groups are essential, preferences, statistics, marketing and external-media. The silvertrail_config filter edits or removes anything at the end.', 'silvertrail' ),
-					self::SERVICE
-				),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-adjust',
-				'title'   => __( 'Change a service', 'silvertrail' ),
-				'content' => self::section(
-					__( 'Register a service again by its ID with only the fields to change. A preset’s ID turns the preset on with its defaults, so trackers need only their tag_id. The silvertrail_config filter runs last and can edit or remove any service.', 'silvertrail' ),
-					self::ADJUST
-				),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-script',
-				'title'   => __( 'Gate a script', 'silvertrail' ),
-				'content' => self::section(
-					__( 'The browser ignores the tag until the visitor agrees to the service. Scripts enqueued with a handle listed under handles are gated without changes. Any link to #silvertrail opens the preferences.', 'silvertrail' ),
-					self::SCRIPT
-				),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-browser',
-				'title'   => __( 'JavaScript', 'silvertrail' ),
-				'content' => self::section( __( 'Read and react to choices in the browser.', 'silvertrail' ), self::BROWSER ),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-texts',
-				'title'   => __( 'Texts', 'silvertrail' ),
-				'content' => self::section(
-					__( 'Put the JSON from the Banner tab into the theme as silvertrail/texts-{locale}.json, or as silvertrail/texts.json for every language. A child theme wins over its parent. The silvertrail_translation filter can return another path or an array. The admin’s edits win over the file, and the silvertrail_texts filter runs last.', 'silvertrail' ),
-					self::TEXTS
-				),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-design',
-				'title'   => __( 'Design', 'silvertrail' ),
-				'content' => self::section(
-					__( 'The banner takes its colors, corners and buttons from the theme’s theme.json. The silvertrail_design filter changes any of them. Its keys are background, text, muted, line, accent, on-accent, radius, button-padding and button-weight, and each becomes a --silvertrail-<key> custom property. For anything else, the theme adds silvertrail/silvertrail.css, which loads last. styling.md in the plugin folder is the brief for an AI assistant that writes it.', 'silvertrail' ),
-					self::DESIGN
-				),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-settings',
-				'title'   => __( 'Settings in code', 'silvertrail' ),
-				'content' => self::section(
-					__( 'The silvertrail_settings filter sets any setting on this page and more: layout, appearance, require_choice, imprint_page, records, floating_button (auto, always or never), load_css, expiry_months, retention_days, gpc and trail. A field set in code shows “Set in code” and cannot be changed here. wp silvertrail settings lists each value and where it comes from.', 'silvertrail' ),
-					self::SETTINGS
-				),
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'silvertrail-cli',
-				'title'   => __( 'WP-CLI', 'silvertrail' ),
-				'content' => self::section( __( 'List the services and settings, check the config, ask everyone again, or export the records.', 'silvertrail' ), self::CLI ),
-			)
-		);
+		foreach ( self::tabs() as $id => $tab ) {
+			$screen->add_help_tab(
+				array(
+					'id'      => $id,
+					'title'   => $tab['title'],
+					'content' => self::section( $tab['intro'], $tab['code'], $tab['notes'] ),
+				)
+			);
+		}
 		$screen->set_help_sidebar(
-			'<p><strong>' . esc_html__( 'For more information:', 'silvertrail' ) . '</strong></p>'
-			. '<p><a href="https://github.com/mawiswiss/silvertrail#readme">' . esc_html__( 'Documentation on GitHub', 'silvertrail' ) . '</a></p>'
+			'<p><strong>' . esc_html__( 'Full reference', 'silvertrail' ) . '</strong></p>'
+			. '<p>' . self::code( __( '`README.md` in the plugin folder covers every hook, key and attribute. Point an AI assistant at it.', 'silvertrail' ) ) . '</p>'
+			. '<p><a href="https://github.com/mawiswiss/silvertrail#readme">' . esc_html__( 'On GitHub', 'silvertrail' ) . '</a></p>'
 		);
 	}
 
-	private static function section( string $text, string $code ): string {
-		return '<p>' . esc_html( $text ) . '</p><pre><code>' . esc_html( $code ) . '</code></pre>';
+	/**
+	 * @return array<string, array{title: string, intro: string, code: string, notes: list<string>}>
+	 */
+	public static function tabs(): array {
+		return array(
+			'silvertrail-service'  => array(
+				'title' => __( 'Add a service', 'silvertrail' ),
+				'intro' => __( 'Register a service on the `silvertrail_register` action, in a plugin or the theme.', 'silvertrail' ),
+				'code'  => self::SERVICE,
+				'notes' => array(
+					__( '`group`: `essential`, `preferences`, `statistics`, `marketing` or `external-media`. `silvertrail_register_group()` adds your own.', 'silvertrail' ),
+					__( '`hosts`: embeds from these hosts wait behind a placeholder.', 'silvertrail' ),
+					__( '`handles`: scripts enqueued under these handles wait for consent.', 'silvertrail' ),
+					__( 'Keep the config the same on every request. Every visitor is asked again when the set of services changes.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-adjust'   => array(
+				'title' => __( 'Change a service', 'silvertrail' ),
+				'intro' => __( 'Register a service again by its ID, with only the fields to change.', 'silvertrail' ),
+				'code'  => self::ADJUST,
+				'notes' => array(
+					__( 'A preset’s ID turns the preset on with its defaults. A tracker needs only its `tag_id`.', 'silvertrail' ),
+					__( 'The `silvertrail_config` filter runs last. It edits or removes any service, even one turned on here.', 'silvertrail' ),
+					__( 'The Services tab marks each preset that code turned on, changed or removed.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-script'   => array(
+				'title' => __( 'Gate a script', 'silvertrail' ),
+				'intro' => __( 'Give the script the type `text/plain` and the service ID. The browser runs it once the visitor agrees.', 'silvertrail' ),
+				'code'  => self::SCRIPT,
+				'notes' => array(
+					__( 'Inline and external scripts keep their order.', 'silvertrail' ),
+					__( 'A script that WordPress enqueues needs no change: list its handle under the service’s `handles`.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-settings' => array(
+				'title' => __( 'Settings in code', 'silvertrail' ),
+				'intro' => __( 'The `silvertrail_settings` filter sets any setting. A field set in code shows “Set in code” on this page and cannot be changed here.', 'silvertrail' ),
+				'code'  => self::SETTINGS,
+				'notes' => array(
+					__( 'On this page: `layout`, `appearance`, `require_choice`, `imprint_page`, `records`.', 'silvertrail' ),
+					__( 'Only in code: `floating_button` (`auto`, `always` or `never`), `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`.', 'silvertrail' ),
+					__( '`wp silvertrail settings` lists each value and where it comes from.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-texts'    => array(
+				'title' => __( 'Texts', 'silvertrail' ),
+				'intro' => __( 'Ship the texts with the theme as `silvertrail/texts-{locale}.json`, or `silvertrail/texts.json` for every language. The Banner tab shows the JSON with every key.', 'silvertrail' ),
+				'code'  => self::TEXTS,
+				'notes' => array(
+					__( 'A child theme wins over its parent.', 'silvertrail' ),
+					__( 'From a plugin, return another path or an array in the `silvertrail_translation` filter.', 'silvertrail' ),
+					__( 'Edits on the Banner tab win over the file. The `silvertrail_texts` filter runs last.', 'silvertrail' ),
+					__( '`wp silvertrail validate` reports unknown keys and broken files.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-design'   => array(
+				'title' => __( 'Design', 'silvertrail' ),
+				'intro' => __( 'The banner takes its colors, corners and buttons from the theme’s `theme.json`. The `silvertrail_design` filter changes them.', 'silvertrail' ),
+				'code'  => self::DESIGN,
+				'notes' => array(
+					__( 'Keys: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding`, `button-weight`. Each becomes a `--silvertrail-<key>` custom property.', 'silvertrail' ),
+					__( 'For anything else, add `silvertrail/silvertrail.css` to the theme. It loads after the default styles.', 'silvertrail' ),
+					__( '`styling.md` in the plugin folder is a brief for an AI assistant that writes this stylesheet.', 'silvertrail' ),
+					__( 'To change the markup, copy a file from `templates/` into the theme’s `silvertrail/` folder and keep the `data-silvertrail-*` attributes.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-links'    => array(
+				'title' => __( 'Links to the preferences', 'silvertrail' ),
+				'intro' => __( 'Any link to `#silvertrail` opens the preferences, and so does any element with `data-silvertrail-open`.', 'silvertrail' ),
+				'code'  => self::LINKS,
+				'notes' => array(
+					__( 'The `[silvertrail_link]` shortcode and the Privacy settings link block print such a link.', 'silvertrail' ),
+					__( 'The floating button steps aside on pages that have one. `floating_button` in the `silvertrail_settings` filter sets it to `always` or `never`.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-browser'  => array(
+				'title' => __( 'JavaScript', 'silvertrail' ),
+				'intro' => __( '`window.silvertrail` reads and changes the choice in the browser.', 'silvertrail' ),
+				'code'  => self::BROWSER,
+				'notes' => array(
+					__( '`has( id )`: whether the visitor agreed to the service. Essential services are always `true`.', 'silvertrail' ),
+					__( '`open()`: opens the preferences.', 'silvertrail' ),
+					__( '`silvertrail:change`: fires on `window` after every choice.', 'silvertrail' ),
+					__( '`silvertrail:before-prompt`: answer `prompt`, `accept-all` or `reject-all` within three seconds, for example by region.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-cli'      => array(
+				'title' => __( 'WP-CLI', 'silvertrail' ),
+				'intro' => __( 'Check and run Silvertrail from the command line. `services` and `settings` take `--format=json` for scripts.', 'silvertrail' ),
+				'code'  => self::CLI,
+				'notes' => array(),
+			),
+		);
+	}
+
+	/**
+	 * @param list<string> $notes
+	 */
+	private static function section( string $intro, string $code, array $notes ): string {
+		$html = '<p>' . self::code( $intro ) . '</p><pre><code>' . esc_html( $code ) . '</code></pre>';
+		if ( array() !== $notes ) {
+			$html .= '<ul>' . implode( '', array_map( static fn( string $note ): string => '<li>' . self::code( $note ) . '</li>', $notes ) ) . '</ul>';
+		}
+		return $html;
+	}
+
+	private static function code( string $text ): string {
+		return (string) preg_replace( '/`([^`]+)`/', '<code>$1</code>', esc_html( $text ) );
 	}
 }

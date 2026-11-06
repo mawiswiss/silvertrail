@@ -225,3 +225,15 @@
 		margin-bottom: 4px;
 	}
 }
+
+#contextual-help-wrap pre {
+	padding: 10px 12px;
+	overflow-x: auto;
+	background: #f0f0f1;
+
+	code {
+		display: block;
+		padding: 0;
+		background: none;
+	}
+}
