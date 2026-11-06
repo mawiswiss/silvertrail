@@ -53,6 +53,6 @@ final class Plugin {
 	}
 
 	public static function license(): string {
-		return __( 'Silvertrail is free on your own site. When you are paid to put it on a client’s site, buy a site license.', 'silvertrail' );
+		return __( 'Silvertrail is free. When you are paid to put it on a client’s site, consider supporting its development with a site license.', 'silvertrail' );
 	}
 }
