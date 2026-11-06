@@ -192,6 +192,9 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( 'value="theme"', $html );
 		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
 		$this->assertStringContainsString( 'As the theme sets it', $html );
+		$this->assertStringContainsString( '<span class="silvertrail-source__layers">theme.json</span>', $html );
+		$this->assertStringContainsString( 'site-editor.php?path=/wp_global_styles', $html );
+		$this->assertStringContainsString( '<span style="background:#', $html, 'The design shows the theme palette.' );
 	}
 
 	public function test_a_design_in_code_with_one_look_leaves_nothing_to_choose(): void {
@@ -210,6 +213,9 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$this->assertStringNotContainsString( 'value="dark"', $html );
 		$this->assertStringContainsString( 'nothing to choose', $html );
+		$this->assertStringContainsString( '+ silvertrail_design', $html );
+		$this->assertStringNotContainsString( '<span style="background:#', $html, 'The design shows the colors from code.' );
+		$this->assertStringContainsString( 'silvertrail-swatch__dot--accent', $html );
 	}
 
 	public function test_a_classic_theme_offers_light_and_dark_only(): void {
@@ -217,7 +223,8 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$this->assertStringNotContainsString( 'value="theme"', $html );
 		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
-		$this->assertStringContainsString( 'uses its own colors', $html );
+		$this->assertStringContainsString( 'Twenty Twenty-One has no <code>theme.json</code>', $html );
+		$this->assertStringNotContainsString( 'site-editor.php', $html );
 	}
 
 	private function banner_tab( string $theme ): string {

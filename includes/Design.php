@@ -30,6 +30,15 @@ final class Design {
 		return self::$schemes[ get_stylesheet() ] ??= self::own( self::theme( '' )[1] );
 	}
 
+	/**
+	 * The theme's values for an appearance, before the filter changes them.
+	 *
+	 * @return array<string, string>
+	 */
+	public static function from_theme( string $mode ): array {
+		return self::theme( $mode )[0];
+	}
+
 	public static function reset(): void {
 		self::$schemes = array();
 	}

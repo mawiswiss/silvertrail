@@ -34,6 +34,25 @@ $silvertrail_appearances   = $silvertrail_theme_json ? array(
 	'dark'  => array( __( 'Dark', 'silvertrail' ), __( 'Light text on dark gray', 'silvertrail' ) ),
 );
 $silvertrail_one_look      = has_filter( 'silvertrail_design' ) && Design::tokens( 'light' ) === Design::tokens( 'dark' );
+$silvertrail_now           = Frontend::appearance();
+$silvertrail_tokens        = Design::tokens( $silvertrail_now );
+$silvertrail_theme_tokens  = Design::from_theme( $silvertrail_now );
+$silvertrail_coded         = array_keys( array_diff_assoc( $silvertrail_tokens, $silvertrail_theme_tokens ) + array_diff_assoc( $silvertrail_theme_tokens, $silvertrail_tokens ) );
+$silvertrail_theme_colors  = $silvertrail_theme_json && array() === array_intersect( $silvertrail_coded, array( 'background', 'text', 'accent', 'on-accent' ) );
+$silvertrail_palette       = array_filter(
+	array_column( (array) wp_get_global_settings( array( 'color', 'palette', 'theme' ) ), 'color' ),
+	static fn( mixed $color ): bool => is_string( $color ) && 1 === preg_match( '/^[#a-zA-Z0-9(),.%\s-]+$/', $color )
+);
+$silvertrail_palette       = array_slice( array_intersect_key( $silvertrail_palette, array_unique( array_map( 'strtolower', $silvertrail_palette ) ) ), 0, 5 );
+$silvertrail_theme_name    = (string) wp_get_theme()->get( 'Name' );
+$silvertrail_layers        = array_filter(
+	array(
+		$silvertrail_theme_json ? 'theme.json' : __( 'default colors', 'silvertrail' ),
+		array() !== $silvertrail_coded ? 'silvertrail_design' : '',
+		$silvertrail_theme_css ? Frontend::THEME_CSS : '',
+	)
+);
+$silvertrail_in_code       = SettingsPage::help_button( 'silvertrail-design', __( 'in code', 'silvertrail' ) );
 $silvertrail_swatch        = static function ( string $mode ): string {
 	$tokens = array_intersect_key( Design::tokens( $mode ), array_flip( array( 'background', 'text', 'accent', 'on-accent', 'radius' ) ) );
 	return implode( ';', array_map( static fn( string $key, string $value ): string => "--silvertrail-{$key}:{$value}", array_keys( $tokens ), $tokens ) );
@@ -86,6 +105,53 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
+			<th scope="row"><?php esc_html_e( 'Design', 'silvertrail' ); ?></th>
+			<td>
+				<div class="silvertrail-source">
+					<span class="<?php echo esc_attr( "silvertrail-source__preview silvertrail-swatch silvertrail-swatch--{$silvertrail_now} silvertrail-swatch--palette" ); ?>" style="<?php echo esc_attr( $silvertrail_swatch( $silvertrail_now ) ); ?>" aria-hidden="true">
+						<span class="silvertrail-swatch__type">Aa</span>
+						<span class="silvertrail-swatch__palette">
+							<?php if ( $silvertrail_theme_colors ) : ?>
+								<?php foreach ( $silvertrail_palette as $silvertrail_color ) : ?>
+									<span style="<?php echo esc_attr( "background:{$silvertrail_color}" ); ?>"></span>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<span class="silvertrail-swatch__dot--text"></span>
+								<span class="silvertrail-swatch__dot--accent"></span>
+								<span class="silvertrail-swatch__dot--on-accent"></span>
+							<?php endif; ?>
+						</span>
+					</span>
+					<div>
+						<p>
+							<strong><?php echo esc_html( $silvertrail_theme_json ? $silvertrail_theme_name : 'Silvertrail' ); ?></strong>
+							<span class="silvertrail-source__layers"><?php echo esc_html( implode( ' + ', $silvertrail_layers ) ); ?></span>
+						</p>
+						<p>
+							<?php
+							// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- the help button is escaped in its method.
+							if ( $silvertrail_theme_json && wp_is_block_theme() && current_user_can( 'edit_theme_options' ) ) {
+								printf(
+									/* translators: 1: link to the Styles editor, 2: button that opens the help */
+									esc_html__( 'Change it in the %1$s or %2$s.', 'silvertrail' ),
+									'<a href="' . esc_url( admin_url( 'site-editor.php?path=/wp_global_styles' ) ) . '">' . esc_html__( 'Styles editor', 'silvertrail' ) . '</a>',
+									$silvertrail_in_code
+								);
+							} elseif ( $silvertrail_theme_json ) {
+								/* translators: 1: theme.json, 2: button that opens the help */
+								printf( esc_html__( 'Change it in its %1$s or %2$s.', 'silvertrail' ), '<code>theme.json</code>', $silvertrail_in_code );
+							} else {
+								/* translators: 1: theme name, 2: theme.json, 3: button that opens the help */
+								printf( esc_html__( '%1$s has no %2$s. Change it %3$s.', 'silvertrail' ), esc_html( $silvertrail_theme_name ), '<code>theme.json</code>', $silvertrail_in_code );
+							}
+							// phpcs:enable
+							?>
+						</p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( 'appearance' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
 			<td>
 				<?php if ( $silvertrail_one_look ) : ?>
@@ -111,16 +177,6 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 							</label>
 						<?php endforeach; ?>
 					</fieldset>
-					<p class="description">
-						<?php
-						if ( $silvertrail_theme_json ) {
-							esc_html_e( 'Both take colors, corners and buttons from the theme.', 'silvertrail' );
-						} else {
-							/* translators: %s: theme.json */
-							printf( esc_html__( 'The theme has no %s, so the banner uses its own colors.', 'silvertrail' ), '<code>theme.json</code>' );
-						}
-						?>
-					</p>
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -128,25 +184,10 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 	<?php SettingsPage::save( 'look' ); ?>
 </section>
 
-<section class="card silvertrail-section">
+<section class="card silvertrail-section" id="silvertrail-custom-styles">
 	<h2><?php esc_html_e( 'Custom styles', 'silvertrail' ); ?></h2>
-	<p>
-		<?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?>
-		<?php echo SettingsPage::help_button( 'silvertrail-design', __( 'Design in code', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
-	</p>
+	<p><?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?></p>
 	<table class="form-table" role="presentation">
-		<tr>
-			<th scope="row"><?php esc_html_e( 'Theme stylesheet', 'silvertrail' ); ?></th>
-			<td>
-				<?php
-				printf(
-					/* translators: %s: silvertrail/silvertrail.css */
-					$silvertrail_theme_css ? esc_html__( 'The theme adds %s. It loads after the default styles.', 'silvertrail' ) : esc_html__( 'The theme has no %s yet.', 'silvertrail' ),
-					'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
-				);
-				?>
-			</td>
-		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Write it with AI', 'silvertrail' ); ?></th>
 			<td>

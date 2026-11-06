@@ -130,6 +130,7 @@
 	--fallback-background: #ffffff;
 	--fallback-text: #1d2327;
 	--fallback-accent: #2f4858;
+	--fallback-on-accent: #ffffff;
 
 	display: grid;
 	align-content: center;
@@ -142,6 +143,7 @@
 	--fallback-background: #1d2226;
 	--fallback-text: #eef1f3;
 	--fallback-accent: #c3d0da;
+	--fallback-on-accent: #14191d;
 }
 
 .silvertrail-swatch__text {
@@ -167,6 +169,90 @@
 		border-radius: min(var(--silvertrail-radius, 2px), 6px);
 		background: var(--silvertrail-accent, var(--fallback-accent));
 	}
+}
+
+.silvertrail-swatch--palette {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+}
+
+.silvertrail-swatch__type {
+	color: var(--silvertrail-text, var(--fallback-text));
+	font-size: 28px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.silvertrail-swatch__palette {
+	display: flex;
+
+	span {
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.15), 0 0 0 2px var(--silvertrail-background, var(--fallback-background));
+	}
+
+	span + span {
+		margin-left: -4px;
+	}
+}
+
+.silvertrail-swatch__dot--text {
+	background: var(--silvertrail-text, var(--fallback-text));
+}
+
+.silvertrail-swatch__dot--accent {
+	background: var(--silvertrail-accent, var(--fallback-accent));
+}
+
+.silvertrail-swatch__dot--on-accent {
+	background: var(--silvertrail-on-accent, var(--fallback-on-accent));
+}
+
+.silvertrail-source {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	box-sizing: border-box;
+	max-width: 35rem;
+	padding: 10px 16px 10px 10px;
+	border-radius: 8px;
+	background: #f6f7f7;
+
+	p {
+		margin: 0;
+	}
+
+	p + p {
+		margin-top: 4px;
+	}
+}
+
+.silvertrail-source__preview {
+	flex: none;
+	width: 6rem;
+	aspect-ratio: 3 / 2;
+	gap: 8px;
+	padding: 0 8px;
+	border-radius: 4px;
+	outline: 1px solid rgb(0 0 0 / 0.1);
+	outline-offset: -1px;
+
+	.silvertrail-swatch__type {
+		font-size: 20px;
+	}
+
+	.silvertrail-swatch__palette span {
+		width: 12px;
+		height: 12px;
+	}
+}
+
+.silvertrail-source__layers {
+	color: #646970;
 }
 
 .silvertrail-steps {
