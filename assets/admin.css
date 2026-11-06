@@ -237,3 +237,12 @@
 		background: none;
 	}
 }
+
+.silvertrail-scan-list {
+	padding-left: 18px;
+	list-style: disc;
+
+	li {
+		margin-bottom: 8px;
+	}
+}

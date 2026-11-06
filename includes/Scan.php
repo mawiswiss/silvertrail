@@ -120,7 +120,7 @@ final class Scan {
 			'turnOn'            => __( 'Turn on %s', 'silvertrail' ),
 			/* translators: %s: script handle */
 			'script'            => __( 'A script that WordPress loads as “%s”. Register a service in code with this script handle, and it waits for consent.', 'silvertrail' ),
-			'scriptRaw'         => __( 'A script written straight into the page. Mark it with data-silvertrail, as Help at the top right shows, and it waits for consent.', 'silvertrail' ),
+			'scriptRaw'         => __( 'A script written straight into the page. Mark it with data-silvertrail, as Developer help › Gate a script shows, and it waits for consent.', 'silvertrail' ),
 			'frame'             => __( 'An embedded frame. Register its host as a service in code, and a placeholder shows until the visitor agrees.', 'silvertrail' ),
 			'font'              => __( 'Fonts or styles. They cannot wait for consent, so host them on this site instead.', 'silvertrail' ),
 			'image'             => __( 'Images. They cannot wait for consent, so host them on this site instead.', 'silvertrail' ),

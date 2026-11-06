@@ -187,6 +187,9 @@
 
 	const heldName = (id) => data.services[id]?.name ?? id;
 
+	const bullets = (items) =>
+		items.length === 0 ? element('p', {}, texts.none) : element('ul', { class: 'silvertrail-scan-list' }, ...items.map((children) => element('li', {}, ...children)));
+
 	function prompt(scan) {
 		const kinds = { script: texts.kindScript, scriptRaw: texts.kindScript, frame: texts.kindFrame, font: texts.kindFont, image: texts.kindImage, other: texts.kindOther };
 		const connections = scan.items.map((item) => `- ${item.name === item.host ? item.host : `${item.name} (${item.host})`}: ${kinds[item.what]}`);
@@ -214,11 +217,11 @@
 		if (early.length > 0) {
 			parts.push(element('h3', {}, texts.early), list(early));
 		}
+		parts.push(element('h3', {}, texts.held), bullets(scan.held.map((id) => [element('strong', {}, heldName(id)), ' ', element('span', { class: 'description' }, data.services[id] ? `(${data.services[id].group})` : '')])));
 		if (fine.length > 0) {
 			parts.push(element('h3', {}, texts.fine), list(fine));
 		}
-		parts.push(element('h3', {}, texts.held), element('p', {}, scan.held.map(heldName).join(', ') || texts.none));
-		parts.push(element('h3', {}, texts.stored), element('p', {}, scan.stored.join(', ') || texts.none));
+		parts.push(element('h3', {}, texts.stored), bullets(scan.stored.map((name) => [element('code', {}, name)])));
 
 		const handover = prompt(scan);
 		if (handover === '') {
