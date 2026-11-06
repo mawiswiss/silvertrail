@@ -8,6 +8,7 @@ use Silvertrail\Admin\Notices;
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 use Silvertrail\Design;
+use Silvertrail\Presets;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 use WP_UnitTestCase;
@@ -324,6 +325,22 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		);
 		$this->assertArrayNotHasKey( 'floating_button', $saved );
 		$this->assertArrayNotHasKey( 'floating_position', $saved );
+	}
+
+	public function test_switching_off_a_new_site_leaves_the_presets_at_their_defaults(): void {
+		SettingsPage::setting();
+		delete_option( Settings::OPTION );
+
+		update_option(
+			Settings::OPTION,
+			array(
+				'_tab'    => 'switch',
+				'enabled' => false,
+			)
+		);
+
+		$this->assertSame( array( 'enabled' => false ), get_option( Settings::OPTION ) );
+		$this->assertTrue( Presets::switched_on( 'youtube' ) );
 	}
 
 	public function test_a_save_keeps_only_what_differs_from_the_defaults(): void {

@@ -204,7 +204,7 @@ final class SettingsPage {
 		$keys  = 'switch' === $tab ? array( 'enabled' ) : ( self::TABS[ $tab ] ?? null );
 		if ( null === $keys ) {
 			// A new option runs through here twice: add_option() sanitizes the saved value again, with _tab and the defaults gone.
-			return self::changed( self::clean( $input + Settings::defaults() ) );
+			return self::changed( self::clean( $input + Settings::defaults(), false ) );
 		}
 		$posted = array_intersect_key( self::clean( $input ), array_flip( $keys ) );
 		$posted = array_filter( $posted, static fn( string $key ): bool => ! Settings::in_code( $key ), ARRAY_FILTER_USE_KEY );
@@ -221,14 +221,16 @@ final class SettingsPage {
 	}
 
 	/**
+	 * A form leaves unticked presets out. A saved option without presets leaves them at their defaults.
+	 *
 	 * @param array<mixed> $input
 	 * @return array<string, mixed>
 	 */
-	private static function clean( array $input ): array {
+	private static function clean( array $input, bool $form = true ): array {
 		$defaults = Settings::defaults();
 
 		$presets = array();
-		foreach ( array_keys( Presets::all() ) as $id ) {
+		foreach ( $form || array() !== $input['presets'] ? array_keys( Presets::all() ) : array() as $id ) {
 			$presets[ $id ] = array(
 				'enabled' => ! empty( $input['presets'][ $id ]['enabled'] ),
 				'tag_id'  => strtoupper( sanitize_text_field( (string) ( $input['presets'][ $id ]['tag_id'] ?? '' ) ) ),
