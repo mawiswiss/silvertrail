@@ -107,49 +107,57 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Custom styles', 'silvertrail' ); ?></h2>
 	<p><?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?></p>
-	<div class="<?php echo esc_attr( $silvertrail_theme_css ? 'notice notice-success notice-alt inline' : 'notice notice-info notice-alt inline' ); ?>">
-		<p>
-			<?php
-			printf(
-				/* translators: %s: silvertrail/silvertrail.css */
-				$silvertrail_theme_css ? esc_html__( 'The theme adds %s. It loads after the default styles.', 'silvertrail' ) : esc_html__( 'The theme has no %s yet.', 'silvertrail' ),
-				'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
-			);
-			?>
-		</p>
-	</div>
-	<ol class="silvertrail-steps">
-		<li>
-			<?php esc_html_e( 'Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet.', 'silvertrail' ); ?>
-			<span class="copy-to-clipboard-container hide-if-no-js">
-				<button type="button" class="button" data-silvertrail-copy="silvertrail-styling-prompt"><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
-				<span class="success hidden" aria-hidden="true"><?php esc_html_e( 'Copied', 'silvertrail' ); ?></span>
-			</span>
-		</li>
-		<li><?php esc_html_e( 'Paste it into an AI assistant and describe the look you want. A screenshot of the site helps.', 'silvertrail' ); ?></li>
-		<li>
-			<?php
-			printf(
-				/* translators: %s: silvertrail/silvertrail.css */
-				esc_html__( 'Save its answer in the theme as %s.', 'silvertrail' ),
-				'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
-			);
-			?>
-		</li>
-	</ol>
-	<details class="silvertrail-disclosure">
-		<summary><?php esc_html_e( 'Show the prompt', 'silvertrail' ); ?></summary>
-		<label for="silvertrail-styling-prompt" class="screen-reader-text"><?php esc_html_e( 'Prompt for an AI assistant', 'silvertrail' ); ?></label>
-		<textarea
-			id="silvertrail-styling-prompt"
-			class="large-text code"
-			rows="16"
-			readonly
-			<?php if ( '' !== $silvertrail_prompt_editor ) : ?>
-				data-silvertrail-editor="<?php echo esc_attr( $silvertrail_prompt_editor ); ?>"
-			<?php endif; ?>
-		><?php echo esc_textarea( StylingPrompt::text() ); ?></textarea>
-	</details>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Theme stylesheet', 'silvertrail' ); ?></th>
+			<td>
+				<?php
+				printf(
+					/* translators: %s: silvertrail/silvertrail.css */
+					$silvertrail_theme_css ? esc_html__( 'The theme adds %s. It loads after the default styles.', 'silvertrail' ) : esc_html__( 'The theme has no %s yet.', 'silvertrail' ),
+					'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
+				);
+				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Write it with AI', 'silvertrail' ); ?></th>
+			<td>
+				<ol class="silvertrail-steps">
+					<li>
+						<?php esc_html_e( 'Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet.', 'silvertrail' ); ?>
+						<span class="copy-to-clipboard-container hide-if-no-js">
+							<button type="button" class="button" data-silvertrail-copy="silvertrail-styling-prompt"><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
+							<span class="success hidden" aria-hidden="true"><?php esc_html_e( 'Copied', 'silvertrail' ); ?></span>
+						</span>
+					</li>
+					<li><?php esc_html_e( 'Paste it into an AI assistant and describe the look you want. A screenshot of the site helps.', 'silvertrail' ); ?></li>
+					<li>
+						<?php
+						printf(
+							/* translators: %s: silvertrail/silvertrail.css */
+							esc_html__( 'Save its answer in the theme as %s.', 'silvertrail' ),
+							'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
+						);
+						?>
+					</li>
+				</ol>
+				<details class="silvertrail-disclosure">
+					<summary><?php esc_html_e( 'Show the prompt', 'silvertrail' ); ?></summary>
+					<label for="silvertrail-styling-prompt" class="screen-reader-text"><?php esc_html_e( 'Prompt for an AI assistant', 'silvertrail' ); ?></label>
+					<textarea
+						id="silvertrail-styling-prompt"
+						class="large-text code"
+						rows="16"
+						readonly
+						<?php if ( '' !== $silvertrail_prompt_editor ) : ?>
+							data-silvertrail-editor="<?php echo esc_attr( $silvertrail_prompt_editor ); ?>"
+						<?php endif; ?>
+					><?php echo esc_textarea( StylingPrompt::text() ); ?></textarea>
+				</details>
+			</td>
+		</tr>
+	</table>
 </section>
 
 <section class="card silvertrail-section">

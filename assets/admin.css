@@ -11,6 +11,11 @@
 		margin-bottom: 0;
 	}
 
+	.submit {
+		margin: 0;
+		padding: 8px 0 12px;
+	}
+
 	.notice {
 		margin: 12px 0;
 	}
@@ -19,6 +24,11 @@
 @media screen and (min-width: 783px) {
 	.form-table.silvertrail-facts :is(th, td) {
 		padding-block: 8px;
+	}
+
+	/* Lines buttons up with the form-table column: th is 200px plus 10px padding, td adds 10px. */
+	.silvertrail-section.card .form-table + .submit {
+		padding-left: 220px;
 	}
 }
 
@@ -162,7 +172,7 @@
 .silvertrail-steps {
 	display: grid;
 	gap: 14px;
-	margin: 20px 0;
+	margin: 0 0 16px;
 	padding: 0;
 	list-style: none;
 	counter-reset: silvertrail-step;

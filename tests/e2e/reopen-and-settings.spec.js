@@ -209,7 +209,9 @@ test.describe('settings page', () => {
 		await page.getByRole('button', { name: 'Save Changes' }).click();
 		await expect(page.getByText('Settings saved.')).toBeVisible();
 		await expect(records).toBeChecked();
-		await expect(page.getByRole('button', { name: 'Download CSV' })).toBeVisible();
+		const download = page.waitForEvent('download');
+		await page.getByRole('link', { name: 'Download CSV' }).click();
+		expect((await download).suggestedFilename()).toMatch(/^silvertrail-records-.+\.csv$/);
 
 		await records.uncheck();
 		await page.getByRole('button', { name: 'Save Changes' }).click();
