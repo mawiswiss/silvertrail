@@ -176,12 +176,6 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 				?>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e( 'Reopen', 'silvertrail' ); ?></th>
-			<td>
-				<p><?php esc_html_e( 'A small button reopens the settings on every page without a link to #silvertrail. Add such a link to the footer with the [silvertrail_link] shortcode or the Privacy settings link block.', 'silvertrail' ); ?></p>
-			</td>
-		</tr>
 	</table>
 	<?php SettingsPage::save( 'behavior' ); ?>
 </section>
@@ -319,6 +313,20 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 				);
 				echo Settings::in_code( 'imprint_page' ) ? str_replace( '<select ', '<select disabled ', $silvertrail_pages ) : $silvertrail_pages; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- markup from wp_dropdown_pages().
 				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Privacy settings link', 'silvertrail' ); ?></th>
+			<td>
+				<?php
+				printf(
+					/* translators: 1: #silvertrail, 2: [silvertrail_link] */
+					esc_html__( 'Visitors change their choice through a link to %1$s, usually in the footer. Add one with the %2$s shortcode or the Privacy settings link block.', 'silvertrail' ),
+					'<code>#silvertrail</code>',
+					'<code>[silvertrail_link]</code>'
+				);
+				?>
+				<p class="description"><?php esc_html_e( 'Pages without such a link show a small floating button instead.', 'silvertrail' ); ?></p>
 			</td>
 		</tr>
 	</table>
