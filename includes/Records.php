@@ -116,6 +116,9 @@ final class Records {
 	}
 
 	public static function record( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		if ( ! Settings::get( 'enabled' ) ) {
+			return new WP_REST_Response( null, 204 );
+		}
 		if ( strlen( (string) $request->get_body() ) > self::MAX_BODY ) {
 			return new WP_Error( 'silvertrail_too_large', 'Too large.', array( 'status' => 413 ) );
 		}

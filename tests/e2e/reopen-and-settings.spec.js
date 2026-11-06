@@ -87,6 +87,22 @@ test.describe('closing', () => {
 	});
 });
 
+test.describe('switched off', () => {
+	test('leaves the site alone until a page is previewed', async ({ page, context }) => {
+		await withSettings(context, { enabled: false });
+		const ran = () => page.evaluate(() => window.silvertrailTest || []);
+
+		await page.goto('/?pagename=silvertrail-shortcode');
+		await expect.poll(ran).toContain('gated-after');
+		await expect(banner(page)).toBeHidden();
+		await expect(page.getByRole('link', { name: 'Privacy settings' })).toHaveCount(0);
+
+		await page.goto('/?pagename=silvertrail-shortcode&silvertrail-preview');
+		await expect(banner(page)).toBeVisible();
+		expect(await ran()).not.toContain('gated-after');
+	});
+});
+
 test.describe('appearance settings', () => {
 	test('the box layout leaves the page usable', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });

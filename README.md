@@ -177,6 +177,7 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 
 | Key | Admin | Values | Default |
 | --- | --- | --- | --- |
+| `enabled` | code | bool. Turned off, Silvertrail adds nothing to the site: no banner, no blocking, none of its tags. | `true` |
 | `layout` | Banner | `'modal'` (centred) or `'box'` (corner) | `'modal'` |
 | `appearance` | Banner | `'light'` or `'dark'`. The default `'theme'` takes whichever the theme is. | `'theme'` |
 | `require_choice` | Banner | bool. Turned off, a click outside or Escape closes the banner without storing anything. | `true` |
@@ -192,6 +193,8 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 An unknown key or an invalid value triggers a notice. An invalid value falls back to the nearest valid one, or to the default. `wp silvertrail settings` lists every value and whether it comes from code, the admin or the default.
 
 The presets and the texts are not in this filter. They have their own code paths, above and below.
+
+While `enabled` is off, add `?silvertrail-preview` to any URL to see that page as visitors would get it with Silvertrail on. Choices made in a preview are not recorded, and the leak check scans as if Silvertrail were on.
 
 ## Gate a script
 

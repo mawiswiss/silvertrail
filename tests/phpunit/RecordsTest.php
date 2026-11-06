@@ -87,6 +87,36 @@ final class RecordsTest extends WP_UnitTestCase {
 		$this->assertSame( 'gpc', $received[0]['source'] );
 	}
 
+	public function test_a_preview_while_switched_off_records_nothing(): void {
+		$received = array();
+		add_action(
+			'silvertrail_recorded',
+			static function ( array $record ) use ( &$received ): void {
+				$received[] = $record;
+			}
+		);
+		update_option(
+			Settings::OPTION,
+			array(
+				'enabled' => false,
+				'records' => true,
+			)
+		);
+		$this->boot_rest();
+
+		$response = $this->post(
+			array(
+				'i'      => str_repeat( 'ab', 16 ),
+				'n'      => Config::revision(),
+				'c'      => array( 'stats' ),
+				'source' => 'banner',
+			)
+		);
+
+		$this->assertSame( 204, $response->get_status() );
+		$this->assertSame( array(), $received );
+	}
+
 	public function test_invalid_records_are_refused(): void {
 		update_option( Settings::OPTION, array( 'records' => true ) );
 		$this->boot_rest();

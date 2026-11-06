@@ -10,6 +10,7 @@ namespace Silvertrail;
 /**
  * @phpstan-type PresetSetting array{enabled: bool, tag_id: string}
  * @phpstan-type SettingsArray array{
+ *     enabled: bool,
  *     layout: 'modal'|'box',
  *     require_choice: bool,
  *     appearance: 'theme'|'light'|'dark',
@@ -44,6 +45,7 @@ final class Settings {
 	 */
 	public static function defaults(): array {
 		return array(
+			'enabled'         => true,
 			'layout'          => 'modal',
 			'require_choice'  => true,
 			'appearance'      => 'theme',
@@ -113,7 +115,7 @@ final class Settings {
 				'expiry_months'   => self::clamp( $value, 1, 13, $defaults['expiry_months'] ),
 				'retention_days'  => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
 				'floating_button' => self::floating_button( $value ),
-				'require_choice', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
+				'enabled', 'require_choice', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
 				default           => $value,
 			};
 		}

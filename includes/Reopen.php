@@ -15,7 +15,6 @@ final class Reopen {
 	public static function register(): void {
 		add_shortcode( 'silvertrail_link', array( self::class, 'shortcode' ) );
 		add_action( 'init', array( self::class, 'block' ) );
-		add_action( 'wp_footer', array( self::class, 'button' ) );
 	}
 
 	/**
@@ -26,6 +25,9 @@ final class Reopen {
 	}
 
 	public static function link( string $text, string $attributes = '' ): string {
+		if ( ! Plugin::live() ) {
+			return '';
+		}
 		$text = '' !== trim( $text ) ? $text : Texts::all()['reopen'];
 		return sprintf( '<a href="#silvertrail" data-silvertrail-open%s>%s</a>', $attributes, esc_html( $text ) );
 	}

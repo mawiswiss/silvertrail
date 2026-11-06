@@ -75,4 +75,16 @@ test.describe('visitor scan', () => {
 		await run.click();
 		await expect(scan).toContainText('Clean.', { timeout: 15000 });
 	});
+
+	test('checks a switched-off site as visitors would get it once on', async ({ page, context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_settings', value: JSON.stringify({ enabled: false }), url: 'http://localhost:8892' }]);
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
+		const scan = page.locator('#silvertrail-scan');
+
+		await scan.getByLabel('Page', { exact: true }).fill('/?pagename=silvertrail-leak');
+		await scan.getByRole('button', { name: 'Scan', exact: true }).click();
+
+		await expect(scan.locator('ul').first()).toContainText('127.0.0.1', { timeout: 15000 });
+		await expect(scan).toContainText('Test Analytics');
+	});
 });
