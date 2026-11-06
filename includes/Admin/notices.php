@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 $silvertrail_config   = Config::get();
 $silvertrail_in_place = array_filter( Config::consent_ids(), static fn( string $id ): bool => $silvertrail_config['groups'][ $silvertrail_config['services'][ $id ]['group'] ]['in_place'] );
 $silvertrail_asking   = count( Config::consent_ids() ) - count( $silvertrail_in_place );
-$silvertrail_embeds   = wp_sprintf( '%l', array_map( static fn( string $id ): string => $silvertrail_config['services'][ $id ]['name'], $silvertrail_in_place ) );
+$silvertrail_embeds   = count( $silvertrail_in_place );
 $silvertrail_turn_on  = SettingsPage::turning_on();
 ?>
 
@@ -38,19 +38,19 @@ $silvertrail_turn_on  = SettingsPage::turning_on();
 				<?php
 				/* translators: %s: number of services */
 				echo esc_html( sprintf( _n( 'The banner is on. It asks about %s service.', 'The banner is on. It asks about %s services.', $silvertrail_asking, 'silvertrail' ), number_format_i18n( $silvertrail_asking ) ) );
-				if ( '' !== $silvertrail_embeds ) {
-					/* translators: %s: list of service names */
-					echo ' ' . esc_html( sprintf( _n( '%s asks on its placeholder.', '%s ask on their placeholder.', count( $silvertrail_in_place ), 'silvertrail' ), $silvertrail_embeds ) );
+				if ( $silvertrail_embeds > 0 ) {
+					/* translators: %s: number of services */
+					echo ' ' . esc_html( sprintf( _n( '%s more asks on its placeholder.', '%s more ask on their placeholder.', $silvertrail_embeds, 'silvertrail' ), number_format_i18n( $silvertrail_embeds ) ) );
 				}
 				?>
 			</p>
 		</div>
-	<?php elseif ( '' !== $silvertrail_embeds ) : ?>
+	<?php elseif ( $silvertrail_embeds > 0 ) : ?>
 		<div class="notice notice-info inline">
 			<p>
 				<?php
-				/* translators: %s: list of service names */
-				echo esc_html( sprintf( _n( 'No banner opens. %s asks on its placeholder, so only pages with such an embed ask anything.', 'No banner opens. %s ask on their placeholder, so only pages with such an embed ask anything.', count( $silvertrail_in_place ), 'silvertrail' ), $silvertrail_embeds ) );
+				/* translators: %s: number of services */
+				echo esc_html( sprintf( _n( 'No banner opens. %s service asks on its placeholder, so only pages with such an embed ask anything.', 'No banner opens. %s services ask on their placeholder, so only pages with such an embed ask anything.', $silvertrail_embeds, 'silvertrail' ), number_format_i18n( $silvertrail_embeds ) ) );
 				?>
 			</p>
 		</div>
