@@ -219,20 +219,10 @@ final class SettingsPage {
 		$defaults = Settings::defaults();
 
 		$presets = array();
-		foreach ( Presets::all() as $id => $preset ) {
-			$tag_id = strtoupper( sanitize_text_field( (string) ( $input['presets'][ $id ]['tag_id'] ?? '' ) ) );
-			$on     = ! empty( $input['presets'][ $id ]['enabled'] );
-			if ( $on && isset( $preset['tag_id'] ) && ! preg_match( '/' . $preset['tag_id']['pattern'] . '/', $tag_id ) ) {
-				add_settings_error(
-					Settings::OPTION,
-					"silvertrail-{$id}",
-					/* translators: 1: service name, 2: example ID */
-					sprintf( __( '%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid.', 'silvertrail' ), $preset['service']['name'], $preset['tag_id']['example'] )
-				);
-			}
+		foreach ( array_keys( Presets::all() ) as $id ) {
 			$presets[ $id ] = array(
-				'enabled' => $on,
-				'tag_id'  => $tag_id,
+				'enabled' => ! empty( $input['presets'][ $id ]['enabled'] ),
+				'tag_id'  => strtoupper( sanitize_text_field( (string) ( $input['presets'][ $id ]['tag_id'] ?? '' ) ) ),
 			);
 		}
 

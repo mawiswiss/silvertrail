@@ -257,20 +257,36 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'options-privacy.php', $this->card( 'links' ) );
 	}
 
-	public function test_a_save_error_moves_from_the_top_into_its_card(): void {
+	public function test_a_texts_error_moves_from_the_top_into_its_card(): void {
 		add_settings_error( 'general', 'core', 'Core message' );
-		add_settings_error( Settings::OPTION, 'silvertrail-google-analytics', 'Google Analytics needs an ID like G-XXXXXXXXXX.' );
 		add_settings_error( Settings::OPTION, 'silvertrail-texts', 'Not saved: one' );
 		add_settings_error( Settings::OPTION, 'silvertrail-texts', 'Not saved: two' );
 
 		Notices::take_errors();
 
 		$this->assertSame( array( 'core' ), array_column( get_settings_errors(), 'code' ) );
-		$this->assertStringContainsString( 'notice-error inline', $this->card( 'trackers' ) );
 		$this->assertStringContainsString( 'Not saved: two', $this->card( 'texts' ) );
-		$summaries = array_column( Notices::overview( 'services' ), 'summary' );
-		$this->assertContains( 'Google Analytics needs a valid ID.', $summaries );
-		$this->assertCount( 1, array_keys( $summaries, 'Some texts were not saved.', true ) );
+		$this->assertCount( 1, array_keys( array_column( Notices::overview( 'services' ), 'summary' ), 'Some texts were not saved.', true ) );
+	}
+
+	public function test_a_tracker_without_a_valid_id_stays_in_the_overview(): void {
+		$stored                                 = Settings::defaults();
+		$stored['presets']['google-analytics'] = array(
+			'enabled' => true,
+			'tag_id'  => 'UA-1',
+		);
+		update_option( Settings::OPTION, $stored );
+
+		$this->assertSame( array(), get_settings_errors( Settings::OPTION ) );
+		$this->assertContains( 'Google Analytics needs a valid ID.', array_column( Notices::overview( 'banner' ), 'summary' ) );
+		$this->assertStringContainsString( 'G-XXXXXXXXXX', $this->card( 'trackers' ) );
+
+		$stored['presets']['google-analytics']['tag_id'] = 'G-ABC123';
+		update_option( Settings::OPTION, $stored );
+		Settings::reset();
+		Config::reset();
+
+		$this->assertSame( '', $this->card( 'trackers' ) );
 	}
 
 	public function test_the_switch_changes_only_whether_silvertrail_is_on(): void {

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Silvertrail\Admin;
 
+use Silvertrail\Config;
 use Silvertrail\Presets;
 use Silvertrail\Settings;
 
@@ -25,7 +26,7 @@ final class Notices {
 		// Also loads the errors options.php kept from the save into the global.
 		get_settings_errors();
 		foreach ( (array) $wp_settings_errors as $key => $error ) {
-			if ( Settings::OPTION === $error['setting'] ) {
+			if ( Settings::OPTION === $error['setting'] && 'silvertrail-texts' === $error['code'] ) {
 				self::$errors[] = $error;
 				unset( $wp_settings_errors[ $key ] );
 			}
@@ -41,16 +42,24 @@ final class Notices {
 		$notices = array();
 
 		foreach ( self::$errors as $error ) {
-			$preset    = Presets::all()[ substr( $error['code'], strlen( 'silvertrail-' ) ) ] ?? null;
-			$notices[] = null === $preset ? array(
+			$notices[] = array(
 				'card'    => 'texts',
 				'type'    => 'error',
 				'message' => esc_html( $error['message'] ),
 				'summary' => __( 'Some texts were not saved.', 'silvertrail' ),
-			) : array(
+			);
+		}
+
+		$services = Config::get()['services'];
+		foreach ( Presets::all() as $id => $preset ) {
+			if ( ! isset( $services[ $id ], $preset['tag_id'] ) || preg_match( '/' . $preset['tag_id']['pattern'] . '/', $services[ $id ]['tag_id'] ) ) {
+				continue;
+			}
+			$notices[] = array(
 				'card'    => 'trackers',
 				'type'    => 'error',
-				'message' => esc_html( $error['message'] ),
+				/* translators: 1: service name, 2: example ID */
+				'message' => esc_html( sprintf( __( '%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid.', 'silvertrail' ), $preset['service']['name'], $preset['tag_id']['example'] ) ),
 				/* translators: %s: service name */
 				'summary' => sprintf( __( '%s needs a valid ID.', 'silvertrail' ), $preset['service']['name'] ),
 			);
