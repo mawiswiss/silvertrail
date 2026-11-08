@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * @phpstan-type PresetSetting array{enabled: bool, tag_id: string}
  * @phpstan-type SettingsArray array{

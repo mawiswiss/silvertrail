@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Reads the consent cookie. Only meaningful on uncached requests such as form posts.
  */

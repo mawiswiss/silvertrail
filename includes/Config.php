@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * @phpstan-type Group array{name: string, description: string, locked: bool, consent_api: string, in_place: bool}
  * @phpstan-type Service array{

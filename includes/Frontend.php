@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 final class Frontend {
 
 	public const THEME_CSS = 'silvertrail/silvertrail.css';

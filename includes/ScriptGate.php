@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Renders the script handles a service lists as inert tags.
  */

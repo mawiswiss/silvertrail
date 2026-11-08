@@ -11,6 +11,8 @@ use Silvertrail\Design;
 use Silvertrail\Frontend;
 use Silvertrail\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 final class StylingPrompt {
 
 	public static function text(): string {

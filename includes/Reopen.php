@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Ways back to the preferences: the shortcode, the block and the floating button.
  */

@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Prints the official tag of every preset that has a valid ID, inert until consent.
  * The noscript fallbacks are left out because nothing could gate them.

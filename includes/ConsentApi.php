@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Bridge to the WP Consent API, so other plugins can read the visitor's choice.
  */

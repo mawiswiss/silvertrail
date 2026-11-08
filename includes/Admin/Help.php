@@ -9,6 +9,8 @@ namespace Silvertrail\Admin;
 
 use WP_Screen;
 
+defined( 'ABSPATH' ) || exit;
+
 final class Help {
 
 	private const SERVICE = <<<'PHP'

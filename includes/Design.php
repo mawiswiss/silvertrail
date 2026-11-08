@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 final class Design {
 
 	public const TOKENS = array( 'background', 'text', 'muted', 'line', 'accent', 'on-accent', 'radius', 'button-padding', 'button-weight' );

@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Shows a page as a first-time visitor sees it, for the leak check on the Tools tab.
  */

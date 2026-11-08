@@ -9,6 +9,8 @@ namespace Silvertrail;
 
 use WP_CLI;
 
+defined( 'ABSPATH' ) || exit;
+
 final class Plugin {
 
 	public const PREVIEW = 'silvertrail-preview';

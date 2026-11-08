@@ -15,6 +15,8 @@ use Silvertrail\Scan;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
 
+defined( 'ABSPATH' ) || exit;
+
 final class SettingsPage {
 
 	public const SLUG = 'silvertrail';

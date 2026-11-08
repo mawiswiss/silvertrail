@@ -9,6 +9,8 @@ namespace Silvertrail;
 
 use WP_HTML_Tag_Processor;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Wraps embeds from known hosts in a placeholder. The embed waits inert in a template.
  */

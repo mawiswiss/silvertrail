@@ -9,6 +9,8 @@ namespace Silvertrail;
 
 use WP_CLI;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Inspects and manages Silvertrail.
  */

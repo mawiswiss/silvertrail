@@ -11,6 +11,8 @@ use Silvertrail\Config;
 use Silvertrail\Presets;
 use Silvertrail\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 final class Notices {
 
 	/**

@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Google Consent Mode v2. The default must reach the dataLayer before any Google tag.
  */

@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Silvertrail;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Texts stack up from the English source with its official translation, through the
  * developer translation and the admin's edits, to the silvertrail_texts filter.

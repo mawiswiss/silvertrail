@@ -11,6 +11,8 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Opt-in records of each decision: a random consent ID, the revision, the choices and
  * the time. No IP address and no browser details.
