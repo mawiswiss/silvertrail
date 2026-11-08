@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 
 const SILVERTRAIL_VERSION     = '0.1.0';
 const SILVERTRAIL_FILE        = __FILE__;
-const SILVERTRAIL_LICENSE_URL = 'https://polar.sh/silvertrail';
+const SILVERTRAIL_LICENSE_URL = 'https://marcwieland.name/support/';
 
 spl_autoload_register(
 	static function ( string $class_name ): void {

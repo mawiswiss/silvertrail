@@ -27,7 +27,7 @@ A generated banner shows a dialog. Silvertrail also does the work around it:
 
 ## Free, and a licence to support it
 
-Silvertrail is free. When you are paid to put it on a client's site, consider supporting its development with a site licence at https://polar.sh/silvertrail: 29 a year per site, or 199 a year for an agency with any number of sites, in dollars or euros. The licence pays for the upkeep. It adds nothing and withholds nothing, because everything is already in the plugin, and nothing checks whether you bought one.
+Silvertrail is free. When you are paid to put it on a client's site, consider supporting its development with a site licence at https://marcwieland.name/support/: 29 a year per site, or 199 a year for an agency with any number of sites, in dollars or euros. The licence pays for the upkeep. It adds nothing and withholds nothing, because everything is already in the plugin, and nothing checks whether you bought one.
 
 That is the whole business model. There is no pro version and no hosted service, and there will be none. What the plugin does, it does for everyone, and the next thing it does goes into the same free plugin.
 

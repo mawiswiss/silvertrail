@@ -12,8 +12,8 @@
     ],
     "funding": [
         {
-            "type": "polar",
-            "url": "https://polar.sh/silvertrail"
+            "type": "other",
+            "url": "https://marcwieland.name/support/"
         }
     ],
     "require": {
