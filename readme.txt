@@ -1,5 +1,5 @@
 === Silvertrail ===
-Contributors: mawiswiss
+Contributors: marcwieland95
 Donate link: https://polar.sh/silvertrail
 Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
