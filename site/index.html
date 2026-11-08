@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Silvertrail, a small cookie banner for WordPress</title>
+	<meta name="description" content="A small cookie banner for WordPress. It blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes. Free, with an honour licence.">
+	<meta name="color-scheme" content="dark">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232b3326'/%3E%3Ccircle cx='9' cy='22' r='3' fill='%23e3e8d8'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23e3e8d8'/%3E%3Ccircle cx='23' cy='10' r='3' fill='%23cfe39a'/%3E%3C/svg%3E">
+	<link rel="preload" href="fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+	<style>
+		@font-face {
+			font-family: Manrope;
+			src: url("fonts/manrope.woff2") format("woff2");
+			font-weight: 200 800;
+			font-display: swap;
+		}
+
+		:root {
+			--dark: #2b3326;
+			--olive: #5a6646;
+			--sage: #e3e8d8;
+			--pale: #f4f6ef;
+			--lime: #cfe39a;
+
+			--hero-bg: #1c2118;
+			--hero-text: var(--pale);
+			--hero-muted: #c5ccb6;
+			--a-bg: #252b20;
+			--b-bg: #1c2118;
+			--text: var(--pale);
+			--muted: #c5ccb6;
+			--tile: #2a3124;
+			--price: #30372a;
+			--button-bg: var(--sage);
+			--button-text: var(--dark);
+			--strong-bg: var(--sage);
+			--strong-text: var(--dark);
+
+			font-family: Manrope, system-ui, sans-serif;
+			line-height: 1.6;
+			color: var(--text);
+			background: var(--hero-bg);
+		}
+
+		* { box-sizing: border-box; }
+
+		@media (prefers-reduced-motion: no-preference) {
+			html { scroll-behavior: smooth; }
+		}
+
+		body { margin: 0; }
+
+		h1, h2, h3, p { margin: 0; }
+
+		a { color: inherit; text-underline-offset: 0.2em; }
+
+		:focus-visible {
+			outline: 3px solid var(--lime);
+			outline-offset: 3px;
+		}
+
+		.wrap {
+			max-width: 68rem;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+
+		section {
+			padding: 6rem 0;
+			color: var(--text);
+		}
+
+		h2 {
+			max-width: 18ch;
+			font-size: clamp(2.25rem, 6vw, 3.75rem);
+			font-weight: 800;
+			line-height: 1.04;
+			letter-spacing: -0.035em;
+		}
+
+		.intro {
+			max-width: 36rem;
+			margin-top: 1.25rem;
+			font-size: 1.1875rem;
+			color: var(--muted);
+		}
+
+		code {
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+			font-size: 0.875em;
+		}
+
+		/* Hero */
+
+		.hero {
+			padding: 1.25rem 0 6rem;
+			background: var(--hero-bg);
+			color: var(--hero-text);
+		}
+
+		.topbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+			margin-bottom: clamp(3rem, 9vw, 6rem);
+		}
+
+		.wordmark {
+			font-weight: 800;
+			font-size: 1.25rem;
+			letter-spacing: -0.02em;
+		}
+
+		.topbar__links {
+			display: flex;
+			align-items: center;
+			gap: 1.75rem;
+		}
+
+		.topbar__links a {
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.topbar__links a:hover { text-decoration: underline; }
+
+		.topbar__links a.topbar__licence {
+			padding: 0.5rem 1rem;
+			border: 1.5px solid var(--hero-muted);
+		}
+
+		.topbar__links a.topbar__licence:hover {
+			background: var(--pale);
+			border-color: var(--pale);
+			color: var(--dark);
+			text-decoration: none;
+		}
+
+		@media (max-width: 40rem) {
+			.topbar__links a:not(.topbar__licence) { display: none; }
+		}
+
+		h1 {
+			max-width: 13ch;
+			font-size: clamp(2.75rem, 9vw, 6rem);
+			font-weight: 800;
+			line-height: 1.04;
+			letter-spacing: -0.045em;
+			text-wrap: balance;
+		}
+
+		h1 em {
+			font-style: normal;
+			color: var(--lime);
+		}
+
+		.lead {
+			max-width: 36rem;
+			margin-top: 1.75rem;
+			font-size: clamp(1.125rem, 2.4vw, 1.3125rem);
+			color: var(--hero-muted);
+		}
+
+		.cta {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 1rem 1.5rem;
+			margin-top: 2rem;
+		}
+
+		@media (min-width: 60rem) {
+			.hero { padding-top: 1.75rem; }
+			.topbar { margin-bottom: 5rem; }
+			.lead { margin-top: 2.75rem; }
+			.cta { margin-top: 3.25rem; }
+		}
+
+		.soon {
+			padding: 0.875rem 1.25rem;
+			border: 2px dashed var(--hero-muted);
+			font-weight: 600;
+		}
+
+		/* The preview: a page behind the dialog */
+
+		.demo { margin-top: 4rem; }
+
+		@media (min-width: 60rem) {
+			.demo { margin-top: 5.5rem; }
+		}
+
+		.browser {
+			overflow: hidden;
+			border-radius: 0.75rem;
+			background: #eef1e6;
+			box-shadow: 0 2rem 5rem rgb(0 0 0 / 0.4);
+		}
+
+		.browser__bar {
+			display: flex;
+			align-items: center;
+			gap: 0.375rem;
+			padding: 0.625rem 0.875rem;
+			background: #d9dfcb;
+		}
+
+		.browser__bar i {
+			width: 0.625rem;
+			height: 0.625rem;
+			border-radius: 50%;
+			background: #b5bda4;
+		}
+
+		.browser__url {
+			flex: 0 1 18rem;
+			margin-left: 0.75rem;
+			padding: 0.25rem 0.875rem;
+			border-radius: 1rem;
+			background: #f7f8f3;
+			color: var(--olive);
+			font-size: 0.8125rem;
+		}
+
+		.browser__tag {
+			margin-left: auto;
+			color: var(--olive);
+			font-size: 0.8125rem;
+			font-weight: 600;
+		}
+
+		.page {
+			position: relative;
+			display: grid;
+			place-items: center;
+			min-height: 27rem;
+			padding: 1.5rem;
+		}
+
+		.skeleton {
+			position: absolute;
+			inset: 1.5rem;
+			display: grid;
+			grid-template-rows: 1rem 1fr auto;
+			gap: 1.5rem;
+		}
+
+		.skeleton > div { background: #dde3d0; }
+
+		.skeleton .skeleton__nav {
+			display: flex;
+			justify-content: space-between;
+			background: none;
+		}
+
+		.skeleton__nav span {
+			width: 6rem;
+			background: #d3dac4;
+		}
+
+		.skeleton__nav span:last-child { width: 10rem; }
+
+		.skeleton .skeleton__lines {
+			display: grid;
+			gap: 0.625rem;
+			background: none;
+		}
+
+		.skeleton__lines span {
+			height: 0.75rem;
+			background: #dde3d0;
+		}
+
+		.skeleton__lines span:last-child { width: 60%; }
+
+		.backdrop {
+			position: absolute;
+			inset: 0;
+			background: rgb(31 37 27 / 0.45);
+		}
+
+		.dialog {
+			position: relative;
+			width: min(27rem, 100%);
+			padding: 1.75rem;
+			background: var(--sage);
+			color: var(--olive);
+			box-shadow: 0 1rem 3rem rgb(0 0 0 / 0.25);
+		}
+
+		.dialog strong {
+			display: block;
+			margin-bottom: 0.5rem;
+			color: var(--dark);
+			font-size: 1.25rem;
+			font-weight: 600;
+		}
+
+		.dialog p { margin-bottom: 1.5rem; }
+
+		.dialog__buttons {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.5rem;
+		}
+
+		.dialog__button {
+			padding: 0.875rem 0.5rem;
+			border: 0;
+			background: var(--olive);
+			color: var(--pale);
+			font: inherit;
+			font-weight: 400;
+			cursor: pointer;
+		}
+
+		.dialog__button:hover { background: var(--dark); }
+
+		.dialog__choose {
+			margin-top: 1rem;
+			text-align: center;
+			font-size: 0.875rem;
+			text-decoration: underline;
+			text-underline-offset: 0.2em;
+		}
+
+		.reopen {
+			position: absolute;
+			left: 1rem;
+			bottom: 1rem;
+			display: none;
+			place-items: center;
+			width: 3rem;
+			height: 3rem;
+			padding: 0;
+			border: 0;
+			border-radius: 50%;
+			background: var(--olive);
+			color: var(--pale);
+			box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.2);
+			cursor: pointer;
+		}
+
+		.demo[data-choice] .backdrop,
+		.demo[data-choice] .dialog { display: none; }
+
+		.demo[data-choice] .reopen { display: grid; }
+
+		.demo__status {
+			margin-top: 1.25rem;
+			color: var(--hero-muted);
+		}
+
+		.demo__status b {
+			color: var(--hero-text);
+			font-weight: 600;
+		}
+
+		/* Developers */
+
+		.developers { background: var(--b-bg); }
+
+		.split {
+			display: grid;
+			gap: 3rem;
+			margin-top: 3.5rem;
+		}
+
+		@media (min-width: 60rem) {
+			.split {
+				grid-template-columns: 21rem minmax(0, 1fr);
+				align-items: start;
+			}
+		}
+
+		.points {
+			display: grid;
+			gap: 1.75rem;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.points h3,
+		.tiles h3 {
+			font-size: 1.125rem;
+			font-weight: 700;
+			letter-spacing: -0.01em;
+		}
+
+		.points p,
+		.tiles p {
+			margin-top: 0.25rem;
+			color: var(--muted);
+		}
+
+		.code {
+			overflow: hidden;
+			border-radius: 0.75rem;
+			background: #1f251b;
+			color: #dfe5d3;
+		}
+
+		.code [role="tablist"] {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.25rem;
+			padding: 0.625rem;
+			background: #181d15;
+		}
+
+		.code [role="tab"] {
+			padding: 0.5rem 0.875rem;
+			border: 0;
+			border-radius: 0.375rem;
+			background: none;
+			color: #aab39a;
+			font: inherit;
+			font-size: 0.875rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+
+		.code [role="tab"][aria-selected="true"] {
+			background: #2c3427;
+			color: var(--pale);
+		}
+
+		.code pre {
+			margin: 0;
+			padding: 1.5rem;
+			overflow-x: auto;
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+			font-size: 0.875rem;
+			line-height: 1.7;
+			tab-size: 4;
+		}
+
+		.code .f { color: #e9d8a6; }
+		.code .s { color: var(--lime); }
+		.code .c { color: #8c967c; }
+		.code .ok { color: var(--lime); font-weight: 700; }
+		.code .who { color: #e9d8a6; font-weight: 700; }
+
+		.code__note {
+			padding: 0 1.5rem 1.5rem;
+			color: #aab39a;
+			font-size: 0.875rem;
+		}
+
+		/* Looks */
+
+		.looks { background: var(--a-bg); }
+
+		.variants {
+			display: grid;
+			gap: 2.5rem 1.5rem;
+			margin: 3.5rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		@media (min-width: 56rem) {
+			.variants { grid-template-columns: repeat(3, 1fr); }
+		}
+
+		.variants figure { margin: 0; }
+
+		.stage {
+			display: grid;
+			align-items: center;
+			padding: 2.5rem 1rem;
+			border-radius: 0.75rem;
+			background: var(--stage);
+		}
+
+		.stage img {
+			display: block;
+			width: 100%;
+			max-width: 20rem;
+			height: auto;
+			margin-inline: auto;
+			filter: drop-shadow(0 1rem 1.25rem rgb(0 0 0 / 0.18));
+		}
+
+		.variants figcaption { margin-top: 1.25rem; }
+
+		.variants figcaption b {
+			display: block;
+			font-size: 1.125rem;
+		}
+
+		.variants figcaption span { color: var(--muted); }
+
+		/* Batteries */
+
+		.batteries { background: var(--b-bg); }
+
+		.tiles {
+			display: grid;
+			gap: 0.75rem;
+			margin: 3.5rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		@media (min-width: 36rem) {
+			.tiles { grid-template-columns: repeat(2, 1fr); }
+		}
+
+		@media (min-width: 62rem) {
+			.tiles { grid-template-columns: repeat(4, 1fr); }
+		}
+
+		.tiles li {
+			padding: 1.75rem 1.5rem;
+			background: var(--tile);
+		}
+
+		.tiles svg {
+			display: block;
+			width: 3rem;
+			height: 3rem;
+			margin-bottom: 1.5rem;
+			padding: 0.625rem;
+			background: var(--button-bg);
+			color: var(--button-text);
+			fill: none;
+			stroke: currentColor;
+			stroke-width: 1.75;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+
+		.tiles h3 { font-size: 1.25rem; }
+
+		.extras h3 {
+			margin-top: 3.5rem;
+			font-size: 1.25rem;
+		}
+
+		.extras ul {
+			display: grid;
+			gap: 0.875rem 2rem;
+			margin: 1.25rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		@media (min-width: 36rem) {
+			.extras ul { grid-template-columns: repeat(2, 1fr); }
+		}
+
+		@media (min-width: 62rem) {
+			.extras ul { grid-template-columns: repeat(4, 1fr); }
+		}
+
+		.extras li {
+			position: relative;
+			padding-left: 1.75rem;
+		}
+
+		.extras li::before {
+			content: "";
+			position: absolute;
+			left: 0.125rem;
+			top: 0.375rem;
+			width: 0.75rem;
+			height: 0.4375rem;
+			border-left: 2px solid var(--muted);
+			border-bottom: 2px solid var(--muted);
+			transform: rotate(-45deg);
+		}
+
+		.readme {
+			margin-top: 3rem;
+			color: var(--muted);
+		}
+
+		/* Licence */
+
+		.licence { background: var(--a-bg); }
+
+		.prices {
+			display: grid;
+			gap: 0.75rem;
+			margin: 3.5rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		@media (min-width: 48rem) {
+			.prices { grid-template-columns: repeat(3, 1fr); }
+		}
+
+		.prices li {
+			display: flex;
+			flex-direction: column;
+			padding: 1.75rem;
+			background: var(--price);
+		}
+
+		.prices li.prices__free {
+			background: var(--strong-bg);
+			color: var(--strong-text);
+		}
+
+		.prices__label { font-weight: 700; }
+
+		.prices__amount {
+			display: flex;
+			align-items: baseline;
+			gap: 0.5rem;
+			margin-top: 1.25rem;
+		}
+
+		.prices__amount b {
+			font-size: 3.25rem;
+			font-weight: 800;
+			line-height: 1;
+			letter-spacing: -0.04em;
+		}
+
+		.prices__amount span,
+		.prices li > small {
+			opacity: 0.8;
+		}
+
+		.prices li > small {
+			margin-top: 1.25rem;
+			font-size: 0.9375rem;
+		}
+
+		.licence p {
+			max-width: 38rem;
+			margin-top: 2.5rem;
+			font-size: 1.125rem;
+			color: var(--muted);
+		}
+
+		.support {
+			display: inline-block;
+			margin-top: 2rem;
+			padding: 1rem 2.25rem;
+			background: var(--button-bg);
+			color: var(--button-text);
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.support:hover { background: var(--text); }
+
+		.custom {
+			display: grid;
+			gap: 1.25rem;
+			margin-top: 4rem;
+			padding-top: 2rem;
+			border-top: 1px solid var(--muted);
+		}
+
+		@media (min-width: 48rem) {
+			.custom {
+				grid-template-columns: minmax(0, 1fr) auto;
+				align-items: center;
+				gap: 3rem;
+			}
+		}
+
+		.custom h3 { font-size: 1.25rem; }
+
+		.custom p {
+			max-width: 40rem;
+			margin-top: 0.5rem;
+			font-size: 1rem;
+		}
+
+		.custom__write {
+			display: inline-block;
+			padding: 0.625rem 1.25rem;
+			border: 2px solid currentColor;
+			color: var(--text);
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.custom__write[hidden] { display: none; }
+
+		.custom__write:hover {
+			background: var(--text);
+			color: var(--a-bg);
+		}
+
+		footer {
+			padding: 3rem 0;
+			background: var(--hero-bg);
+			color: var(--hero-muted);
+			font-size: 0.9375rem;
+		}
+
+		footer p + p { margin-top: 0.5rem; }
+	</style>
+</head>
+<body>
+	<header class="hero">
+		<div class="wrap">
+			<nav class="topbar" aria-label="Main">
+				<span class="wordmark">Silvertrail</span>
+				<div class="topbar__links">
+					<a href="#developers">Developers</a>
+					<a href="#features">Features</a>
+					<a class="topbar__licence" href="#licence">Honour licence</a>
+				</div>
+			</nav>
+
+			<h1>Nothing loads until visitors say&nbsp;<em>yes.</em></h1>
+			<p class="lead">Silvertrail is a small cookie banner for WordPress. It blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes.</p>
+
+			<div class="cta">
+				<span class="soon">Coming soon to WordPress.org</span>
+				<a href="#licence">Free, with an honour licence</a>
+			</div>
+
+			<div class="demo" id="demo">
+				<div class="browser">
+					<div class="browser__bar" aria-hidden="true">
+						<i></i><i></i><i></i>
+						<span class="browser__url">example.com</span>
+						<span class="browser__tag">Preview</span>
+					</div>
+					<div class="page">
+						<div class="skeleton" aria-hidden="true">
+							<div class="skeleton__nav"><span></span><span></span></div>
+							<div></div>
+							<div class="skeleton__lines"><span></span><span></span><span></span></div>
+						</div>
+						<div class="backdrop"></div>
+						<div class="dialog" role="group" aria-label="Preview of the cookie banner">
+							<strong>Privacy settings</strong>
+							<p>We use cookies and similar technologies. Some are needed for this site to work. Everything else only runs if you agree.</p>
+							<div class="dialog__buttons">
+								<button type="button" class="dialog__button" data-choice="all">Accept all</button>
+								<button type="button" class="dialog__button" data-choice="essential">Only essential</button>
+							</div>
+							<div class="dialog__choose" aria-hidden="true">Choose</div>
+						</div>
+						<button type="button" class="reopen" aria-label="Show the banner again" data-choice="">
+							<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-4.6-4.2A4 4 0 0 1 12 2Zm-3.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm7 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-6 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>
+						</button>
+					</div>
+				</div>
+				<p class="demo__status" aria-live="polite">A preview of the banner in its default look. The buttons only close it, because this page has nothing to block.</p>
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<section class="developers" id="developers">
+			<div class="wrap">
+				<h2>Built for developers and their agents</h2>
+				<p class="intro">Set everything in PHP and check it on the shell. The admin keeps only the decisions a site owner makes.</p>
+
+				<div class="split">
+					<ul class="points">
+						<li>
+							<h3>Code wins over the admin</h3>
+							<p>One filter sets any setting, and the admin marks each field that code sets.</p>
+						</li>
+						<li>
+							<h3>Agents work on the shell</h3>
+							<p>WP-CLI shows an agent every service and each setting with its source, so it can check its own work.</p>
+						</li>
+						<li>
+							<h3>Prompts built in</h3>
+							<p>The admin copies a prompt to style the banner, and the page scan writes one for the services it finds.</p>
+						</li>
+					</ul>
+
+					<div class="code" data-tabs>
+						<div role="tablist" aria-label="Ways to set up Silvertrail">
+							<button type="button" role="tab" id="tab-php" aria-controls="panel-php" aria-selected="true">PHP</button>
+							<button type="button" role="tab" id="tab-html" aria-controls="panel-html" aria-selected="false">HTML</button>
+							<button type="button" role="tab" id="tab-shell" aria-controls="panel-shell" aria-selected="false">WP-CLI</button>
+							<button type="button" role="tab" id="tab-agent" aria-controls="panel-agent" aria-selected="false">Agent</button>
+						</div>
+						<div role="tabpanel" id="panel-php" aria-labelledby="tab-php">
+<pre><code><span class="f">add_action</span>( <span class="s">'silvertrail_register'</span>, <span class="f">function</span> () {
+	<span class="f">silvertrail_register_service</span>( <span class="s">'google-tag-manager'</span>, [
+		<span class="s">'tag_id'</span> => <span class="s">'GTM-XXXXXXX'</span>,
+	] );
+} );
+
+<span class="f">add_filter</span>( <span class="s">'silvertrail_settings'</span>, <span class="f">function</span> ( $settings ) {
+	$settings[<span class="s">'expiry_months'</span>] = 12;
+	<span class="f">return</span> $settings;
+} );</code></pre>
+							<p class="code__note">One call turns on the preset, and the official tag waits for consent.</p>
+						</div>
+						<div role="tabpanel" id="panel-html" aria-labelledby="tab-html" hidden>
+<pre><code><span class="c">&lt;!-- Runs only after the visitor agrees to HubSpot --&gt;</span>
+&lt;script <span class="f">type</span>=<span class="s">"text/plain"</span> <span class="f">data-silvertrail</span>=<span class="s">"hubspot"</span>
+	<span class="f">src</span>=<span class="s">"https://js.hs-scripts.com/123.js"</span>&gt;&lt;/script&gt;</code></pre>
+							<p class="code__note">Mark any script, and Silvertrail runs it after consent, in its original order.</p>
+						</div>
+						<div role="tabpanel" id="panel-shell" aria-labelledby="tab-shell" hidden>
+<pre><code><span class="c">$</span> wp silvertrail settings
++---------------+---------+---------+
+| key           | value   | source  |
++---------------+---------+---------+
+| enabled       | true    | default |
+| layout        | "box"   | admin   |
+| expiry_months | 12      | code    |
+| records       | false   | default |
++---------------+---------+---------+
+
+<span class="c">$</span> wp silvertrail validate
+<span class="ok">Success:</span> The config is valid: 5 services.</code></pre>
+							<p class="code__note">Every value shows where it comes from: code, the admin or the default.</p>
+						</div>
+						<div role="tabpanel" id="panel-agent" aria-labelledby="tab-agent" hidden>
+<pre><code><span class="who">You</span>
+Turn on Google Tag Manager with GTM-XXXXXXX, keep
+choices for 12 months and check the setup.
+
+<span class="who">Agent</span>
+Added both to a small plugin. Checking it now.
+<span class="c">$</span> wp silvertrail validate
+<span class="ok">Success:</span> The config is valid: 5 services.</code></pre>
+							<p class="code__note">The agent writes the config in code and runs <code>validate</code> until it reports no problem.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="looks">
+			<div class="wrap">
+				<h2>Styled by your theme, or by you</h2>
+				<p class="intro">Out of the box, the banner looks like part of your site. Change a few values or replace the whole design, as far as the project needs.</p>
+
+				<ul class="variants">
+					<li>
+						<figure>
+							<div class="stage" style="--stage: #cdd5bd;">
+								<img src="images/look-theme.webp" width="320" height="234" alt="" loading="lazy" decoding="async">
+							</div>
+							<figcaption><b>From your theme</b><span>No setup. The banner reads its colours, corners and buttons from <code>theme.json</code>.</span></figcaption>
+						</figure>
+					</li>
+					<li>
+						<figure>
+							<div class="stage" style="--stage: #8d9480;">
+								<img src="images/look-values.webp" width="320" height="234" alt="" loading="lazy" decoding="async">
+							</div>
+							<figcaption><b>Values overridden</b><span>The <code>silvertrail_design</code> filter changes single values, such as colours, corners or buttons.</span></figcaption>
+						</figure>
+					</li>
+					<li>
+						<figure>
+							<div class="stage" style="--stage: #d8dfeb;">
+								<img src="images/look-custom.webp" width="320" height="234" alt="" loading="lazy" decoding="async">
+							</div>
+							<figcaption><b>Completely custom</b><span>Your own <code>silvertrail.css</code> or templates replace the defaults. The admin writes the prompt for an AI.</span></figcaption>
+						</figure>
+					</li>
+				</ul>
+			</div>
+		</section>
+
+		<section class="batteries" id="features">
+			<div class="wrap">
+				<h2>Batteries included</h2>
+				<p class="intro">The integrations most sites need are built in, so setting it up mostly means ticking boxes.</p>
+
+				<ul class="tiles">
+					<li>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v5M15 2v5M6 7h12v3a6 6 0 0 1-12 0zM12 16v6"/></svg>
+						<h3>WP Consent API</h3>
+						<p>Plugins that read the API follow the visitor’s choice.</p>
+					</li>
+					<li>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.5"/></svg>
+						<h3>Google Consent Mode v2</h3>
+						<p>The default is set before any Google tag, and every choice updates it.</p>
+					</li>
+					<li>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>
+						<h3>Embed blocking</h3>
+						<p>YouTube, Vimeo and Google Maps wait behind a placeholder until the visitor allows them.</p>
+					</li>
+					<li>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+						<h3>Script detection</h3>
+						<p>A scan of any page shows what it loads from other servers before the visitor agrees, and suggests a fix for each.</p>
+					</li>
+				</ul>
+
+				<div class="extras">
+					<h3>Also in the box</h3>
+					<ul>
+						<li>Ships presets for Google, LinkedIn and Meta tags</li>
+						<li>Works behind any page cache</li>
+						<li>Honours Global Privacy Control</li>
+						<li>Asks again when services change</li>
+						<li>Keeps optional records without IP addresses</li>
+						<li>Reopens from a link, a block or a floating button</li>
+						<li>Keeps one cookie per site on multisite</li>
+						<li>Adds a few kilobytes of JavaScript and no jQuery</li>
+					</ul>
+				</div>
+
+				<p class="readme">The plugin’s README covers every option in detail.</p>
+			</div>
+		</section>
+
+		<section class="licence" id="licence">
+			<div class="wrap">
+				<h2>Free, with an honour licence</h2>
+				<ul class="prices">
+					<li class="prices__free">
+						<span class="prices__label">Your own site</span>
+						<span class="prices__amount"><b>Free</b></span>
+						<small>Every feature is included, for good.</small>
+					</li>
+					<li>
+						<span class="prices__label">A client’s site</span>
+						<span class="prices__amount"><b>29</b><span>a year</span></span>
+						<small>You pay per site, in US dollars or euros.</small>
+					</li>
+					<li>
+						<span class="prices__label">An agency</span>
+						<span class="prices__amount"><b>199</b><span>a year</span></span>
+						<small>It covers any number of client sites.</small>
+					</li>
+				</ul>
+				<p>When someone pays you to put Silvertrail on their site, consider a licence. It works on your honour: there is no pro version and no key, and nothing in the plugin checks whether you bought one. The money pays for the upkeep.</p>
+				<a class="support" href="https://polar.sh/silvertrail">Support Silvertrail</a>
+
+				<aside class="custom" id="custom" aria-labelledby="custom-title">
+					<div>
+						<h3 id="custom-title">Need something it does not do?</h3>
+						<p>Custom development is paid work on top of the free plugin, such as gating the tags a theme prints or moving from another banner. Whatever fits every site goes into the plugin, for everyone.</p>
+					</div>
+					<div>
+						<a class="custom__write" href="#custom" data-mail="c2lsdmVydHJhaWxAbWFyY3dpZWxhbmQubmFtZQ==" hidden>Get in touch</a>
+						<noscript><p>silvertrail at marcwieland.name</p></noscript>
+					</div>
+				</aside>
+			</div>
+		</section>
+	</main>
+
+	<footer>
+		<div class="wrap">
+			<p>Silvertrail is made by <a href="https://marcwieland.name">Marc Wieland</a> and licensed under the GPL.</p>
+		</div>
+	</footer>
+
+	<script>
+		const demo = document.getElementById('demo');
+		const status = demo.querySelector('.demo__status');
+		const messages = {
+			'': status.innerHTML,
+			all: '<b>Accept all.</b> On a real site, the trackers load now. The button in the corner opens the banner again.',
+			essential: '<b>Only essential.</b> On a real site, Google, Meta and YouTube stay blocked. The button in the corner opens the banner again.',
+		};
+
+		demo.addEventListener('click', (event) => {
+			const button = event.target.closest('button[data-choice]');
+			if (!button) {
+				return;
+			}
+			const choice = button.dataset.choice;
+			status.innerHTML = messages[choice];
+			if (choice) {
+				demo.dataset.choice = choice;
+				demo.querySelector('.reopen').focus();
+			} else {
+				delete demo.dataset.choice;
+				demo.querySelector('.dialog__button').focus();
+			}
+		});
+
+		for (const tabs of document.querySelectorAll('[data-tabs]')) {
+			tabs.addEventListener('click', (event) => {
+				const tab = event.target.closest('[role="tab"]');
+				if (!tab) {
+					return;
+				}
+				for (const other of tabs.querySelectorAll('[role="tab"]')) {
+					const selected = other === tab;
+					other.setAttribute('aria-selected', String(selected));
+					document.getElementById(other.getAttribute('aria-controls')).hidden = !selected;
+				}
+			});
+		}
+
+		const mail = document.querySelector('[data-mail]');
+		const decodeMail = () => {
+			mail.href = `mailto:${atob(mail.dataset.mail)}?subject=${encodeURIComponent('Silvertrail custom development')}&body=${encodeURIComponent('Site:\n\nWhat it should do:\n')}`;
+		};
+		mail.hidden = false;
+		for (const type of ['pointerdown', 'focus', 'click']) {
+			mail.addEventListener(type, decodeMail);
+		}
+	</script>
+</body>
+</html>
