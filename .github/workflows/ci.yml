@@ -29,6 +29,7 @@ jobs:
         include:
           - php: '8.1'
             core: 'WordPress/WordPress#6.6'
+            wp-phpunit: '6.6.*'
           - php: '8.4'
             core: ''
     env:
@@ -45,6 +46,8 @@ jobs:
           php-version: '8.1'
           coverage: none
       - run: composer install --no-interaction --no-progress
+      - if: matrix.wp-phpunit
+        run: composer update wp-phpunit/wp-phpunit --with "wp-phpunit/wp-phpunit:${{ matrix.wp-phpunit }}" --no-interaction --no-progress
       - run: npm ci
       - run: npx wp-env start
       - run: npm run test:php

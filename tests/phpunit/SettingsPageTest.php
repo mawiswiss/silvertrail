@@ -191,6 +191,9 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	}
 
 	public function test_the_theme_own_scheme_is_checked_by_default(): void {
+		if ( ! wp_get_theme( 'twentytwentyfive' )->exists() ) {
+			$this->markTestSkipped( 'Twenty Twenty-Five ships with WordPress 6.7.' );
+		}
 		$html = $this->banner_tab( 'twentytwentyfive' );
 
 		$this->assertStringNotContainsString( 'value="theme"', $html );

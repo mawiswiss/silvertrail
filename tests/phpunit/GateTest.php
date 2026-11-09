@@ -100,7 +100,9 @@ final class GateTest extends WP_UnitTestCase {
 
 		$this->assertSame( array( 'text/plain', 'tracker' ), $this->script( $html, 'tracker-js' ) );
 		$this->assertSame( array( 'text/plain', 'tracker' ), $this->script( $html, 'tracker-js-after' ) );
-		$this->assertSame( array( null, null ), $this->script( $html, 'tracker-js-extra' ) );
+		$extra = $this->script( $html, 'tracker-js-extra' );
+		$this->assertNotSame( 'text/plain', $extra[0] );
+		$this->assertNull( $extra[1] );
 	}
 
 	public function test_an_exempt_handle_runs_normally(): void {

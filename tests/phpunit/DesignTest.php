@@ -13,6 +13,9 @@ final class DesignTest extends WP_UnitTestCase {
 
 	public function set_up(): void {
 		parent::set_up();
+		if ( ! wp_get_theme( 'twentytwentyfive' )->exists() ) {
+			$this->markTestSkipped( 'Twenty Twenty-Five ships with WordPress 6.7.' );
+		}
 		$this->use_theme( 'twentytwentyfive' );
 	}
 
