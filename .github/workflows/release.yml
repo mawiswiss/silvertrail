@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: rsync -a --exclude-from=<(sed 's#^/##' .distignore) ./ build/silvertrail/
+        run: mkdir -p build && rsync -a --exclude-from=<(sed 's#^/##' .distignore) ./ build/silvertrail/
 
       - uses: wordpress/plugin-check-action@v1
         with:
