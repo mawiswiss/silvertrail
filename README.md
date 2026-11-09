@@ -2,8 +2,6 @@
 
 A cookie banner for WordPress that loads nothing before the visitor says yes and makes "Only essential" as easy as "Accept all". Activate it, tick the trackers the site uses, and it works. Everything else is code.
 
-Status: early development, not released.
-
 ## Why not just generate a banner?
 
 A generated banner shows a dialog. Silvertrail also does the work around it:
