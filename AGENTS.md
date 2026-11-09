@@ -14,6 +14,11 @@
 - Every UI string goes through the `silvertrail` text domain. After changing one, regenerate `languages/silvertrail.pot` with `wp i18n make-pot . languages/silvertrail.pot` in its own `chore(i18n)` commit.
 - Commits are Conventional Commits, signed, without a sign-off trailer.
 
+## Releasing
+
+- A GitHub release publishes a version. Its tag must match the `Version` header, `SILVERTRAIL_VERSION` and readme.txt's `Stable tag`. The release workflow builds the package from `.distignore`, runs Plugin Check on it and attaches `silvertrail.zip` to the release.
+- With the repository variable `WPORG_DEPLOY` set to `true` and the secrets `SVN_USERNAME` and `SVN_PASSWORD`, it also commits the package to WordPress.org. The icon, banners and screenshots for the plugin page go into `.wordpress-org/`.
+
 ## Quality Assurance
 
 Run `composer lint`, `composer analyse`, `npm run test:php` and `npx playwright test` before every commit. The last two need `npx wp-env start`.
