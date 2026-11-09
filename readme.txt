@@ -9,31 +9,58 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A small cookie banner. Nothing loads before the visitor agrees, and rejecting takes the same one click as accepting.
+A small cookie consent banner. Nothing loads before the visitor agrees, and rejecting takes the same one click as accepting.
 
 == Description ==
 
-Silvertrail keeps tracking scripts and embeds from loading until a visitor agrees to them. It shows a banner only when the site uses something that needs consent, and it asks again by itself when that set of services changes.
+Nothing loads until visitors say yes. Silvertrail is a small cookie banner that blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes. "Accept all" and "Only essential" sit side by side at the same size, and a third button opens the choice per group and per service, with the provider, the purpose and a link to its privacy policy.
 
-The banner puts "Accept all" and "Only essential" side by side at the same size. A third button opens the choice per group and per service, with the provider, the purpose and a link to its privacy policy.
+The banner only appears when the site uses something that needs consent. A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
 
-= What it blocks =
+= Built for developers and their agents =
 
-* Scripts you mark with `type="text/plain" data-silvertrail="service"`. Silvertrail swaps in a real script after consent and keeps the order of inline and external scripts.
-* Script handles that a theme or plugin enqueues, once you list the handle under a service.
-* Embeds from YouTube, Vimeo and Google Maps from the moment the plugin is active, and from every host you register. They wait behind a placeholder that asks in place, loads the embed once or remembers the service, and opens no banner.
-* The official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel, once you turn on the preset and enter its ID.
+Set everything in PHP and check it on the shell. The admin keeps only the decisions a site owner makes.
 
-= What else it does =
+* Code wins over the admin. One filter sets any setting, and the settings page marks each field that code sets.
+* Agents work on the shell. `wp silvertrail services` and `wp silvertrail settings` show every service and each setting with its source, and `wp silvertrail validate` reports what is wrong, so an agent can check its own work.
+* Prompts are built in. The admin copies a prompt to style the banner, and the Leak check writes one for the services it finds.
 
-* It sends Google Consent Mode v2 signals. Google tags stay blocked until consent, and developers can switch to Advanced mode in code.
-* It supports the WP Consent API, so other plugins that use the API read the visitor's choice.
+One call turns on a preset, and the official tag waits for consent:
+
+    add_action( 'silvertrail_register', function () {
+        silvertrail_register_service( 'google-tag-manager', array( 'tag_id' => 'GTM-XXXXXXX' ) );
+    } );
+
+Any script you mark with `type="text/plain" data-silvertrail="service"` waits as well. Silvertrail runs it after consent and keeps the order of inline and external scripts. A script that a theme or plugin enqueues waits once you list its handle under a service.
+
+= Styled by your theme, or by you =
+
+Out of the box, the banner looks like part of the site. Change a few values or replace the whole design, as far as the project needs.
+
+* With no setup, the banner reads its colours, corners and buttons from the theme's `theme.json`.
+* The `silvertrail_design` filter changes single values, such as a colour, the corners or the buttons.
+* A `silvertrail/silvertrail.css` or your own templates in the theme replace the defaults. Settings › Silvertrail › Banner copies a prompt that has an AI assistant write that stylesheet.
+
+= Batteries included =
+
+The integrations most sites need are built in, so setting it up mostly means ticking boxes.
+
+* It supports the WP Consent API, so plugins that read the API follow the visitor's choice.
+* It sets the Google Consent Mode v2 default before any Google tag, and every choice updates it. Google tags stay blocked until consent, and developers can switch to Advanced mode in code.
+* YouTube, Vimeo and Google Maps embeds wait behind a placeholder from the moment the plugin is active, and so do embeds from every host you register. The placeholder asks in place, loads the embed once or remembers the service, and opens no banner.
+* The Leak check, under Settings › Silvertrail › Tools, opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
+
+= Also in the box =
+
+* Presets print the official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel once you turn one on and enter its ID.
+* It works behind any page cache, as the next section explains.
 * A browser that sends Global Privacy Control gets "only essential" without a banner.
-* A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
+* It asks every visitor again when the set of services changes.
+* It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 * A link, block or shortcode reopens the preferences, and an optional floating button does the same in a corner of the page.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
-* The Leak check, under Tools, opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
-* It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
+* Each site of a multisite network keeps its own cookie.
+* The front end loads one script of 15 KB, under 5 KB compressed, and no jQuery.
 
 = Page caching =
 
@@ -43,9 +70,13 @@ The server renders every gated script and embed blocked, whatever the visitor ch
 
 Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` hook, as the FAQ shows. It does not crawl the site for cookies. The scan checks the page you choose and shows what it actually loads.
 
-= Free, and a licence to support it =
+= Free, with an honour licence =
 
-Silvertrail is free. When you are paid to put it on a client's site, consider supporting its development with a site licence at https://marcwieland.name/support/: 29 a year per site, or 199 a year for an agency with any number of sites, in dollars or euros. The licence pays for the upkeep. It adds nothing and withholds nothing, and nothing checks whether you bought one. There is no pro version and no hosted service, and there will be none.
+Silvertrail is free. When you are paid to put it on a client's site, consider supporting its development with a site licence at https://marcwieland.name/support/: 29 a year per site, or 199 a year for an agency with any number of sites, in dollars or euros. The licence works on your honour. It adds nothing and withholds nothing, and nothing checks whether you bought one. There is no pro version and no hosted service, and there will be none. The money pays for the upkeep.
+
+= Need something it does not do? =
+
+Custom development is paid work on top of the free plugin, such as gating the tags a theme prints or moving from another banner. Write to silvertrail@marcwieland.name with the site and what it should do. Whatever fits every site goes into the plugin, for everyone.
 
 == Installation ==
 
@@ -149,6 +180,15 @@ Cached pages still carry the old version of the settings. Purge the page cache a
 = Does it work without a footer link? =
 
 Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Banner › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
+
+== Screenshots ==
+
+1. The banner puts "Accept all" and "Only essential" side by side at the same size. Here it takes its colours and font from Twenty Twenty-Five.
+2. "Choose" opens the choice per group and per service, with the provider, the purpose and a link to the privacy policy.
+3. A YouTube video waits behind a placeholder. The visitor loads it once or allows YouTube for good, and no banner opens.
+4. Under Settings › Silvertrail, the admin ticks the trackers the site uses and enters their IDs. The status panel counts what the banner asks about.
+5. The banner takes its colours, corners and buttons from the theme's `theme.json`. The admin picks the position, the appearance and the floating button.
+6. The Leak check opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It also writes a prompt for an AI assistant.
 
 == Privacy ==
 
