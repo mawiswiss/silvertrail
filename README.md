@@ -58,7 +58,7 @@ Code wins over the admin, and the admin marks every field that code sets with "S
 
 ## Built for AI agents
 
-An agent working on a site finds everything it needs in the plugin folder. This README is the complete reference, and `styling.md` is the brief for styling the banner. Mistakes are loud: an unknown key, a tag ID that does not fit or an invalid setting triggers a `_doing_it_wrong` notice, and `wp silvertrail validate` lists them all. `wp silvertrail services` and `wp silvertrail settings --format=json` show what is active and where each value comes from.
+An agent working on a site finds everything it needs in the plugin folder. This README is the complete reference, and `docs/styling.md` is the brief for styling the banner. Mistakes are loud: an unknown key, a tag ID that does not fit or an invalid setting triggers a `_doing_it_wrong` notice, and `wp silvertrail validate` lists them all. `wp silvertrail services` and `wp silvertrail settings --format=json` show what is active and where each value comes from.
 
 The admin writes prompts as well. The Banner tab copies a styling prompt with the theme's colours and fonts, and the Leak check writes one that asks for the provider, purpose and privacy policy of each service it found.
 
@@ -304,7 +304,7 @@ Each key becomes a `--silvertrail-<key>` custom property: `background`, `text`, 
 
 To change more than these values, add `silvertrail/silvertrail.css` to the theme. Silvertrail loads it after its own styles and the filter's values, so a rule with the same selector wins. With `load_css` turned off in the `silvertrail_settings` filter, it is the whole stylesheet.
 
-[`styling.md`](styling.md) is the brief for an AI assistant that writes this file: the tokens, the classes and the rules a consent banner has to keep. Under Settings › Silvertrail › Banner › Custom styles, Copy prompt hands it over together with the theme's presets and the current file, and the assistant answers with the file.
+[`docs/styling.md`](docs/styling.md) is the brief for an AI assistant that writes this file: the tokens, the classes and the rules a consent banner has to keep. Under Settings › Silvertrail › Banner › Custom styles, Copy prompt hands it over together with the theme's presets and the current file, and the assistant answers with the file.
 
 To change the markup, copy `templates/banner.php`, `templates/embed.php` or `templates/reopen-button.php` into the theme's `silvertrail/` folder and keep the `data-silvertrail-*` attributes.
 

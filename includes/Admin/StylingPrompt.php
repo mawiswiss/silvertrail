@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 final class StylingPrompt {
 
 	public static function text(): string {
-		return self::read( 'styling.md', '## Brief for the AI' ) . "\n\n" . self::site() . "\n\n## What I want\n\n";
+		return self::read( 'docs/styling.md', '## Brief for the AI' ) . "\n\n" . self::site() . "\n\n## What I want\n\n";
 	}
 
 	private static function site(): string {

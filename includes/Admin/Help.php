@@ -182,7 +182,7 @@ SH;
 				'notes' => array(
 					__( 'Keys: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding`, `button-weight`. Each becomes a `--silvertrail-<key>` custom property.', 'silvertrail' ),
 					__( 'For anything else, add `silvertrail/silvertrail.css` to the theme. It loads after the default styles.', 'silvertrail' ),
-					__( '`styling.md` in the plugin folder is a brief for an AI assistant that writes this stylesheet.', 'silvertrail' ),
+					__( '`docs/styling.md` in the plugin folder is a brief for an AI assistant that writes this stylesheet.', 'silvertrail' ),
 					__( 'To change the markup, copy a file from `templates/` into the theme’s `silvertrail/` folder and keep the `data-silvertrail-*` attributes.', 'silvertrail' ),
 				),
 			),

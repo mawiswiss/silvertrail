@@ -10,7 +10,7 @@
 
 ## Conventions
 
-- Prose is short, complete sentences with no em-dashes and no marketing. The README, readme.txt and styling.md are British English. The admin's source strings are US English, as WordPress core's are, and en_GB gets its spelling through the translation.
+- Prose is short, complete sentences with no em-dashes and no marketing. The README, readme.txt and docs/styling.md are British English. The admin's source strings are US English, as WordPress core's are, and en_GB gets its spelling through the translation.
 - Every UI string goes through the `silvertrail` text domain. After changing one, regenerate `languages/silvertrail.pot` with `wp i18n make-pot . languages/silvertrail.pot` in its own `chore(i18n)` commit.
 - Commits are Conventional Commits, signed, without a sign-off trailer.
 

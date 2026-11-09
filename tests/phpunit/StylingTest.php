@@ -32,7 +32,7 @@ final class StylingTest extends WP_UnitTestCase {
 
 	public function test_the_guide_names_every_class_and_token(): void {
 		$root  = dirname( SILVERTRAIL_FILE );
-		$guide = (string) file_get_contents( $root . '/styling.md' );
+		$guide = (string) file_get_contents( $root . '/docs/styling.md' );
 
 		$markup = implode( '', array_map( 'file_get_contents', array_merge( glob( $root . '/templates/*.php' ) ?: array(), glob( $root . '/blocks/*/render.php' ) ?: array() ) ) );
 		preg_match_all( '/class="([^"]*)"/', $markup, $attributes );
