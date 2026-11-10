@@ -76,7 +76,7 @@ Silvertrail is free. When you are paid to put it on a client's site, consider su
 
 = Need something it does not do? =
 
-Custom development is paid work on top of the free plugin, such as gating the tags a theme prints or moving from another banner. Write to silvertrail@marcwieland.name with the site and what it should do. Whatever fits every site goes into the plugin, for everyone.
+Marc Wieland, the developer of Silvertrail, builds new functionality for it as paid work on request. This is feature development, not technical support. Write to silvertrail@marcwieland.name with the site and what it should do. The code is not proprietary, and when most users would benefit from a feature, it goes into the free plugin. That way, the feature one site needs and can fund also helps every other site that runs Silvertrail and gives something back to the WordPress ecosystem.
 
 == Installation ==
 

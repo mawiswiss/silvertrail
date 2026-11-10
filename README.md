@@ -77,7 +77,7 @@ Silvertrail does not implement the IAB Transparency and Consent Framework, so an
 
 ## Custom development
 
-Some sites need more than the plugin does by itself: a theme or a plugin that prints its own tags and has to be gated, a banner that follows a design system, a rule per region, or a move from another banner. That work is paid custom development on top of the free plugin. Write to silvertrail@marcwieland.name with the site and what it should do. Whatever turns out to fit every site goes into the plugin itself, for everyone.
+Marc Wieland, the developer of Silvertrail, builds new functionality for it as paid work on request. This is feature development, not technical support. Write to silvertrail@marcwieland.name with the site and what it should do. The code is not proprietary, and when most users would benefit from a feature, it goes into the free plugin. That way, the feature one site needs and can fund also helps every other site that runs Silvertrail and gives something back to the WordPress ecosystem.
 
 # Reference
 
