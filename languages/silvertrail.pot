@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-08T16:22:45+00:00\n"
+"POT-Creation-Date: 2026-11-11T14:15:04+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -308,6 +308,7 @@ msgid "Set in code"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:178
+#: includes/Scan.php:136
 msgid "Services"
 msgstr ""
 
@@ -543,12 +544,12 @@ msgid "Copy the prompt. It holds the brief and this site’s colors, fonts and c
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:259
-#: includes/Scan.php:139
+#: includes/Scan.php:202
 msgid "Copy prompt"
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:260
-#: includes/Scan.php:140
+#: includes/Scan.php:203
 msgid "Copied"
 msgstr ""
 
@@ -567,7 +568,7 @@ msgid "Show the prompt"
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:280
-#: includes/Scan.php:137
+#: includes/Scan.php:200
 msgid "Prompt for an AI assistant"
 msgstr ""
 
@@ -654,7 +655,7 @@ msgid "Imprint page"
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:445
-#: includes/Scan.php:112
+#: includes/Scan.php:140
 msgid "None"
 msgstr ""
 
@@ -691,6 +692,7 @@ msgstr ""
 #: includes/Admin/tabs/services.php:66
 #: includes/Admin/tabs/services.php:110
 #: includes/Admin/tabs/services.php:154
+#: includes/Scan.php:143
 msgid "Service"
 msgstr ""
 
@@ -818,7 +820,7 @@ msgid "Leak check"
 msgstr ""
 
 #: includes/Admin/tabs/tools-check.php:13
-msgid "Opens a page as a first-time visitor who has not chosen yet. Lists every other server the page contacts and what to do about each."
+msgid "Opens each page as a first-time visitor, declines, agrees to each service on its own and loads the page again. Lists what runs without consent, what starts only after a reload, and what to do about each."
 msgstr ""
 
 #: includes/Admin/tabs/tools-check.php:14
@@ -826,15 +828,19 @@ msgid "The check runs in this browser and needs JavaScript."
 msgstr ""
 
 #: includes/Admin/tabs/tools-check.php:17
-msgid "Page"
+msgid "Pages"
 msgstr ""
 
 #: includes/Admin/tabs/tools-check.php:20
+msgid "One address of this site per line. Agreeing counts as one visit in the site’s trackers. Turn off ad blockers in this browser first. They hide requests that real visitors make."
+msgstr ""
+
+#: includes/Admin/tabs/tools-check.php:22
 msgid "Scan"
 msgstr ""
 
-#: includes/Admin/tabs/tools-check.php:21
-msgid "Turn off ad blockers in this browser first. They hide requests that real visitors make."
+#: includes/Admin/tabs/tools-check.php:23
+msgid "Cancel"
 msgstr ""
 
 #: includes/Admin/tabs/tools.php:15
@@ -879,124 +885,124 @@ msgstr ""
 msgid "Developer help"
 msgstr ""
 
-#: includes/Config.php:189
+#: includes/Config.php:190
 msgid "The registered services flipped back and forth within a minute. They must not depend on the current request, or visitors are asked again on every page."
 msgstr ""
 
-#: includes/Config.php:239
+#: includes/Config.php:240
 msgid "Read the Silvertrail config on init or later."
 msgstr ""
 
 #. translators: 1: config or google, 2: list of keys
-#: includes/Config.php:285
+#: includes/Config.php:286
 #, php-format
 msgid "The %1$s array has unknown keys: %2$s."
 msgstr ""
 
-#: includes/Config.php:290
+#: includes/Config.php:291
 msgid "The Consent Mode must be basic or advanced, so Silvertrail uses basic."
 msgstr ""
 
-#: includes/Config.php:296
+#: includes/Config.php:297
 msgid "Skipped a group with an invalid ID."
 msgstr ""
 
 #. translators: 1: group ID, 2: list of keys
-#: includes/Config.php:302
+#: includes/Config.php:303
 #, php-format
 msgid "The group \"%1$s\" has unknown keys: %2$s."
 msgstr ""
 
-#: includes/Config.php:317
+#: includes/Config.php:318
 msgid "Skipped a service with an invalid ID."
 msgstr ""
 
 #. translators: 1: service ID, 2: list of keys
-#: includes/Config.php:323
+#: includes/Config.php:324
 #, php-format
 msgid "The service \"%1$s\" has unknown keys: %2$s."
 msgstr ""
 
 #. translators: 1: service ID, 2: group ID
-#: includes/Config.php:328
+#: includes/Config.php:329
 #, php-format
 msgid "Skipped the service \"%1$s\" because its group \"%2$s\" does not exist."
 msgstr ""
 
 #. translators: 1: service ID, 2: group ID
-#: includes/Config.php:333
+#: includes/Config.php:334
 #, php-format
 msgid "The service \"%1$s\" loads scripts, but its group \"%2$s\" asks in place, so no banner asks for it. Move it to another group."
 msgstr ""
 
 #. translators: %s: service ID
-#: includes/Config.php:337
+#: includes/Config.php:338
 #, php-format
 msgid "The service \"%s\" sets consent to neither required nor exempt, so it needs consent."
 msgstr ""
 
 #. translators: 1: service ID, 2: tag ID, 3: example ID
-#: includes/Config.php:343
+#: includes/Config.php:344
 #, php-format
 msgid "The service \"%1$s\" has the tag ID \"%2$s\", which does not look like %3$s, so its tag is not printed."
 msgstr ""
 
 #. translators: 1: service ID, 2: list of consent types
-#: includes/Config.php:349
+#: includes/Config.php:350
 #, php-format
 msgid "The service \"%1$s\" names unknown Consent Mode types: %2$s."
 msgstr ""
 
-#: includes/Config.php:384
+#: includes/Config.php:385
 msgid "Essential"
 msgstr ""
 
-#: includes/Config.php:385
+#: includes/Config.php:386
 msgid "Needed for the site to work. They are always on."
 msgstr ""
 
-#: includes/Config.php:391
+#: includes/Config.php:392
 msgid "Preferences"
 msgstr ""
 
-#: includes/Config.php:392
+#: includes/Config.php:393
 msgid "Remember your settings, such as a language or a filled-in form."
 msgstr ""
 
-#: includes/Config.php:398
+#: includes/Config.php:399
 msgid "Statistics"
 msgstr ""
 
-#: includes/Config.php:399
+#: includes/Config.php:400
 msgid "Show us how visitors use this site, so we can improve it."
 msgstr ""
 
-#: includes/Config.php:405
+#: includes/Config.php:406
 msgid "Marketing"
 msgstr ""
 
-#: includes/Config.php:406
+#: includes/Config.php:407
 msgid "Measure ads and show you ads that fit your interests, also on other sites."
 msgstr ""
 
-#: includes/Config.php:412
+#: includes/Config.php:413
 msgid "External media"
 msgstr ""
 
-#: includes/Config.php:413
+#: includes/Config.php:414
 msgid "Videos, maps and posts embedded from other platforms. The platform can see your visit when they load."
 msgstr ""
 
-#: includes/Config.php:429
+#: includes/Config.php:430
 msgid "The owner of this site"
 msgstr ""
 
-#: includes/Config.php:430
+#: includes/Config.php:431
 msgid "Stores your consent choices."
 msgstr ""
 
 #. translators: %d: number of months
-#: includes/Config.php:434
+#: includes/Config.php:435
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
@@ -1063,148 +1069,306 @@ msgstr ""
 msgid "When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period."
 msgstr ""
 
-#: includes/Scan.php:103
-msgid "Opening the page as a first-time visitor…"
+#: includes/Scan.php:118
+msgid "Scanning. Each page takes a few seconds, and each service a few more."
 msgstr ""
 
-#: includes/Scan.php:104
+#. translators: 1: page number, 2: number of pages, 3: page address
+#: includes/Scan.php:120
+#, php-format
+msgid "Page %1$s of %2$s: opening %3$s as a first-time visitor"
+msgstr ""
+
+#. translators: 1: page number, 2: number of pages
+#: includes/Scan.php:122
+#, php-format
+msgid "Page %1$s of %2$s: declining everything"
+msgstr ""
+
+#. translators: 1: page number, 2: number of pages
+#: includes/Scan.php:124
+#, php-format
+msgid "Page %1$s of %2$s: agreeing to everything"
+msgstr ""
+
+#. translators: 1: page number, 2: number of pages
+#: includes/Scan.php:126
+#, php-format
+msgid "Page %1$s of %2$s: loading it again after agreeing"
+msgstr ""
+
+#. translators: 1: page number, 2: number of pages, 3: service name
+#: includes/Scan.php:128
+#, php-format
+msgid "Page %1$s of %2$s: agreeing to %3$s alone"
+msgstr ""
+
+#: includes/Scan.php:129
+msgid "Scan cancelled. The cookies of this browser are as they were before."
+msgstr ""
+
+#: includes/Scan.php:130
 msgid "Only pages of this site can be scanned."
 msgstr ""
 
-#: includes/Scan.php:105
+#: includes/Scan.php:131
 msgid "Could not read that page. It may refuse to be shown in a frame, or Silvertrail does not run on it."
 msgstr ""
 
-#: includes/Scan.php:106
-msgid "Clean. Before choosing, the visitor’s browser contacts no other server that needs consent."
+#: includes/Scan.php:132
+msgid "Clean. Nothing contacts another server before the visitor agrees, and nothing waits for a reload once they do."
 msgstr ""
 
-#: includes/Scan.php:107
-msgid "Before choosing, the visitor’s browser already contacts these servers. Each line says what to do."
+#: includes/Scan.php:133
+msgid "Something runs without consent. Each line below says what to do."
 msgstr ""
 
-#: includes/Scan.php:108
-msgid "Loads before the visitor chooses"
+#: includes/Scan.php:134
+msgid "Nothing runs without consent, but some services start only after the page loads again. Each line below says what to do."
 msgstr ""
 
-#: includes/Scan.php:109
-msgid "Waits until the visitor agrees"
+#: includes/Scan.php:135
+msgid "Needs guarding"
 msgstr ""
 
-#: includes/Scan.php:110
-msgid "Loads early, which is fine"
+#: includes/Scan.php:137
+msgid "What to do"
 msgstr ""
 
-#: includes/Scan.php:111
+#: includes/Scan.php:138
+msgid "Contacted after agreeing, listed by no service"
+msgstr ""
+
+#: includes/Scan.php:139
 msgid "Cookies and storage the page set before a choice"
 msgstr ""
 
-#. translators: %s: service name
-#: includes/Scan.php:114
+#. translators: %s: page addresses
+#: includes/Scan.php:142
 #, php-format
-msgid "%s is marked as essential, so it needs no consent."
+msgid "On %s."
+msgstr ""
+
+#: includes/Scan.php:144
+msgid "Set in"
+msgstr ""
+
+#: includes/Scan.php:145
+msgid "Before a choice"
+msgstr ""
+
+#: includes/Scan.php:146
+msgid "After declining"
+msgstr ""
+
+#: includes/Scan.php:147
+msgid "After agreeing"
+msgstr ""
+
+#: includes/Scan.php:148
+msgid "Services tab"
+msgstr ""
+
+#: includes/Scan.php:149
+msgid "Code"
+msgstr ""
+
+#: includes/Scan.php:150
+msgid "Quiet"
+msgstr ""
+
+#: includes/Scan.php:151
+msgid "Contacts its servers"
+msgstr ""
+
+#: includes/Scan.php:152
+msgid "Cookieless pings"
+msgstr ""
+
+#: includes/Scan.php:153
+msgid "Always on"
+msgstr ""
+
+#: includes/Scan.php:154
+msgid "Starts at once"
+msgstr ""
+
+#: includes/Scan.php:155
+msgid "Only after a reload"
+msgstr ""
+
+#: includes/Scan.php:156
+msgid "No request to its hosts"
+msgstr ""
+
+#: includes/Scan.php:157
+msgid "Not on these pages"
+msgstr ""
+
+#: includes/Scan.php:158
+msgid "Starts with any choice"
+msgstr ""
+
+#. translators: %s: service names
+#: includes/Scan.php:160
+#, php-format
+msgid "Also starts %s"
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Scan.php:116
+#: includes/Scan.php:162
 #, php-format
-msgid "%s runs in Consent Mode Advanced. It sends only cookieless pings until the visitor agrees."
+msgid "%s loads before the visitor chooses. The theme or another plugin adds it directly, so Silvertrail cannot hold it back."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Scan.php:118
+#: includes/Scan.php:164
 #, php-format
-msgid "This is %s, but it still loads before the visitor chooses. The theme or another plugin adds it directly."
+msgid "%s is contacted after the visitor declines. Its code reacts to the choice without checking it."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Scan.php:120
+#: includes/Scan.php:166
+#, php-format
+msgid "%s starts when the visitor agrees to any service. Its code reacts to the choice without checking it."
+msgstr ""
+
+#. translators: 1: service name, 2: other service name, 3: Consent Mode types
+#: includes/Scan.php:168
+#, php-format
+msgid "Agreeing to %1$s also starts %2$s, because both grant the Consent Mode type %3$s. Narrow the google types of %1$s in code, or ask for the consent in the container."
+msgstr ""
+
+#. translators: 1: service name, 2: other service name
+#: includes/Scan.php:170
+#, php-format
+msgid "Agreeing to %1$s also starts %2$s. Its code or container loads %2$s without checking the consent for it."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:172
+#, php-format
+msgid "%s starts only after the page loads again. Gate it in the browser with data-silvertrail or its script handle instead of silvertrail_has(), and start it without waiting for the page to load."
+msgstr ""
+
+#. translators: %s: host
+#: includes/Scan.php:174
+#, php-format
+msgid "%s is contacted only after the page loads again. Something on the server checks the consent, so a visitor who agrees misses it until the next page."
+msgstr ""
+
+#: includes/Scan.php:175
+msgid "Contacted after the visitor declines. A script reacts to the choice without checking it."
+msgstr ""
+
+#. translators: %s: service names
+#: includes/Scan.php:177
+#, php-format
+msgid "Contacted when the visitor agrees to any of %s, whatever they agreed to. Tie it to one service."
+msgstr ""
+
+#. translators: 1: service name, 2: host
+#: includes/Scan.php:179
+#, php-format
+msgid "Seems to belong to %1$s. Add %2$s to its hosts, so the banner and the trail name it."
+msgstr ""
+
+#: includes/Scan.php:180
+msgid "Contacted once the visitor agrees to everything. The check could not tie it to one service."
+msgstr ""
+
+#. translators: %s: service name
+#: includes/Scan.php:182
 #, php-format
 msgid "Looks like %s. Turn it on under Services, and a placeholder shows until the visitor agrees."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Scan.php:122
+#: includes/Scan.php:184
 #, php-format
 msgid "Looks like %s, added by the theme or another plugin. Remove that code, then turn it on under Services with your ID, so Silvertrail holds it back."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Scan.php:124
+#: includes/Scan.php:186
 #, php-format
 msgid "Turn on %s"
 msgstr ""
 
 #. translators: %s: script handle
-#: includes/Scan.php:126
+#: includes/Scan.php:188
 #, php-format
 msgid "A script that WordPress loads as “%s”. Register a service in code with this script handle, and it waits for consent."
 msgstr ""
 
-#: includes/Scan.php:127
+#: includes/Scan.php:189
 msgid "A script written straight into the page. Mark it with data-silvertrail, as Developer help › Gate a script shows, and it waits for consent."
 msgstr ""
 
-#: includes/Scan.php:128
+#: includes/Scan.php:190
 msgid "An embedded frame. Register its host as a service in code, and a placeholder shows until the visitor agrees."
 msgstr ""
 
-#: includes/Scan.php:129
+#: includes/Scan.php:191
 msgid "Fonts or styles. They cannot wait for consent, so host them on this site instead."
 msgstr ""
 
-#: includes/Scan.php:130
+#: includes/Scan.php:192
 msgid "Images. They cannot wait for consent, so host them on this site instead."
 msgstr ""
 
-#: includes/Scan.php:131
+#: includes/Scan.php:193
 msgid "Requested by another script on the page. Hold back that script, and this waits too."
 msgstr ""
 
-#: includes/Scan.php:132
+#: includes/Scan.php:194
 msgid "script"
 msgstr ""
 
-#: includes/Scan.php:133
+#: includes/Scan.php:195
 msgid "embedded frame"
 msgstr ""
 
-#: includes/Scan.php:134
+#: includes/Scan.php:196
 msgid "fonts or styles"
 msgstr ""
 
-#: includes/Scan.php:135
+#: includes/Scan.php:197
 msgid "images"
 msgstr ""
 
-#: includes/Scan.php:136
+#: includes/Scan.php:198
 msgid "requested by another script"
 msgstr ""
 
-#: includes/Scan.php:138
+#: includes/Scan.php:199
+msgid "contacted after agreeing"
+msgstr ""
+
+#: includes/Scan.php:201
 msgid "Paste it into ChatGPT or another assistant to get the provider, purpose and privacy policy of each service for the banner."
 msgstr ""
 
-#. translators: 1: site name, 2: site address, 3: page address
-#: includes/Scan.php:142
+#. translators: 1: site name, 2: site address, 3: page addresses
+#: includes/Scan.php:205
 #, php-format
 msgid "My website %1$s (%2$s) has a cookie banner that lists each service with its provider, purpose and privacy policy. Opening %3$s as a first-time visitor found the following."
 msgstr ""
 
-#: includes/Scan.php:143
+#: includes/Scan.php:206
 msgid "Connections to other servers"
 msgstr ""
 
-#: includes/Scan.php:144
+#: includes/Scan.php:207
 msgid "Services that wait for consent and still lack details"
 msgstr ""
 
-#: includes/Scan.php:145
+#: includes/Scan.php:208
 msgid "Cookies and storage the page set"
 msgstr ""
 
 #. translators: %s: language code such as de-CH
-#: includes/Scan.php:147
+#: includes/Scan.php:210
 #, php-format
 msgid ""
 "For each service behind these entries, give me these three lines. Group entries that belong to the same service.\n"
