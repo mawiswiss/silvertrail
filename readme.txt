@@ -48,7 +48,7 @@ The integrations most sites need are built in, so setting it up mostly means tic
 * It supports the WP Consent API, so plugins that read the API follow the visitor's choice.
 * It sets the Google Consent Mode v2 default before any Google tag, and every choice updates it. Google tags stay blocked until consent, and developers can switch to Advanced mode in code.
 * YouTube, Vimeo and Google Maps embeds wait behind a placeholder from the moment the plugin is active, and so do embeds from every host you register. The placeholder asks in place, loads the embed once or remembers the service, and opens no banner.
-* The Leak check, under Settings › Silvertrail › Tools, opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
+* The Leak check, under Settings › Silvertrail › Tools, opens pages as a first-time visitor, declines, agrees to each service on its own and loads them again. It lists what runs without consent and what starts only after a reload, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
 
 = Also in the box =
 
@@ -68,7 +68,7 @@ The server renders every gated script and embed blocked, whatever the visitor ch
 
 = What it does not do =
 
-Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` hook, as the FAQ shows. It does not crawl the site for cookies. The scan checks the page you choose and shows what it actually loads.
+Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` hook, as the FAQ shows. It does not crawl the site for cookies. The Leak check looks at the pages you list and shows what they actually load.
 
 = Free, with an honour licence =
 

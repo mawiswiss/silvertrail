@@ -17,7 +17,7 @@ A generated banner shows a dialog. Silvertrail also does the work around it:
 - Visitors can always change their mind. A small button appears on every page that has no link to the settings, and it steps aside on pages that have one.
 - "Accept all" and "Only essential" are the same button, side by side. The banner is a native `<dialog>`, and while a choice is required, neither Escape nor a click outside closes it.
 - The preferences show what the current page held back and which other servers it loaded from.
-- The Leak check opens any page as a first-time visitor and lists every server it contacts before a choice, with what to do about each. A Playwright helper runs the same check in CI.
+- The Leak check opens pages as a first-time visitor, declines, agrees to each service on its own and loads them again. It lists what runs without consent and what starts only after a reload, with what to do about each. A Playwright helper runs the same check in CI.
 - Records, when turned on, keep a random ID, the choices and the time, never an IP address, and are deleted after a year.
 - Each site of a multisite network keeps its own cookie.
 - The plugin contacts no outside service, and uninstalling it removes its options, its table and its scheduled job.
@@ -73,7 +73,7 @@ run wp silvertrail validate until it reports no problem.
 
 ## What it does not do
 
-Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` event. It does not crawl the site for cookies. The Leak check looks at the page you choose and shows what it actually loads.
+Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` event. It does not crawl the site for cookies. The Leak check looks at the pages you list and shows what they actually load.
 
 ## Custom development
 
@@ -318,19 +318,30 @@ With records turned on under Tools, every decision is posted to `/wp-json/silver
 
 ## Leak check
 
-Under Settings › Silvertrail › Tools, the Leak check opens a page of the site in a frame as a logged-out, first-time visitor who has not chosen yet. It lists every other server the page contacts before a choice and says what to do about each: turn on a matching preset, register a service in code, or host the file on the site. Turning a preset on opens the Services tab with its box ticked, ready to save. A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
+Under Settings › Silvertrail › Tools, the Leak check opens each page you list in a frame, as a logged-out, first-time visitor. It looks at every page four times: before a choice, after declining, after agreeing to everything, and after loading the page again with that consent. Then it agrees to each service on its own. The report shows:
+
+- What needs guarding: every other server contacted before a choice or after declining, with what to do about it. Turning a matching preset on opens the Services tab with its box ticked, ready to save.
+- Each service, whether it is set in the Services tab or in code, whether it stays quiet until the visitor agrees, whether it then starts at once, and whether agreeing to it also starts another service. Two services that grant the same Consent Mode type do that, such as Google Tag Manager next to Google Analytics.
+- Services that start only after a reload. That happens when PHP checks `silvertrail_has()` before printing a tag, or when a gated script waits for `DOMContentLoaded`, which has passed by the time the visitor agrees. A visitor who agrees then misses the service until the next page.
+- Hosts contacted after agreeing that no service lists, with the service that seems to own them.
+
+A prompt below it, ready to paste into an AI assistant, asks for the provider, purpose and privacy policy of each service it found, as the banner lists them.
+
+Agreeing in the frame is real, so the site's trackers count one visit from your browser. The check keeps its choice in its own cookie, `silvertrail_scan`, which lasts ten minutes. It writes no consent record, and it puts your own cookies back when it ends or is cancelled. It sees what a page loads and the frames it embeds, not what happens inside those frames or after a click. An optimiser that delays JavaScript until the first mouse move or key press, such as the Delay JavaScript option of WP Rocket, keeps those scripts out of every phase, so turn it off while you scan.
 
 The frame loads the page with `?silvertrail-scan`, which renders it without a logged-in user and without the visitor's stored choice. That only takes privileges away, so it needs no nonce. A page cache that ignores query strings would serve the cached page instead, so scan with the cache off or bypassed.
 
-For CI, `testing/expect-no-leaks.mjs` in the plugin folder gives a Playwright suite the same check. Copy it next to your tests, or import it from the plugin folder:
+For CI, `testing/expect-no-leaks.mjs` runs the same scenarios in a Playwright suite. Import it from the plugin folder, because it shares the analysis in `assets/scan-findings.js`, and use a fresh browser context:
 
 ```js
-import { expectNoLeaks } from './expect-no-leaks.mjs';
+import { expectConsentWorks } from '../wp-content/plugins/silvertrail/testing/expect-no-leaks.mjs';
 
-test('home page loads nothing before consent', async ({ page }) => {
-	await expectNoLeaks(page, '/', { allow: ['cdn.example.com'] });
+test('consent works on the pages that matter', async ({ page }) => {
+	await expectConsentWorks(page, ['/', '/contact/'], { allow: ['cdn.example.com'] });
 });
 ```
+
+`checkConsent` returns the findings instead of failing, and `expectNoLeaks` checks only the first visit.
 
 ## WP-CLI
 

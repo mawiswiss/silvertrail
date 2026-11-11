@@ -81,6 +81,11 @@ add_action(
 			'silvertrail-shortcode' => '[silvertrail_link]',
 			'silvertrail-block'     => '<!-- wp:silvertrail/reopen-link {"text":"Cookie settings"} /-->',
 			'silvertrail-leak'      => 'This page loads a script from another host without asking.',
+			'silvertrail-careless'  => 'This page calls another host on every choice, even a refusal.',
+			'silvertrail-reload'    => 'This page prints the pixel only once the cookie says yes.',
+			'silvertrail-cross'     => 'Agreeing to the analytics on this page also starts the video host.',
+			'silvertrail-unlisted'  => 'The pixel on this page calls a host it does not list.',
+			'silvertrail-slow'      => 'This page sends a slow beacon before any choice.',
 			'silvertrail-vimeo'     => '<iframe src="https://player.vimeo.com/video/1" title="Vimeo video"></iframe>',
 			'silvertrail-youtube'   => '<iframe src="https://www.youtube-nocookie.com/embed/1" title="YouTube video"></iframe>',
 		);
@@ -157,4 +162,33 @@ add_action(
 			echo '<script src="http://127.0.0.1:8892/wp-content/mu-plugins/leak.js"></script>';
 		}
 	}
+);
+
+// One page per Leak check verdict. Each prints only on its own page, so the home page stays clean.
+add_action(
+	'wp_head',
+	static function (): void {
+		if ( is_page( 'silvertrail-careless' ) ) {
+			echo '<script>addEventListener("silvertrail:change", () => { new Image().src = "https://careless.example.test/hit.gif"; });</script>';
+		}
+		if ( is_page( 'silvertrail-slow' ) ) {
+			echo '<script>addEventListener("load", () => fetch("https://slow.example.test/beacon", { mode: "no-cors" }));</script>';
+		}
+		if ( is_page( 'silvertrail-reload' ) && silvertrail_has( 'test-pixel' ) ) {
+			echo '<script src="https://pixel.example.test/late.js"></script>';
+		}
+	}
+);
+
+add_action(
+	'wp_footer',
+	static function (): void {
+		if ( is_page( 'silvertrail-cross' ) ) {
+			echo '<script type="text/plain" data-silvertrail="test-analytics">new Image().src = "https://video.example.test/cross.gif";</script>';
+		}
+		if ( is_page( 'silvertrail-unlisted' ) ) {
+			echo '<script type="text/plain" data-silvertrail="test-pixel">new Image().src = "https://unlisted.example.test/pixel.gif";</script>';
+		}
+	},
+	100
 );

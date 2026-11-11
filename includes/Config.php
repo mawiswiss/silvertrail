@@ -145,10 +145,11 @@ final class Config {
 	}
 
 	/**
-	 * Sites of a network share the host, so each one keeps its own cookie.
+	 * Sites of a network share the host, so each one keeps its own cookie. A scan keeps its own too.
 	 */
-	public static function cookie(): string {
-		return is_multisite() && ! is_main_site() ? self::COOKIE . '_' . get_current_blog_id() : self::COOKIE;
+	public static function cookie( ?bool $scan = null ): string {
+		$name = ( $scan ?? Scan::active() ) ? self::COOKIE . '_scan' : self::COOKIE;
+		return is_multisite() && ! is_main_site() ? $name . '_' . get_current_blog_id() : $name;
 	}
 
 	public static function cookie_path(): string {

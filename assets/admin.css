@@ -588,3 +588,36 @@
 		margin-bottom: 8px;
 	}
 }
+
+.silvertrail-scan-progress progress {
+	inline-size: min(100%, 320px);
+}
+
+.silvertrail-scan-preview {
+	inline-size: 320px;
+	block-size: 200px;
+	overflow: hidden;
+	margin: 8px 0;
+	border: 1px solid #c3c4c7;
+}
+
+/* WordPress gives .button a display, which would override hidden. */
+#silvertrail-scan [hidden] {
+	display: none;
+}
+
+.silvertrail-scan-table {
+	overflow-x: auto;
+	max-inline-size: 100%;
+
+	th,
+	td {
+		width: auto;
+		padding: 8px 10px;
+		vertical-align: top;
+	}
+
+	tbody th {
+		font-weight: 600;
+	}
+}

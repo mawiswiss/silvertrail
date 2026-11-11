@@ -26,9 +26,6 @@
 
 	// A stale cached page carries a lower n than the cookie, so >= keeps it from re-prompting.
 	function read() {
-		if (config.check) {
-			return null;
-		}
 		const data = readRaw();
 		return data && data.n >= config.n ? data : null;
 	}
@@ -49,9 +46,6 @@
 
 	// A stale cached page must not lower the stored n or drop services it does not know.
 	function set(ids, { silent = false, source = 'banner', partial = false } = {}) {
-		if (config.check) {
-			return;
-		}
 		const stored = readRaw();
 		const newer = !!stored && stored.n > config.n;
 		const consents = consentIds.filter((id) => ids.includes(id));

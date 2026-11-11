@@ -1,29 +1,24 @@
 (() => {
 	const data = window.silvertrailScan;
+	const findings = window.silvertrailFindings;
 	const root = document.getElementById('silvertrail-scan');
-	if (!data || !root) {
+	if (!data || !findings || !root) {
 		return;
 	}
 
+	const WAIT = 2000;
+	const SAVED = 'silvertrail-scan-consent';
+	const TYPES = { script: 'script', iframe: 'frame', frame: 'frame', css: 'style', link: 'style', img: 'image', image: 'image' };
+
 	const texts = data.texts;
 	const home = new URL(data.home);
-	const input = root.querySelector('#silvertrail-scan-url');
+	const input = root.querySelector('#silvertrail-scan-urls');
 	const run = root.querySelector('[data-silvertrail-scan-run]');
+	const cancel = root.querySelector('[data-silvertrail-scan-cancel]');
+	const progress = root.querySelector('[data-silvertrail-scan-progress]');
+	const bar = progress.querySelector('progress');
+	const step = progress.querySelector('#silvertrail-scan-step');
 	const output = root.querySelector('[data-silvertrail-scan-result]');
-
-	const NAMES = {
-		'fonts.googleapis.com': 'Google Fonts',
-		'fonts.gstatic.com': 'Google Fonts',
-		'use.typekit.net': 'Adobe Fonts',
-		'p.typekit.net': 'Adobe Fonts',
-		'use.fontawesome.com': 'Font Awesome',
-		'kit.fontawesome.com': 'Font Awesome',
-		'gravatar.com': 'Gravatar',
-		's.w.org': 'WordPress.org',
-		'cdn.jsdelivr.net': 'jsDelivr',
-		'cdnjs.cloudflare.com': 'cdnjs',
-		'unpkg.com': 'unpkg',
-	};
 
 	const format = (text, ...args) => {
 		let next = 0;
@@ -41,17 +36,22 @@
 
 	const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-	const loaded = (frame) =>
-		new Promise((resolve, reject) => {
-			frame.addEventListener('load', resolve, { once: true });
-			setTimeout(() => reject(new Error('timeout')), 20000);
-		});
+	const speak = (text) => window.wp?.a11y?.speak(text, 'polite');
 
-	const cookieNames = (doc) =>
-		doc.cookie
-			.split('; ')
-			.filter(Boolean)
-			.map((cookie) => cookie.split('=')[0]);
+	const path = (url) => {
+		const parsed = new URL(url);
+		return parsed.pathname + parsed.search;
+	};
+
+	// Cookies and storage
+
+	const cookies = (doc) =>
+		Object.fromEntries(
+			doc.cookie
+				.split('; ')
+				.filter(Boolean)
+				.map((cookie) => [cookie.split('=')[0], cookie.slice(cookie.indexOf('=') + 1)]),
+		);
 
 	const storageKeys = (win) => {
 		try {
@@ -61,100 +61,145 @@
 		}
 	};
 
-	const matches = (url, pattern) => {
-		const [host, ...rest] = pattern.toLowerCase().replace(/^(https?:)?\/\//, '').replace(/^www\./, '').split('/');
-		const hostMatches = url.hostname === host || url.hostname.endsWith(`.${host}`);
-		return hostMatches && url.pathname.replace(/^\//, '').startsWith(rest.join('/'));
-	};
+	const names = (win) => [...Object.keys(cookies(win.document)), ...storageKeys(win)];
 
-	const knownName = (host) => {
-		const match = Object.keys(NAMES).find((known) => host === known || host.endsWith(`.${known}`));
-		return match ? NAMES[match] : '';
-	};
-
-	const serviceName = (id, config) => data.services[id]?.name ?? config.services[id]?.name ?? id;
-
-	function kind(item) {
-		if (item.script) {
-			return item.script.handle ? 'script' : 'scriptRaw';
+	function expire(name) {
+		const host = location.hostname;
+		const domains = ['', `; domain=${host}`, `; domain=.${host.split('.').slice(-2).join('.')}`];
+		for (const where of new Set(['/', data.path])) {
+			domains.forEach((domain) => (document.cookie = `${name}=; Max-Age=0; path=${where}${domain}`));
 		}
-		if (item.types.has('iframe')) {
-			return 'frame';
-		}
-		if (item.types.has('css') || item.types.has('link')) {
-			return 'font';
-		}
-		return item.types.has('img') ? 'image' : 'other';
 	}
 
-	function describe(item, config) {
-		const what = kind(item);
-		const base = { host: item.host, what };
-		if (item.service) {
-			const name = serviceName(item.service, config);
-			if (config.essential.includes(item.service)) {
-				return { ...base, name, early: false, advice: format(texts.essential, name) };
-			}
-			if (config.ungated.includes(item.service)) {
-				return { ...base, name, early: false, advice: format(texts.cookieless, name) };
-			}
-			return { ...base, name, early: true, advice: format(texts.registered, name) };
-		}
-		const preset = Object.keys(data.presets).find((id) => data.presets[id].hosts.some((pattern) => item.urls.some((url) => matches(url, pattern))));
-		if (preset) {
-			const { name, tracker } = data.presets[preset];
-			return { ...base, name, early: true, preset, advice: format(tracker ? texts.presetTracker : texts.presetEmbed, name) };
-		}
-		const advice = what === 'script' ? format(texts.script, item.script.handle) : texts[what];
-		return { ...base, name: knownName(item.host) || item.host, early: true, advice };
-	}
-
-	function collect(win, before, url) {
-		const config = win.silvertrailConfig;
-		if (!config || !config.check || typeof win.silvertrail?.trail !== 'function') {
-			throw new Error('Silvertrail is not running on this page.');
-		}
-		const trail = win.silvertrail.trail();
-		const services = new Map(trail.loaded.map((item) => [item.host, item.service]));
-		const scripts = [...win.document.querySelectorAll('script[src]')];
-		const hosts = new Map();
-		for (const entry of win.performance.getEntriesByType('resource')) {
-			const target = new URL(entry.name, win.location.href);
-			if (target.hostname === win.location.hostname) {
-				continue;
-			}
-			if (!hosts.has(target.hostname)) {
-				const script = scripts.find((node) => new URL(node.src, win.location.href).hostname === target.hostname);
-				hosts.set(target.hostname, {
-					host: target.hostname,
-					service: services.get(target.hostname) ?? null,
-					script: script ? { handle: (script.id.match(/^(.+)-js$/) || [])[1] ?? '' } : null,
-					types: new Set(),
-					urls: [],
-				});
-			}
-			hosts.get(target.hostname).types.add(entry.initiatorType);
-			hosts.get(target.hostname).urls.push(target);
-		}
-		return {
-			url: url.href,
-			items: [...hosts.values()].map((item) => describe(item, config)),
-			held: trail.held,
-			stored: [...cookieNames(win.document), ...storageKeys(win)].filter((name) => !before.includes(name)),
-		};
-	}
-
-	// Leaves the admin's browser as it was, so the next scan sees the same cookies a new visitor gets.
-	function forget(win, names) {
-		const domains = ['', `; domain=${win.location.hostname}`, `; domain=.${win.location.hostname.split('.').slice(-2).join('.')}`];
-		for (const name of names) {
-			domains.forEach((domain) => (win.document.cookie = `${name}=; Max-Age=0; path=/${domain}`));
+	function forget(list) {
+		for (const name of list) {
+			expire(name);
 			try {
-				win.localStorage.removeItem(name);
-				win.sessionStorage.removeItem(name);
+				localStorage.removeItem(name);
+				sessionStorage.removeItem(name);
 			} catch {}
 		}
 	}
+
+	const consentApi = () => Object.entries(cookies(document)).filter(([name]) => name.startsWith('wp_consent'));
+
+	// The WP Consent API cookies are the admin's own, so they come back after the scan, even an abandoned one.
+	function restore() {
+		let saved = null;
+		try {
+			saved = JSON.parse(localStorage.getItem(SAVED));
+			localStorage.removeItem(SAVED);
+		} catch {}
+		if (!saved) {
+			return;
+		}
+		consentApi().forEach(([name]) => expire(name));
+		const secure = location.protocol === 'https:' ? '; Secure' : '';
+		Object.entries(saved).forEach(([name, value]) => (document.cookie = `${name}=${value}; Max-Age=${30 * 86400}; path=/${secure}`));
+	}
+
+	function save() {
+		restore();
+		try {
+			localStorage.setItem(SAVED, JSON.stringify(Object.fromEntries(consentApi())));
+		} catch {}
+	}
+
+	let before = [];
+
+	function reset() {
+		expire(data.cookie);
+		forget(names(window).filter((name) => !before.includes(name)));
+		consentApi().forEach(([name]) => expire(name));
+	}
+
+	// The frame
+
+	let session = null;
+	let visits = 0;
+
+	const loaded = (frame) =>
+		new Promise((resolve, reject) => {
+			frame.addEventListener('load', resolve, { once: true });
+			setTimeout(() => reject(new Error('timeout')), 20000);
+		});
+
+	// A cancelled scan stops at its next step, even when a new one has started.
+	function check(current) {
+		if (session !== current || !current.frame.contentWindow) {
+			throw new Error('cancelled');
+		}
+		return current.frame.contentWindow;
+	}
+
+	function ready(win) {
+		const config = win.silvertrailConfig;
+		if (!config || !config.check || typeof win.silvertrail?.set !== 'function') {
+			throw new Error('Silvertrail is not running on this page.');
+		}
+		return config;
+	}
+
+	async function sweep(win) {
+		const height = win.document.documentElement.scrollHeight;
+		for (let y = 0, steps = 0; y < height && steps < 20; y += win.innerHeight, steps++) {
+			win.scrollTo(0, y);
+			await wait(100);
+		}
+		win.scrollTo(0, height);
+	}
+
+	const observe = (entries) => entries.map((entry) => ({ url: entry.name, type: TYPES[entry.initiatorType] ?? 'other' }));
+
+	async function settle(current, win) {
+		await sweep(win);
+		await wait(WAIT);
+		return check(current);
+	}
+
+	async function visit(current, url) {
+		check(current);
+		reset();
+		const target = new URL(url);
+		target.searchParams.set(data.param, String(++visits));
+		const done = loaded(current.frame);
+		current.frame.src = target.href;
+		await done;
+		const win = await settle(current, check(current));
+		return {
+			win,
+			config: ready(win),
+			first: observe(win.performance.getEntriesByType('resource')),
+			scripts: [...win.document.querySelectorAll('script[src]')].map((node) => ({ src: node.src, id: node.id })),
+			stored: names(win).filter((name) => !before.includes(name)),
+			held: win.silvertrail.trail().held,
+		};
+	}
+
+	// A request that started before the choice and finished after it belongs to the window before.
+	async function choose(current, win, ids) {
+		const seen = [];
+		const observer = new win.PerformanceObserver((list) => seen.push(...list.getEntries()));
+		observer.observe({ type: 'resource' });
+		const start = win.performance.now();
+		win.silvertrail.set(ids);
+		await settle(current, win);
+		seen.push(...observer.takeRecords());
+		observer.disconnect();
+		return { during: observe(seen.filter((entry) => entry.startTime >= start)), earlier: observe(seen.filter((entry) => entry.startTime < start)) };
+	}
+
+	async function reload(current, win) {
+		const done = loaded(current.frame);
+		win.location.reload();
+		await done;
+		const fresh = await settle(current, check(current));
+		return observe(fresh.performance.getEntriesByType('resource'));
+	}
+
+	// Report
+
+	const pages = (list, total) => (total > 1 && list.length > 0 ? ` ${format(texts.onPages, list.map(path).join(', '))}` : '');
 
 	function presetLink(id) {
 		const preset = data.presets[id];
@@ -166,7 +211,22 @@
 		return element('a', { href: url.href, class: 'button button-small' }, format(texts.turnOn, preset.name));
 	}
 
-	function list(items) {
+	const nameOf = (id, result) => result.services.find((row) => row.id === id)?.name ?? data.services[id]?.name ?? id;
+
+	function guardAdvice(item, result) {
+		if (item.when === 'declined') {
+			return texts.guardDeclined;
+		}
+		if (item.when === 'any') {
+			return format(texts.guardAny, item.services.map((id) => nameOf(id, result)).join(', '));
+		}
+		if (item.preset) {
+			return format(data.presets[item.preset].tracker ? texts.presetTracker : texts.presetEmbed, data.presets[item.preset].name);
+		}
+		return item.what === 'script' ? format(texts.script, item.handle) : texts[item.what];
+	}
+
+	function hostList(items, advice, result) {
 		return element(
 			'ul',
 			{ class: 'silvertrail-scan-list' },
@@ -177,7 +237,8 @@
 					element('strong', {}, item.name),
 					...(item.name === item.host ? [] : [' ', element('code', {}, item.host)]),
 					element('br'),
-					item.advice,
+					advice(item),
+					pages(item.pages, result.pages.length),
 					' ',
 					item.preset ? presetLink(item.preset) : '',
 				),
@@ -185,114 +246,263 @@
 		);
 	}
 
-	const heldName = (id) => data.services[id]?.name ?? id;
+	const rowsOf = (result) => result.services.filter((row) => data.services[row.id]?.source !== 'own');
+
+	function cell(text, problem) {
+		return element('td', {}, problem ? element('strong', {}, text) : text);
+	}
+
+	function table(result) {
+		const head = element('tr', {}, ...[texts.colService, texts.colSource, texts.colBefore, texts.colDeclined, texts.colAgreed].map((text) => element('th', { scope: 'col' }, text)));
+		const body = rowsOf(result).map((row) => {
+			const source = data.services[row.id]?.source === 'settings' ? texts.sourceSettings : texts.sourceCode;
+			const agreed = [texts[row.agreed]];
+			if (row.also.length > 0) {
+				agreed.push(format(texts.alsoStarts, row.also.map((item) => item.name).join(', ')));
+			}
+			return element(
+				'tr',
+				{},
+				element('th', { scope: 'row' }, row.name),
+				element('td', {}, source),
+				cell(texts[row.before === 'early' ? 'contacts' : row.before], row.before === 'early'),
+				cell(texts[row.declined], row.declined === 'contacts'),
+				cell(agreed.join('. '), ['reload', 'any'].includes(row.agreed) || row.also.length > 0),
+			);
+		});
+		return element(
+			'div',
+			{ class: 'silvertrail-scan-table', role: 'region', 'aria-labelledby': 'silvertrail-scan-services', tabindex: '0' },
+			element('table', { class: 'widefat striped', 'aria-labelledby': 'silvertrail-scan-services' }, element('thead', {}, head), element('tbody', {}, ...body)),
+		);
+	}
+
+	function todo(result) {
+		const lines = [];
+		const total = result.pages.length;
+		for (const row of rowsOf(result)) {
+			if (row.before === 'early') {
+				lines.push(format(texts.registered, row.name) + pages(row.pages, total));
+			} else if (row.declined === 'contacts') {
+				lines.push(format(texts.todoDeclined, row.name) + pages(row.pages, total));
+			}
+			if (row.agreed === 'any') {
+				lines.push(format(texts.todoAny, row.name));
+			}
+			for (const item of row.also) {
+				lines.push(item.types.length > 0 ? format(texts.todoAlsoShared, row.name, item.name, item.types.join(', ')) : format(texts.todoAlso, row.name, item.name));
+			}
+			if (row.agreed === 'reload' && row.before !== 'early' && row.declined !== 'contacts') {
+				lines.push(format(texts.todoReload, row.name) + pages(row.pages, total));
+			}
+		}
+		result.late.forEach((item) => lines.push(format(texts.todoLate, item.host) + pages(item.pages, total)));
+		return lines;
+	}
 
 	const bullets = (items) =>
 		items.length === 0 ? element('p', {}, texts.none) : element('ul', { class: 'silvertrail-scan-list' }, ...items.map((children) => element('li', {}, ...children)));
 
-	function prompt(scan) {
+	function prompt(result) {
 		const kinds = { script: texts.kindScript, scriptRaw: texts.kindScript, frame: texts.kindFrame, font: texts.kindFont, image: texts.kindImage, other: texts.kindOther };
-		const connections = scan.items.map((item) => `- ${item.name === item.host ? item.host : `${item.name} (${item.host})`}: ${kinds[item.what]}`);
-		const incomplete = scan.held.filter((id) => !data.services[id]?.provider || !data.services[id]?.purpose || !data.services[id]?.privacyUrl);
+		const label = (item) => (item.name === item.host ? item.host : `${item.name} (${item.host})`);
+		const connections = [
+			...result.guard.map((item) => `- ${label(item)}: ${kinds[item.what]}`),
+			...[...result.belongs, ...result.after].map((item) => `- ${label(item)}: ${texts.kindAfter}`),
+		];
+		const incomplete = result.held.filter((id) => !data.services[id]?.provider || !data.services[id]?.purpose || !data.services[id]?.privacyUrl);
 		const sections = [
 			[texts.promptConnections, connections],
-			[texts.promptHeld, incomplete.map((id) => `- ${heldName(id)}`)],
-			[texts.promptCookies, scan.stored.map((name) => `- ${name}`)],
+			[texts.promptHeld, incomplete.map((id) => `- ${nameOf(id, result)}`)],
+			[texts.promptCookies, result.stored.map((name) => `- ${name}`)],
 		].filter(([, lines]) => lines.length > 0);
 		if (sections.length === 0) {
 			return '';
 		}
 		return [
-			format(texts.promptIntro, data.site, home.origin, scan.url),
+			format(texts.promptIntro, data.site, home.origin, result.pages.join(', ')),
 			...sections.flatMap(([title, lines]) => ['', `${title}:`, ...lines]),
 			'',
 			format(texts.promptAsk, data.language),
 		].join('\n');
 	}
 
-	function render(scan) {
-		const early = scan.items.filter((item) => item.early);
-		const fine = scan.items.filter((item) => !item.early);
-		const parts = [early.length > 0 ? notice('warning', texts.attention) : notice('success', texts.clean)];
-		if (early.length === 0) {
-			parts[0].append(element('p', {}, texts.license, ' ', element('a', { href: data.license }, data.license)));
+	function verdict(result) {
+		if (result.problems > 0) {
+			return notice('warning', texts.attention);
 		}
-		if (early.length > 0) {
-			parts.push(element('h3', {}, texts.early), list(early));
+		if (result.warnings > 0) {
+			return notice('warning', texts.reloadOnly);
 		}
-		parts.push(element('h3', {}, texts.held), bullets(scan.held.map((id) => [element('strong', {}, heldName(id)), ' ', element('span', { class: 'description' }, data.services[id] ? `(${data.services[id].group})` : '')])));
-		if (fine.length > 0) {
-			parts.push(element('h3', {}, texts.fine), list(fine));
-		}
-		parts.push(element('h3', {}, texts.stored), bullets(scan.stored.map((name) => [element('code', {}, name)])));
+		const clean = notice('success', texts.clean);
+		clean.append(element('p', {}, texts.license, ' ', element('a', { href: data.license }, data.license)));
+		return clean;
+	}
 
-		const handover = prompt(scan);
-		if (handover === '') {
-			output.replaceChildren(...parts);
-			return;
+	function render(result) {
+		const parts = [verdict(result)];
+		if (result.guard.length > 0) {
+			parts.push(element('h3', {}, texts.guard), hostList(result.guard, (item) => guardAdvice(item, result), result));
 		}
-		const text = element('textarea', { class: 'large-text code', rows: '12', readonly: '', id: 'silvertrail-scan-report' });
-		text.value = handover;
-		parts.push(
-			element('h3', {}, element('label', { for: 'silvertrail-scan-report' }, texts.report)),
-			element('p', { class: 'description' }, texts.reportHelp),
-			text,
-			element(
-				'p',
-				{ class: 'copy-to-clipboard-container' },
-				element('button', { type: 'button', class: 'button', 'data-silvertrail-copy': 'silvertrail-scan-report' }, texts.copy),
-				element('span', { class: 'success hidden', 'aria-hidden': 'true' }, texts.copied),
-			),
-		);
+		parts.push(element('h3', { id: 'silvertrail-scan-services' }, texts.services), table(result));
+		const lines = todo(result);
+		if (lines.length > 0) {
+			parts.push(element('h3', {}, texts.todo), bullets(lines.map((line) => [line])));
+		}
+		const unlisted = [...result.belongs, ...result.after];
+		if (unlisted.length > 0) {
+			parts.push(
+				element('h3', {}, texts.belongs),
+				hostList(unlisted, (item) => (item.service ? format(texts.belongsTo, nameOf(item.service, result), item.host) : texts.afterAll), result),
+			);
+		}
+		parts.push(element('h3', {}, texts.stored), bullets(result.stored.map((name) => [element('code', {}, name)])));
+
+		const handover = prompt(result);
+		if (handover !== '') {
+			const text = element('textarea', { class: 'large-text code', rows: '12', readonly: '', id: 'silvertrail-scan-report' });
+			text.value = handover;
+			parts.push(
+				element('h3', {}, element('label', { for: 'silvertrail-scan-report' }, texts.report)),
+				element('p', { class: 'description' }, texts.reportHelp),
+				text,
+				element(
+					'p',
+					{ class: 'copy-to-clipboard-container' },
+					element('button', { type: 'button', class: 'button', 'data-silvertrail-copy': 'silvertrail-scan-report' }, texts.copy),
+					element('span', { class: 'success hidden', 'aria-hidden': 'true' }, texts.copied),
+				),
+			);
+		}
 		output.replaceChildren(...parts);
+		speak(parts[0].textContent);
+	}
+
+	// Run
+
+	function cleanup() {
+		session?.frame.parentElement?.remove();
+		session = null;
+		reset();
+		restore();
+		window.removeEventListener('pagehide', cleanup);
+		run.disabled = false;
+		cancel.hidden = true;
+		progress.hidden = true;
+	}
+
+	function show(current, text, done, total) {
+		check(current);
+		step.textContent = text;
+		bar.max = total;
+		bar.value = done;
+	}
+
+	function targets() {
+		const lines = input.value.split('\n').map((line) => line.trim()).filter(Boolean);
+		const urls = [];
+		for (const line of lines.length > 0 ? lines : [data.home]) {
+			let url;
+			try {
+				url = new URL(line, data.home);
+			} catch {
+				return null;
+			}
+			if (url.origin !== home.origin) {
+				return null;
+			}
+			url.hash = '';
+			if (!urls.some((known) => known.href === url.href)) {
+				urls.push(url);
+			}
+		}
+		return urls;
 	}
 
 	async function scan() {
-		let url;
-		try {
-			url = new URL(input.value.trim() || data.home, data.home);
-		} catch {
-			url = null;
-		}
-		if (!url || url.origin !== home.origin) {
+		const urls = targets();
+		if (!urls) {
 			output.replaceChildren(notice('error', texts.foreign));
 			return;
 		}
-		const target = new URL(url);
-		target.searchParams.set(data.param, '1');
-		const before = [...cookieNames(document), ...storageKeys(window)];
-		const frame = element('iframe', { src: target.href, sandbox: 'allow-scripts allow-same-origin', title: texts.scanning, tabindex: '-1' });
+		save();
+		before = names(window);
+		window.addEventListener('pagehide', cleanup);
+		const frame = element('iframe', { sandbox: 'allow-scripts allow-same-origin', title: texts.scanning, tabindex: '-1' });
 		frame.style.cssText = 'width:1280px;height:800px;border:0;transform:scale(.25);transform-origin:0 0';
-		const preview = element('div', {}, frame);
-		preview.style.cssText = 'width:320px;height:200px;overflow:hidden;border:1px solid #c3c4c7;margin:8px 0';
+		const current = { frame };
+		session = current;
 		run.disabled = true;
-		output.replaceChildren(element('p', {}, texts.scanning), preview);
+		cancel.hidden = false;
+		progress.hidden = false;
+		output.replaceChildren(element('div', { class: 'silvertrail-scan-preview' }, frame));
+		speak(texts.scanning);
 
+		const pages = [];
+		const isolated = [];
+		const config = { services: {}, essential: [], ungated: [] };
+		let total = urls.length * 4;
+		let count = 0;
 		let result = null;
 		try {
-			await loaded(frame);
-			const win = frame.contentWindow;
-			win.scrollTo(0, win.document.documentElement.scrollHeight);
-			await wait(2500);
-			result = collect(win, before, url);
-			forget(win, result.stored);
+			for (const [index, url] of urls.entries()) {
+				const number = index + 1;
+				show(current, format(texts.stepFirst, number, urls.length, path(url)), count++, total);
+				const first = await visit(current, url);
+				Object.assign(config.services, first.config.services);
+				config.essential = first.config.essential;
+				config.ungated = first.config.ungated;
+
+				show(current, format(texts.stepDeclined, number, urls.length), count++, total);
+				const declined = await choose(current, first.win, []);
+				show(current, format(texts.stepAgreed, number, urls.length), count++, total);
+				const agreed = await choose(current, first.win, Object.keys(first.config.services));
+				show(current, format(texts.stepReload, number, urls.length), count++, total);
+				const reloaded = await reload(current, first.win);
+
+				const page = {
+					url: url.href,
+					first: [...first.first, ...declined.earlier],
+					declined: [...declined.during, ...agreed.earlier],
+					agreed: agreed.during,
+					reloaded,
+					held: first.held,
+					stored: first.stored,
+					scripts: first.scripts,
+				};
+				pages.push(page);
+
+				const queue = findings.queue(page, config.services, config.essential, isolated);
+				total += queue.length;
+				for (const id of queue) {
+					show(current, format(texts.stepService, number, urls.length, config.services[id].name), count++, total);
+					const alone = await visit(current, url);
+					const agreedAlone = await choose(current, alone.win, [id]);
+					isolated.push({ service: id, page: url.href, first: [...alone.first, ...agreedAlone.earlier], scripts: alone.scripts, agreed: agreedAlone.during });
+				}
+			}
+			result = findings.analyze({ ...config, presets: data.presets, pages, isolated });
 		} catch {
 			result = null;
 		}
-		frame.remove();
-		run.disabled = false;
+		if (session !== current) {
+			return;
+		}
+		cleanup();
 		if (result) {
 			render(result);
 		} else {
 			output.replaceChildren(notice('error', texts.failed));
+			speak(texts.failed);
 		}
 	}
 
+	restore();
 	run.addEventListener('click', scan);
-	input.addEventListener('keydown', (event) => {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			scan();
-		}
+	cancel.addEventListener('click', () => {
+		cleanup();
+		output.replaceChildren(notice('info', texts.cancelled));
+		speak(texts.cancelled);
+		run.focus();
 	});
 })();

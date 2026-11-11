@@ -123,13 +123,16 @@ final class Frontend {
 				'hosts'  => $service['hosts'],
 				'google' => $service['google'],
 			);
+			if ( '' !== $service['tag_id'] ) {
+				$services[ $id ]['tagId'] = $service['tag_id'];
+			}
 		}
 
 		return array(
 			'n'           => Config::revision(),
 			'cookie'      => Config::cookie(),
 			'path'        => Config::cookie_path(),
-			'maxAge'      => max( 1, (int) Settings::get( 'expiry_months' ) ) * MONTH_IN_SECONDS,
+			'maxAge'      => Scan::active() ? 10 * MINUTE_IN_SECONDS : max( 1, (int) Settings::get( 'expiry_months' ) ) * MONTH_IN_SECONDS,
 			'essential'   => Config::essential_ids(),
 			'ungated'     => array_values( array_filter( array_keys( Config::get()['services'] ), array( Config::class, 'ungated' ) ) ),
 			'services'    => $services,
@@ -139,8 +142,8 @@ final class Frontend {
 			'gpc'         => (bool) Settings::get( 'gpc' ),
 			'require'     => (bool) Settings::get( 'require_choice' ),
 			'check'       => Scan::active(),
-			'record'      => Records::listening() ? rest_url( 'silvertrail/v1/record' ) : '',
-			'recordIds'   => Records::enabled(),
+			'record'      => Records::listening() && ! Scan::active() ? rest_url( 'silvertrail/v1/record' ) : '',
+			'recordIds'   => Records::enabled() && ! Scan::active(),
 			'texts'       => self::trail_texts(),
 		);
 	}
