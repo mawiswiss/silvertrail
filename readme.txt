@@ -188,7 +188,9 @@ Yes, with the floating button. It is off by default. Under Settings › Silvertr
 3. A YouTube video waits behind a placeholder. The visitor loads it once or allows YouTube for good, and no banner opens.
 4. Under Settings › Silvertrail, the admin ticks the trackers the site uses and enters their IDs. The status panel counts what the banner asks about.
 5. The banner takes its colours, corners and buttons from the theme's `theme.json`. The admin picks the position, the appearance and the floating button.
-6. The Leak check opens a page as a first-time visitor and lists every other server it contacts before a choice, with what to do about each. It also writes a prompt for an AI assistant.
+6. The Leak check opens each page as a first-time visitor, declines, agrees to each service on its own and loads the page again. A read-only preview shows each step.
+7. The report says what runs without consent and what to do about it. A tracker that matches a preset gets a button that opens it under Services, ticked and ready to save. The table shows how each service behaved before a choice, after declining and after agreeing.
+8. When nothing runs without consent and nothing waits for a reload, the report says so.
 
 == Privacy ==
 
