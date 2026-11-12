@@ -124,7 +124,7 @@ final class SettingsPage {
 			checked( ! empty( Settings::get( $key ) ), true, false ),
 			disabled( Settings::in_code( $key ), true, false ),
 			esc_html( $label ),
-			self::in_code_label( $key ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
+			wp_kses_post( self::in_code_label( $key ) )
 		);
 		if ( '' !== $help ) {
 			echo '<p class="description">' . esc_html( $help ) . '</p>';

@@ -248,6 +248,20 @@ test.describe('settings page', () => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
 		await page.getByRole('button', { name: 'Developer help' }).click();
 		await expect(page.locator('#tab-panel-silvertrail-settings')).toBeVisible();
+		await page.getByRole('button', { name: 'in code' }).click();
+		await expect(page.locator('#tab-panel-silvertrail-design')).toBeVisible();
+		await expect(page.locator('#tab-panel-silvertrail-script pre')).toHaveText(
+			'<script type="text/plain" data-silvertrail="hubspot" src="https://js.hs-scripts.com/123.js"></script>',
+		);
+	});
+
+	test('an imprint page from code cannot be changed', async ({ page, context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_code', value: JSON.stringify({ imprint_page: 2 }), url: 'http://localhost:8892' }]);
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+
+		await expect(page.locator('th', { hasText: 'Imprint page' })).toContainText('Set in code');
+		await expect(page.getByLabel('Imprint page')).toBeDisabled();
+		await expect(page.getByLabel('Imprint page')).toHaveValue('2');
 	});
 
 	test('a setting from code shows as set in code and cannot be changed', async ({ page, context }) => {

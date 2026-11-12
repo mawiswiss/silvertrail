@@ -133,7 +133,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 			'<code>silvertrail_register_service()</code>',
 			'<code>silvertrail_config</code>'
 		);
-		echo ' ' . SettingsPage::help_button( 'silvertrail-adjust', __( 'Show the example', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
+		echo ' ' . wp_kses_post( SettingsPage::help_button( 'silvertrail-adjust', __( 'Show the example', 'silvertrail' ) ) );
 		?>
 	</p>
 	<?php if ( array() === $silvertrail_code ) : ?>
@@ -144,7 +144,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 				esc_html__( 'Nothing yet. Register your own services on the %s action.', 'silvertrail' ),
 				'<code>silvertrail_register</code>'
 			);
-			echo ' ' . SettingsPage::help_button( 'silvertrail-service', __( 'Show the example', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
+			echo ' ' . wp_kses_post( SettingsPage::help_button( 'silvertrail-service', __( 'Show the example', 'silvertrail' ) ) );
 			?>
 		</p>
 	<?php else : ?>

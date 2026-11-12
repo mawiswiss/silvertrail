@@ -71,10 +71,14 @@ final class Reopen {
 		 * @param string $icon Inline SVG or an <img>.
 		 */
 		$icon = (string) apply_filters( 'silvertrail_reopen_icon', self::ICON );
-		return wp_kses(
-			$icon,
-			array_fill_keys( self::SVG_TAGS, array_fill_keys( self::SVG_ATTRIBUTES, true ) )
-				+ array( 'img' => array_fill_keys( array( 'src', 'alt', 'width', 'height', 'class' ), true ) )
-		);
+		return wp_kses( $icon, self::icon_html() );
+	}
+
+	/**
+	 * @return array<string, array<string, bool>>
+	 */
+	public static function icon_html(): array {
+		return array_fill_keys( self::SVG_TAGS, array_fill_keys( self::SVG_ATTRIBUTES, true ) )
+			+ array( 'img' => array_fill_keys( array( 'src', 'alt', 'width', 'height', 'class' ), true ) );
 	}
 }

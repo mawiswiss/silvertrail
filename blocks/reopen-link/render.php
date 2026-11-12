@@ -12,6 +12,6 @@ if ( '' === $silvertrail_link ) {
 	return;
 }
 ?>
-<p <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by core. ?>>
-	<?php echo $silvertrail_link; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the link escapes its text. ?>
+<p <?php echo wp_kses_data( get_block_wrapper_attributes() ); ?>>
+	<?php echo wp_kses_post( $silvertrail_link ); ?>
 </p>

@@ -34,7 +34,7 @@ $silvertrail_overview = Notices::overview( $tab );
 		<div>
 			<h2 id="silvertrail-status-title">
 				<?php $silvertrail_on ? esc_html_e( 'Silvertrail is on', 'silvertrail' ) : esc_html_e( 'Silvertrail is off', 'silvertrail' ); ?>
-				<?php echo SettingsPage::in_code_label( 'enabled' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
+				<?php echo wp_kses_post( SettingsPage::in_code_label( 'enabled' ) ); ?>
 			</h2>
 			<p>
 				<?php

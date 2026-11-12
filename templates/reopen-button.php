@@ -20,5 +20,5 @@ defined( 'ABSPATH' ) || exit;
 	aria-label="<?php echo esc_attr( $args['label'] ); ?>"
 	hidden
 >
-	<?php echo $args['icon']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- filtered through wp_kses in Reopen::icon(). ?>
+	<?php echo wp_kses( $args['icon'], Silvertrail\Reopen::icon_html() ); ?>
 </button>

@@ -32,7 +32,7 @@ $silvertrail_help = array(
 		<?php endforeach; ?>
 		<p class="silvertrail-in-code">
 			<?php esc_html_e( 'Everything here also works in code.', 'silvertrail' ); ?>
-			<?php echo SettingsPage::help_button( $silvertrail_help[ $tab ], __( 'Developer help', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?>
+			<?php echo wp_kses_post( SettingsPage::help_button( $silvertrail_help[ $tab ], __( 'Developer help', 'silvertrail' ) ) ); ?>
 		</p>
 	</nav>
 

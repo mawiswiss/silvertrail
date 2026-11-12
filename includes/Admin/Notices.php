@@ -135,7 +135,7 @@ final class Notices {
 	public static function card( string $card ): void {
 		foreach ( self::all() as $notice ) {
 			if ( $card === $notice['card'] ) {
-				printf( '<div class="notice notice-%1$s inline"><p>%2$s</p></div>', esc_attr( $notice['type'] ), $notice['message'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in all().
+				printf( '<div class="notice notice-%1$s inline"><p>%2$s</p></div>', esc_attr( $notice['type'] ), wp_kses_post( $notice['message'] ) );
 			}
 		}
 	}

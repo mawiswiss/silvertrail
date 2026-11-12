@@ -65,7 +65,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 	<h2><?php esc_html_e( 'Look', 'silvertrail' ); ?></h2>
 	<table class="form-table" role="presentation">
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Position', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( 'layout' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
+			<th scope="row"><?php esc_html_e( 'Position', 'silvertrail' ); ?><?php echo wp_kses_post( SettingsPage::in_code_label( 'layout' ) ); ?></th>
 			<td>
 				<fieldset class="silvertrail-cards">
 					<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'silvertrail' ); ?></legend>
@@ -131,9 +131,8 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						</p>
 						<p>
 							<?php
-							// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- the help button is escaped in its method.
 							if ( $silvertrail_theme_json && wp_is_block_theme() && current_user_can( 'edit_theme_options' ) ) {
-								printf(
+								$silvertrail_source = sprintf(
 									/* translators: 1: link to the Styles editor, 2: button that opens the help */
 									esc_html__( 'Change it in the %1$s or %2$s.', 'silvertrail' ),
 									'<a href="' . esc_url( admin_url( 'site-editor.php?path=/wp_global_styles' ) ) . '">' . esc_html__( 'Styles editor', 'silvertrail' ) . '</a>',
@@ -141,12 +140,12 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 								);
 							} elseif ( $silvertrail_theme_json ) {
 								/* translators: 1: theme.json, 2: button that opens the help */
-								printf( esc_html__( 'Change it in its %1$s or %2$s.', 'silvertrail' ), '<code>theme.json</code>', $silvertrail_in_code );
+								$silvertrail_source = sprintf( esc_html__( 'Change it in its %1$s or %2$s.', 'silvertrail' ), '<code>theme.json</code>', $silvertrail_in_code );
 							} else {
 								/* translators: 1: theme name, 2: theme.json, 3: button that opens the help */
-								printf( esc_html__( '%1$s has no %2$s. Change it %3$s.', 'silvertrail' ), esc_html( $silvertrail_theme_name ), '<code>theme.json</code>', $silvertrail_in_code );
+								$silvertrail_source = sprintf( esc_html__( '%1$s has no %2$s. Change it %3$s.', 'silvertrail' ), esc_html( $silvertrail_theme_name ), '<code>theme.json</code>', $silvertrail_in_code );
 							}
-							// phpcs:enable
+							echo wp_kses_post( $silvertrail_source );
 							?>
 						</p>
 					</div>
@@ -154,7 +153,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( 'appearance' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
+			<th scope="row"><?php esc_html_e( 'Appearance', 'silvertrail' ); ?><?php echo wp_kses_post( SettingsPage::in_code_label( 'appearance' ) ); ?></th>
 			<td>
 				<?php if ( $silvertrail_one_look ) : ?>
 					<p>
@@ -183,7 +182,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Floating button', 'silvertrail' ); ?><?php echo SettingsPage::in_code_label( Settings::in_code( 'floating_button' ) ? 'floating_button' : 'floating_position' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
+			<th scope="row"><?php esc_html_e( 'Floating button', 'silvertrail' ); ?><?php echo wp_kses_post( SettingsPage::in_code_label( Settings::in_code( 'floating_button' ) ? 'floating_button' : 'floating_position' ) ); ?></th>
 			<td>
 				<fieldset class="silvertrail-cards">
 					<legend class="screen-reader-text"><?php esc_html_e( 'Floating button', 'silvertrail' ); ?></legend>
@@ -236,7 +235,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						'<code>.silvertrail-reopen</code>',
 						'<code>silvertrail_reopen_icon</code>'
 					);
-					echo ' ' . SettingsPage::help_button( 'silvertrail-floating', __( 'Show how', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
+					echo ' ' . wp_kses_post( SettingsPage::help_button( 'silvertrail-floating', __( 'Show how', 'silvertrail' ) ) );
 					?>
 				</p>
 			</td>
@@ -389,7 +388,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 							esc_html__( 'Developers can ship this JSON in the theme as %s.', 'silvertrail' ),
 							'<code>' . esc_html( "silvertrail/texts-{$silvertrail_locale}.json" ) . '</code>'
 						);
-						echo ' ' . SettingsPage::help_button( 'silvertrail-texts', __( 'Show how', 'silvertrail' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method.
+						echo ' ' . wp_kses_post( SettingsPage::help_button( 'silvertrail-texts', __( 'Show how', 'silvertrail' ) ) );
 						?>
 					</p>
 				<?php endif; ?>
@@ -434,7 +433,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="silvertrail-imprint"><?php esc_html_e( 'Imprint page', 'silvertrail' ); ?></label><?php echo SettingsPage::in_code_label( 'imprint_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the method. ?></th>
+			<th scope="row"><label for="silvertrail-imprint"><?php esc_html_e( 'Imprint page', 'silvertrail' ); ?></label><?php echo wp_kses_post( SettingsPage::in_code_label( 'imprint_page' ) ); ?></th>
 			<td>
 				<?php
 				$silvertrail_pages = wp_dropdown_pages(
@@ -447,7 +446,22 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						'echo'              => false,
 					)
 				);
-				echo Settings::in_code( 'imprint_page' ) ? str_replace( '<select ', '<select disabled ', $silvertrail_pages ) : $silvertrail_pages; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- markup from wp_dropdown_pages().
+				echo wp_kses(
+					Settings::in_code( 'imprint_page' ) ? str_replace( '<select ', '<select disabled ', $silvertrail_pages ) : $silvertrail_pages,
+					array(
+						'select' => array(
+							'name'     => true,
+							'id'       => true,
+							'class'    => true,
+							'disabled' => true,
+						),
+						'option' => array(
+							'value'    => true,
+							'selected' => true,
+							'class'    => true,
+						),
+					)
+				);
 				?>
 			</td>
 		</tr>
