@@ -347,7 +347,6 @@
 .silvertrail-embed {
 	display: grid;
 	place-items: center;
-	min-height: 12rem;
 	aspect-ratio: 16 / 9;
 	padding: 1.5rem;
 	border: 1px solid var(--silvertrail-line);
@@ -355,6 +354,11 @@
 	background: var(--silvertrail-background);
 	color: var(--silvertrail-text);
 	text-align: center;
+}
+
+/* Core reserves the ratio in this spacer for an absolutely positioned iframe. */
+.wp-embed-responsive .wp-has-aspect-ratio .wp-block-embed__wrapper:has(> [data-silvertrail-embed])::before {
+	content: none;
 }
 
 .silvertrail-embed__inner {
