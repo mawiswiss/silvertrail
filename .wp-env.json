@@ -11,6 +11,11 @@
 		"SCRIPT_DEBUG": true
 	},
 	"env": {
+		"development": {
+			"mappings": {
+				"wp-content/mu-plugins": "./tests/samples"
+			}
+		},
 		"tests": {
 			"plugins": [ ".", "https://downloads.wordpress.org/plugin/wp-consent-api.latest-stable.zip" ],
 			"mappings": {
