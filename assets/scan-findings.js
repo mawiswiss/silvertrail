@@ -99,8 +99,8 @@ globalThis.silvertrailFindings = (() => {
 
 	const union = (lists) => [...new Set(lists.flat())];
 
-	// Trackers switch subdomains between loads, so a host only counts as new after a reload when its domain is.
-	const domain = (host) => host.split('.').slice(-2).join('.');
+	// Trackers switch subdomains between loads, and Chrome often leaves the files a Google Fonts stylesheet loads out of Resource Timing.
+	const family = (host) => knownName(host) || host.split('.').slice(-2).join('.');
 
 	function collect(pairs) {
 		const found = new Map();
@@ -140,8 +140,8 @@ globalThis.silvertrailFindings = (() => {
 		const reloadOnly = collect(
 			windows.map((window) => {
 				const earlier = new Set([...window.inPlace, ...window.first.keys(), ...window.declined.keys()]);
-				const domains = new Set([...earlier].filter((key) => !services[key]).map(domain));
-				const late = ([key, entry]) => !earlier.has(key) && (entry.service || !domains.has(domain(key)));
+				const families = new Set([...earlier].filter((key) => !services[key]).map(family));
+				const late = ([key, entry]) => !earlier.has(key) && (entry.service || !families.has(family(key)));
 				return [window.url, new Map([...window.reloaded].filter(late))];
 			}),
 		);
@@ -205,6 +205,7 @@ globalThis.silvertrailFindings = (() => {
 			}
 		}
 		const scripts = windows.flatMap((window) => window.scripts);
+		const guarded = new Set([...early.keys(), ...declined.keys()].map(knownName).filter(Boolean));
 		const guard = [];
 		const late = [];
 		const belongs = [];
@@ -214,10 +215,18 @@ globalThis.silvertrailFindings = (() => {
 			if (early.has(key) || declined.has(key) || byAny(key)) {
 				const when = early.has(key) ? 'before' : declined.has(key) ? 'declined' : 'any';
 				const seen = { before: early, declined, any: agreed }[when].get(key).pages;
+				const kin = knownName(key) && guard.find((item) => item.when === when && knownName(item.host) === knownName(key));
+				if (kin) {
+					kin.pages = union([kin.pages, seen]);
+					kin.services = union([kin.services, startedBy.get(key) ?? []]);
+					continue;
+				}
 				const preset = when === 'before' ? (Object.keys(presets).find((id) => presets[id].hosts.some((pattern) => entry.urls.some((url) => matches(url, pattern)))) ?? '') : '';
 				guard.push({ host: key, name: preset ? presets[preset].name : name, when, preset, services: startedBy.get(key) ?? [], pages: seen, ...kind(entry, scripts) });
 			} else if (reloadOnly.has(key)) {
 				late.push({ host: key, name, pages: reloadOnly.get(key).pages });
+			} else if (guarded.has(knownName(key))) {
+				continue;
 			} else if (startedBy.has(key)) {
 				belongs.push({ host: key, name, service: startedBy.get(key)[0], pages: agreed.get(key).pages });
 			} else {
