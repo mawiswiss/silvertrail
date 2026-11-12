@@ -61,16 +61,17 @@ final class EmbedGate {
 			$tags->set_attribute( self::MARK, true );
 		}
 
-		return Templates::capture(
+		$placeholder = Templates::capture(
 			'embed',
 			array(
 				'service' => $service,
 				'name'    => $config['services'][ $service ]['name'],
-				'embed'   => $tags->get_updated_html(),
 				'texts'   => Texts::all(),
 				'theme'   => Frontend::appearance(),
 			)
 		);
+		$end         = strripos( $placeholder, '</template>' );
+		return false === $end ? $placeholder : substr_replace( $placeholder, $tags->get_updated_html(), $end, 0 );
 	}
 
 	private static function service_in( string $html ): ?string {

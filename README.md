@@ -304,7 +304,7 @@ To change more than these values, add `silvertrail/silvertrail.css` to the theme
 
 [`docs/styling.md`](docs/styling.md) is the brief for an AI assistant that writes this file: the tokens, the classes and the rules a consent banner has to keep. Under Settings › Silvertrail › Banner › Custom styles, Copy prompt hands it over together with the theme's presets and the current file, and the assistant answers with the file.
 
-To change the markup, copy `templates/banner.php`, `templates/embed.php` or `templates/reopen-button.php` into the theme's `silvertrail/` folder and keep the `data-silvertrail-*` attributes.
+To change the markup, copy `templates/banner.php`, `templates/embed.php` or `templates/reopen-button.php` into the theme's `silvertrail/` folder and keep the `data-silvertrail-*` attributes. `embed.php` also keeps its empty `<template>`, which Silvertrail fills with the embed.
 
 ## Google Consent Mode and the WP Consent API
 

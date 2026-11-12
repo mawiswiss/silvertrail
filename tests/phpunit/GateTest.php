@@ -60,6 +60,14 @@ final class GateTest extends WP_UnitTestCase {
 		$this->assertMatchesRegularExpression( '#<template>\s*<iframe data-silvertrail-wrapped src="https://video.example.test/1"></iframe>\s*</template>#', $html );
 	}
 
+	public function test_an_oembed_with_a_script_waits_unchanged(): void {
+		$embed = '<blockquote><p>Post</p></blockquote><script async src="https://video.example.test/widgets.js"></script>';
+		$html  = EmbedGate::oembed( $embed, 'https://video.example.test/post/1' );
+
+		$this->assertIsString( $html );
+		$this->assertStringContainsString( "<template>{$embed}</template>", $html );
+	}
+
 	public function test_content_iframes_are_wrapped_once(): void {
 		$wrapped = EmbedGate::content( '<p>Hi</p><iframe src="https://video.example.test/2"></iframe><iframe src="https://elsewhere.test/3"></iframe>' );
 		$this->assertIsString( $wrapped );
