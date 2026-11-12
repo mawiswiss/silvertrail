@@ -151,7 +151,11 @@ final class SettingsPage {
 	}
 
 	public static function in_code_label( string $key ): string {
-		return Settings::in_code( $key ) ? ' <strong class="post-state">' . esc_html__( 'Set in code', 'silvertrail' ) . '</strong>' : '';
+		return Settings::in_code( $key ) ? ' ' . self::in_code_chip( __( 'Set in code', 'silvertrail' ) ) : '';
+	}
+
+	public static function in_code_chip( string $text ): string {
+		return '<span class="silvertrail-chip">' . esc_html( $text ) . '</span>';
 	}
 
 	public static function url( string $tab = 'services' ): string {

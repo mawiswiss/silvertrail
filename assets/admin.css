@@ -105,6 +105,20 @@
 	}
 }
 
+.silvertrail-chip {
+	display: inline-block;
+	margin-left: 4px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--wp-admin-theme-color) 12%, #fff);
+	color: color-mix(in srgb, var(--wp-admin-theme-color) 75%, #000);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.5;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
 @media screen and (max-width: 600px) {
 	.silvertrail-status {
 		--silvertrail-indent: 24px;

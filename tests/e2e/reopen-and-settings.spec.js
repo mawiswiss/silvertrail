@@ -282,7 +282,7 @@ test.describe('settings page', () => {
 		const records = page.getByLabel('Keep a record of each decision');
 		await expect(records).toBeChecked();
 		await expect(records).toBeDisabled();
-		await expect(page.locator('.post-state', { hasText: 'Set in code' })).toBeVisible();
+		await expect(page.locator('.silvertrail-chip', { hasText: 'Set in code' })).toBeVisible();
 	});
 
 	test('turns records on in the tools tab', async ({ page }) => {
