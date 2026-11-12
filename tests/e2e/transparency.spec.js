@@ -90,7 +90,7 @@ test.describe('visitor scan', () => {
 		const section = page.locator('#silvertrail-scan');
 		await section.getByLabel('Pages', { exact: true }).fill(urls.join('\n'));
 		await section.getByRole('button', { name: 'Scan', exact: true }).click();
-		await expect(section.locator('[data-silvertrail-scan-result] .notice')).toBeVisible({ timeout: 150000 });
+		await expect(section.locator('[data-silvertrail-scan-result] :is(.notice, .silvertrail-verdict)')).toBeVisible({ timeout: 150000 });
 		return section;
 	}
 
@@ -99,7 +99,8 @@ test.describe('visitor scan', () => {
 	test('lists what loads before a choice and writes a prompt', async ({ page }) => {
 		const section = await scan(page, '/?pagename=silvertrail-leak');
 
-		await expect(section).toContainText('Something runs without consent.');
+		await expect(section).toContainText('Something runs without consent');
+		await expect(section.getByRole('link', { name: 'Support Silvertrail' })).toHaveCount(0);
 		const guard = section.locator('ul').first();
 		await expect(guard).toContainText('127.0.0.1');
 		await expect(guard).toContainText('A script written straight into the page.');
@@ -129,7 +130,7 @@ test.describe('visitor scan', () => {
 		await page.route('**/slow.example.test/**', slow);
 		const section = await scan(page, '/?pagename=silvertrail-slow');
 
-		await expect(section).toContainText('Something runs without consent.');
+		await expect(section).toContainText('Something runs without consent');
 		await expect(section.locator('ul').first()).toContainText('slow.example.test');
 		await expect(section).not.toContainText('Contacted after the visitor declines.');
 	});
@@ -137,7 +138,7 @@ test.describe('visitor scan', () => {
 	test('reports a host contacted after declining', async ({ page }) => {
 		const section = await scan(page, '/?pagename=silvertrail-careless');
 
-		await expect(section).toContainText('Something runs without consent.');
+		await expect(section).toContainText('Something runs without consent');
 		await expect(section.locator('ul').first()).toContainText('careless.example.test');
 		await expect(section.locator('ul').first()).toContainText('Contacted after the visitor declines.');
 	});
@@ -168,12 +169,14 @@ test.describe('visitor scan', () => {
 			{ name: 'silvertrail_test_settings', value: JSON.stringify({ records: true }), url: 'http://localhost:8892' },
 			{ name: 'silvertrail', value: encodeURIComponent('{"n":1,"c":[],"t":1}'), url: 'http://localhost:8892' },
 			{ name: 'wp_consent_marketing', value: 'deny', url: 'http://localhost:8892' },
+			{ name: 'silvertrail_test_license_seen', value: '1', url: 'http://localhost:8892' },
 		]);
 		const recorded = [];
 		page.on('request', (request) => request.url().includes('silvertrail/v1/record') && recorded.push(request.url()));
 		const section = await scan(page, '/');
 
-		await expect(section).toContainText('Clean.');
+		await expect(section).toContainText('No leaks found');
+		await expect(section.getByRole('link', { name: 'Support Silvertrail' })).toBeVisible();
 		await expect(row(section, 'Google Tag Manager')).toContainText('Services tab');
 		await expect(row(section, 'Test Analytics')).toContainText('Code');
 		await expect(row(section, 'Test Video')).toContainText('Not on these pages');
@@ -198,7 +201,7 @@ test.describe('visitor scan', () => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
 		const section = page.locator('#silvertrail-scan');
 		await section.getByRole('button', { name: 'Scan', exact: true }).click();
-		await expect(section).toContainText('agreeing to everything', { timeout: 30000 });
+		await expect(section).toContainText('Agreeing to everything', { timeout: 30000 });
 		await section.getByRole('button', { name: 'Cancel' }).click();
 
 		await expect(section).toContainText('Scan cancelled.');

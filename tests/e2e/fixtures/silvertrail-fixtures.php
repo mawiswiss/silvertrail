@@ -141,6 +141,12 @@ add_filter(
 	}
 );
 
+// Dismisses the licence line per browser context.
+add_filter(
+	'pre_option_silvertrail_license_seen',
+	static fn( mixed $value ): mixed => empty( $_COOKIE['silvertrail_test_license_seen'] ) ? $value : '1'
+);
+
 // Asks every group in place, as on a site with embeds only. The services and the revision stay the same.
 add_filter(
 	'silvertrail_config',

@@ -88,17 +88,18 @@ final class Scan {
 		}
 
 		return array(
-			'home'     => home_url( '/' ),
-			'settings' => Admin\SettingsPage::url(),
-			'param'    => self::PARAM,
-			'cookie'   => Config::cookie( true ),
-			'path'     => Config::cookie_path(),
-			'license'  => SILVERTRAIL_LICENSE_URL,
-			'site'     => get_bloginfo( 'name' ),
-			'language' => get_bloginfo( 'language' ),
-			'services' => $services,
-			'presets'  => $presets,
-			'texts'    => self::texts(),
+			'home'        => home_url( '/' ),
+			'settings'    => Admin\SettingsPage::url(),
+			'param'       => self::PARAM,
+			'cookie'      => Config::cookie( true ),
+			'path'        => Config::cookie_path(),
+			'license'     => SILVERTRAIL_LICENSE_URL,
+			'licenseSeen' => (bool) get_option( Admin\SettingsPage::LICENSE_SEEN ),
+			'site'        => get_bloginfo( 'name' ),
+			'language'    => get_bloginfo( 'language' ),
+			'services'    => $services,
+			'presets'     => $presets,
+			'texts'       => self::texts(),
 		);
 	}
 
@@ -115,23 +116,33 @@ final class Scan {
 	private static function texts(): array {
 		return array(
 			'license'           => Plugin::license(),
+			'support'           => __( 'Support Silvertrail', 'silvertrail' ),
 			'scanning'          => __( 'Scanning. Each page takes a few seconds, and each service a few more.', 'silvertrail' ),
-			/* translators: 1: page number, 2: number of pages, 3: page address */
-			'stepFirst'         => __( 'Page %1$s of %2$s: opening %3$s as a first-time visitor', 'silvertrail' ),
 			/* translators: 1: page number, 2: number of pages */
-			'stepDeclined'      => __( 'Page %1$s of %2$s: declining everything', 'silvertrail' ),
-			/* translators: 1: page number, 2: number of pages */
-			'stepAgreed'        => __( 'Page %1$s of %2$s: agreeing to everything', 'silvertrail' ),
-			/* translators: 1: page number, 2: number of pages */
-			'stepReload'        => __( 'Page %1$s of %2$s: loading it again after agreeing', 'silvertrail' ),
-			/* translators: 1: page number, 2: number of pages, 3: service name */
-			'stepService'       => __( 'Page %1$s of %2$s: agreeing to %3$s alone', 'silvertrail' ),
+			'stepPage'          => __( 'Page %1$s of %2$s', 'silvertrail' ),
+			'stepFirst'         => __( 'Opening the page as a first-time visitor', 'silvertrail' ),
+			'stepFirstNote'     => __( 'Notes each server it contacts and each cookie it sets before a choice.', 'silvertrail' ),
+			'stepDeclined'      => __( 'Declining everything', 'silvertrail' ),
+			'stepDeclinedNote'  => __( 'Watches for anything that still contacts another server.', 'silvertrail' ),
+			'stepAgreed'        => __( 'Agreeing to everything', 'silvertrail' ),
+			'stepAgreedNote'    => __( 'Checks that each service starts at once.', 'silvertrail' ),
+			'stepReload'        => __( 'Loading the page again', 'silvertrail' ),
+			'stepReloadNote'    => __( 'Finds services that start only after a reload.', 'silvertrail' ),
+			/* translators: %s: service name */
+			'stepService'       => __( 'Agreeing to %s alone', 'silvertrail' ),
+			'stepServiceNote'   => __( 'Checks that it starts no other service.', 'silvertrail' ),
 			'cancelled'         => __( 'Scan cancelled. The cookies of this browser are as they were before.', 'silvertrail' ),
 			'foreign'           => __( 'Only pages of this site can be scanned.', 'silvertrail' ),
 			'failed'            => __( 'Could not read that page. It may refuse to be shown in a frame, or Silvertrail does not run on it.', 'silvertrail' ),
-			'clean'             => __( 'Clean. Nothing contacts another server before the visitor agrees, and nothing waits for a reload once they do.', 'silvertrail' ),
-			'attention'         => __( 'Something runs without consent. Each line below says what to do.', 'silvertrail' ),
+			'cleanTitle'        => __( 'No leaks found', 'silvertrail' ),
+			'clean'             => __( 'Nothing contacts another server before the visitor agrees, and nothing waits for a reload once they do.', 'silvertrail' ),
+			'attentionTitle'    => __( 'Something runs without consent', 'silvertrail' ),
+			'attention'         => __( 'Each line below says what to do.', 'silvertrail' ),
+			'reloadOnlyTitle'   => __( 'Some services wait for a reload', 'silvertrail' ),
 			'reloadOnly'        => __( 'Nothing runs without consent, but some services start only after the page loads again. Each line below says what to do.', 'silvertrail' ),
+			'factPages'         => __( 'Pages', 'silvertrail' ),
+			'factServices'      => __( 'Services', 'silvertrail' ),
+			'factLoads'         => __( 'Page loads', 'silvertrail' ),
 			'guard'             => __( 'Needs guarding', 'silvertrail' ),
 			'services'          => __( 'Services', 'silvertrail' ),
 			'todo'              => __( 'What to do', 'silvertrail' ),

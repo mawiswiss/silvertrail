@@ -7,8 +7,10 @@
 	}
 
 	const WAIT = 2000;
+	const WIDTH = 1280;
 	const SAVED = 'silvertrail-scan-consent';
 	const TYPES = { script: 'script', iframe: 'frame', frame: 'frame', css: 'style', link: 'style', img: 'image', image: 'image' };
+	const TONES = { quiet: 'ok', starts: 'ok', essential: 'neutral', cookieless: 'neutral', contacts: 'bad', any: 'bad', reload: 'warn', unseen: 'muted', absent: 'muted' };
 
 	const texts = data.texts;
 	const home = new URL(data.home);
@@ -18,6 +20,9 @@
 	const progress = root.querySelector('[data-silvertrail-scan-progress]');
 	const bar = progress.querySelector('progress');
 	const step = progress.querySelector('#silvertrail-scan-step');
+	const note = progress.querySelector('#silvertrail-scan-note');
+	const where = progress.querySelector('[data-silvertrail-scan-where]');
+	const view = progress.querySelector('[data-silvertrail-scan-view]');
 	const output = root.querySelector('[data-silvertrail-scan-result]');
 
 	const format = (text, ...args) => {
@@ -208,7 +213,7 @@
 		}
 		const url = new URL(data.settings);
 		url.searchParams.set('silvertrail-turn-on', id);
-		return element('a', { href: url.href, class: 'button button-small' }, format(texts.turnOn, preset.name));
+		return element('a', { href: url.href, class: 'button' }, format(texts.turnOn, preset.name));
 	}
 
 	const nameOf = (id, result) => result.services.find((row) => row.id === id)?.name ?? data.services[id]?.name ?? id;
@@ -226,20 +231,20 @@
 		return item.what === 'script' ? format(texts.script, item.handle) : texts[item.what];
 	}
 
-	function hostList(items, advice, result) {
+	function hostList(items, advice, result, tone) {
 		return element(
 			'ul',
-			{ class: 'silvertrail-scan-list' },
+			{ class: `silvertrail-findings silvertrail-findings--${tone}` },
 			...items.map((item) =>
 				element(
 					'li',
 					{},
-					element('strong', {}, item.name),
-					...(item.name === item.host ? [] : [' ', element('code', {}, item.host)]),
-					element('br'),
-					advice(item),
-					pages(item.pages, result.pages.length),
-					' ',
+					element(
+						'div',
+						{ class: 'silvertrail-findings__text' },
+						element('p', { class: 'silvertrail-findings__name' }, element('strong', {}, item.name), ...(item.name === item.host ? [] : [' ', element('code', {}, item.host)])),
+						element('p', {}, advice(item), pages(item.pages, result.pages.length)),
+					),
 					item.preset ? presetLink(item.preset) : '',
 				),
 			),
@@ -248,14 +253,13 @@
 
 	const rowsOf = (result) => result.services.filter((row) => data.services[row.id]?.source !== 'own');
 
-	function cell(text, problem) {
-		return element('td', {}, problem ? element('strong', {}, text) : text);
-	}
+	const state = (text, tone) => element('td', {}, element('span', { class: `silvertrail-state silvertrail-state--${tone}` }, text));
 
 	function table(result) {
 		const head = element('tr', {}, ...[texts.colService, texts.colSource, texts.colBefore, texts.colDeclined, texts.colAgreed].map((text) => element('th', { scope: 'col' }, text)));
 		const body = rowsOf(result).map((row) => {
 			const source = data.services[row.id]?.source === 'settings' ? texts.sourceSettings : texts.sourceCode;
+			const before = row.before === 'early' ? 'contacts' : row.before;
 			const agreed = [texts[row.agreed]];
 			if (row.also.length > 0) {
 				agreed.push(format(texts.alsoStarts, row.also.map((item) => item.name).join(', ')));
@@ -264,16 +268,16 @@
 				'tr',
 				{},
 				element('th', { scope: 'row' }, row.name),
-				element('td', {}, source),
-				cell(texts[row.before === 'early' ? 'contacts' : row.before], row.before === 'early'),
-				cell(texts[row.declined], row.declined === 'contacts'),
-				cell(agreed.join('. '), ['reload', 'any'].includes(row.agreed) || row.also.length > 0),
+				element('td', { class: 'silvertrail-scan-table__source' }, source),
+				state(texts[before], TONES[before]),
+				state(texts[row.declined], TONES[row.declined]),
+				state(agreed.join('. '), row.also.length > 0 ? 'bad' : TONES[row.agreed]),
 			);
 		});
 		return element(
 			'div',
 			{ class: 'silvertrail-scan-table', role: 'region', 'aria-labelledby': 'silvertrail-scan-services', tabindex: '0' },
-			element('table', { class: 'widefat striped', 'aria-labelledby': 'silvertrail-scan-services' }, element('thead', {}, head), element('tbody', {}, ...body)),
+			element('table', { 'aria-labelledby': 'silvertrail-scan-services' }, element('thead', {}, head), element('tbody', {}, ...body)),
 		);
 	}
 
@@ -300,9 +304,6 @@
 		return lines;
 	}
 
-	const bullets = (items) =>
-		items.length === 0 ? element('p', {}, texts.none) : element('ul', { class: 'silvertrail-scan-list' }, ...items.map((children) => element('li', {}, ...children)));
-
 	function prompt(result) {
 		const kinds = { script: texts.kindScript, scriptRaw: texts.kindScript, frame: texts.kindFrame, font: texts.kindFont, image: texts.kindImage, other: texts.kindOther };
 		const label = (item) => (item.name === item.host ? item.host : `${item.name} (${item.host})`);
@@ -327,36 +328,57 @@
 		].join('\n');
 	}
 
-	function verdict(result) {
-		if (result.problems > 0) {
-			return notice('warning', texts.attention);
-		}
-		if (result.warnings > 0) {
-			return notice('warning', texts.reloadOnly);
-		}
-		const clean = notice('success', texts.clean);
-		clean.append(element('p', {}, texts.license, ' ', element('a', { href: data.license }, data.license)));
-		return clean;
+	const toneOf = (result) => (result.problems > 0 ? 'bad' : result.warnings > 0 ? 'warn' : 'ok');
+
+	function verdict(result, loads) {
+		const tone = toneOf(result);
+		const [title, text, icon] = {
+			bad: [texts.attentionTitle, texts.attention, 'warning'],
+			warn: [texts.reloadOnlyTitle, texts.reloadOnly, 'update'],
+			ok: [texts.cleanTitle, texts.clean, 'yes'],
+		}[tone];
+		const facts = [
+			[texts.factPages, result.pages.length],
+			[texts.factServices, rowsOf(result).length],
+			[texts.factLoads, loads],
+		];
+		return element(
+			'div',
+			{ class: `silvertrail-verdict silvertrail-verdict--${tone}` },
+			element('span', { class: `silvertrail-verdict__icon dashicons dashicons-${icon}`, 'aria-hidden': 'true' }),
+			element(
+				'div',
+				{},
+				element('h3', {}, title),
+				element('p', {}, text),
+				element('dl', { class: 'silvertrail-verdict__facts' }, ...facts.map(([label, value]) => element('div', {}, element('dt', {}, label), element('dd', {}, String(value))))),
+			),
+		);
 	}
 
-	function render(result) {
-		const parts = [verdict(result)];
+	function render(result, loads) {
+		const parts = [verdict(result, loads)];
 		if (result.guard.length > 0) {
-			parts.push(element('h3', {}, texts.guard), hostList(result.guard, (item) => guardAdvice(item, result), result));
+			parts.push(element('h3', {}, texts.guard), hostList(result.guard, (item) => guardAdvice(item, result), result, 'bad'));
 		}
-		parts.push(element('h3', { id: 'silvertrail-scan-services' }, texts.services), table(result));
 		const lines = todo(result);
 		if (lines.length > 0) {
-			parts.push(element('h3', {}, texts.todo), bullets(lines.map((line) => [line])));
+			parts.push(element('h3', {}, texts.todo), element('ol', { class: 'silvertrail-steps' }, ...lines.map((line) => element('li', {}, line))));
 		}
 		const unlisted = [...result.belongs, ...result.after];
 		if (unlisted.length > 0) {
 			parts.push(
 				element('h3', {}, texts.belongs),
-				hostList(unlisted, (item) => (item.service ? format(texts.belongsTo, nameOf(item.service, result), item.host) : texts.afterAll), result),
+				hostList(unlisted, (item) => (item.service ? format(texts.belongsTo, nameOf(item.service, result), item.host) : texts.afterAll), result, 'neutral'),
 			);
 		}
-		parts.push(element('h3', {}, texts.stored), bullets(result.stored.map((name) => [element('code', {}, name)])));
+		parts.push(element('h3', { id: 'silvertrail-scan-services' }, texts.services), table(result));
+		parts.push(
+			element('h3', {}, texts.stored),
+			result.stored.length === 0
+				? element('p', {}, texts.none)
+				: element('ul', { class: 'silvertrail-chips' }, ...result.stored.map((name) => element('li', {}, element('code', {}, name)))),
+		);
 
 		const handover = prompt(result);
 		if (handover !== '') {
@@ -374,28 +396,37 @@
 				),
 			);
 		}
+		if (toneOf(result) === 'ok' && data.licenseSeen) {
+			parts.push(element('p', { class: 'silvertrail-scan-license' }, texts.license, ' ', element('a', { href: data.license }, texts.support)));
+		}
 		output.replaceChildren(...parts);
-		speak(parts[0].textContent);
+		speak([...parts[0].querySelectorAll('h3, p')].map((node) => node.textContent).join(' '));
 	}
 
 	// Run
 
+	new ResizeObserver(() => view.style.setProperty('--silvertrail-scan-scale', String(view.clientWidth / WIDTH))).observe(view);
+
 	function cleanup() {
-		session?.frame.parentElement?.remove();
+		session?.frame.remove();
 		session = null;
 		reset();
 		restore();
 		window.removeEventListener('pagehide', cleanup);
 		run.disabled = false;
-		cancel.hidden = true;
 		progress.hidden = true;
 	}
 
-	function show(current, text, done, total) {
+	// The total changes once a page's services are known, so the bar never moves back.
+	function show(current, [title, explanation], at, done, total) {
 		check(current);
-		step.textContent = text;
-		bar.max = total;
-		bar.value = done;
+		step.textContent = title;
+		note.textContent = explanation;
+		where.replaceChildren(
+			...(at.of > 1 ? [element('span', {}, format(texts.stepPage, at.number, at.of))] : []),
+			element('span', { class: 'silvertrail-scan-stage__address' }, at.address),
+		);
+		bar.value = Math.max(bar.value, done / total);
 	}
 
 	function targets() {
@@ -428,36 +459,37 @@
 		save();
 		before = names(window);
 		window.addEventListener('pagehide', cleanup);
-		const frame = element('iframe', { sandbox: 'allow-scripts allow-same-origin', title: texts.scanning, tabindex: '-1' });
-		frame.style.cssText = 'width:1280px;height:800px;border:0;transform:scale(.25);transform-origin:0 0';
+		const frame = element('iframe', { sandbox: 'allow-scripts allow-same-origin', title: texts.scanning, tabindex: '-1', width: String(WIDTH), height: '800' });
 		const current = { frame };
 		session = current;
 		run.disabled = true;
-		cancel.hidden = false;
+		bar.value = 0;
 		progress.hidden = false;
-		output.replaceChildren(element('div', { class: 'silvertrail-scan-preview' }, frame));
+		view.replaceChildren(frame);
+		output.replaceChildren();
 		speak(texts.scanning);
 
 		const pages = [];
 		const isolated = [];
 		const config = { services: {}, essential: [], ungated: [] };
-		let total = urls.length * 4;
+		const guess = Object.values(data.services).filter((service) => !service.essential).length;
+		let total = urls.length * 4 + guess;
 		let count = 0;
 		let result = null;
 		try {
 			for (const [index, url] of urls.entries()) {
-				const number = index + 1;
-				show(current, format(texts.stepFirst, number, urls.length, path(url)), count++, total);
+				const at = { number: index + 1, of: urls.length, address: url.host + path(url) };
+				show(current, [texts.stepFirst, texts.stepFirstNote], at, count++, total);
 				const first = await visit(current, url);
 				Object.assign(config.services, first.config.services);
 				config.essential = first.config.essential;
 				config.ungated = first.config.ungated;
 
-				show(current, format(texts.stepDeclined, number, urls.length), count++, total);
+				show(current, [texts.stepDeclined, texts.stepDeclinedNote], at, count++, total);
 				const declined = await choose(current, first.win, []);
-				show(current, format(texts.stepAgreed, number, urls.length), count++, total);
+				show(current, [texts.stepAgreed, texts.stepAgreedNote], at, count++, total);
 				const agreed = await choose(current, first.win, Object.keys(first.config.services));
-				show(current, format(texts.stepReload, number, urls.length), count++, total);
+				show(current, [texts.stepReload, texts.stepReloadNote], at, count++, total);
 				const reloaded = await reload(current, first.win);
 
 				const page = {
@@ -473,9 +505,9 @@
 				pages.push(page);
 
 				const queue = findings.queue(page, config.services, config.essential, isolated);
-				total += queue.length;
+				total += queue.length - (index === 0 ? guess : 0);
 				for (const id of queue) {
-					show(current, format(texts.stepService, number, urls.length, config.services[id].name), count++, total);
+					show(current, [format(texts.stepService, config.services[id].name), texts.stepServiceNote], at, count++, total);
 					const alone = await visit(current, url);
 					const agreedAlone = await choose(current, alone.win, [id]);
 					isolated.push({ service: id, page: url.href, first: [...alone.first, ...agreedAlone.earlier], scripts: alone.scripts, agreed: agreedAlone.during });
@@ -490,7 +522,7 @@
 		}
 		cleanup();
 		if (result) {
-			render(result);
+			render(result, pages.length * 2 + isolated.length);
 		} else {
 			output.replaceChildren(notice('error', texts.failed));
 			speak(texts.failed);
