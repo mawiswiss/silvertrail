@@ -46,6 +46,10 @@ add_action(
 	static function (): void {
 		wp_enqueue_script( 'sample-confetti', 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js', array(), null, true );
 		wp_add_inline_script( 'sample-confetti', 'confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });' );
+
+		// Loads before any choice on purpose, so the Leak check has something to find.
+		wp_enqueue_style( 'sample-google-fonts', 'https://fonts.googleapis.com/css2?family=Fraunces&display=swap', array(), null );
+		wp_add_inline_style( 'sample-google-fonts', 'h1, h2 { font-family: Fraunces, serif; }' );
 	}
 );
 
