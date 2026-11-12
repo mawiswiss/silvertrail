@@ -228,12 +228,12 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 					</label>
 				</fieldset>
 				<p class="description">
+					<?php esc_html_e( 'It stays hidden on pages with a link to the settings.', 'silvertrail' ); ?><br>
 					<?php
 					printf(
-						/* translators: 1: .silvertrail-reopen, 2: the silvertrail_reopen_icon filter */
-						esc_html__( 'Style it through %1$s and swap its icon with the %2$s filter.', 'silvertrail' ),
-						'<code>.silvertrail-reopen</code>',
-						'<code>silvertrail_reopen_icon</code>'
+						/* translators: %s: the silvertrail_settings filter */
+						esc_html__( 'The %s filter shows it on every page.', 'silvertrail' ),
+						'<code>silvertrail_settings</code>'
 					);
 					echo ' ' . wp_kses_post( SettingsPage::help_button( 'silvertrail-floating', __( 'Show how', 'silvertrail' ) ) );
 					?>

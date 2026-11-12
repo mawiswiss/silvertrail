@@ -75,6 +75,11 @@ PHP;
 HTML;
 
 	private const FLOATING = <<<'PHP'
+add_filter( 'silvertrail_settings', function ( $settings ) {
+	$settings['floating_button'] = 'always';
+	return $settings;
+} );
+
 add_filter( 'silvertrail_reopen_icon', function () {
 	return '<img src="' . esc_url( get_theme_file_uri( 'images/privacy.svg' ) ) . '" alt="">';
 } );
@@ -196,11 +201,12 @@ SH;
 			),
 			'silvertrail-floating' => array(
 				'title' => __( 'Floating button', 'silvertrail' ),
-				'intro' => __( 'The `silvertrail_reopen_icon` filter swaps the icon of the floating button for inline SVG or an `<img>`. The button keeps its label for screen readers.', 'silvertrail' ),
+				'intro' => __( 'Both corners on the Banner tab hide the button on pages with another link to `#silvertrail`. The `silvertrail_settings` filter shows it on every page.', 'silvertrail' ),
 				'code'  => self::FLOATING,
 				'notes' => array(
 					__( '`floating_button`: `never`, the default, `auto` for pages without a link to `#silvertrail`, or `always`.', 'silvertrail' ),
 					__( '`floating_position`: `left` or `right`.', 'silvertrail' ),
+					__( 'The `silvertrail_reopen_icon` filter swaps the icon for inline SVG or an `<img>`. The button keeps its label for screen readers.', 'silvertrail' ),
 					__( 'Style it in the theme’s `silvertrail/silvertrail.css` through `.silvertrail-reopen`, `.silvertrail-reopen--left` and `.silvertrail-reopen--right`.', 'silvertrail' ),
 				),
 			),
