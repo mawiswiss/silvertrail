@@ -39,11 +39,10 @@ add_filter( 'silvertrail_config', function ( $config ) {
 } );
 PHP;
 
-	// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- example markup, printed escaped.
+	// Stored as entities: esc_html() in section() does not encode them twice.
 	private const SCRIPT = <<<'HTML'
-<script type="text/plain" data-silvertrail="hubspot" src="https://js.hs-scripts.com/123.js"></script>
+&lt;script type="text/plain" data-silvertrail="hubspot" src="https://js.hs-scripts.com/123.js"&gt;&lt;/script&gt;
 HTML;
-	// phpcs:enable
 
 	private const SETTINGS = <<<'PHP'
 add_filter( 'silvertrail_settings', function ( $settings ) {
