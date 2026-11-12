@@ -24,7 +24,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	}
 
 	public function tear_down(): void {
-		unset( $_GET['silvertrail-turn-on'] );
+		unset( $_GET['silvertrail-turn-on'], $_GET['settings-updated'] );
 		remove_all_actions( 'silvertrail_register' );
 		Config::reset();
 		remove_all_filters( 'silvertrail_translation' );
@@ -187,6 +187,13 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$_GET['silvertrail-turn-on'] = 'google-analytics';
 		$this->assertSame( '', SettingsPage::turning_on() );
 		$_GET['silvertrail-turn-on'] = 'hubspot';
+		$this->assertSame( '', SettingsPage::turning_on() );
+	}
+
+	public function test_after_a_save_the_leak_check_link_ticks_nothing(): void {
+		$_GET['silvertrail-turn-on'] = 'vimeo';
+		$_GET['settings-updated']    = 'true';
+
 		$this->assertSame( '', SettingsPage::turning_on() );
 	}
 

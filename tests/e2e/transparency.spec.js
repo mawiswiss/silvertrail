@@ -120,10 +120,20 @@ test.describe('visitor scan', () => {
 		const section = await scan(page, '/?pagename=silvertrail-vimeo');
 
 		await section.getByRole('link', { name: 'Turn on Vimeo' }).click();
-		await expect(page).toHaveURL(/silvertrail-turn-on=vimeo/);
-		await expect(page.getByText('Vimeo is ticked. Save Changes to turn it on.')).toBeVisible();
-		await expect(page.locator('#silvertrail-preset-vimeo')).toBeChecked();
-		await expect(page.locator('#silvertrail-preset-vimeo')).toBeFocused();
+		const notice = page.getByText('Vimeo is ticked. Save Changes to turn it on.');
+		const vimeo = page.locator('#silvertrail-preset-vimeo');
+		await expect(notice).toBeVisible();
+		await expect(vimeo).toBeChecked();
+		await expect(vimeo).toBeFocused();
+		await expect(page).not.toHaveURL(/silvertrail-turn-on/);
+
+		await vimeo.uncheck();
+		await page.locator('#silvertrail-save-embeds').click();
+		await expect(page.getByText('Settings saved.')).toBeVisible();
+		await expect(vimeo).not.toBeChecked();
+		await expect(notice).toHaveCount(0);
+		await page.reload();
+		await expect(vimeo).not.toBeChecked();
 	});
 
 	test('counts a slow request under the window it started in', async ({ page }) => {

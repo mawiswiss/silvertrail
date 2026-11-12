@@ -65,6 +65,7 @@ final class SettingsPage {
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueue' ) );
 		add_action( 'all_admin_notices', array( Notices::class, 'take_errors' ) );
 		add_filter( 'admin_footer_text', array( self::class, 'footer' ) );
+		add_filter( 'removable_query_args', static fn( array $args ): array => array( ...$args, 'silvertrail-turn-on' ) );
 		if ( 'tools' === self::tab() ) {
 			add_action( 'admin_enqueue_scripts', array( Scan::class, 'enqueue' ) );
 		}
@@ -166,6 +167,10 @@ final class SettingsPage {
 	 * The preset the leak check sent the admin here to tick. Nothing is stored until they save.
 	 */
 	public static function turning_on(): string {
+		// options.php redirects back to the form's URL, so the link's query outlives the save.
+		if ( isset( $_GET['settings-updated'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+			return '';
+		}
 		$id = isset( $_GET['silvertrail-turn-on'] ) ? sanitize_key( wp_unslash( $_GET['silvertrail-turn-on'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- it only ticks a box in the form.
 		return isset( Presets::all()[ $id ] ) && ! self::in_code( $id ) ? $id : '';
 	}
