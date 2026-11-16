@@ -1,4 +1,4 @@
-=== Silvertrail ===
+=== Silvertrail Cookie Banner ===
 Contributors: marcwieland95
 Donate link: https://marcwieland.name/support/
 Tags: cookie consent, cookie banner, gdpr, consent mode, privacy

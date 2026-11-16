@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Silvertrail
+ * Plugin Name:       Silvertrail Cookie Banner
  * Plugin URI:        https://github.com/mawiswiss/silvertrail
  * Description:       A small cookie consent banner. Nothing loads before yes, accept and reject weigh the same, and developers configure it in code.
  * Version:           1.0.0
