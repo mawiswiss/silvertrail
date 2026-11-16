@@ -31,7 +31,7 @@ That is the whole business model. There is no pro version and no hosted service,
 
 ## Ready to go
 
-1. Install and activate the plugin.
+1. Install and activate the plugin from [WordPress.org](https://wordpress.org/plugins/silvertrail/), or run `wp plugin install silvertrail --activate`.
 2. Under Settings › Silvertrail, tick the trackers the site uses, such as Google Tag Manager, and enter their IDs.
 3. Put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer, so visitors can change their choice. Or turn on the floating button under Settings › Silvertrail › Banner › Look.
 

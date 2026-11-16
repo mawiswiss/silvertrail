@@ -33,6 +33,8 @@ One call turns on a preset, and the official tag waits for consent:
 
 Any script you mark with `type="text/plain" data-silvertrail="service"` waits as well. Silvertrail runs it after consent and keeps the order of inline and external scripts. A script that a theme or plugin enqueues waits once you list its handle under a service.
 
+The [README on GitHub](https://github.com/mawiswiss/silvertrail#readme) is the complete reference.
+
 = Styled by your theme, or by you =
 
 Out of the box, the banner looks like part of the site. Change a few values or replace the whole design, as far as the project needs.
@@ -83,7 +85,7 @@ Marc Wieland, the developer of Silvertrail, builds new functionality for it as p
 1. Install and activate the plugin. YouTube, Vimeo and Google Maps embeds are blocked from now on.
 2. Go to Settings › Silvertrail, turn on the trackers the site uses and enter their IDs.
 
-Developers set everything else in code with the `silvertrail_settings` and `silvertrail_config` filters. The README.md in the plugin folder is the complete reference.
+Developers set everything else in code with the `silvertrail_settings` and `silvertrail_config` filters. The [README](https://github.com/mawiswiss/silvertrail#readme), on GitHub and in the plugin folder, is the complete reference.
 
 == Frequently Asked Questions ==
 
@@ -142,7 +144,7 @@ In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and th
 
 The banner takes its colours, corners and buttons from the theme's `theme.json`. The appearance that matches the theme keeps its colours as they are, and the other one puts the theme's lightest or darkest colour in the background. Themes without a `theme.json` get Silvertrail's own light or dark colours. In code, the `silvertrail_design` filter sets any colour, the corner radius and the button padding and weight.
 
-For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The `docs/styling.md` file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts.
+For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [docs/styling.md](https://github.com/mawiswiss/silvertrail/blob/main/docs/styling.md) file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts.
 
 You can also turn off the default styles with `load_css` in the `silvertrail_settings` filter, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
