@@ -186,7 +186,7 @@ final class Settings {
 			return;
 		}
 		self::$reported[ $key ] = true;
-		_doing_it_wrong( 'silvertrail_settings', esc_html( $message ), '0.1.0' );
+		_doing_it_wrong( 'silvertrail_settings', esc_html( $message ), '1.0.0' );
 	}
 
 	public static function reset(): void {

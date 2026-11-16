@@ -3,7 +3,7 @@
  * Plugin Name:       Silvertrail
  * Plugin URI:        https://github.com/mawiswiss/silvertrail
  * Description:       A small cookie consent banner. Nothing loads before yes, accept and reject weigh the same, and developers configure it in code.
- * Version:           0.1.0
+ * Version:           1.0.0
  * Requires at least: 6.6
  * Requires PHP:      8.1
  * Author:            Marc Wieland
@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-const SILVERTRAIL_VERSION     = '0.1.0';
+const SILVERTRAIL_VERSION     = '1.0.0';
 const SILVERTRAIL_FILE        = __FILE__;
 const SILVERTRAIL_LICENSE_URL = 'https://marcwieland.name/support/';
 

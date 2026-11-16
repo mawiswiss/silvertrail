@@ -5,7 +5,7 @@ Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -209,6 +209,6 @@ Each tracker preset below connects to its provider only when an admin turns it o
 
 == Changelog ==
 
-= 0.1.0 =
+= 1.0.0 =
 
 * First release.

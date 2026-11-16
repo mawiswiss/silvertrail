@@ -188,7 +188,7 @@ final class Config {
 				_doing_it_wrong(
 					__METHOD__,
 					esc_html__( 'The registered services flipped back and forth within a minute. They must not depend on the current request, or visitors are asked again on every page.', 'silvertrail' ),
-					'0.1.0'
+					'1.0.0'
 				);
 			}
 			$stored = array(
@@ -237,7 +237,7 @@ final class Config {
 	 */
 	private static function build(): array {
 		if ( ! did_action( 'init' ) ) {
-			_doing_it_wrong( __METHOD__, esc_html__( 'Read the Silvertrail config on init or later.', 'silvertrail' ), '0.1.0' );
+			_doing_it_wrong( __METHOD__, esc_html__( 'Read the Silvertrail config on init or later.', 'silvertrail' ), '1.0.0' );
 		}
 
 		$config = array(
@@ -499,6 +499,6 @@ final class Config {
 	}
 
 	private static function wrong( string $message ): void {
-		_doing_it_wrong( 'silvertrail_config', esc_html( $message ), '0.1.0' );
+		_doing_it_wrong( 'silvertrail_config', esc_html( $message ), '1.0.0' );
 	}
 }

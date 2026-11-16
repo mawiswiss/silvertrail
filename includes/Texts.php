@@ -200,6 +200,6 @@ final class Texts {
 			return;
 		}
 		self::$reported[ $message ] = true;
-		_doing_it_wrong( __CLASS__, esc_html( $message ), '0.1.0' );
+		_doing_it_wrong( __CLASS__, esc_html( $message ), '1.0.0' );
 	}
 }
