@@ -15,6 +15,8 @@ A small cookie consent banner. Nothing loads before the visitor agrees, and reje
 
 Nothing loads until visitors say yes. Silvertrail is a small cookie banner that blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes. "Accept all" and "Only essential" sit side by side at the same size, and a third button opens the choice per group and per service, with the provider, the purpose and a link to its privacy policy.
 
+Behind the banner, Silvertrail is the backbone for everything the site loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google and to plugins that read the WP Consent API. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with Global Privacy Control.
+
 The banner only appears when the site uses something that needs consent. A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
 
 = Built for developers and their agents =

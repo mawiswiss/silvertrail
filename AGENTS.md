@@ -1,6 +1,7 @@
 ## Direction
 
 - Silvertrail is a small cookie banner for developers who found the big tools too much. It is an alternative to them, not a competitor, and it stays small on purpose, because every feature is also a maintenance duty on a side project.
+- Silvertrail is the backbone for everything a site loads from outside services. It knows each service, holds it back until consent and passes the choice on. The banner is only the part that asks, and it steps aside wherever the browser answers, as with Global Privacy Control. As browsers take over more of the asking, the banner may go away entirely, so new work strengthens the backbone and keeps the banner replaceable.
 - The plugin is complete and free, for good. No pro version, no hosted service, no feature behind a key, no licence check, and the plugin itself contacts no outside service. What a new thing does, it does for everyone.
 - Money comes from the honour licence, sold through Polar: free on your own site, a yearly site licence when someone is paid to put it on a client's site, and an agency licence for any number of sites. The prices stand in the README.
 - TODO: integrate Polar once the LLC is ready. Until then, every licence link goes to https://marcwieland.name/support/. Then switch `SILVERTRAIL_LICENSE_URL`, the README, readme.txt's Donate link and text, composer.json, `.github/FUNDING.yml` and `site/index.html` to https://polar.sh/silvertrail.

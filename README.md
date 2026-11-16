@@ -4,7 +4,7 @@ A cookie banner for WordPress that loads nothing before the visitor says yes and
 
 ## Why not just generate a banner?
 
-A generated banner shows a dialog. Silvertrail also does the work around it:
+A generated banner shows a dialog. Silvertrail is the backbone behind it, for everything the site loads from another server. It knows each service, holds it back until the visitor agrees and passes the choice on. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with Global Privacy Control. That backbone does the work a generated banner leaves out:
 
 - Nothing loads before yes. Marked scripts wait as `text/plain`, scripts that WordPress enqueues are held back by their handle, and embeds wait in a `<template>` behind a placeholder.
 - Page caches need no setup. The server renders every gated script and embed blocked, and the browser decides on each page view, so a cached page never hands one visitor's choice to the next.
