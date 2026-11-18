@@ -148,6 +148,33 @@ test.describe('banner', () => {
 		expect((await cookie(context)).c).toEqual(ALL_IDS);
 	});
 
+	for (const layout of ['modal', 'bar']) {
+		test(`the opt-out recipe runs everything and shows the preferences once, ${layout}`, async ({ page, context }) => {
+			await context.addCookies([
+				{ name: 'silvertrail_test_settings', value: JSON.stringify({ layout }), url: 'http://localhost:8892' },
+			]);
+			await page.addInitScript(() => {
+				window.addEventListener('silvertrail:before-prompt', (event) => event.detail.respondWith('accept-all'));
+				window.addEventListener('silvertrail:change', (event) => {
+					if (event.detail.source === 'hook') {
+						window.silvertrail.open();
+					}
+				});
+			});
+			await page.goto('/');
+
+			await expect(page.getByRole('dialog')).toBeVisible();
+			await expect.poll(() => ran(page)).toEqual(ALL_RAN);
+			expect(await page.evaluate(() => document.getElementById('silvertrail-banner').matches(':modal'))).toBe(false);
+			await page.getByRole('button', { name: 'Only essential' }).first().click();
+			expect((await cookie(context)).c).toEqual([]);
+
+			await page.reload();
+			await expect(page.getByRole('dialog')).toBeHidden();
+			expect(await ran(page)).toEqual([]);
+		});
+	}
+
 	test('an embed waits behind a placeholder and loads once on request', async ({ page }) => {
 		await page.goto('/?pagename=silvertrail-embeds');
 		await page.getByRole('button', { name: 'Only essential' }).first().click();

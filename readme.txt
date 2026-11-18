@@ -140,6 +140,8 @@ Listen for the `silvertrail:before-prompt` event and answer with a promise that 
 
 The answer must arrive within three seconds, otherwise the banner opens.
 
+The [README](https://github.com/mawiswiss/silvertrail#regions-and-opt-out) shows how to find the region without asking another server, and how to run services until the visitor objects where a site has decided to. Silvertrail does neither on its own.
+
 = How do I read the choice? =
 
 In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and the `silvertrail:change` event fires after every decision. In PHP, `silvertrail_has( 'hubspot' )` reads the cookie, which only works on requests a page cache never serves, such as form posts.

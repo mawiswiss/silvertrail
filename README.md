@@ -79,7 +79,7 @@ run wp silvertrail validate until it reports no problem.
 
 ## What it does not do
 
-Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` event. It does not crawl the site for cookies. The Leak check looks at the pages you list and shows what they actually load.
+Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries either. A site that treats regions differently decides in the `silvertrail:before-prompt` event, as [Regions and opt-out](#regions-and-opt-out) shows. It does not crawl the site for cookies. The Leak check looks at the pages you list and shows what they actually load.
 
 ## Custom development
 
@@ -260,6 +260,78 @@ window.addEventListener('silvertrail:before-prompt', (event) => {
 | `reset()` | Forgets the choice in this browser, so the next page view is a first visit. Meant for testing. |
 
 `silvertrail:change` fires on `window` after every choice, with `consents`, `silent` and `source` in its detail. The source is `banner`, `embed`, `gpc`, `hook` or `agent`. `silvertrail:before-prompt` must be answered within three seconds, otherwise the banner opens.
+
+## Regions and opt-out
+
+Silvertrail asks every visitor before anything that needs consent loads. It knows no regions and never starts a service before a yes on its own. A site that treats some visitors differently decides in code, in the `silvertrail:before-prompt` event, and the admin has no setting for it.
+
+The answer is `prompt`, `accept-all` or `reject-all`. A check that fails or takes longer than three seconds opens the banner, so a mistake falls back to asking. Global Privacy Control is read before the event, so a browser that sends it gets only essential whatever the answer would have been.
+
+### Find the region
+
+Pages come from the cache, so the browser decides, on the first visit. Two ways need no other server.
+
+The device's time zone costs no request. It says how the device is set, not where the visitor is:
+
+```js
+const ZONES = []; // The time zones the site has decided on, such as 'America/Chicago'.
+
+window.addEventListener('silvertrail:before-prompt', (event) => {
+	const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	event.detail.respondWith(ZONES.includes(zone) ? 'accept-all' : 'prompt');
+});
+```
+
+A CDN that knows the visitor's country passes it to WordPress in a header, such as `CF-IPCountry` on Cloudflare with IP geolocation on, or `CloudFront-Viewer-Country` on CloudFront once an origin request policy forwards it. A REST route of the site's own hands it to the browser, and must never be cached:
+
+```php
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'mysite/v1', '/region', [
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$country  = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_IPCOUNTRY'] ?? '' ) );
+			$response = new WP_REST_Response( [ 'country' => $country ] );
+			$response->header( 'Cache-Control', 'private, no-store' );
+			return $response;
+		},
+	] );
+} );
+```
+
+```js
+const COUNTRIES = []; // The countries the site has decided on, as ISO codes such as 'US'.
+
+window.addEventListener('silvertrail:before-prompt', (event) => {
+	event.detail.respondWith(
+		fetch('/?rest_route=/mysite/v1/region')
+			.then((response) => response.json())
+			.then(({ country }) => (COUNTRIES.includes(country) ? 'accept-all' : 'prompt')),
+	);
+});
+```
+
+Do not ask an outside geolocation service from the browser. The request alone hands the visitor's IP address to that service before any choice, and that is the kind of request Silvertrail holds back.
+
+### Run services until the visitor objects
+
+Some sites run their services in some regions until the visitor objects, instead of asking first. Whether that fits a region is the site's decision, not Silvertrail's. Answer `accept-all` for those visitors, as above:
+
+- Every service starts at once, and no banner opens.
+- The choice is stored like any other, with the source `hook` in `silvertrail:change` and in the records.
+- The visitor still needs a way to see what runs and to object, so link to `#silvertrail` on every page or set `floating_button` to `'always'`.
+
+To show the preferences once, as the notice that says what runs, open them after that first choice. They open without dimming the page, because the choice is made:
+
+```js
+window.addEventListener('silvertrail:change', (event) => {
+	if (event.detail.source === 'hook') {
+		window.silvertrail.open();
+	}
+});
+```
+
+"Only essential" in there stores the objection. What already ran keeps running on this page, and the next page loads none of it.
 
 ## WebMCP
 
