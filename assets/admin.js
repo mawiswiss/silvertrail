@@ -17,6 +17,12 @@ const settings = document.querySelector('form[action="options.php"]');
 let unsaved = false;
 settings?.addEventListener('input', () => (unsaved = true));
 settings?.addEventListener('submit', () => (unsaved = false));
+settings?.addEventListener('change', (event) => {
+	const require = document.getElementById('silvertrail-require-choice');
+	if (event.target.name === 'silvertrail[layout]' && require && !require.disabled) {
+		require.checked = event.target.value === 'modal';
+	}
+});
 window.addEventListener('beforeunload', (event) => {
 	if (unsaved) {
 		event.preventDefault();

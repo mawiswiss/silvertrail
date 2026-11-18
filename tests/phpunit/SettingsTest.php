@@ -33,6 +33,23 @@ final class SettingsTest extends WP_UnitTestCase {
 		$this->assertTrue( Settings::in_code( 'layout' ) );
 	}
 
+	public function test_only_the_centred_banner_requires_a_choice_unless_set(): void {
+		$this->assertTrue( Settings::get( 'require_choice' ) );
+
+		foreach ( array( 'box' ) as $layout ) {
+			update_option( Settings::OPTION, array( 'layout' => $layout ) );
+			$this->assertSame( $layout, Settings::get( 'layout' ) );
+			$this->assertFalse( Settings::get( 'require_choice' ), $layout );
+		}
+
+		update_option( Settings::OPTION, array( 'layout' => 'modal' ) );
+		$this->set( array( 'layout' => 'box' ) );
+		$this->assertFalse( Settings::get( 'require_choice' ), 'The position set in code decides the default.' );
+
+		update_option( Settings::OPTION, array( 'require_choice' => true ) );
+		$this->assertTrue( Settings::get( 'require_choice' ), 'A box can still require a choice.' );
+	}
+
 	public function test_invalid_values_are_corrected_and_reported(): void {
 		$this->setExpectedIncorrectUsage( 'silvertrail_settings' );
 		$this->set(

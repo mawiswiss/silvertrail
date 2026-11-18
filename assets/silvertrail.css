@@ -56,6 +56,10 @@
 	background: rgb(0 0 0 / 0.55);
 }
 
+.silvertrail:popover-open::backdrop {
+	display: none;
+}
+
 .silvertrail--box {
 	position: fixed;
 	inset: auto 1rem 1rem auto;

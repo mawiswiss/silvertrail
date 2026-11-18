@@ -232,8 +232,9 @@ final class SettingsPage {
 	 * @return array<string, mixed>
 	 */
 	private static function changed( array $values ): array {
-		$defaults = Settings::defaults();
-		return array_filter( $values, static fn( mixed $value, string $key ): bool => ( $defaults[ $key ] ?? null ) !== $value, ARRAY_FILTER_USE_BOTH );
+		$defaults                   = Settings::defaults();
+		$defaults['require_choice'] = Settings::requires_choice( Settings::in_code( 'layout' ) ? Settings::get( 'layout' ) : ( $values['layout'] ?? $defaults['layout'] ) );
+		return array_filter( $values, static fn( mixed $value, string $key ): bool => null !== $value && ( $defaults[ $key ] ?? null ) !== $value, ARRAY_FILTER_USE_BOTH );
 	}
 
 	/**
@@ -255,7 +256,7 @@ final class SettingsPage {
 
 		$values = array_diff_key( $defaults, array_flip( array( 'texts', 'presets' ) ) );
 		$values = array_replace( $values, array_intersect_key( $input, $values ) );
-		foreach ( self::FLAGS as $key ) {
+		foreach ( $form ? self::FLAGS : array() as $key ) {
 			$values[ $key ] = ! empty( $input[ $key ] );
 		}
 		if ( isset( $input['floating'] ) ) {

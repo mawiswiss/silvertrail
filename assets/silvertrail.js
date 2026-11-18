@@ -249,7 +249,7 @@
 	// Banner
 
 	const banner = document.getElementById('silvertrail-banner');
-	const isBox = !!banner && banner.hasAttribute('popover');
+	const isPopover = !!banner && banner.hasAttribute('popover');
 
 	function view(name) {
 		banner.querySelectorAll('[data-silvertrail-view]').forEach((el) => {
@@ -311,29 +311,31 @@
 		}
 		const canClose = closable();
 		banner.querySelector('[data-silvertrail-action="close"]').hidden = !canClose;
-		if (isBox) {
-			if (typeof banner.showPopover === 'function') {
-				if (!banner.matches(':popover-open')) {
-					banner.popover = canClose ? 'auto' : 'manual';
-					banner.showPopover();
-				}
-			} else if (!banner.open) {
+		if (isPopover && canClose && !banner.open) {
+			if (typeof banner.showPopover !== 'function') {
 				banner.show();
+			} else if (!popoverOpen()) {
+				banner.popover = 'auto';
+				banner.showPopover();
 			}
 		} else {
 			banner.setAttribute('closedby', canClose ? 'any' : 'none');
-			if (!banner.open) {
+			if (!banner.open && !popoverOpen()) {
 				banner.showModal();
 			}
 		}
+	}
+
+	function popoverOpen() {
+		return typeof banner.hidePopover === 'function' && banner.matches(':popover-open');
 	}
 
 	function hide() {
 		if (!banner) {
 			return;
 		}
-		if (isBox && typeof banner.hidePopover === 'function') {
-			banner.matches(':popover-open') && banner.hidePopover();
+		if (popoverOpen()) {
+			banner.hidePopover();
 		} else if (banner.open) {
 			banner.close();
 		}
@@ -419,7 +421,7 @@
 		});
 
 		// Safari has no closedby, so a press and release on the backdrop closes the modal here.
-		if (!isBox && !('closedBy' in HTMLDialogElement.prototype)) {
+		if (!isPopover && !('closedBy' in HTMLDialogElement.prototype)) {
 			const outside = (event) => {
 				const r = banner.getBoundingClientRect();
 				return event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom;

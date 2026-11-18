@@ -75,7 +75,6 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 							<rect class="silvertrail-sketch__content" x="10" y="10" width="50" height="5" rx="2"/>
 							<rect class="silvertrail-sketch__content" x="10" y="21" width="100" height="3" rx="1.5"/>
 							<rect class="silvertrail-sketch__content" x="10" y="28" width="90" height="3" rx="1.5"/>
-							<rect class="silvertrail-sketch__backdrop" width="120" height="80"/>
 							<rect class="silvertrail-sketch__banner" x="30" y="16" width="60" height="48" rx="3"/>
 							<rect class="silvertrail-sketch__text" x="36" y="23" width="30" height="4" rx="2"/>
 							<rect class="silvertrail-sketch__text" x="36" y="31" width="46" height="3" rx="1.5"/>
@@ -84,7 +83,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						</svg>
 						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="modal" <?php checked( $silvertrail_settings['layout'], 'modal' ); ?> <?php disabled( Settings::in_code( 'layout' ) ); ?>>
 						<span class="silvertrail-card__name"><?php esc_html_e( 'Centered', 'silvertrail' ); ?></span>
-						<span class="silvertrail-card__hint"><?php esc_html_e( 'Dims the page', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'In the middle of the page', 'silvertrail' ); ?></span>
 					</label>
 					<label class="silvertrail-card">
 						<svg class="silvertrail-card__preview silvertrail-sketch" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
@@ -101,7 +100,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 						</svg>
 						<input type="radio" name="<?php echo esc_attr( SettingsPage::field( 'layout' ) ); ?>" value="box" <?php checked( $silvertrail_settings['layout'], 'box' ); ?> <?php disabled( Settings::in_code( 'layout' ) ); ?>>
 						<span class="silvertrail-card__name"><?php esc_html_e( 'Corner', 'silvertrail' ); ?></span>
-						<span class="silvertrail-card__hint"><?php esc_html_e( 'The page stays usable', 'silvertrail' ); ?></span>
+						<span class="silvertrail-card__hint"><?php esc_html_e( 'In the bottom right corner', 'silvertrail' ); ?></span>
 					</label>
 				</fieldset>
 			</td>
@@ -303,7 +302,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 				SettingsPage::checkbox(
 					'require_choice',
 					__( 'Require a choice before the banner closes', 'silvertrail' ),
-					__( 'Turned off, a click outside or Escape closes it without storing anything, and it asks again on the next page.', 'silvertrail' )
+					__( 'On by default for the centered banner, off for the corner. Turned on, the page dims until the visitor chooses. Turned off, the page stays usable, and a click outside or Escape closes the banner without storing anything. Only services that need no consent run, and it asks again on the next page.', 'silvertrail' )
 				);
 				?>
 			</td>

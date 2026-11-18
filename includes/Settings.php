@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * @phpstan-type SettingsArray array{
  *     enabled: bool,
  *     layout: 'modal'|'box',
- *     require_choice: bool,
+ *     require_choice: bool|null,
  *     appearance: 'theme'|'light'|'dark',
  *     texts: array<string, array<string, string>>,
  *     floating_button: 'auto'|'always'|'never',
@@ -52,7 +52,7 @@ final class Settings {
 		return array(
 			'enabled'           => true,
 			'layout'            => 'modal',
-			'require_choice'    => true,
+			'require_choice'    => null,
 			'appearance'        => 'theme',
 			'texts'             => array(),
 			'floating_button'   => 'never',
@@ -96,7 +96,13 @@ final class Settings {
 	public static function all(): array {
 		$stored = self::stored();
 		/** @var SettingsArray */
-		return array_replace( $stored, self::filtered( $stored, true ) );
+		$all                     = array_replace( $stored, self::filtered( $stored, true ) );
+		$all['require_choice'] ??= self::requires_choice( $all['layout'] );
+		return $all;
+	}
+
+	public static function requires_choice( string $layout ): bool {
+		return 'modal' === $layout;
 	}
 
 	public static function get( string $key ): mixed {
@@ -133,7 +139,8 @@ final class Settings {
 				'floating_button'   => self::floating_button( $value ),
 				'floating_position' => 'right' === $value ? 'right' : 'left',
 				'webmcp_tokens'     => self::tokens( $value ),
-				'enabled', 'require_choice', 'load_css', 'records', 'gpc', 'trail', 'webmcp' => (bool) $value,
+				'require_choice'    => null === $value ? null : (bool) $value,
+				'enabled', 'load_css', 'records', 'gpc', 'trail', 'webmcp' => (bool) $value,
 				default             => $value,
 			};
 		}

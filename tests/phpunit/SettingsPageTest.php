@@ -54,7 +54,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		);
 
 		$this->assertSame( 'box', $saved['layout'] );
-		$this->assertFalse( $saved['require_choice'], 'An unchecked box on the saved tab turns off.' );
+		$this->assertArrayNotHasKey( 'require_choice', $saved, 'An unchecked box that matches the position follows it.' );
 		$this->assertTrue( $saved['presets']['youtube']['enabled'] );
 		$this->assertTrue( $saved['records'] );
 		$this->assertFalse( $saved['trail'] );
@@ -376,6 +376,15 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertTrue( Presets::switched_on( 'youtube' ) );
 	}
 
+	public function test_a_choice_is_stored_only_where_it_differs_from_the_position(): void {
+		$save = static fn( array $input ): array => SettingsPage::sanitize( array( '_tab' => 'banner' ) + $input );
+
+		$this->assertSame( array( 'require_choice' => false ), $save( array( 'layout' => 'modal' ) ) );
+		$this->assertSame( array(), $save( array( 'layout' => 'modal', 'require_choice' => '1' ) ) );
+		$this->assertSame( array( 'layout' => 'box' ), $save( array( 'layout' => 'box' ) ) );
+		$this->assertSame( array( 'layout' => 'box', 'require_choice' => true ), $save( array( 'layout' => 'box', 'require_choice' => '1' ) ) );
+	}
+
 	public function test_a_save_keeps_only_what_differs_from_the_defaults(): void {
 		update_option( Settings::OPTION, Settings::defaults() + array( 'expiry_months' => 6 ) );
 
@@ -383,7 +392,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 			array(
 				'_tab'           => 'banner',
 				'layout'         => 'box',
-				'require_choice' => '1',
+				'require_choice' => '',
 			)
 		);
 

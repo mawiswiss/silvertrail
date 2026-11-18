@@ -19,7 +19,6 @@
 defined( 'ABSPATH' ) || exit;
 
 $silvertrail_texts = $args['texts'];
-$silvertrail_box   = 'box' === $args['layout'];
 $silvertrail_links = array_filter(
 	array(
 		$silvertrail_texts['privacy_link'] => $args['privacy_url'],
@@ -34,7 +33,7 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 	aria-labelledby="silvertrail-title"
 	data-silvertrail-banner
 	data-silvertrail-appearance="<?php echo esc_attr( $args['appearance'] ); ?>"
-	<?php echo $silvertrail_box ? 'popover="manual"' : 'closedby="none"'; ?>
+	popover
 >
 	<div class="silvertrail__inner">
 		<h2 id="silvertrail-title" class="silvertrail__title" tabindex="-1" autofocus><?php echo esc_html( $silvertrail_texts['title'] ); ?></h2>

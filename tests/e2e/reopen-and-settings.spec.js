@@ -8,6 +8,21 @@ const withSettings = (context, settings) =>
 
 const banner = (page) => page.getByRole('dialog', { name: 'Privacy settings' });
 
+const placement = (page) =>
+	page.evaluate(() => {
+		const el = document.getElementById('silvertrail-banner');
+		const rect = el.getBoundingClientRect();
+		return {
+			modal: el.matches(':modal'),
+			dimmed: getComputedStyle(el, '::backdrop').display !== 'none',
+			top: rect.top,
+			bottom: Math.round(window.innerHeight - rect.bottom),
+			full: rect.width === document.documentElement.clientWidth,
+			centred: Math.abs(rect.left + rect.width / 2 - document.documentElement.clientWidth / 2) < 1,
+			width: rect.width,
+		};
+	});
+
 test.describe('reopen', () => {
 	test('with the floating button off, only the link reopens the preferences', async ({ page, context }) => {
 		await withSettings(context, { floating_button: 'never' });
@@ -92,7 +107,7 @@ test.describe('closing', () => {
 		await withSettings(context, { layout: 'modal', require_choice: false });
 		await page.goto('/');
 		await expect(banner(page)).toBeVisible();
-		expect(await page.evaluate(() => document.getElementById('silvertrail-banner').matches(':modal'))).toBe(true);
+		expect(await placement(page)).toMatchObject({ modal: false, dimmed: false, centred: true });
 		await page.mouse.click(5, 5);
 
 		await expect(banner(page)).toBeHidden();
@@ -131,18 +146,29 @@ test.describe('switched off', () => {
 });
 
 test.describe('appearance settings', () => {
-	test('the box layout leaves the page usable', async ({ page, context }) => {
+	test('the box stays informal and leaves the page usable', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });
 		await page.goto('/');
 
-		const state = await page.evaluate(() => {
-			const el = document.getElementById('silvertrail-banner');
-			return { modal: el.matches(':modal'), open: el.matches(':popover-open') };
-		});
-		expect(state).toEqual({ modal: false, open: true });
+		expect(await placement(page)).toMatchObject({ modal: false, dimmed: false });
+		expect(await page.evaluate(() => document.getElementById('silvertrail-banner').matches(':popover-open'))).toBe(true);
 		await page.getByRole('button', { name: 'Accept all' }).first().click();
 		await expect(page.locator('#silvertrail-banner')).toBeHidden();
 	});
+
+	for (const look of [{ layout: 'box' }]) {
+		test(`a required choice dims the page behind the ${Object.values(look).join(' ')}`, async ({ page, context }) => {
+			await withSettings(context, { ...look, require_choice: true });
+			await page.goto('/');
+
+			expect(await placement(page)).toMatchObject({ modal: true, dimmed: true });
+			await page.keyboard.press('Escape');
+			await page.mouse.click(640, 360);
+			await expect(banner(page)).toBeVisible();
+			await page.getByRole('button', { name: 'Only essential' }).click();
+			await expect(banner(page)).toBeHidden();
+		});
+	}
 
 	test('always allow on an embed before a banner choice still asks about the rest', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });
