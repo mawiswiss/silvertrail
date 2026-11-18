@@ -13,7 +13,8 @@ defined( 'ABSPATH' ) || exit;
 
 $silvertrail_help = array(
 	'services' => 'silvertrail-service',
-	'banner'   => 'silvertrail-settings',
+	'design'   => 'silvertrail-settings',
+	'texts'    => 'silvertrail-texts',
 	'tools'    => 'silvertrail-cli',
 	'agents'   => 'silvertrail-agents',
 );

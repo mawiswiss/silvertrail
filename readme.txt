@@ -25,7 +25,7 @@ Set everything in PHP and check it on the shell. The admin keeps only the decisi
 
 * Code wins over the admin. One filter sets any setting, and the settings page marks each field that code sets.
 * Agents work on the shell. `wp silvertrail services` and `wp silvertrail settings` show every service and each setting with its source, and `wp silvertrail validate` reports what is wrong, so an agent can check its own work. From WordPress 6.9, the same reads, the presets and the check are abilities, which an MCP client reaches through the MCP Adapter plugin.
-* Prompts are built in. The Agents tab copies prompts to check and to set up the site with an agent, the Banner tab one to style the banner, and the Leak check writes one for the services it finds. From WordPress 7.0, the Banner tab can also send its prompt to the site's own AI provider.
+* Prompts are built in. The Agents tab copies prompts to check and to set up the site with an agent, the Design tab one to style the banner, and the Leak check writes one for the services it finds. From WordPress 7.0, the Design tab can also send its prompt to the site's own AI provider.
 * Agents check the site in the browser. In a browser with WebMCP, an experiment in Chrome, Silvertrail offers them tools to read and set the choice and to list what the page loaded.
 
 One call turns on a preset, and the official tag waits for consent:
@@ -44,7 +44,7 @@ Out of the box, the banner looks like part of the site. Change a few values or r
 
 * With no setup, the banner reads its colours, corners and buttons from the theme's `theme.json`.
 * The `silvertrail_design` filter changes single values, such as a colour, the corners or the buttons.
-* A `silvertrail/silvertrail.css` or your own templates in the theme replace the defaults. Settings › Silvertrail › Banner copies a prompt that has an AI assistant write that stylesheet.
+* A `silvertrail/silvertrail.css` or your own templates in the theme replace the defaults. Settings › Silvertrail › Design copies a prompt that has an AI assistant write that stylesheet.
 
 = Batteries included =
 
@@ -150,13 +150,13 @@ In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and th
 
 The banner takes its colours, corners and buttons from the theme's `theme.json`. The appearance that matches the theme keeps its colours as they are, and the other one puts the theme's lightest or darkest colour in the background. Themes without a `theme.json` get Silvertrail's own light or dark colours. In code, the `silvertrail_design` filter sets any colour, the corner radius and the button padding and weight.
 
-For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [docs/styling.md](https://github.com/mawiswiss/silvertrail/blob/main/docs/styling.md) file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts. From WordPress 7.0, with an AI provider set up under Settings › Connectors, Write with AI in the same place sends the prompt there and shows the stylesheet it writes. Nothing is saved until you add the file to the theme.
+For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [docs/styling.md](https://github.com/mawiswiss/silvertrail/blob/main/docs/styling.md) file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Design › Custom styles copies it together with your theme's colours and fonts. From WordPress 7.0, with an AI provider set up under Settings › Connectors, Write with AI in the same place sends the prompt there and shows the stylesheet it writes. Nothing is saved until you add the file to the theme.
 
 You can also turn off the default styles with `load_css` in the `silvertrail_settings` filter, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
 = How do I change the texts? =
 
-Under Settings › Silvertrail › Banner, every text of the site language is one JSON object. Change the text in quotes after the colon and save, or paste a whole set. Delete a line to bring back its default text.
+Under Settings › Silvertrail › Texts, every text of the site language is one JSON object. Change the text in quotes after the colon and save, or paste a whole set. Delete a line to bring back its default text.
 
 A developer can put the same JSON into the theme as `silvertrail/texts-de_CH.json` for one language, or `silvertrail/texts.json` for every language. A child theme wins over its parent. From a plugin, return another path or an array in the `silvertrail_translation` filter:
 
@@ -187,7 +187,7 @@ Cached pages still carry the old version of the settings. Purge the page cache a
 
 = Does it work without a footer link? =
 
-Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Banner › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
+Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Design › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
 
 == Screenshots ==
 
@@ -195,7 +195,7 @@ Yes, with the floating button. It is off by default. Under Settings › Silvertr
 2. "Choose" opens the choice per group and per service, with the provider, the purpose and a link to the privacy policy.
 3. A YouTube video waits behind a placeholder. The visitor loads it once or allows YouTube for good, and no banner opens.
 4. Under Settings › Silvertrail, the admin ticks the trackers the site uses and enters their IDs. The status panel counts what the banner asks about.
-5. The banner takes its colours, corners and buttons from the theme's `theme.json`. The admin picks the position, the appearance and the floating button.
+5. The banner takes its colours, corners and buttons from the theme's `theme.json`. Under Settings › Silvertrail › Design, the admin picks the position, the appearance and the floating button.
 6. The Leak check opens each page as a first-time visitor, declines, agrees to each service on its own and loads the page again. A read-only preview shows each step.
 7. The report says what runs without consent and what to do about it. A tracker that matches a preset gets a button that opens it under Services, ticked and ready to save. The table shows how each service behaved before a choice, after declining and after agreeing.
 8. When nothing runs without consent and nothing waits for a reload, the report says so.

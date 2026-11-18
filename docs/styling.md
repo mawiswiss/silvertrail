@@ -4,9 +4,9 @@ The banner takes its colours, corners and buttons from the theme's `theme.json`.
 
 ## How
 
-1. Under Settings › Silvertrail › Banner › Custom styles, copy the prompt. Paste it into an AI assistant and describe the look you want, or add a screenshot of the site. A coding agent working in the theme reads this file instead.
-2. The assistant answers with one CSS block. Save it in the theme, or the child theme, as `silvertrail/silvertrail.css`. Silvertrail loads it after its own styles, and the Banner tab confirms that it found the file.
-3. Check the centred banner, the box and the bar at the top and the bottom, with and without a required choice, the preferences view behind Choose, every appearance, an embed placeholder, the reopen button, a 320px wide screen and the keyboard. The Leak check tab should list no new connection.
+1. Under Settings › Silvertrail › Design › Custom styles, copy the prompt. Paste it into an AI assistant and describe the look you want, or add a screenshot of the site. A coding agent working in the theme reads this file instead.
+2. The assistant answers with one CSS block. Save it in the theme, or the child theme, as `silvertrail/silvertrail.css`. Silvertrail loads it after its own styles, and the Design tab confirms that it found the file.
+3. Check the centred banner, the box and the bar at the top and the bottom, with and without a required choice, the preferences view behind Choose, every appearance, an embed placeholder, the reopen button, a 320px wide screen and the keyboard. The Leak check under Tools should list no new connection.
 
 The theme's `theme.json` sets the defaults, the `silvertrail_design` filter overrides them in PHP, and the theme's `silvertrail/silvertrail.css` wins over both. With the default styles turned off, through `load_css` in the `silvertrail_settings` filter, that file is the whole stylesheet, and `assets/silvertrail.css` in the plugin folder is the place to start from.
 

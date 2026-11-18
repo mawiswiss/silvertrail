@@ -306,13 +306,18 @@ test.describe('settings page', () => {
 		await expect(page.getByText(/The banner asks about \d+ services\./)).toBeVisible();
 		await expect(page.getByRole('cell', { name: /Test Analytics/ })).toBeVisible();
 
-		await page.getByRole('link', { name: 'Banner', exact: true }).click();
-		await expect(page).toHaveURL(/tab=banner/);
+		const tabs = page.getByRole('navigation', { name: 'Silvertrail settings' });
+		await tabs.getByRole('link', { name: 'Design' }).click();
+		await expect(page).toHaveURL(/tab=design/);
+		await expect(page.getByRole('radio', { name: 'Dialog' })).toBeVisible();
+
+		await tabs.getByRole('link', { name: 'Texts' }).click();
+		await expect(page).toHaveURL(/tab=texts/);
 		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
 	});
 
 	test('highlights a linked section until the next action', async ({ page }) => {
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner#silvertrail-links');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=texts#silvertrail-links');
 		const links = page.locator('#silvertrail-links');
 		await expect(links).toHaveClass(/silvertrail-section--highlighted/);
 		await page.keyboard.press('Shift');
@@ -334,7 +339,11 @@ test.describe('settings page', () => {
 		await expect(page.locator('#tab-panel-silvertrail-service')).toBeVisible();
 		await expect(page.locator('#tab-panel-silvertrail-adjust')).toBeHidden();
 
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=texts');
+		await page.getByRole('button', { name: 'Developer help' }).click();
+		await expect(page.locator('#tab-panel-silvertrail-texts')).toBeVisible();
+
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
 		await page.getByRole('button', { name: 'Developer help' }).click();
 		await expect(page.locator('#tab-panel-silvertrail-settings')).toBeVisible();
 		await page.getByRole('button', { name: 'in code' }).click();
@@ -346,7 +355,7 @@ test.describe('settings page', () => {
 
 	test('an imprint page from code cannot be changed', async ({ page, context }) => {
 		await context.addCookies([{ name: 'silvertrail_test_code', value: JSON.stringify({ imprint_page: 2 }), url: 'http://localhost:8892' }]);
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=texts');
 
 		await expect(page.locator('th', { hasText: 'Imprint page' })).toContainText('Set in code');
 		await expect(page.getByLabel('Imprint page')).toBeDisabled();
@@ -357,7 +366,7 @@ test.describe('settings page', () => {
 		await context.addCookies([
 			{ name: 'silvertrail_test_code', value: JSON.stringify({ layout: 'box', records: true }), url: 'http://localhost:8892' },
 		]);
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
 
 		await expect(page.locator('th', { hasText: /^Layout/ })).toContainText('Set in code');
 		await expect(page.locator('th', { hasText: 'Appearance' })).not.toContainText('Set in code');
@@ -365,6 +374,8 @@ test.describe('settings page', () => {
 		await expect(page.getByRole('radio', { name: 'Box' })).toBeDisabled();
 		await expect(page.getByRole('radio', { name: 'Dialog' })).toBeDisabled();
 		await expect(page.getByRole('radio', { name: 'Dark' })).toBeEnabled();
+
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=texts');
 		await expect(page.getByLabel('Imprint page')).toBeEnabled();
 
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=tools');
@@ -392,8 +403,8 @@ test.describe('settings page', () => {
 	});
 
 	test('asks before leaving a tab with unsaved changes', async ({ page }) => {
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
-		await expect(page.getByRole('button', { name: 'Save Changes' })).toHaveCount(3);
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
+		await expect(page.getByRole('button', { name: 'Save Changes' })).toHaveCount(1);
 
 		await page.getByRole('radio', { name: 'Dark' }).check();
 		let asked = '';
@@ -403,21 +414,21 @@ test.describe('settings page', () => {
 		});
 		await page.getByRole('navigation', { name: 'Silvertrail settings' }).getByRole('link', { name: 'Tools' }).click();
 		await expect.poll(() => asked).toBe('beforeunload');
-		await expect(page).toHaveURL(/tab=banner/);
+		await expect(page).toHaveURL(/tab=design/);
 	});
 
-	test('the banner tab shows position and appearance as cards', async ({ page, context }) => {
+	test('the design tab shows position and appearance as cards', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box', appearance: 'dark' });
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
 
 		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
 		await expect(page.getByRole('radio', { name: 'Dark' })).toBeChecked();
 		await expect(page.getByRole('radio', { name: 'Light' })).not.toBeChecked();
 	});
 
-	test('the banner tab hands an AI assistant the styling brief', async ({ page, context }) => {
+	test('the design tab hands an AI assistant the styling brief', async ({ page, context }) => {
 		await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
 
 		await page.locator('summary', { hasText: 'Show the prompt' }).click();
 		const prompt = page.locator('#silvertrail-styling-prompt');
@@ -433,7 +444,7 @@ test.describe('settings page', () => {
 	});
 
 	test('Write with AI asks for an AI provider when the site has none', async ({ page }) => {
-		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
 
 		await page.getByLabel('With this site’s AI').fill('A dark bar with rounded buttons');
 		await page.getByRole('button', { name: 'Write with AI' }).click();

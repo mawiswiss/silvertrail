@@ -44,11 +44,12 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$stored['presets']['youtube']['tag_id']  = '';
 		$stored['records']                       = true;
 		$stored['trail']                         = false;
+		$stored['texts']                         = array( 'en_US' => array( 'title' => 'Kept' ) );
 		update_option( Settings::OPTION, $stored );
 
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'   => 'banner',
+				'_tab'   => 'design',
 				'layout' => 'box',
 			)
 		);
@@ -58,7 +59,28 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertTrue( $saved['presets']['youtube']['enabled'] );
 		$this->assertTrue( $saved['records'] );
 		$this->assertFalse( $saved['trail'] );
+		$this->assertSame( array( 'en_US' => array( 'title' => 'Kept' ) ), $saved['texts'] );
 		$this->assertArrayNotHasKey( '_tab', $saved );
+	}
+
+	public function test_a_banner_tab_open_from_before_the_split_still_saves(): void {
+		$stored                                  = Settings::defaults();
+		$stored['presets']['youtube']['enabled'] = true;
+		$stored['records']                       = true;
+		update_option( Settings::OPTION, $stored );
+
+		$saved = SettingsPage::sanitize(
+			array(
+				'_tab'         => 'banner',
+				'layout'       => 'box',
+				'imprint_page' => '2',
+			)
+		);
+
+		$this->assertSame( 'box', $saved['layout'] );
+		$this->assertSame( 2, $saved['imprint_page'] );
+		$this->assertTrue( $saved['presets']['youtube']['enabled'] );
+		$this->assertTrue( $saved['records'] );
 	}
 
 	public function test_saving_keeps_the_admin_value_of_a_setting_in_code(): void {
@@ -67,7 +89,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'       => 'banner',
+				'_tab'       => 'design',
 				'appearance' => 'dark',
 			)
 		);
@@ -80,8 +102,8 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		switch_theme( 'twentytwentyfive' );
 		Design::reset();
 
-		$this->assertArrayNotHasKey( 'appearance', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'light' ) ), 'Following the theme is the default.' );
-		$this->assertSame( 'dark', SettingsPage::sanitize( array( '_tab' => 'banner', 'appearance' => 'dark' ) )['appearance'] );
+		$this->assertArrayNotHasKey( 'appearance', SettingsPage::sanitize( array( '_tab' => 'design', 'appearance' => 'light' ) ), 'Following the theme is the default.' );
+		$this->assertSame( 'dark', SettingsPage::sanitize( array( '_tab' => 'design', 'appearance' => 'dark' ) )['appearance'] );
 	}
 
 	public function test_a_saved_tab_survives_a_second_pass(): void {
@@ -115,7 +137,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'       => 'banner',
+				'_tab'       => 'texts',
 				'texts_json' => (string) wp_json_encode( $texts ),
 			)
 		);
@@ -130,7 +152,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'       => 'banner',
+				'_tab'       => 'texts',
 				'texts_json' => '{ "title": "Privacy" }',
 			)
 		);
@@ -151,7 +173,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'       => 'banner',
+				'_tab'       => 'texts',
 				'texts_json' => '{ "title": "Broken", ',
 			)
 		);
@@ -165,7 +187,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	public function test_broken_entries_are_reported_and_the_rest_is_saved(): void {
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'       => 'banner',
+				'_tab'       => 'texts',
 				'texts_json' => '{ "title": "Saved", "bogus": "x", "embed_text": "no placeholder" }',
 			)
 		);
@@ -203,7 +225,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		if ( ! wp_get_theme( 'twentytwentyfive' )->exists() ) {
 			$this->markTestSkipped( 'Twenty Twenty-Five ships with WordPress 6.7.' );
 		}
-		$html = $this->banner_tab( 'twentytwentyfive' );
+		$html = $this->design_tab( 'twentytwentyfive' );
 
 		$this->assertStringNotContainsString( 'value="theme"', $html );
 		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
@@ -224,7 +246,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 			) + $design
 		);
 
-		$html = $this->banner_tab( 'twentytwentyfive' );
+		$html = $this->design_tab( 'twentytwentyfive' );
 		remove_all_filters( 'silvertrail_design' );
 
 		$this->assertStringNotContainsString( 'value="dark"', $html );
@@ -235,7 +257,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	}
 
 	public function test_a_classic_theme_offers_light_and_dark_only(): void {
-		$html = $this->banner_tab( 'twentytwentyone' );
+		$html = $this->design_tab( 'twentytwentyone' );
 
 		$this->assertStringNotContainsString( 'value="theme"', $html );
 		$this->assertMatchesRegularExpression( '/value="light"\s+checked/', $html );
@@ -261,12 +283,12 @@ final class SettingsPageTest extends WP_UnitTestCase {
 			array(
 				'type'    => 'warning',
 				'summary' => 'No privacy policy page is published.',
-				'url'     => SettingsPage::url( 'banner' ) . '#silvertrail-links',
-				'where'   => 'Banner › Links',
+				'url'     => SettingsPage::url( 'texts' ) . '#silvertrail-links',
+				'where'   => 'Texts › Links',
 			),
 			Notices::overview( 'services' )[0]
 		);
-		$this->assertSame( '#silvertrail-links', Notices::overview( 'banner' )[0]['url'] );
+		$this->assertSame( '#silvertrail-links', Notices::overview( 'texts' )[0]['url'] );
 		$this->assertStringContainsString( 'options-privacy.php', $this->card( 'links' ) );
 	}
 
@@ -301,6 +323,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertSame( array( 'core' ), array_column( get_settings_errors(), 'code' ) );
 		$this->assertStringContainsString( 'Not saved: two', $this->card( 'texts' ) );
 		$this->assertCount( 1, array_keys( array_column( Notices::overview( 'services' ), 'summary' ), 'Some texts were not saved.', true ) );
+		$this->assertContains( 'Texts', array_column( Notices::overview( 'services' ), 'where' ), 'A card named like its tab shows the tab only.' );
 	}
 
 	public function test_a_tracker_without_a_valid_id_stays_in_the_overview(): void {
@@ -312,7 +335,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		update_option( Settings::OPTION, $stored );
 
 		$this->assertSame( array(), get_settings_errors( Settings::OPTION ) );
-		$this->assertContains( 'Google Analytics needs a valid ID.', array_column( Notices::overview( 'banner' ), 'summary' ) );
+		$this->assertContains( 'Google Analytics needs a valid ID.', array_column( Notices::overview( 'design' ), 'summary' ) );
 		$this->assertStringContainsString( 'G-XXXXXXXXXX', $this->card( 'trackers' ) );
 
 		$stored['presets']['google-analytics']['tag_id'] = 'G-ABC123';
@@ -336,13 +359,13 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		$this->assertSame( 'right', $this->floating_choice() );
 
 		add_filter( 'silvertrail_settings', static fn( array $settings ): array => array( 'floating_button' => 'always' ) + $settings );
-		$this->assertMatchesRegularExpression( '/name="silvertrail\[floating\]" value="never"[^>]*disabled/', $this->banner_tab( 'twentytwentyfive' ) );
+		$this->assertMatchesRegularExpression( '/name="silvertrail\[floating\]" value="never"[^>]*disabled/', $this->design_tab( 'twentytwentyfive' ) );
 	}
 
-	public function test_the_banner_tab_saves_the_floating_button(): void {
+	public function test_the_design_tab_saves_the_floating_button(): void {
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'     => 'banner',
+				'_tab'     => 'design',
 				'floating' => 'right',
 			)
 		);
@@ -352,7 +375,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		update_option( Settings::OPTION, $saved );
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'     => 'banner',
+				'_tab'     => 'design',
 				'floating' => 'never',
 			)
 		);
@@ -377,7 +400,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	}
 
 	public function test_a_choice_is_stored_only_where_it_differs_from_the_position(): void {
-		$save = static fn( array $input ): array => SettingsPage::sanitize( array( '_tab' => 'banner' ) + $input );
+		$save = static fn( array $input ): array => SettingsPage::sanitize( array( '_tab' => 'design' ) + $input );
 
 		$this->assertSame( array( 'require_choice' => false ), $save( array( 'layout' => 'modal' ) ) );
 		$this->assertSame( array(), $save( array( 'layout' => 'modal', 'require_choice' => '1' ) ) );
@@ -390,7 +413,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$saved = SettingsPage::sanitize(
 			array(
-				'_tab'           => 'banner',
+				'_tab'           => 'design',
 				'layout'         => 'box',
 				'require_choice' => '',
 			)
@@ -417,7 +440,7 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	public function test_switched_off_the_status_offers_a_preview(): void {
 		update_option( Settings::OPTION, array( 'enabled' => false ) );
 
-		$html = $this->notices( 'banner' );
+		$html = $this->notices( 'design' );
 
 		$this->assertStringContainsString( 'Silvertrail is off', $html );
 		$this->assertStringContainsString( '?silvertrail-preview=1', $html );
@@ -437,16 +460,16 @@ final class SettingsPageTest extends WP_UnitTestCase {
 	}
 
 	private function floating_choice(): string {
-		preg_match( '/name="silvertrail\[floating\]" value="(\w+)"\s+checked/', $this->banner_tab( 'twentytwentyfive' ), $match );
+		preg_match( '/name="silvertrail\[floating\]" value="(\w+)"\s+checked/', $this->design_tab( 'twentytwentyfive' ), $match );
 		return $match[1] ?? '';
 	}
 
-	private function banner_tab( string $theme ): string {
+	private function design_tab( string $theme ): string {
 		switch_theme( $theme );
 		wp_clean_theme_json_cache();
 		Design::reset();
 		ob_start();
-		require dirname( SILVERTRAIL_FILE ) . '/includes/Admin/tabs/banner.php';
+		require dirname( SILVERTRAIL_FILE ) . '/includes/Admin/tabs/design.php';
 		$html = (string) ob_get_clean();
 		switch_theme( WP_DEFAULT_THEME );
 		wp_clean_theme_json_cache();

@@ -137,8 +137,8 @@ final class Notices {
 	public static function overview( string $tab ): array {
 		$cards = array(
 			'trackers' => array( 'services', __( 'Trackers', 'silvertrail' ) ),
-			'texts'    => array( 'banner', __( 'Texts', 'silvertrail' ) ),
-			'links'    => array( 'banner', __( 'Links', 'silvertrail' ) ),
+			'texts'    => array( 'texts', __( 'Texts', 'silvertrail' ) ),
+			'links'    => array( 'texts', __( 'Links', 'silvertrail' ) ),
 			'webmcp'   => array( 'agents', __( 'Visiting agents', 'silvertrail' ) ),
 		);
 		$items = array();
@@ -147,12 +147,13 @@ final class Notices {
 				continue;
 			}
 			list( $card_tab, $heading )  = $cards[ $notice['card'] ];
+			$label                       = SettingsPage::tabs()[ $card_tab ];
 			$anchor                      = '#silvertrail-' . $notice['card'];
 			$items[ $notice['summary'] ] = array(
 				'type'    => $notice['type'],
 				'summary' => $notice['summary'],
 				'url'     => $tab === $card_tab ? $anchor : SettingsPage::url( $card_tab ) . $anchor,
-				'where'   => SettingsPage::tabs()[ $card_tab ] . ' › ' . $heading,
+				'where'   => $label === $heading ? $label : $label . ' › ' . $heading,
 			);
 		}
 		return array_values( $items );

@@ -180,7 +180,7 @@ $silvertrail_copy = static function ( string $id ): void {
 	<h2><?php esc_html_e( 'More prompts', 'silvertrail' ); ?></h2>
 	<ul>
 		<li>
-			<a href="<?php echo esc_url( SettingsPage::url( 'banner' ) . '#silvertrail-custom-styles' ); ?>"><?php esc_html_e( 'Banner › Custom styles', 'silvertrail' ); ?></a>:
+			<a href="<?php echo esc_url( SettingsPage::url( 'design' ) . '#silvertrail-custom-styles' ); ?>"><?php esc_html_e( 'Design › Custom styles', 'silvertrail' ); ?></a>:
 			<?php esc_html_e( 'a prompt that styles the banner to fit the theme.', 'silvertrail' ); ?>
 		</li>
 		<li>

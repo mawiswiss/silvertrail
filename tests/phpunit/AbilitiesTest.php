@@ -42,7 +42,7 @@ final class AbilitiesTest extends WP_UnitTestCase {
 		}
 		if ( function_exists( 'wp_ai_client_prompt' ) ) {
 			$this->assertFalse( wp_get_ability( 'silvertrail/write-styles' )->get_meta()['public'], 'MCP clients write the styles themselves.' );
-			$this->assertTrue( wp_get_ability( 'silvertrail/write-styles' )->get_meta()['show_in_rest'], 'The Banner tab calls it over REST.' );
+			$this->assertTrue( wp_get_ability( 'silvertrail/write-styles' )->get_meta()['show_in_rest'], 'The Design tab calls it over REST.' );
 		}
 	}
 

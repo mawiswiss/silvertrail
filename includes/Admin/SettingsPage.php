@@ -28,7 +28,8 @@ final class SettingsPage {
 	 */
 	public const TABS = array(
 		'services' => array( 'presets' ),
-		'banner'   => array( 'layout', 'bar_position', 'require_choice', 'appearance', 'texts', 'imprint_page', 'floating_button', 'floating_position' ),
+		'design'   => array( 'layout', 'bar_position', 'require_choice', 'appearance', 'floating_button', 'floating_position' ),
+		'texts'    => array( 'texts', 'imprint_page' ),
 		'tools'    => array( 'records' ),
 		'agents'   => array(),
 	);
@@ -76,22 +77,24 @@ final class SettingsPage {
 		$deps = array( 'clipboard', 'wp-a11y', 'wp-api-fetch' );
 		wp_enqueue_style( 'silvertrail-admin', plugins_url( 'assets/admin.css', SILVERTRAIL_FILE ), array(), SILVERTRAIL_VERSION );
 		$tab = self::tab();
-		if ( 'banner' === $tab || 'agents' === $tab ) {
-			self::$editors = array(
-				'json'     => 'banner' === $tab ? wp_enqueue_code_editor( array( 'type' => 'application/json' ) ) : false,
-				'markdown' => wp_enqueue_code_editor(
-					array(
-						'type'       => 'text/x-markdown',
-						'codemirror' => array(
-							'readOnly'     => true,
-							'lineWrapping' => true,
-						),
-					)
-				),
-			);
-			$deps          = array_filter( self::$editors ) === array() ? $deps : array( ...$deps, 'code-editor' );
+		if ( 'texts' === $tab ) {
+			self::$editors['json'] = wp_enqueue_code_editor( array( 'type' => 'application/json' ) );
 		}
-		if ( 'banner' === $tab ) {
+		if ( 'design' === $tab || 'agents' === $tab ) {
+			self::$editors['markdown'] = wp_enqueue_code_editor(
+				array(
+					'type'       => 'text/x-markdown',
+					'codemirror' => array(
+						'readOnly'     => true,
+						'lineWrapping' => true,
+					),
+				)
+			);
+		}
+		if ( array_filter( self::$editors ) !== array() ) {
+			$deps[] = 'code-editor';
+		}
+		if ( 'design' === $tab ) {
 			wp_add_inline_style( 'silvertrail-admin', wp_get_global_stylesheet( array( 'variables' ) ) );
 		}
 		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), $deps, SILVERTRAIL_VERSION, true );
@@ -189,7 +192,8 @@ final class SettingsPage {
 	public static function tabs(): array {
 		return array(
 			'services' => __( 'Services', 'silvertrail' ),
-			'banner'   => __( 'Banner', 'silvertrail' ),
+			'design'   => __( 'Design', 'silvertrail' ),
+			'texts'    => __( 'Texts', 'silvertrail' ),
 			'tools'    => __( 'Tools', 'silvertrail' ),
 			'agents'   => __( 'Agents', 'silvertrail' ),
 		);
@@ -217,7 +221,12 @@ final class SettingsPage {
 	public static function sanitize( mixed $input ): array {
 		$input = is_array( $input ) ? $input : array();
 		$tab   = is_string( $input['_tab'] ?? null ) ? $input['_tab'] : '';
-		$keys  = 'switch' === $tab ? array( 'enabled' ) : ( self::TABS[ $tab ] ?? null );
+		$keys  = match ( $tab ) {
+			'switch' => array( 'enabled' ),
+			// A Banner tab left open from before the split into Design and Texts still posts this.
+			'banner' => array( ...self::TABS['design'], ...self::TABS['texts'] ),
+			default  => self::TABS[ $tab ] ?? null,
+		};
 		if ( null === $keys ) {
 			// A new option runs through here twice: add_option() sanitizes the saved value again, with _tab and the defaults gone.
 			return self::changed( self::clean( $input + Settings::defaults(), false ) );

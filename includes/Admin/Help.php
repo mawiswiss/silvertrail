@@ -178,12 +178,12 @@ SH;
 			),
 			'silvertrail-texts'    => array(
 				'title' => __( 'Texts', 'silvertrail' ),
-				'intro' => __( 'Ship the texts with the theme as `silvertrail/texts-{locale}.json`, or `silvertrail/texts.json` for every language. The Banner tab shows the JSON with every key.', 'silvertrail' ),
+				'intro' => __( 'Ship the texts with the theme as `silvertrail/texts-{locale}.json`, or `silvertrail/texts.json` for every language. The Texts tab shows the JSON with every key.', 'silvertrail' ),
 				'code'  => self::TEXTS,
 				'notes' => array(
 					__( 'A child theme wins over its parent.', 'silvertrail' ),
 					__( 'From a plugin, return another path or an array in the `silvertrail_translation` filter.', 'silvertrail' ),
-					__( 'Edits on the Banner tab win over the file. The `silvertrail_texts` filter runs last.', 'silvertrail' ),
+					__( 'Edits on the Texts tab win over the file. The `silvertrail_texts` filter runs last.', 'silvertrail' ),
 					__( '`wp silvertrail validate` reports unknown keys and broken files.', 'silvertrail' ),
 				),
 			),
@@ -209,7 +209,7 @@ SH;
 			),
 			'silvertrail-floating' => array(
 				'title' => __( 'Floating button', 'silvertrail' ),
-				'intro' => __( 'Both corners on the Banner tab hide the button on pages with another link to `#silvertrail`. The `silvertrail_settings` filter shows it on every page.', 'silvertrail' ),
+				'intro' => __( 'Both corners on the Design tab hide the button on pages with another link to `#silvertrail`. The `silvertrail_settings` filter shows it on every page.', 'silvertrail' ),
 				'code'  => self::FLOATING,
 				'notes' => array(
 					__( '`floating_button`: `never`, the default, `auto` for pages without a link to `#silvertrail`, or `always`.', 'silvertrail' ),
