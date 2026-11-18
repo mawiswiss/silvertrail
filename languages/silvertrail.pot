@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-18T07:12:13+00:00\n"
+"POT-Creation-Date: 2026-11-18T09:06:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -124,7 +124,7 @@ msgid "The `silvertrail_settings` filter sets any setting. A field set in code s
 msgstr ""
 
 #: includes/Admin/Help.php:174
-msgid "On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`."
+msgid "On this page: `enabled`, `layout`, `bar_position`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`."
 msgstr ""
 
 #: includes/Admin/Help.php:175
@@ -137,7 +137,7 @@ msgstr ""
 
 #: includes/Admin/Help.php:180
 #: includes/Admin/Notices.php:140
-#: includes/Admin/tabs/banner.php:316
+#: includes/Admin/tabs/banner.php:336
 msgid "Texts"
 msgstr ""
 
@@ -162,7 +162,7 @@ msgid "`wp silvertrail validate` reports unknown keys and broken files."
 msgstr ""
 
 #: includes/Admin/Help.php:191
-#: includes/Admin/tabs/banner.php:110
+#: includes/Admin/tabs/banner.php:68
 msgid "Design"
 msgstr ""
 
@@ -203,8 +203,8 @@ msgid "Every page needs such a link, unless the floating button is on."
 msgstr ""
 
 #: includes/Admin/Help.php:211
-#: includes/Admin/tabs/banner.php:185
-#: includes/Admin/tabs/banner.php:188
+#: includes/Admin/tabs/banner.php:224
+#: includes/Admin/tabs/banner.php:227
 msgid "Floating button"
 msgstr ""
 
@@ -316,7 +316,7 @@ msgid "Publish a privacy policy page under %s, so the banner can link to it."
 msgstr ""
 
 #: includes/Admin/Notices.php:79
-#: includes/Admin/tabs/banner.php:429
+#: includes/Admin/tabs/banner.php:449
 msgid "Settings › Privacy"
 msgstr ""
 
@@ -364,7 +364,7 @@ msgid "Trackers"
 msgstr ""
 
 #: includes/Admin/Notices.php:141
-#: includes/Admin/tabs/banner.php:413
+#: includes/Admin/tabs/banner.php:433
 msgid "Links"
 msgstr ""
 
@@ -396,25 +396,25 @@ msgid "Settings"
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:210
-#: includes/Admin/SettingsPage.php:377
+#: includes/Admin/SettingsPage.php:378
 #: includes/Admin/status.php:82
 #: includes/Scan.php:119
 msgid "Support Silvertrail"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:300
+#: includes/Admin/SettingsPage.php:301
 msgid "The texts are not valid JSON, so they were not saved. The editor still holds them."
 msgstr ""
 
 #. translators: %s: what is wrong with a text
-#: includes/Admin/SettingsPage.php:308
+#: includes/Admin/SettingsPage.php:309
 #, php-format
 msgid "Not saved: %s"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:335
-#: includes/Admin/SettingsPage.php:345
-#: includes/Admin/SettingsPage.php:354
+#: includes/Admin/SettingsPage.php:336
+#: includes/Admin/SettingsPage.php:346
+#: includes/Admin/SettingsPage.php:355
 #: includes/Records.php:200
 msgid "You are not allowed to do this."
 msgstr ""
@@ -472,7 +472,7 @@ msgid "Dismiss"
 msgstr ""
 
 #: includes/Admin/tabs/agents.php:23
-#: includes/Admin/tabs/banner.php:275
+#: includes/Admin/tabs/banner.php:314
 msgid "Show the prompt"
 msgstr ""
 
@@ -481,13 +481,13 @@ msgid "Prompt for an AI agent"
 msgstr ""
 
 #: includes/Admin/tabs/agents.php:45
-#: includes/Admin/tabs/banner.php:258
+#: includes/Admin/tabs/banner.php:297
 #: includes/Scan.php:213
 msgid "Copy prompt"
 msgstr ""
 
 #: includes/Admin/tabs/agents.php:46
-#: includes/Admin/tabs/banner.php:259
+#: includes/Admin/tabs/banner.php:298
 #: includes/Scan.php:214
 msgid "Copied"
 msgstr ""
@@ -602,8 +602,8 @@ msgid "Register this site’s address for the WebMCP origin trial in Chrome, and
 msgstr ""
 
 #: includes/Admin/tabs/agents.php:171
-#: includes/Admin/tabs/banner.php:238
-#: includes/Admin/tabs/banner.php:391
+#: includes/Admin/tabs/banner.php:277
+#: includes/Admin/tabs/banner.php:411
 msgid "Show how"
 msgstr ""
 
@@ -669,220 +669,236 @@ msgstr ""
 msgid "Look"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:68
-#: includes/Admin/tabs/banner.php:71
-msgid "Position"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:86
-msgid "Centered"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:87
-msgid "Dims the page"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:103
-msgid "Corner"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:104
-msgid "The page stays usable"
-msgstr ""
-
 #. translators: 1: link to the Styles editor, 2: button that opens the help
-#: includes/Admin/tabs/banner.php:137
+#: includes/Admin/tabs/banner.php:95
 #, php-format
 msgid "Change it in the %1$s or %2$s."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:138
+#: includes/Admin/tabs/banner.php:96
 msgid "Styles editor"
 msgstr ""
 
 #. translators: 1: theme.json, 2: button that opens the help
-#: includes/Admin/tabs/banner.php:143
+#: includes/Admin/tabs/banner.php:101
 #, php-format
 msgid "Change it in its %1$s or %2$s."
 msgstr ""
 
 #. translators: 1: theme name, 2: theme.json, 3: button that opens the help
-#: includes/Admin/tabs/banner.php:146
+#: includes/Admin/tabs/banner.php:104
 #, php-format
 msgid "%1$s has no %2$s. Change it %3$s."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:156
-#: includes/Admin/tabs/banner.php:167
+#: includes/Admin/tabs/banner.php:114
+#: includes/Admin/tabs/banner.php:125
 msgid "Appearance"
 msgstr ""
 
 #. translators: %s: silvertrail_design
-#: includes/Admin/tabs/banner.php:162
+#: includes/Admin/tabs/banner.php:120
 #, php-format
 msgid "The %s filter gives light and dark the same colors, so there is nothing to choose."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:200
+#: includes/Admin/tabs/banner.php:143
+#: includes/Admin/tabs/banner.php:146
+msgid "Layout"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:160
+msgid "Dialog"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:161
+msgid "In the middle of the page"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:177
+msgid "Box"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:178
+msgid "In the bottom right corner"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:194
+msgid "Bar"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:195
+msgid "Across the top or bottom"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:199
+msgid "Bar position"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:202
+msgid "Top"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:203
+msgid "Bottom"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:212
+msgid "Closing"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:217
+msgid "Require a choice before the banner closes"
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:218
+msgid "On by default for the dialog, off for the box and the bar. Turned on, the page dims until the visitor chooses. Turned off, the page stays usable, and a click outside or Escape closes the banner without storing anything. Only services that need no consent run, and it asks again on the next page."
+msgstr ""
+
+#: includes/Admin/tabs/banner.php:239
 msgid "Off"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:201
+#: includes/Admin/tabs/banner.php:240
 msgid "Only links open the settings"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:213
+#: includes/Admin/tabs/banner.php:252
 msgid "Bottom left"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:214
-#: includes/Admin/tabs/banner.php:227
+#: includes/Admin/tabs/banner.php:253
+#: includes/Admin/tabs/banner.php:266
 msgid "On pages without a link"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:226
+#: includes/Admin/tabs/banner.php:265
 msgid "Bottom right"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:231
-msgid "It stays hidden on pages with a link to the settings."
+#: includes/Admin/tabs/banner.php:270
+msgid "A small round button in a bottom corner that reopens the privacy settings, so visitors can change their choice. It appears after their first choice and stays hidden on pages that already link to the settings."
 msgstr ""
 
 #. translators: %s: the silvertrail_settings filter
-#: includes/Admin/tabs/banner.php:235
+#: includes/Admin/tabs/banner.php:274
 #, php-format
 msgid "The %s filter shows it on every page."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:248
+#: includes/Admin/tabs/banner.php:287
 msgid "Custom styles"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:249
+#: includes/Admin/tabs/banner.php:288
 msgid "For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:252
+#: includes/Admin/tabs/banner.php:291
 msgid "Write it with AI"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:256
+#: includes/Admin/tabs/banner.php:295
 msgid "Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:262
+#: includes/Admin/tabs/banner.php:301
 msgid "Paste it into an AI assistant and describe the look you want. A screenshot of the site helps."
 msgstr ""
 
 #. translators: %s: silvertrail/silvertrail.css
-#: includes/Admin/tabs/banner.php:267
+#: includes/Admin/tabs/banner.php:306
 #, php-format
 msgid "Save its answer in the theme as %s."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:279
+#: includes/Admin/tabs/banner.php:318
 #: includes/Scan.php:211
 msgid "Prompt for an AI assistant"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:297
-msgid "Behavior"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:300
-msgid "Closing"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:305
-msgid "Require a choice before the banner closes"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:306
-msgid "Turned off, a click outside or Escape closes it without storing anything, and it asks again on the next page."
-msgstr ""
-
 #. translators: %s: locale, for example de_CH
-#: includes/Admin/tabs/banner.php:324
+#: includes/Admin/tabs/banner.php:344
 #, php-format
 msgid "Texts in %s"
 msgstr ""
 
 #. translators: %s: one line of the texts, for example "accept_all": "Accept all"
-#: includes/Admin/tabs/banner.php:334
+#: includes/Admin/tabs/banner.php:354
 #, php-format
 msgid "Change only the text in quotes after the colon, as in %s, then save."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:339
+#: includes/Admin/tabs/banner.php:359
 msgid "Delete a line to bring back its default text."
 msgstr ""
 
 #. translators: 1: %s, 2: embed_text, 3: embed_remember
-#: includes/Admin/tabs/banner.php:344
+#: includes/Admin/tabs/banner.php:364
 #, php-format
 msgid "Keep %1$s in %2$s and %3$s. The service name goes there."
 msgstr ""
 
 #. translators: %s: list of text keys
-#: includes/Admin/tabs/banner.php:367
+#: includes/Admin/tabs/banner.php:387
 #, php-format
 msgid "Changed here: %s"
 msgstr ""
 
 #. translators: %s: file path or filter name
-#: includes/Admin/tabs/banner.php:378
+#: includes/Admin/tabs/banner.php:398
 #, php-format
 msgid "The defaults come from the developer translation in %s."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/Admin/tabs/banner.php:388
+#: includes/Admin/tabs/banner.php:408
 #, php-format
 msgid "Developers can ship this JSON in the theme as %s."
 msgstr ""
 
 #. translators: %s: the silvertrail_texts filter
-#: includes/Admin/tabs/banner.php:400
+#: includes/Admin/tabs/banner.php:420
 #, php-format
 msgid "Code changes some texts after these, through the %s filter."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:417
+#: includes/Admin/tabs/banner.php:437
 #: includes/Texts.php:47
 #: includes/Texts.php:48
 msgid "Privacy policy"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:422
+#: includes/Admin/tabs/banner.php:442
 msgid "None published"
 msgstr ""
 
 #. translators: %s: link to the privacy settings
-#: includes/Admin/tabs/banner.php:428
+#: includes/Admin/tabs/banner.php:448
 #, php-format
 msgid "Choose the page under %s."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:436
+#: includes/Admin/tabs/banner.php:456
 msgid "Imprint page"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:444
+#: includes/Admin/tabs/banner.php:464
 #: includes/Scan.php:151
 msgid "None"
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:469
+#: includes/Admin/tabs/banner.php:489
 msgid "Privacy settings link"
 msgstr ""
 
 #. translators: 1: #silvertrail, 2: [silvertrail_link]
-#: includes/Admin/tabs/banner.php:474
+#: includes/Admin/tabs/banner.php:494
 #, php-format
 msgid "Visitors change their choice through a link to %1$s, usually in the footer. Add one with the %2$s shortcode or the Privacy settings link block."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:479
+#: includes/Admin/tabs/banner.php:499
 msgid "Every page needs one, unless the floating button is on."
 msgstr ""
 
@@ -1642,13 +1658,13 @@ msgid ""
 msgstr ""
 
 #. translators: %s: setting key
-#: includes/Settings.php:166
+#: includes/Settings.php:176
 #, php-format
 msgid "The silvertrail_settings filter cannot set \"%s\"."
 msgstr ""
 
 #. translators: 1: setting key, 2: the value used instead
-#: includes/Settings.php:171
+#: includes/Settings.php:181
 #, php-format
 msgid "The silvertrail_settings filter returned an invalid \"%1$s\", so Silvertrail uses %2$s."
 msgstr ""
