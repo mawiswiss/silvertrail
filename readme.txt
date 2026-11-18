@@ -5,7 +5,7 @@ Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,18 @@ Each tracker preset below connects to its provider only when an admin turns it o
 Write with AI, on WordPress 7.0 and later, sends the styling prompt and the admin's description of the look to the AI provider set up under Settings › Connectors, through WordPress's AI Client, and only when an admin clicks it. The prompt holds the styling brief, the theme's colour and font presets and its current `silvertrail/silvertrail.css`, and nothing about visitors. The terms and privacy policy of the provider the site chose apply.
 
 == Changelog ==
+
+= 1.1.0 =
+
+* New: a bar layout, at the top or the bottom of the page.
+* New: the page dims only while a choice is required. By default only the centred banner requires one, so the box and the bar leave the page usable. Set `require_choice` to `true` to keep requiring a choice in the box.
+* New: Global Privacy Control wins over a choice made without it, the site answers `/.well-known/gpc.json`, and the privacy policy guide suggests text for the signal and for records.
+* New: agents answer the banner and check a site through WebMCP tools.
+* New: from WordPress 6.9, agents set Silvertrail up through WordPress abilities, with the MCP Adapter or the REST API.
+* New: from WordPress 7.0, Write with AI writes the custom styles with the AI provider set up under Settings › Connectors.
+* Changed: the settings have separate Design and Texts tabs, and Tools shows the setup first.
+* Changed: the plugin is called Silvertrail Cookie Banner.
+* Docs: every hook, setting and command is documented in the plugin's `docs/` folder and at [silvertrail.marcwieland.name/docs](https://silvertrail.marcwieland.name/docs/), with recipes for needs the plugin does not ship.
 
 = 1.0.0 =
 
