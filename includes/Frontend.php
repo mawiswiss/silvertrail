@@ -126,6 +126,11 @@ final class Frontend {
 			if ( '' !== $service['tag_id'] ) {
 				$services[ $id ]['tagId'] = $service['tag_id'];
 			}
+			foreach ( array( 'provider', 'purpose' ) as $key ) {
+				if ( '' !== $service[ $key ] ) {
+					$services[ $id ][ $key ] = $service[ $key ];
+				}
+			}
 		}
 
 		return array(
@@ -140,6 +145,7 @@ final class Frontend {
 			'google'      => (object) ConsentMode::map(),
 			'consentApi'  => ConsentApi::map(),
 			'gpc'         => (bool) Settings::get( 'gpc' ),
+			'webmcp'      => Settings::get( 'webmcp' ) ? add_query_arg( 'ver', self::version( 'webmcp.js' ), plugins_url( 'assets/webmcp.js', SILVERTRAIL_FILE ) ) : '',
 			'require'     => (bool) Settings::get( 'require_choice' ),
 			'check'       => Scan::active(),
 			'record'      => Records::listening() && ! Scan::active() ? rest_url( 'silvertrail/v1/record' ) : '',

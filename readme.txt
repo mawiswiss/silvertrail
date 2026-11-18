@@ -25,7 +25,8 @@ Set everything in PHP and check it on the shell. The admin keeps only the decisi
 
 * Code wins over the admin. One filter sets any setting, and the settings page marks each field that code sets.
 * Agents work on the shell. `wp silvertrail services` and `wp silvertrail settings` show every service and each setting with its source, and `wp silvertrail validate` reports what is wrong, so an agent can check its own work.
-* Prompts are built in. The admin copies a prompt to style the banner, and the Leak check writes one for the services it finds.
+* Prompts are built in. The Agents tab copies prompts to check and to set up the site with an agent, the Banner tab one to style the banner, and the Leak check writes one for the services it finds.
+* Agents check the site in the browser. In a browser with WebMCP, an experiment in Chrome, Silvertrail offers them tools to read and set the choice and to list what the page loaded.
 
 One call turns on a preset, and the official tag waits for consent:
 
@@ -59,12 +60,13 @@ The integrations most sites need are built in, so setting it up mostly means tic
 * Presets print the official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel once you turn one on and enter its ID.
 * It works behind any page cache, as the next section explains.
 * A browser that sends Global Privacy Control gets "only essential" without a banner.
+* An agent that browses for a person and speaks WebMCP answers through tools instead of clicking the banner. It may allow only essential on its own, and more only with its person's answer.
 * It asks every visitor again when the set of services changes.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 * A link, block or shortcode reopens the preferences, and an optional floating button does the same in a corner of the page.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
 * Each site of a multisite network keeps its own cookie.
-* The front end loads one script of 15 KB, under 5 KB compressed, and no jQuery.
+* The front end loads one script of 15 KB, under 5 KB compressed, and no jQuery. Only a browser with WebMCP fetches a second one, of 4 KB, for the agent tools.
 
 = Page caching =
 

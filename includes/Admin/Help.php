@@ -98,6 +98,13 @@ window.addEventListener('silvertrail:before-prompt', (event) => {
 });
 JS;
 
+	private const AGENTS = <<<'PHP'
+add_filter( 'silvertrail_settings', function ( $settings ) {
+	$settings['webmcp_tokens'] = [ 'YOUR-CHROME-TOKEN' ];
+	return $settings;
+} );
+PHP;
+
 	private const CLI = <<<'SH'
 wp silvertrail services      # every service and what it blocks
 wp silvertrail settings      # every setting and where it comes from
@@ -119,6 +126,7 @@ SH;
 		$screen->set_help_sidebar(
 			'<p><strong>' . esc_html__( 'Full reference', 'silvertrail' ) . '</strong></p>'
 			. '<p>' . self::code( __( '`README.md` in the plugin folder covers every hook, key and attribute. Point an AI assistant at it.', 'silvertrail' ) ) . '</p>'
+			. '<p>' . self::code( __( 'Coding agents can install the skill: `npx skills add mawiswiss/silvertrail`', 'silvertrail' ) ) . '</p>'
 			. '<p><a href="https://github.com/mawiswiss/silvertrail#readme">' . esc_html__( 'On GitHub', 'silvertrail' ) . '</a></p>'
 		);
 	}
@@ -164,7 +172,7 @@ SH;
 				'code'  => self::SETTINGS,
 				'notes' => array(
 					__( 'On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`.', 'silvertrail' ),
-					__( 'Only in code: `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`.', 'silvertrail' ),
+					__( 'Only in code: `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`, `webmcp`, `webmcp_tokens`.', 'silvertrail' ),
 					__( '`wp silvertrail settings` lists each value and where it comes from.', 'silvertrail' ),
 				),
 			),
@@ -217,8 +225,21 @@ SH;
 				'notes' => array(
 					__( '`has( id )`: whether the visitor agreed to the service. Essential services are always `true`.', 'silvertrail' ),
 					__( '`open()`: opens the preferences.', 'silvertrail' ),
+					__( '`reset()`: forgets the choice in this browser, so the next page view is a first visit.', 'silvertrail' ),
 					__( '`silvertrail:change`: fires on `window` after every choice.', 'silvertrail' ),
 					__( '`silvertrail:before-prompt`: answer `prompt`, `accept-all` or `reject-all` within three seconds, for example by region.', 'silvertrail' ),
+				),
+			),
+			'silvertrail-agents'   => array(
+				'title' => __( 'Agents', 'silvertrail' ),
+				'intro' => __( 'In a browser with WebMCP, every page offers agents five tools. A trial token in `webmcp_tokens` lets visitors’ browsers offer them too, until WebMCP ships.', 'silvertrail' ),
+				'code'  => self::AGENTS,
+				'notes' => array(
+					__( '`get_cookie_consent` and `get_page_trail` read the services, the choice and what the page loaded.', 'silvertrail' ),
+					__( '`allow_only_essential`, `set_cookie_consent` and `reset_cookie_consent` change the choice. `window.silvertrail` does the same without WebMCP.', 'silvertrail' ),
+					__( 'WebMCP is an origin trial in Chrome. Without a token, only a Chrome with `chrome://flags/#enable-webmcp-testing` offers the tools.', 'silvertrail' ),
+					__( '`webmcp` set to `false` turns the tools off. `wp silvertrail validate` reports a token that expired or does not fit this site.', 'silvertrail' ),
+					__( 'The Agents tab copies prompts to check and to set up the site with an agent. `docs/agents.md` in the plugin folder is the guide.', 'silvertrail' ),
 				),
 			),
 			'silvertrail-cli'      => array(

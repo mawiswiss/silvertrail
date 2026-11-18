@@ -30,6 +30,7 @@ final class SettingsPage {
 		'services' => array( 'presets' ),
 		'banner'   => array( 'layout', 'require_choice', 'appearance', 'texts', 'imprint_page', 'floating_button', 'floating_position' ),
 		'tools'    => array( 'records' ),
+		'agents'   => array(),
 	);
 
 	private const DRAFT = 'silvertrail_texts_draft_';
@@ -74,9 +75,10 @@ final class SettingsPage {
 	public static function enqueue(): void {
 		$deps = array( 'clipboard', 'wp-a11y' );
 		wp_enqueue_style( 'silvertrail-admin', plugins_url( 'assets/admin.css', SILVERTRAIL_FILE ), array(), SILVERTRAIL_VERSION );
-		if ( 'banner' === self::tab() ) {
+		$tab = self::tab();
+		if ( 'banner' === $tab || 'agents' === $tab ) {
 			self::$editors = array(
-				'json'     => wp_enqueue_code_editor( array( 'type' => 'application/json' ) ),
+				'json'     => 'banner' === $tab ? wp_enqueue_code_editor( array( 'type' => 'application/json' ) ) : false,
 				'markdown' => wp_enqueue_code_editor(
 					array(
 						'type'       => 'text/x-markdown',
@@ -88,6 +90,8 @@ final class SettingsPage {
 				),
 			);
 			$deps          = array_filter( self::$editors ) === array() ? $deps : array( ...$deps, 'code-editor' );
+		}
+		if ( 'banner' === $tab ) {
 			wp_add_inline_style( 'silvertrail-admin', wp_get_global_stylesheet( array( 'variables' ) ) );
 		}
 		wp_enqueue_script( 'silvertrail-admin', plugins_url( 'assets/admin.js', SILVERTRAIL_FILE ), $deps, SILVERTRAIL_VERSION, true );
@@ -187,6 +191,7 @@ final class SettingsPage {
 			'services' => __( 'Services', 'silvertrail' ),
 			'banner'   => __( 'Banner', 'silvertrail' ),
 			'tools'    => __( 'Tools', 'silvertrail' ),
+			'agents'   => __( 'Agents', 'silvertrail' ),
 		);
 	}
 

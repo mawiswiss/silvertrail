@@ -10,6 +10,7 @@ namespace Silvertrail\Admin;
 use Silvertrail\Config;
 use Silvertrail\Presets;
 use Silvertrail\Settings;
+use Silvertrail\WebMcp;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -80,6 +81,22 @@ final class Notices {
 			);
 		}
 
+		foreach ( WebMcp::tokens() as $token ) {
+			$message = $token['problem'];
+			if ( '' === $message && $token['expiry'] - time() < WebMcp::WARN_DAYS * DAY_IN_SECONDS ) {
+				/* translators: 1: origin of the token, 2: date */
+				$message = sprintf( __( 'The WebMCP trial token for %1$s expires on %2$s. Renew it in the browser’s origin trial console.', 'silvertrail' ), $token['origin'], wp_date( 'Y-m-d', $token['expiry'] ) );
+			}
+			if ( '' !== $message ) {
+				$notices[] = array(
+					'card'    => 'webmcp',
+					'type'    => 'warning',
+					'message' => esc_html( $message ),
+					'summary' => __( 'A WebMCP trial token needs attention.', 'silvertrail' ),
+				);
+			}
+		}
+
 		$turn_on = SettingsPage::turning_on();
 		if ( '' !== $turn_on ) {
 			$preset    = Presets::all()[ $turn_on ];
@@ -110,6 +127,7 @@ final class Notices {
 			'trackers' => array( 'services', __( 'Trackers', 'silvertrail' ) ),
 			'texts'    => array( 'banner', __( 'Texts', 'silvertrail' ) ),
 			'links'    => array( 'banner', __( 'Links', 'silvertrail' ) ),
+			'webmcp'   => array( 'agents', __( 'Visiting agents', 'silvertrail' ) ),
 		);
 		$items = array();
 		foreach ( self::all() as $notice ) {

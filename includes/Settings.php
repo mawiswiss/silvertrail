@@ -26,7 +26,9 @@ defined( 'ABSPATH' ) || exit;
  *     records: bool,
  *     retention_days: int,
  *     gpc: bool,
- *     trail: bool
+ *     trail: bool,
+ *     webmcp: bool,
+ *     webmcp_tokens: list<string>
  * }
  */
 final class Settings {
@@ -63,6 +65,8 @@ final class Settings {
 			'retention_days'    => 365,
 			'gpc'               => true,
 			'trail'             => true,
+			'webmcp'            => true,
+			'webmcp_tokens'     => array(),
 		);
 	}
 
@@ -128,7 +132,8 @@ final class Settings {
 				'retention_days'    => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
 				'floating_button'   => self::floating_button( $value ),
 				'floating_position' => 'right' === $value ? 'right' : 'left',
-				'enabled', 'require_choice', 'load_css', 'records', 'gpc', 'trail' => (bool) $value,
+				'webmcp_tokens'     => self::tokens( $value ),
+				'enabled', 'require_choice', 'load_css', 'records', 'gpc', 'trail', 'webmcp' => (bool) $value,
 				default             => $value,
 			};
 		}
@@ -175,6 +180,19 @@ final class Settings {
 			return 'always';
 		}
 		return in_array( $value, array( 'always', 'never' ), true ) ? $value : 'auto';
+	}
+
+	/**
+	 * @return list<string>
+	 */
+	private static function tokens( mixed $value ): array {
+		$tokens = array();
+		foreach ( is_array( $value ) ? $value : array( $value ) as $token ) {
+			if ( is_string( $token ) && '' !== trim( $token ) ) {
+				$tokens[] = trim( $token );
+			}
+		}
+		return array_values( array_unique( $tokens ) );
 	}
 
 	private static function clamp( mixed $value, int $min, int $max, int $fallback ): int {

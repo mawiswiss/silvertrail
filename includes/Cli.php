@@ -113,6 +113,14 @@ final class Cli {
 		remove_action( 'doing_it_wrong_run', $collect );
 		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 
+		foreach ( WebMcp::tokens() as $token ) {
+			if ( '' !== $token['problem'] ) {
+				$problems[] = $token['problem'];
+			} else {
+				WP_CLI::log( sprintf( 'WebMCP token for %s on %s, valid until %s.', $token['feature'], $token['origin'], wp_date( 'Y-m-d', $token['expiry'] ) ) );
+			}
+		}
+
 		foreach ( $problems as $problem ) {
 			WP_CLI::warning( $problem );
 		}

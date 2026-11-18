@@ -15,6 +15,7 @@ $silvertrail_help = array(
 	'services' => 'silvertrail-service',
 	'banner'   => 'silvertrail-settings',
 	'tools'    => 'silvertrail-cli',
+	'agents'   => 'silvertrail-agents',
 );
 ?>
 <div class="wrap">
@@ -40,11 +41,15 @@ $silvertrail_help = array(
 		<?php require __DIR__ . '/tabs/tools-check.php'; ?>
 	<?php endif; ?>
 
-	<form method="post" action="options.php">
-		<?php settings_fields( SettingsPage::SLUG ); ?>
-		<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
-		<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
-	</form>
+	<?php if ( 'agents' === $tab ) : ?>
+		<?php require __DIR__ . '/tabs/agents.php'; ?>
+	<?php else : ?>
+		<form method="post" action="options.php">
+			<?php settings_fields( SettingsPage::SLUG ); ?>
+			<input type="hidden" name="<?php echo esc_attr( SettingsPage::field( '_tab' ) ); ?>" value="<?php echo esc_attr( $tab ); ?>">
+			<?php require __DIR__ . "/tabs/{$tab}.php"; ?>
+		</form>
+	<?php endif; ?>
 
 	<?php if ( 'tools' === $tab ) : ?>
 		<?php require __DIR__ . '/tabs/tools-actions.php'; ?>

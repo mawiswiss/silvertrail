@@ -37,6 +37,7 @@ final class Plugin {
 		Snippets::register();
 		ConsentMode::register();
 		ConsentApi::register();
+		WebMcp::register();
 		add_action( 'wp_footer', array( Reopen::class, 'button' ) );
 	}
 

@@ -78,6 +78,12 @@
 		set([...consentIds.filter(has), id], { ...options, partial: !decided() });
 	}
 
+	function reset() {
+		const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+		document.cookie = `${config.cookie}=; Max-Age=0; Path=${config.path}; SameSite=Lax${secure}`;
+		showReopen();
+	}
+
 	// Google Consent Mode and the WP Consent API
 
 	function syncConsentMode(consents) {
@@ -332,8 +338,8 @@
 		show('preferences');
 	}
 
-	function choose(ids) {
-		set(ids);
+	function choose(ids, options = {}) {
+		set(ids, options);
 		hide();
 	}
 
@@ -440,6 +446,14 @@
 		return Promise.race([answer, timeout]).catch(() => 'prompt');
 	}
 
+	function registerTools() {
+		if (config.webmcp && consentIds.length > 0 && typeof document.modelContext?.registerTool === 'function') {
+			import(config.webmcp)
+				.then(({ register }) => register({ config, consentIds, serviceIds, has, decided, trail, reset, choose }))
+				.catch(() => {});
+		}
+	}
+
 	async function start() {
 		bind();
 		window.wp_consent_type = 'optin';
@@ -454,6 +468,7 @@
 		if (config.check) {
 			return;
 		}
+		registerTools();
 		if (window.location.hash === '#silvertrail') {
 			open();
 			return;
@@ -491,7 +506,7 @@
 		}
 	});
 
-	window.silvertrail = { has, set, grant, open, decided, trail };
+	window.silvertrail = { has, set, grant, open, decided, trail, reset };
 
 	let started = false;
 	const once = () => {

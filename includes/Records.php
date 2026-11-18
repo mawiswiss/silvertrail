@@ -21,7 +21,7 @@ final class Records {
 
 	public const TABLE   = 'silvertrail_records';
 	public const CRON    = 'silvertrail_prune_records';
-	public const SOURCES = array( 'banner', 'embed', 'gpc', 'hook' );
+	public const SOURCES = array( 'banner', 'embed', 'gpc', 'hook', 'agent' );
 
 	private const MAX_BODY = 4096;
 
