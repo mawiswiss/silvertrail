@@ -447,6 +447,8 @@ test.describe('settings page', () => {
 	});
 
 	test('Write with AI asks for an AI provider when the site has none', async ({ page }) => {
+		const connectors = await page.request.get('/wp-admin/options-connectors.php');
+		test.skip(!connectors.ok(), 'The AI Client needs WordPress 7.0.');
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=design');
 
 		await page.getByLabel('With this site’s AI').fill('A dark bar with rounded buttons');
