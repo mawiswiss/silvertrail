@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T11:56:19+00:00\n"
+"POT-Creation-Date: 2026-11-18T06:15:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -39,316 +39,368 @@ msgstr ""
 msgid "https://marcwieland.name"
 msgstr ""
 
-#: includes/Admin/Help.php:120
+#: includes/Admin/Help.php:127
 msgid "Full reference"
 msgstr ""
 
-#: includes/Admin/Help.php:121
+#: includes/Admin/Help.php:128
 msgid "`README.md` in the plugin folder covers every hook, key and attribute. Point an AI assistant at it."
 msgstr ""
 
-#: includes/Admin/Help.php:122
+#: includes/Admin/Help.php:129
+msgid "Coding agents can install the skill: `npx skills add mawiswiss/silvertrail`"
+msgstr ""
+
+#: includes/Admin/Help.php:130
 msgid "On GitHub"
 msgstr ""
 
-#: includes/Admin/Help.php:132
+#: includes/Admin/Help.php:140
 msgid "Add a service"
 msgstr ""
 
-#: includes/Admin/Help.php:133
+#: includes/Admin/Help.php:141
 msgid "Register a service on the `silvertrail_register` action, in a plugin or the theme."
 msgstr ""
 
-#: includes/Admin/Help.php:136
+#: includes/Admin/Help.php:144
 msgid "`group`: `essential`, `preferences`, `statistics`, `marketing` or `external-media`. `silvertrail_register_group()` adds your own."
 msgstr ""
 
-#: includes/Admin/Help.php:137
+#: includes/Admin/Help.php:145
 msgid "`hosts`: embeds from these hosts wait behind a placeholder."
 msgstr ""
 
-#: includes/Admin/Help.php:138
+#: includes/Admin/Help.php:146
 msgid "`handles`: scripts enqueued under these handles wait for consent."
 msgstr ""
 
-#: includes/Admin/Help.php:139
+#: includes/Admin/Help.php:147
 msgid "Keep the config the same on every request. Every visitor is asked again when the set of services changes."
 msgstr ""
 
-#: includes/Admin/Help.php:143
+#: includes/Admin/Help.php:151
 msgid "Change a service"
 msgstr ""
 
-#: includes/Admin/Help.php:144
+#: includes/Admin/Help.php:152
 msgid "Register a service again by its ID, with only the fields to change."
 msgstr ""
 
-#: includes/Admin/Help.php:147
+#: includes/Admin/Help.php:155
 msgid "A preset’s ID turns the preset on with its defaults. A tracker needs only its `tag_id`."
 msgstr ""
 
-#: includes/Admin/Help.php:148
+#: includes/Admin/Help.php:156
 msgid "The `silvertrail_config` filter runs last. It edits or removes any service, even one turned on here."
 msgstr ""
 
-#: includes/Admin/Help.php:149
+#: includes/Admin/Help.php:157
 msgid "The Services tab marks each preset that code turned on, changed or removed."
 msgstr ""
 
-#: includes/Admin/Help.php:153
+#: includes/Admin/Help.php:161
 msgid "Gate a script"
 msgstr ""
 
-#: includes/Admin/Help.php:154
+#: includes/Admin/Help.php:162
 msgid "Give the script the type `text/plain` and the service ID. The browser runs it once the visitor agrees."
 msgstr ""
 
-#: includes/Admin/Help.php:157
+#: includes/Admin/Help.php:165
 msgid "Inline and external scripts keep their order."
 msgstr ""
 
-#: includes/Admin/Help.php:158
+#: includes/Admin/Help.php:166
 msgid "A script that WordPress enqueues needs no change: list its handle under the service’s `handles`."
 msgstr ""
 
-#: includes/Admin/Help.php:162
+#: includes/Admin/Help.php:170
 msgid "Settings in code"
 msgstr ""
 
-#: includes/Admin/Help.php:163
+#: includes/Admin/Help.php:171
 msgid "The `silvertrail_settings` filter sets any setting. A field set in code shows “Set in code” on this page and cannot be changed here."
 msgstr ""
 
-#: includes/Admin/Help.php:166
+#: includes/Admin/Help.php:174
 msgid "On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`."
 msgstr ""
 
-#: includes/Admin/Help.php:167
-msgid "Only in code: `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`."
+#: includes/Admin/Help.php:175
+msgid "Only in code: `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`, `webmcp`, `webmcp_tokens`."
 msgstr ""
 
-#: includes/Admin/Help.php:168
+#: includes/Admin/Help.php:176
 msgid "`wp silvertrail settings` lists each value and where it comes from."
 msgstr ""
 
-#: includes/Admin/Help.php:172
-#: includes/Admin/Notices.php:111
+#: includes/Admin/Help.php:180
+#: includes/Admin/Notices.php:128
 #: includes/Admin/tabs/banner.php:316
 msgid "Texts"
 msgstr ""
 
-#: includes/Admin/Help.php:173
+#: includes/Admin/Help.php:181
 msgid "Ship the texts with the theme as `silvertrail/texts-{locale}.json`, or `silvertrail/texts.json` for every language. The Banner tab shows the JSON with every key."
 msgstr ""
 
-#: includes/Admin/Help.php:176
+#: includes/Admin/Help.php:184
 msgid "A child theme wins over its parent."
 msgstr ""
 
-#: includes/Admin/Help.php:177
+#: includes/Admin/Help.php:185
 msgid "From a plugin, return another path or an array in the `silvertrail_translation` filter."
 msgstr ""
 
-#: includes/Admin/Help.php:178
+#: includes/Admin/Help.php:186
 msgid "Edits on the Banner tab win over the file. The `silvertrail_texts` filter runs last."
 msgstr ""
 
-#: includes/Admin/Help.php:179
+#: includes/Admin/Help.php:187
 msgid "`wp silvertrail validate` reports unknown keys and broken files."
 msgstr ""
 
-#: includes/Admin/Help.php:183
+#: includes/Admin/Help.php:191
 #: includes/Admin/tabs/banner.php:110
 msgid "Design"
 msgstr ""
 
-#: includes/Admin/Help.php:184
+#: includes/Admin/Help.php:192
 msgid "The banner takes its colors, corners and buttons from the theme’s `theme.json`. The `silvertrail_design` filter changes them."
 msgstr ""
 
-#: includes/Admin/Help.php:187
+#: includes/Admin/Help.php:195
 msgid "Keys: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding`, `button-weight`. Each becomes a `--silvertrail-<key>` custom property."
 msgstr ""
 
-#: includes/Admin/Help.php:188
+#: includes/Admin/Help.php:196
 msgid "For anything else, add `silvertrail/silvertrail.css` to the theme. It loads after the default styles."
 msgstr ""
 
-#: includes/Admin/Help.php:189
+#: includes/Admin/Help.php:197
 msgid "`docs/styling.md` in the plugin folder is a brief for an AI assistant that writes this stylesheet."
 msgstr ""
 
-#: includes/Admin/Help.php:190
+#: includes/Admin/Help.php:198
 msgid "To change the markup, copy a file from `templates/` into the theme’s `silvertrail/` folder and keep the `data-silvertrail-*` attributes."
 msgstr ""
 
-#: includes/Admin/Help.php:194
+#: includes/Admin/Help.php:202
 msgid "Links to the preferences"
 msgstr ""
 
-#: includes/Admin/Help.php:195
+#: includes/Admin/Help.php:203
 msgid "Any link to `#silvertrail` opens the preferences, and so does any element with `data-silvertrail-open`."
 msgstr ""
 
-#: includes/Admin/Help.php:198
+#: includes/Admin/Help.php:206
 msgid "The `[silvertrail_link]` shortcode and the Privacy settings link block print such a link."
 msgstr ""
 
-#: includes/Admin/Help.php:199
+#: includes/Admin/Help.php:207
 msgid "Every page needs such a link, unless the floating button is on."
 msgstr ""
 
-#: includes/Admin/Help.php:203
+#: includes/Admin/Help.php:211
 #: includes/Admin/tabs/banner.php:185
 #: includes/Admin/tabs/banner.php:188
 msgid "Floating button"
 msgstr ""
 
-#: includes/Admin/Help.php:204
+#: includes/Admin/Help.php:212
 msgid "Both corners on the Banner tab hide the button on pages with another link to `#silvertrail`. The `silvertrail_settings` filter shows it on every page."
 msgstr ""
 
-#: includes/Admin/Help.php:207
+#: includes/Admin/Help.php:215
 msgid "`floating_button`: `never`, the default, `auto` for pages without a link to `#silvertrail`, or `always`."
 msgstr ""
 
-#: includes/Admin/Help.php:208
+#: includes/Admin/Help.php:216
 msgid "`floating_position`: `left` or `right`."
 msgstr ""
 
-#: includes/Admin/Help.php:209
+#: includes/Admin/Help.php:217
 msgid "The `silvertrail_reopen_icon` filter swaps the icon for inline SVG or an `<img>`. The button keeps its label for screen readers."
 msgstr ""
 
-#: includes/Admin/Help.php:210
+#: includes/Admin/Help.php:218
 msgid "Style it in the theme’s `silvertrail/silvertrail.css` through `.silvertrail-reopen`, `.silvertrail-reopen--left` and `.silvertrail-reopen--right`."
 msgstr ""
 
-#: includes/Admin/Help.php:214
+#: includes/Admin/Help.php:222
 msgid "JavaScript"
 msgstr ""
 
-#: includes/Admin/Help.php:215
+#: includes/Admin/Help.php:223
 msgid "`window.silvertrail` reads and changes the choice in the browser."
 msgstr ""
 
-#: includes/Admin/Help.php:218
+#: includes/Admin/Help.php:226
 msgid "`has( id )`: whether the visitor agreed to the service. Essential services are always `true`."
 msgstr ""
 
-#: includes/Admin/Help.php:219
+#: includes/Admin/Help.php:227
 msgid "`open()`: opens the preferences."
 msgstr ""
 
-#: includes/Admin/Help.php:220
+#: includes/Admin/Help.php:228
+msgid "`reset()`: forgets the choice in this browser, so the next page view is a first visit."
+msgstr ""
+
+#: includes/Admin/Help.php:229
 msgid "`silvertrail:change`: fires on `window` after every choice."
 msgstr ""
 
-#: includes/Admin/Help.php:221
+#: includes/Admin/Help.php:230
 msgid "`silvertrail:before-prompt`: answer `prompt`, `accept-all` or `reject-all` within three seconds, for example by region."
 msgstr ""
 
-#: includes/Admin/Help.php:225
+#: includes/Admin/Help.php:234
+#: includes/Admin/SettingsPage.php:194
+msgid "Agents"
+msgstr ""
+
+#: includes/Admin/Help.php:235
+msgid "In a browser with WebMCP, every page offers agents five tools. A trial token in `webmcp_tokens` lets visitors’ browsers offer them too, until WebMCP ships."
+msgstr ""
+
+#: includes/Admin/Help.php:238
+msgid "`get_cookie_consent` and `get_page_trail` read the services, the choice and what the page loaded."
+msgstr ""
+
+#: includes/Admin/Help.php:239
+msgid "`allow_only_essential`, `set_cookie_consent` and `reset_cookie_consent` change the choice. `window.silvertrail` does the same without WebMCP."
+msgstr ""
+
+#: includes/Admin/Help.php:240
+msgid "WebMCP is an origin trial in Chrome. Without a token, only a Chrome with `chrome://flags/#enable-webmcp-testing` offers the tools."
+msgstr ""
+
+#: includes/Admin/Help.php:241
+msgid "`webmcp` set to `false` turns the tools off. `wp silvertrail validate` reports a token that expired or does not fit this site."
+msgstr ""
+
+#: includes/Admin/Help.php:242
+msgid "The Agents tab copies prompts to check and to set up the site with an agent. `docs/agents.md` in the plugin folder is the guide."
+msgstr ""
+
+#: includes/Admin/Help.php:246
 msgid "WP-CLI"
 msgstr ""
 
-#: includes/Admin/Help.php:226
+#: includes/Admin/Help.php:247
 msgid "Check and run Silvertrail from the command line. `services` and `settings` take `--format=json` for scripts."
 msgstr ""
 
-#: includes/Admin/Notices.php:51
+#: includes/Admin/Notices.php:52
 msgid "Some texts were not saved."
 msgstr ""
 
 #. translators: 1: service name, 2: example ID
-#: includes/Admin/Notices.php:64
+#: includes/Admin/Notices.php:65
 #, php-format
 msgid "%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Admin/Notices.php:66
+#: includes/Admin/Notices.php:67
 #, php-format
 msgid "%s needs a valid ID."
 msgstr ""
 
 #. translators: %s: link to the privacy settings
-#: includes/Admin/Notices.php:76
+#: includes/Admin/Notices.php:77
 #, php-format
 msgid "Publish a privacy policy page under %s, so the banner can link to it."
 msgstr ""
 
-#: includes/Admin/Notices.php:77
+#: includes/Admin/Notices.php:78
 #: includes/Admin/tabs/banner.php:429
 msgid "Settings › Privacy"
 msgstr ""
 
-#: includes/Admin/Notices.php:79
+#: includes/Admin/Notices.php:80
 msgid "No privacy policy page is published."
 msgstr ""
 
+#. translators: 1: origin of the token, 2: date
+#: includes/Admin/Notices.php:88
+#, php-format
+msgid "The WebMCP trial token for %1$s expires on %2$s. Renew it in the browser’s origin trial console."
+msgstr ""
+
+#: includes/Admin/Notices.php:95
+msgid "A WebMCP trial token needs attention."
+msgstr ""
+
 #. translators: %s: service name
-#: includes/Admin/Notices.php:90
+#: includes/Admin/Notices.php:107
 #, php-format
 msgid "%s is ticked. Save Changes to turn it on."
 msgstr ""
 
-#: includes/Admin/Notices.php:98
+#: includes/Admin/Notices.php:115
 msgid "Every visitor will be asked again on their next page view."
 msgstr ""
 
-#: includes/Admin/Notices.php:110
+#: includes/Admin/Notices.php:127
 #: includes/Admin/tabs/services.php:60
 msgid "Trackers"
 msgstr ""
 
-#: includes/Admin/Notices.php:112
+#: includes/Admin/Notices.php:129
 #: includes/Admin/tabs/banner.php:413
 msgid "Links"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:154
+#: includes/Admin/Notices.php:130
+#: includes/Admin/tabs/agents.php:129
+msgid "Visiting agents"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:158
 msgid "Set in code"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:187
+#: includes/Admin/SettingsPage.php:191
 #: includes/Scan.php:144
 #: includes/Scan.php:147
 msgid "Services"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:188
+#: includes/Admin/SettingsPage.php:192
 msgid "Banner"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:189
+#: includes/Admin/SettingsPage.php:193
 msgid "Tools"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:204
+#: includes/Admin/SettingsPage.php:209
 msgid "Settings"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:205
-#: includes/Admin/SettingsPage.php:372
+#: includes/Admin/SettingsPage.php:210
+#: includes/Admin/SettingsPage.php:377
 #: includes/Admin/status.php:82
 #: includes/Scan.php:119
 msgid "Support Silvertrail"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:295
+#: includes/Admin/SettingsPage.php:300
 msgid "The texts are not valid JSON, so they were not saved. The editor still holds them."
 msgstr ""
 
 #. translators: %s: what is wrong with a text
-#: includes/Admin/SettingsPage.php:303
+#: includes/Admin/SettingsPage.php:308
 #, php-format
 msgid "Not saved: %s"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:330
-#: includes/Admin/SettingsPage.php:340
-#: includes/Admin/SettingsPage.php:349
+#: includes/Admin/SettingsPage.php:335
+#: includes/Admin/SettingsPage.php:345
+#: includes/Admin/SettingsPage.php:354
 #: includes/Records.php:201
 msgid "You are not allowed to do this."
 msgstr ""
@@ -403,6 +455,162 @@ msgstr ""
 
 #: includes/Admin/status.php:83
 msgid "Dismiss"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:23
+#: includes/Admin/tabs/banner.php:275
+msgid "Show the prompt"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:27
+msgid "Prompt for an AI agent"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:45
+#: includes/Admin/tabs/banner.php:258
+#: includes/Scan.php:213
+msgid "Copy prompt"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:46
+#: includes/Admin/tabs/banner.php:259
+#: includes/Scan.php:214
+msgid "Copied"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:53
+msgid "Check the site with an agent"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:54
+msgid "An agent that controls a browser goes through every consent state of a page, watches what loads and reports what slipped through before consent. Silvertrail hands it a WebMCP tool for each step, so it does not have to click the banner."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:57
+#: includes/Admin/tabs/agents.php:95
+msgid "Ask an agent"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:61
+msgid "Copy the prompt. It holds the brief and this site’s services with their hosts."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:64
+msgid "Add the pages to check at its end, and give it to an agent that controls a browser."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:65
+msgid "Fix what it reports, or register the hosts it found as services."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:71
+msgid "Connect a browser"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:73
+msgid "WebMCP is an experiment in Chrome and may still change. Chrome DevTools MCP starts a Chrome with WebMCP on, for Claude Code like this:"
+msgstr ""
+
+#. translators: 1: chrome://flags address, 2: window.silvertrail
+#: includes/Admin/tabs/agents.php:79
+#, php-format
+msgid "To try the tools by hand, turn on %1$s in Chrome and open DevTools › Application › WebMCP. An agent without WebMCP clicks the banner and calls %2$s instead."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:91
+msgid "Set up with an agent"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:92
+msgid "A coding agent sets Silvertrail up in code and checks its own work on the command line."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:99
+msgid "Copy the prompt. It holds the brief and the services this site has now."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:102
+msgid "Add what the site loads from other services, and give it to a coding agent that works on the site."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:103
+msgid "Check the result with the prompt above."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:109
+msgid "Skill"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:111
+msgid "Coding agents that read skills can install the Silvertrail skill:"
+msgstr ""
+
+#. translators: 1: skills folder, 2: docs/agents.md
+#: includes/Admin/tabs/agents.php:117
+#, php-format
+msgid "It also ships in the plugin folder under %1$s. The guide to agents is %2$s in the same folder."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:130
+msgid "Agents that browse for a person meet the banner too. A browser that sends Global Privacy Control gets “only essential” without a banner. An agent that speaks WebMCP reads the services and answers through tools. It may allow only essential on its own, and more only with its person’s answer."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:134
+msgid "WebMCP tools"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:137
+msgid "On, in every browser that supports WebMCP."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:137
+msgid "Off."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:143
+msgid "Trial tokens"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:146
+msgid "None. Until WebMCP ships, visitors’ browsers offer it only on a site with a trial token."
+msgstr ""
+
+#. translators: 1: trial feature, 2: origin, 3: date
+#: includes/Admin/tabs/agents.php:156
+#, php-format
+msgid "%1$s for %2$s, valid until %3$s."
+msgstr ""
+
+#. translators: 1: webmcp_tokens, 2: silvertrail_settings
+#: includes/Admin/tabs/agents.php:167
+#, php-format
+msgid "Register this site’s address for the WebMCP origin trial in Chrome, and add the token to %1$s in the %2$s filter. Silvertrail prints it and warns here two weeks before it runs out."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:171
+#: includes/Admin/tabs/banner.php:238
+#: includes/Admin/tabs/banner.php:391
+msgid "Show how"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:180
+msgid "More prompts"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:183
+msgid "Banner › Custom styles"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:184
+msgid "a prompt that styles the banner to fit the theme."
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:187
+msgid "Tools › Leak check"
+msgstr ""
+
+#: includes/Admin/tabs/agents.php:188
+msgid "after a scan, a prompt that asks about each unknown service it found."
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:29
@@ -532,11 +740,6 @@ msgstr ""
 msgid "The %s filter shows it on every page."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:238
-#: includes/Admin/tabs/banner.php:391
-msgid "Show how"
-msgstr ""
-
 #: includes/Admin/tabs/banner.php:248
 msgid "Custom styles"
 msgstr ""
@@ -553,16 +756,6 @@ msgstr ""
 msgid "Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet."
 msgstr ""
 
-#: includes/Admin/tabs/banner.php:258
-#: includes/Scan.php:213
-msgid "Copy prompt"
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:259
-#: includes/Scan.php:214
-msgid "Copied"
-msgstr ""
-
 #: includes/Admin/tabs/banner.php:262
 msgid "Paste it into an AI assistant and describe the look you want. A screenshot of the site helps."
 msgstr ""
@@ -571,10 +764,6 @@ msgstr ""
 #: includes/Admin/tabs/banner.php:267
 #, php-format
 msgid "Save its answer in the theme as %s."
-msgstr ""
-
-#: includes/Admin/tabs/banner.php:275
-msgid "Show the prompt"
 msgstr ""
 
 #: includes/Admin/tabs/banner.php:279
@@ -888,15 +1077,15 @@ msgstr ""
 msgid "Records are off. Turn them on above."
 msgstr ""
 
-#: includes/Admin/view.php:25
+#: includes/Admin/view.php:26
 msgid "Silvertrail settings"
 msgstr ""
 
-#: includes/Admin/view.php:34
+#: includes/Admin/view.php:35
 msgid "Everything here also works in code."
 msgstr ""
 
-#: includes/Admin/view.php:35
+#: includes/Admin/view.php:36
 msgid "Developer help"
 msgstr ""
 
@@ -1024,7 +1213,7 @@ msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Plugin.php:58
+#: includes/Plugin.php:59
 msgid "Silvertrail is free. When you are paid to put it on a client’s site, consider supporting its development with a site license."
 msgstr ""
 
@@ -1435,13 +1624,13 @@ msgid ""
 msgstr ""
 
 #. translators: %s: setting key
-#: includes/Settings.php:161
+#: includes/Settings.php:166
 #, php-format
 msgid "The silvertrail_settings filter cannot set \"%s\"."
 msgstr ""
 
 #. translators: 1: setting key, 2: the value used instead
-#: includes/Settings.php:166
+#: includes/Settings.php:171
 #, php-format
 msgid "The silvertrail_settings filter returned an invalid \"%1$s\", so Silvertrail uses %2$s."
 msgstr ""
@@ -1568,6 +1757,22 @@ msgstr ""
 #: includes/Texts.php:176
 #, php-format
 msgid "%s needs exactly one %%s where the service name goes, and no other %% sign."
+msgstr ""
+
+#: includes/WebMcp.php:85
+msgid "Silvertrail cannot read a WebMCP trial token, so it cannot tell when the token expires."
+msgstr ""
+
+#. translators: 1: origin of the token, 2: date
+#: includes/WebMcp.php:89
+#, php-format
+msgid "The WebMCP trial token for %1$s expired on %2$s. Renew it or remove it."
+msgstr ""
+
+#. translators: 1: origin of the token, 2: origin of this site
+#: includes/WebMcp.php:93
+#, php-format
+msgid "The WebMCP trial token is for %1$s, not for this site at %2$s."
 msgstr ""
 
 #. translators: %d: number of services
