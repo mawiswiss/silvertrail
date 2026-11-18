@@ -22,6 +22,7 @@ final class Plugin {
 		Cli::register();
 		// Waits until a silvertrail_settings filter added on init counts too.
 		add_action( 'wp_loaded', array( self::class, 'start' ) );
+		add_action( 'admin_init', array( self::class, 'privacy_text' ) );
 		if ( is_admin() ) {
 			Admin\SettingsPage::register();
 		}
@@ -38,7 +39,22 @@ final class Plugin {
 		ConsentMode::register();
 		ConsentApi::register();
 		WebMcp::register();
+		Gpc::register();
 		add_action( 'wp_footer', array( Reopen::class, 'button' ) );
+	}
+
+	/**
+	 * One call, because each call adds its own section to the privacy policy guide.
+	 */
+	public static function privacy_text(): void {
+		$text = self::privacy_suggestion();
+		if ( '' !== $text && function_exists( 'wp_add_privacy_policy_content' ) ) {
+			wp_add_privacy_policy_content( 'Silvertrail', $text );
+		}
+	}
+
+	public static function privacy_suggestion(): string {
+		return wp_kses_post( Gpc::privacy_text() . Records::privacy_text() );
 	}
 
 	/**

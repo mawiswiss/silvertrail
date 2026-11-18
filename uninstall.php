@@ -12,6 +12,7 @@ function silvertrail_uninstall_site(): void {
 	delete_option( 'silvertrail' );
 	delete_option( 'silvertrail_version' );
 	delete_option( 'silvertrail_license_seen' );
+	delete_option( 'silvertrail_gpc_since' );
 	wp_clear_scheduled_hook( 'silvertrail_prune_records' );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- removes the plugin's own table.
 	$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . 'silvertrail_records' ) );

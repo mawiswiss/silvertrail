@@ -31,7 +31,6 @@ final class Records {
 		add_action( 'admin_post_silvertrail_export', array( self::class, 'download' ) );
 		add_action( 'add_option_' . Settings::OPTION, array( self::class, 'sync' ) );
 		add_action( 'update_option_' . Settings::OPTION, array( self::class, 'sync' ) );
-		add_action( 'admin_init', array( self::class, 'privacy_text' ) );
 		add_action( 'admin_init', array( self::class, 'heal' ) );
 	}
 
@@ -212,15 +211,10 @@ final class Records {
 		exit;
 	}
 
-	public static function privacy_text(): void {
-		if ( ! self::enabled() || ! function_exists( 'wp_add_privacy_policy_content' ) ) {
-			return;
+	public static function privacy_text(): string {
+		if ( ! self::enabled() ) {
+			return '';
 		}
-		wp_add_privacy_policy_content(
-			'Silvertrail',
-			wp_kses_post(
-				'<p>' . __( 'When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period.', 'silvertrail' ) . '</p>'
-			)
-		);
+		return '<p>' . __( 'When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period.', 'silvertrail' ) . '</p>';
 	}
 }
