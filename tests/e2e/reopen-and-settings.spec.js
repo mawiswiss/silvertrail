@@ -314,6 +314,9 @@ test.describe('settings page', () => {
 		await tabs.getByRole('link', { name: 'Texts' }).click();
 		await expect(page).toHaveURL(/tab=texts/);
 		await expect(page.locator('.CodeMirror', { hasText: '"accept_all": "Accept all"' })).toBeVisible();
+
+		await tabs.getByRole('link', { name: 'Tools' }).click();
+		await expect(page.locator('.silvertrail-section h2').first()).toHaveText('Setup');
 	});
 
 	test('highlights a linked section until the next action', async ({ page }) => {

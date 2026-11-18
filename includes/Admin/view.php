@@ -39,6 +39,7 @@ $silvertrail_help = array(
 	</nav>
 
 	<?php if ( 'tools' === $tab ) : ?>
+		<?php require __DIR__ . '/tabs/tools-setup.php'; ?>
 		<?php require __DIR__ . '/tabs/tools-check.php'; ?>
 	<?php endif; ?>
 
