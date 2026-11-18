@@ -28,6 +28,9 @@ final class Abilities {
 	);
 
 	public static function register(): void {
+		if ( ! function_exists( 'wp_register_ability' ) || ! function_exists( 'wp_register_ability_category' ) ) {
+			return;
+		}
 		add_action( 'wp_abilities_api_categories_init', array( self::class, 'category' ) );
 		add_action( 'wp_abilities_api_init', array( self::class, 'abilities' ) );
 	}
@@ -356,7 +359,7 @@ final class Abilities {
 	 * Whether WordPress offers its AI Client and allows AI. Core's support check can call the provider, so this one stays local.
 	 */
 	public static function ai_available(): bool {
-		return function_exists( 'wp_ai_client_prompt' ) && wp_supports_ai();
+		return function_exists( 'wp_ai_client_prompt' ) && function_exists( 'wp_supports_ai' ) && wp_supports_ai();
 	}
 
 	/**
