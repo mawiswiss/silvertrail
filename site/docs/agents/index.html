@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Agents and Silvertrail · Silvertrail docs</title>
+	<meta name="description" content="Agents meet Silvertrail in three roles. A developer's agent sets the site up, in code or through WordPress's abilities. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.">
+	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/agents/">
+	<link rel="alternate" type="text/markdown" href="/docs/agents.md" title="Agents and Silvertrail as Markdown">
+	<meta name="author" content="Marc Wieland">
+	<meta name="color-scheme" content="dark">
+	<meta name="theme-color" content="#1c2118">
+	<meta property="og:type" content="article">
+	<meta property="og:site_name" content="Silvertrail">
+	<meta property="og:locale" content="en_GB">
+	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/agents/">
+	<meta property="og:title" content="Agents and Silvertrail · Silvertrail docs">
+	<meta property="og:description" content="Agents meet Silvertrail in three roles. A developer's agent sets the site up, in code or through WordPress's abilities. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.">
+	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="Silvertrail: nothing loads until visitors say yes. A cookie banner with the buttons Accept all and Only essential.">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="/favicon.ico" sizes="32x32">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+	<style>
+		@font-face {
+			font-family: Manrope;
+			src: url("/fonts/manrope.woff2") format("woff2");
+			font-weight: 200 800;
+			font-display: swap;
+		}
+
+		:root {
+			--dark: #2b3326;
+			--sage: #e3e8d8;
+			--pale: #f4f6ef;
+			--lime: #cfe39a;
+			--bg: #1c2118;
+			--hero-bg: var(--bg);
+			--hero-text: var(--pale);
+			--hero-muted: #c5ccb6;
+			--text: var(--pale);
+			--muted: #c5ccb6;
+			--line: #3a4332;
+			--line-strong: #6f7a62;
+			--tile: #2a3124;
+			--code-bg: #262d21;
+			--pre-bg: #161a13;
+
+			color-scheme: dark;
+			font-family: Manrope, system-ui, sans-serif;
+			line-height: 1.6;
+			color: var(--text);
+			background: var(--bg);
+		}
+
+		* { box-sizing: border-box; }
+
+		body { margin: 0; }
+
+		a { color: inherit; text-underline-offset: 0.2em; }
+
+		:focus-visible {
+			outline: 3px solid var(--lime);
+			outline-offset: 3px;
+		}
+
+		code, pre {
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+		}
+
+		.wrap {
+			max-width: 68rem;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+
+		.skip {
+			position: absolute;
+			inset-inline-start: 1rem;
+			inset-block-start: -10rem;
+			padding: 0.5rem 1rem;
+			background: var(--sage);
+			color: var(--dark);
+			font-weight: 600;
+			z-index: 20;
+		}
+
+		.skip:focus { inset-block-start: 1rem; }
+
+		/* Header, the same on every page. /header.js sets data-state while the page scrolls. */
+
+		html { scroll-padding-top: 1.5rem; }
+
+		html:has(.site-header[data-state="shown"]) { scroll-padding-top: 6.5rem; }
+
+		.site-header {
+			position: relative;
+			z-index: 10;
+		}
+
+		.site-header[data-state] {
+			position: sticky;
+			top: 0;
+		}
+
+		.site-header[data-state="hidden"]:not(:has(:focus-visible)) {
+			translate: 0 -100%;
+			opacity: 0;
+		}
+
+		@media (prefers-reduced-motion: no-preference) {
+			html { scroll-behavior: smooth; }
+
+			.site-header[data-state] { transition: translate 0.3s ease, opacity 0.3s ease; }
+
+			.site-header__bar { transition: box-shadow 0.3s ease; }
+		}
+
+		.site-header__bar {
+			background: var(--hero-bg);
+			color: var(--hero-text);
+		}
+
+		.site-header[data-state="shown"] .site-header__bar { box-shadow: 0 1px 0 rgb(255 255 255 / 0.08), 0 0.75rem 2rem rgb(0 0 0 / 0.35); }
+
+		.topbar {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+			padding-block: 1.25rem;
+		}
+
+		.wordmark {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.625rem;
+			font-weight: 800;
+			font-size: 1.25rem;
+			letter-spacing: -0.02em;
+			text-decoration: none;
+		}
+
+		.topbar__links {
+			display: flex;
+			align-items: center;
+			gap: 1.75rem;
+		}
+
+		.topbar__links a {
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.topbar__links a:hover,
+		.topbar__links a[aria-current] { text-decoration: underline; }
+
+		.topbar__links a.topbar__licence {
+			padding: 0.5rem 1rem;
+			border: 1.5px solid var(--hero-muted);
+		}
+
+		.topbar__links a.topbar__licence:hover {
+			background: var(--pale);
+			border-color: var(--pale);
+			color: var(--dark);
+			text-decoration: none;
+		}
+
+		@media (max-width: 40rem) {
+			.topbar__links {
+				gap: 1rem;
+				font-size: 0.9375rem;
+			}
+
+			.topbar__links a:not(.topbar__licence, .topbar__docs) { display: none; }
+		}
+
+		@media (max-width: 23rem) {
+			.wordmark span {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				overflow: hidden;
+				clip-path: inset(50%);
+				white-space: nowrap;
+			}
+		}
+
+		/* Layout */
+
+		.docs {
+			display: grid;
+			gap: 2rem;
+			padding-block: 1.5rem 5rem;
+		}
+
+		@media (min-width: 60rem) {
+			.docs {
+				grid-template-columns: 14rem minmax(0, 1fr);
+				gap: 3.5rem;
+				padding-block-start: 3rem;
+			}
+		}
+
+		/* Navigation */
+
+		.docs-nav ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.docs-nav__pages {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.375rem;
+		}
+
+		.docs-nav__pages > li > a {
+			display: block;
+			padding: 0.25rem 0.625rem;
+			border: 1px solid var(--line);
+			font-size: 0.875rem;
+			text-decoration: none;
+		}
+
+		.docs-nav__pages > li > a:hover { text-decoration: underline; }
+
+		.docs-nav__pages > li > a[aria-current="page"] {
+			border-color: var(--lime);
+			color: var(--lime);
+			font-weight: 700;
+		}
+
+		.docs-nav__toc { display: none; }
+
+		@media (min-width: 60rem) {
+			.docs-nav {
+				position: sticky;
+				inset-block-start: 1.5rem;
+				align-self: start;
+				max-block-size: calc(100dvh - 3rem);
+				overflow: auto;
+			}
+
+			html:has(.site-header[data-state="shown"]) .docs-nav {
+				inset-block-start: 7rem;
+				max-block-size: calc(100dvh - 8.5rem);
+			}
+
+			.docs-nav__pages {
+				display: grid;
+				gap: 0.125rem;
+			}
+
+			.docs-nav__pages > li > a {
+				padding: 0.375rem 0 0.375rem 0.875rem;
+				border: 0;
+				border-inline-start: 2px solid var(--line);
+				font-size: 0.9375rem;
+			}
+
+			.docs-nav__pages > li > a[aria-current="page"] { border-inline-start-color: var(--lime); }
+
+			.docs-nav .docs-nav__toc {
+				display: grid;
+				border-inline-start: 2px solid var(--pale);
+				font-size: 0.875rem;
+				line-height: 1.35;
+			}
+
+			.docs-nav__toc a {
+				display: block;
+				padding: 0.3125rem 0 0.3125rem 1.75rem;
+				color: var(--muted);
+				text-decoration: none;
+			}
+
+			.docs-nav__toc a:hover {
+				color: var(--text);
+				text-decoration: underline;
+			}
+		}
+
+		@media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
+			.docs-nav { transition: inset-block-start 0.3s ease; }
+		}
+
+		/* Article */
+
+		.docs-main { min-width: 0; }
+
+		.prose {
+			max-width: 48rem;
+			overflow-wrap: break-word;
+		}
+
+		.prose h1 {
+			margin: 0 0 1.25rem;
+			font-size: clamp(2.25rem, 6vw, 3.25rem);
+			font-weight: 800;
+			line-height: 1.08;
+			letter-spacing: -0.035em;
+		}
+
+		.prose h1 + p {
+			font-size: 1.1875rem;
+			color: var(--muted);
+		}
+
+		.prose h2,
+		.prose h3 { line-height: 1.25; }
+
+		.prose h2 {
+			margin: 3.5rem 0 1rem;
+			font-size: 1.75rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.prose h3 {
+			margin: 2.25rem 0 0.75rem;
+			font-size: 1.25rem;
+			font-weight: 700;
+		}
+
+		.prose :is(h2, h3) a { text-decoration: none; }
+
+		.prose :is(h2, h3) a:hover { text-decoration: underline; }
+
+		.prose :is(h2, h3) a::before {
+			content: "#";
+			content: "#" / "";
+			margin-inline-end: 0.35em;
+			color: var(--line-strong);
+			font-weight: 600;
+		}
+
+		.prose :is(h2, h3) a:hover::before { color: var(--lime); }
+
+		@media (min-width: 60rem) {
+			.prose :is(h2, h3) a { position: relative; }
+
+			.prose :is(h2, h3) a::before {
+				position: absolute;
+				inset-inline-end: 100%;
+			}
+		}
+
+		.prose p,
+		.prose ul,
+		.prose ol { margin: 0 0 1rem; }
+
+		.prose li + li { margin-top: 0.375rem; }
+
+		.prose a:not(:is(h2, h3) a) { color: var(--lime); }
+
+		.prose :not(pre) > code {
+			padding: 0.125em 0.375em;
+			border-radius: 0.25rem;
+			background: var(--code-bg);
+			font-size: 0.875em;
+		}
+
+		.prose pre {
+			margin: 0 0 1.5rem;
+			padding: 1.25rem 1.5rem;
+			overflow-x: auto;
+			border-radius: 0.75rem;
+			background: var(--pre-bg);
+			color: #dfe5d3;
+			font-size: 0.875rem;
+			line-height: 1.7;
+			tab-size: 4;
+		}
+
+		.table {
+			margin: 0 0 1.5rem;
+			overflow-x: auto;
+		}
+
+		.table table {
+			min-width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9375rem;
+		}
+
+		.table th,
+		.table td {
+			padding: 0.625rem 0.75rem;
+			border-bottom: 1px solid var(--line);
+			text-align: left;
+			vertical-align: top;
+		}
+
+		.table th {
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.table td:first-child code { white-space: nowrap; }
+
+		.docs-meta {
+			max-width: 48rem;
+			margin-top: 4rem;
+			padding-top: 1.5rem;
+			border-top: 1px solid var(--line);
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.docs-meta p { margin: 0; }
+
+		.docs-meta p + p { margin-top: 0.5rem; }
+
+		/* Footer */
+
+		.site-footer {
+			padding-block: 3rem;
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.site-footer p { margin: 0; }
+
+		.site-footer p + p { margin-top: 0.5rem; }
+	</style>
+	<script src="/header.js" defer></script>
+</head>
+<body>
+	<a class="skip" href="#content">Skip to content</a>
+	<header class="site-header">
+		<div class="site-header__bar">
+			<nav class="wrap topbar" aria-label="Main">
+				<a class="wordmark" href="/"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#d9dbd5"/><rect x="4" y="13" width="11" height="6" rx="3" fill="#22241f"/><rect x="17" y="13" width="11" height="6" rx="3" fill="#22241f"/></svg><span>Silvertrail</span></a>
+				<div class="topbar__links">
+					<a href="/#developers">Developers</a>
+					<a href="/#features">Features</a>
+					<a class="topbar__docs" href="/docs/" aria-current="true">Docs</a>
+					<a href="https://github.com/mawiswiss/silvertrail">GitHub</a>
+					<a class="topbar__licence" href="/#licence">Honour licence</a>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<div class="wrap docs">
+		<nav class="docs-nav" aria-label="Documentation">
+			<ul class="docs-nav__pages">
+				<li><a href="/docs/">Overview</a></li>
+				<li><a href="/docs/services/">Services and groups</a></li>
+				<li><a href="/docs/settings/">Settings</a></li>
+				<li><a href="/docs/api/">API</a></li>
+				<li><a href="/docs/reopen/">Reopen the preferences</a></li>
+				<li><a href="/docs/styling/">Style the banner</a></li>
+				<li><a href="/docs/texts/">Texts</a></li>
+				<li><a href="/docs/consent-signals/">Consent signals</a></li>
+				<li><a href="/docs/records/">Records</a></li>
+				<li><a href="/docs/leak-check/">Leak check</a></li>
+				<li><a href="/docs/cli/">WP-CLI</a></li>
+				<li>
+					<a href="/docs/agents/" aria-current="page">Agents</a>
+					<ul class="docs-nav__toc">
+						<li><a href="#how">How</a></li>
+						<li><a href="#webmcp">WebMCP</a></li>
+						<li><a href="#abilities-and-mcp">Abilities and MCP</a></li>
+						<li><a href="#brief-check-the-site">Brief: check the site</a></li>
+						<li><a href="#brief-set-up-the-site">Brief: set up the site</a></li>
+					</ul>
+				</li>
+				<li><a href="/docs/recipes/">Recipes</a></li>
+			</ul>
+		</nav>
+		<main class="docs-main" id="content">
+			<article class="prose">
+<h1>Agents and Silvertrail</h1>
+<p>Agents meet Silvertrail in three roles. A developer&#39;s agent sets the site up, in code or through WordPress&#39;s abilities. An admin&#39;s agent checks what the site loads before and after consent. A visitor&#39;s agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.</p>
+<h2 id="how"><a href="#how">How</a></h2>
+<h3 id="set-up-a-site"><a href="#set-up-a-site">Set up a site</a></h3>
+<p>A coding agent with a shell sets Silvertrail up in code, reads <code>docs/README.md</code> and the pages it links for every hook and key, and runs <code>wp silvertrail validate</code> until it reports no problem. Under Settings › Silvertrail › Agents, Set up with an agent copies a prompt with this brief and the services the site has now. Coding agents that read skills can also install the Silvertrail skill:</p>
+<pre><code class="language-sh">npx skills add mawiswiss/silvertrail
+</code></pre>
+<p>The skill ships in the plugin folder as well, under <code>skills/silvertrail/</code>.</p>
+<h3 id="set-up-a-site-through-mcp"><a href="#set-up-a-site-through-mcp">Set up a site through MCP</a></h3>
+<p>An agent without access to the site&#39;s code works through Silvertrail&#39;s abilities instead, from WordPress 6.9. Install the MCP Adapter plugin, create an application password for an administrator and connect the agent&#39;s MCP client to <code>/wp-json/mcp/mcp-adapter-default-server</code>. The agent then reads the services and settings, turns presets on with their IDs, asks every visitor again and validates the config. It cannot register services that are not presets, because those live in code. <a href="#abilities-and-mcp">Abilities and MCP</a> below lists the abilities.</p>
+<h3 id="check-a-site"><a href="#check-a-site">Check a site</a></h3>
+<p>An agent that controls a browser can go through every consent state of a page and list what loads before the visitor agrees. Copy the prompt under Check the site with an agent, add the pages to check, and give it to the agent. It reports each host per state and the likely cause of each leak, and it changes nothing on the site. With records on, its choices count as decisions too, marked with the source <code>agent</code>.</p>
+<p>The check is fastest with WebMCP, where Silvertrail gives the agent a tool for each step instead of a banner to click. WebMCP is an experiment in Chrome and may still change. Chrome DevTools MCP starts a Chrome with WebMCP on and lets any MCP client list and call the tools. For Claude Code:</p>
+<pre><code class="language-sh">claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --categoryExperimentalWebmcp --categoryExperimentalThirdParty --chromeArg=--enable-features=WebMCP
+</code></pre>
+<p><code>--categoryExperimentalThirdParty</code> adds the developer tools, where Chrome DevTools MCP lists <code>reset_cookie_consent</code>.</p>
+<p>To try the tools by hand, turn on <code>chrome://flags/#enable-webmcp-testing</code> in your own Chrome. DevTools › Application › WebMCP then lists them and runs each one. An agent without WebMCP clicks the banner and calls <code>window.silvertrail</code> in the page, which offers the same steps.</p>
+<p>The Leak check under Tools does a similar job without an agent. It runs in your own browser over the pages you list, and it writes a prompt that asks an assistant about each unknown service it found.</p>
+<h3 id="visiting-agents"><a href="#visiting-agents">Visiting agents</a></h3>
+<p>A browser that sends Global Privacy Control gets &quot;only essential&quot; without a banner. An agent that speaks WebMCP reads the services and answers through tools. It may allow only essential on its own, because nothing extra loads, and it allows more only with its person&#39;s answer. Every other agent sees the banner like a person does, and with the default modal it sees nothing else until it answers.</p>
+<p>Visitors&#39; browsers offer WebMCP only on a site that holds a trial token, until WebMCP ships. <a href="#webmcp">WebMCP</a> below lists the five tools and how to add a token.</p>
+<h2 id="webmcp"><a href="#webmcp">WebMCP</a></h2>
+<p>WebMCP lets a page offer tools to an agent in the browser. Silvertrail offers five on every page where a service needs consent, unless <code>webmcp</code> is off:</p>
+<div class="table" role="region" tabindex="0" aria-label="WebMCP, table">
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>get_cookie_consent</code></td>
+<td>Reads the services that need consent, with provider, purpose and whether each is allowed, the essential services, whether a choice was made and whether Global Privacy Control applies.</td>
+</tr>
+<tr>
+<td><code>allow_only_essential</code></td>
+<td>Stores &quot;only essential&quot; and closes the banner. An agent may call it without asking its person, because nothing extra loads.</td>
+</tr>
+<tr>
+<td><code>set_cookie_consent</code></td>
+<td>Stores exactly the services in <code>services</code> and closes the banner. It is marked as consequential, so an agent asks its person first. An unknown id stores nothing and returns <code>{ error, services }</code> with the valid ids.</td>
+</tr>
+<tr>
+<td><code>get_page_trail</code></td>
+<td>Reads the services the page held back and the other hosts it loaded, each with its service and whether that one is allowed.</td>
+</tr>
+<tr>
+<td><code>reset_cookie_consent</code></td>
+<td>Forgets the choice in this browser, so the next page load is a first visit. Marked as a debugging tool, so agents that act for a visitor leave it out.</td>
+</tr>
+</tbody></table>
+</div>
+<p>Choices made through the tools carry <code>agent</code> as their source, in <code>silvertrail:change</code> and in the records. The tools load as a separate module, <code>assets/webmcp.js</code>, and only in browsers that offer WebMCP.</p>
+<p>WebMCP is not shipped yet. Chrome runs it as an origin trial and behind <code>chrome://flags/#enable-webmcp-testing</code>, Edge runs its own trial, and the API may still change. In a browser without it, Silvertrail offers nothing and the banner works as before. With the flag on, your own Chrome gets the tools on any site, which is all it takes to check one. Visitors&#39; browsers get them only on a site with a trial token for its address. Register the site for the WebMCP origin trial in Chrome, and in Edge if you like, and add the tokens in code:</p>
+<pre><code class="language-php">add_filter( &#39;silvertrail_settings&#39;, function ( $settings ) {
+	$settings[&#39;webmcp_tokens&#39;] = [ &#39;YOUR-CHROME-TOKEN&#39; ];
+	return $settings;
+} );
+</code></pre>
+<p>Silvertrail prints each token as a meta tag in the page head and leaves it out once it has expired. <code>wp silvertrail validate</code> and the Agents tab report a token that expired or is for another address, and the admin warns two weeks before a token runs out. Once WebMCP ships, the tools work without a token, and the token can go.</p>
+<h2 id="abilities-and-mcp"><a href="#abilities-and-mcp">Abilities and MCP</a></h2>
+<p>From WordPress 6.9, Silvertrail registers abilities in the <code>silvertrail</code> category. An administrator&#39;s agent reaches them through the <a href="https://wordpress.org/plugins/mcp-adapter/">MCP Adapter</a> and the REST API. Each one needs the <code>manage_options</code> capability, so an agent can do no more than the administrator it signs in as.</p>
+<div class="table" role="region" tabindex="0" aria-label="Abilities and MCP, table">
+<table>
+<thead>
+<tr>
+<th>Ability</th>
+<th>Input</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>silvertrail/list-services</code></td>
+<td>none</td>
+<td><code>services</code>: each with <code>id</code>, <code>name</code>, <code>group</code>, <code>consent</code>, <code>hosts</code>, <code>handles</code>, <code>provider</code>, <code>purpose</code>, <code>privacy_url</code> and <code>from</code> (<code>preset</code> or <code>code</code>). <code>presets</code>: each with <code>id</code>, <code>name</code>, <code>kind</code> (<code>tracker</code> or <code>embed</code>), <code>enabled</code> (the admin turned it on), <code>live</code> (the site runs it), <code>code</code> (<code>&#39;&#39;</code>, <code>on</code>, <code>removed</code> or <code>changed</code>), and for trackers <code>tag_id</code>, <code>tag_id_label</code> and <code>tag_id_example</code>.</td>
+</tr>
+<tr>
+<td><code>silvertrail/get-settings</code></td>
+<td>none</td>
+<td><code>settings</code>: each with <code>key</code>, <code>value</code> and <code>source</code> (<code>code</code>, <code>admin</code> or <code>default</code>).</td>
+</tr>
+<tr>
+<td><code>silvertrail/validate</code></td>
+<td>none</td>
+<td><code>valid</code>, <code>services</code> (the count), <code>problems</code>, <code>notes</code>, and <code>privacy_policy</code> while the Policy Guide has not shown Silvertrail&#39;s text. Once valid, <code>support</code> says how to support Silvertrail.</td>
+</tr>
+<tr>
+<td><code>silvertrail/get-styling-brief</code></td>
+<td>none</td>
+<td><code>brief</code>, the styling prompt with the theme&#39;s colours, fonts and current stylesheet, and <code>file</code>, the path in the theme to save the answer as.</td>
+</tr>
+<tr>
+<td><code>silvertrail/update-presets</code></td>
+<td><code>presets</code>: a list of <code>{ id, enabled, tag_id }</code>, where only <code>id</code> is required</td>
+<td>The <code>presets</code> as <code>list-services</code> returns them, and the <code>revision</code>.</td>
+</tr>
+<tr>
+<td><code>silvertrail/ask-again</code></td>
+<td>none</td>
+<td>The new <code>revision</code>.</td>
+</tr>
+</tbody></table>
+</div>
+<p>The first four are read-only. <code>update-presets</code> turns presets on or off and sets their IDs, as the Services tab does. It refuses a preset that code turns on, an ID on an embed, an ID that does not fit and a tracker turned on without its ID, and then changes nothing. Because a new set of services asks every visitor again, an agent confirms the change with its person first. <code>ask-again</code> is marked as destructive, so an agent asks its person first.</p>
+<p>To connect an MCP client, install the MCP Adapter, create an application password for an administrator and point the client at <code>/wp-json/mcp/mcp-adapter-default-server</code>. The adapter&#39;s discover-abilities tool lists Silvertrail&#39;s abilities next to core&#39;s. On the shell, <code>wp mcp-adapter serve --server=mcp-adapter-default-server --user=admin</code> serves the same over STDIO.</p>
+<p><code>silvertrail/write-styles</code>, from WordPress 7.0, serves Write with AI and stays out of MCP. To keep the others out of MCP as well, set <code>public</code> to <code>false</code>. They stay in the REST API for administrators:</p>
+<pre><code class="language-php">add_filter( &#39;wp_register_ability_args&#39;, function ( $args, $name ) {
+	if ( str_starts_with( $name, &#39;silvertrail/&#39; ) ) {
+		$args[&#39;meta&#39;][&#39;public&#39;] = false;
+	}
+	return $args;
+}, 10, 2 );
+</code></pre>
+<h2 id="brief-check-the-site"><a href="#brief-check-the-site">Brief: check the site</a></h2>
+<p>You check the consent setup of a WordPress site that runs Silvertrail, a cookie consent banner. Silvertrail holds back every service that needs consent until the visitor agrees. Your job is to find what loads anyway. The site owner asked for this test, so you may allow services without asking again. Change nothing on the site.</p>
+<p>Use a browser you control, with no ad blocker, because ad blockers hide requests that real visitors make. If the page offers WebMCP tools, use them:</p>
+<ul>
+<li><code>get_cookie_consent</code>: the services that need consent, the essential ones and the current choice.</li>
+<li><code>allow_only_essential</code> and <code>set_cookie_consent</code>: store a choice and close the banner.</li>
+<li><code>get_page_trail</code>: the services the page holds back and the hosts it loaded so far.</li>
+<li><code>reset_cookie_consent</code>: forget the choice, so the next load is a first visit. It is marked as a debugging tool, so your client may list it among developer tools.</li>
+</ul>
+<p>Without WebMCP, click the banner&#39;s buttons and call the same things in the page through <code>window.silvertrail</code>: <code>decided()</code>, <code>has(id)</code>, <code>set(ids)</code>, <code>trail()</code> and <code>reset()</code>. Whenever you can list the page&#39;s network requests, use them as well. They see more than <code>get_page_trail</code>, which knows only what the page recorded.</p>
+<p>Go through these states on each page:</p>
+<ol>
+<li>First visit. Reset the choice, reload and touch nothing. Nothing that needs consent may load.</li>
+<li>Only essential. Allow only essential and reload. Still nothing that needs consent may load.</li>
+<li>Each service on its own. Allow just that service and reload. Its hosts may load, the hosts of every other service may not.</li>
+<li>Everything. Allow every service and reload. Note every host that belongs to no service.</li>
+</ol>
+<p>After each state, compare the hosts the page loaded with the services below. A host of a service that is not allowed is a leak. A host that belongs to no service is unknown: name it and say what it probably is.</p>
+<p>Reply with one table per page: state, host, service or &quot;unknown&quot;, allowed or not. Then list each leak with its likely cause, such as a script or embed that is not gated, a service without its hosts, or a host the site should register as a service. Point to the place in the documentation that fixes it, from <code>docs/</code> in the plugin folder or <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>. Finish by resetting the choice.</p>
+<h2 id="brief-set-up-the-site"><a href="#brief-set-up-the-site">Brief: set up the site</a></h2>
+<p>You set up Silvertrail, a cookie consent banner, on a WordPress site. The documentation in the plugin folder is the complete reference: start at <code>docs/README.md</code> and read the pages it links for your task. The same pages are at <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>, and <a href="https://silvertrail.marcwieland.name/llms.txt">https://silvertrail.marcwieland.name/llms.txt</a> lists them as Markdown.</p>
+<p>Work in code, not in the admin. Register services in a small plugin or the theme with <code>silvertrail_register_service()</code> on the <code>silvertrail_register</code> action, and set settings with the <code>silvertrail_settings</code> filter. A preset turns on by its ID, and a tracker needs its tag ID. Every other script or embed from another host becomes a service with its hosts or its script handles.</p>
+<p>Run <code>wp silvertrail validate</code> until it reports no problem, and <code>wp silvertrail services</code> to see what is active. Then check the site in a browser as the brief &quot;Check the site&quot; in <code>docs/agents.md</code> describes, and fix what it finds. Follow the README&#39;s note to agents on the licence.</p>
+			</article>
+			<footer class="docs-meta">
+				<p>Generated from Silvertrail 1.0.0. <a href="/docs/agents.md">Markdown</a> · <a href="https://github.com/mawiswiss/silvertrail/blob/main/docs/agents.md">Source on GitHub</a></p>
+			</footer>
+		</main>
+	</div>
+
+	<footer class="wrap site-footer">
+		<p>Silvertrail is made by <a href="https://marcwieland.name">Marc Wieland</a> and licensed under the GPL.</p>
+		<p>The plugin is on <a href="https://wordpress.org/plugins/silvertrail/">WordPress.org</a>, and its code is on <a href="https://github.com/mawiswiss/silvertrail">GitHub</a>.</p>
+	</footer>
+</body>
+</html>

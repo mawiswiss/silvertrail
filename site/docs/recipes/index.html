@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Recipes · Silvertrail docs</title>
+	<meta name="description" content="Silvertrail stays small, so it ships no setting for a need that only some sites have. Each recipe here is such a need, solved with a few lines of the site's own code on top of the API. Put the PHP in a small plugin or the theme, and the JavaScript in a script that loads on every page. Replace the example IDs, hosts and URLs with the site's own.">
+	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/recipes/">
+	<link rel="alternate" type="text/markdown" href="/docs/recipes.md" title="Recipes as Markdown">
+	<meta name="author" content="Marc Wieland">
+	<meta name="color-scheme" content="dark">
+	<meta name="theme-color" content="#1c2118">
+	<meta property="og:type" content="article">
+	<meta property="og:site_name" content="Silvertrail">
+	<meta property="og:locale" content="en_GB">
+	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/recipes/">
+	<meta property="og:title" content="Recipes · Silvertrail docs">
+	<meta property="og:description" content="Silvertrail stays small, so it ships no setting for a need that only some sites have. Each recipe here is such a need, solved with a few lines of the site's own code on top of the API. Put the PHP in a small plugin or the theme, and the JavaScript in a script that loads on every page. Replace the example IDs, hosts and URLs with the site's own.">
+	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="Silvertrail: nothing loads until visitors say yes. A cookie banner with the buttons Accept all and Only essential.">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="/favicon.ico" sizes="32x32">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+	<style>
+		@font-face {
+			font-family: Manrope;
+			src: url("/fonts/manrope.woff2") format("woff2");
+			font-weight: 200 800;
+			font-display: swap;
+		}
+
+		:root {
+			--dark: #2b3326;
+			--sage: #e3e8d8;
+			--pale: #f4f6ef;
+			--lime: #cfe39a;
+			--bg: #1c2118;
+			--hero-bg: var(--bg);
+			--hero-text: var(--pale);
+			--hero-muted: #c5ccb6;
+			--text: var(--pale);
+			--muted: #c5ccb6;
+			--line: #3a4332;
+			--line-strong: #6f7a62;
+			--tile: #2a3124;
+			--code-bg: #262d21;
+			--pre-bg: #161a13;
+
+			color-scheme: dark;
+			font-family: Manrope, system-ui, sans-serif;
+			line-height: 1.6;
+			color: var(--text);
+			background: var(--bg);
+		}
+
+		* { box-sizing: border-box; }
+
+		body { margin: 0; }
+
+		a { color: inherit; text-underline-offset: 0.2em; }
+
+		:focus-visible {
+			outline: 3px solid var(--lime);
+			outline-offset: 3px;
+		}
+
+		code, pre {
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+		}
+
+		.wrap {
+			max-width: 68rem;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+
+		.skip {
+			position: absolute;
+			inset-inline-start: 1rem;
+			inset-block-start: -10rem;
+			padding: 0.5rem 1rem;
+			background: var(--sage);
+			color: var(--dark);
+			font-weight: 600;
+			z-index: 20;
+		}
+
+		.skip:focus { inset-block-start: 1rem; }
+
+		/* Header, the same on every page. /header.js sets data-state while the page scrolls. */
+
+		html { scroll-padding-top: 1.5rem; }
+
+		html:has(.site-header[data-state="shown"]) { scroll-padding-top: 6.5rem; }
+
+		.site-header {
+			position: relative;
+			z-index: 10;
+		}
+
+		.site-header[data-state] {
+			position: sticky;
+			top: 0;
+		}
+
+		.site-header[data-state="hidden"]:not(:has(:focus-visible)) {
+			translate: 0 -100%;
+			opacity: 0;
+		}
+
+		@media (prefers-reduced-motion: no-preference) {
+			html { scroll-behavior: smooth; }
+
+			.site-header[data-state] { transition: translate 0.3s ease, opacity 0.3s ease; }
+
+			.site-header__bar { transition: box-shadow 0.3s ease; }
+		}
+
+		.site-header__bar {
+			background: var(--hero-bg);
+			color: var(--hero-text);
+		}
+
+		.site-header[data-state="shown"] .site-header__bar { box-shadow: 0 1px 0 rgb(255 255 255 / 0.08), 0 0.75rem 2rem rgb(0 0 0 / 0.35); }
+
+		.topbar {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+			padding-block: 1.25rem;
+		}
+
+		.wordmark {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.625rem;
+			font-weight: 800;
+			font-size: 1.25rem;
+			letter-spacing: -0.02em;
+			text-decoration: none;
+		}
+
+		.topbar__links {
+			display: flex;
+			align-items: center;
+			gap: 1.75rem;
+		}
+
+		.topbar__links a {
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.topbar__links a:hover,
+		.topbar__links a[aria-current] { text-decoration: underline; }
+
+		.topbar__links a.topbar__licence {
+			padding: 0.5rem 1rem;
+			border: 1.5px solid var(--hero-muted);
+		}
+
+		.topbar__links a.topbar__licence:hover {
+			background: var(--pale);
+			border-color: var(--pale);
+			color: var(--dark);
+			text-decoration: none;
+		}
+
+		@media (max-width: 40rem) {
+			.topbar__links {
+				gap: 1rem;
+				font-size: 0.9375rem;
+			}
+
+			.topbar__links a:not(.topbar__licence, .topbar__docs) { display: none; }
+		}
+
+		@media (max-width: 23rem) {
+			.wordmark span {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				overflow: hidden;
+				clip-path: inset(50%);
+				white-space: nowrap;
+			}
+		}
+
+		/* Layout */
+
+		.docs {
+			display: grid;
+			gap: 2rem;
+			padding-block: 1.5rem 5rem;
+		}
+
+		@media (min-width: 60rem) {
+			.docs {
+				grid-template-columns: 14rem minmax(0, 1fr);
+				gap: 3.5rem;
+				padding-block-start: 3rem;
+			}
+		}
+
+		/* Navigation */
+
+		.docs-nav ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.docs-nav__pages {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.375rem;
+		}
+
+		.docs-nav__pages > li > a {
+			display: block;
+			padding: 0.25rem 0.625rem;
+			border: 1px solid var(--line);
+			font-size: 0.875rem;
+			text-decoration: none;
+		}
+
+		.docs-nav__pages > li > a:hover { text-decoration: underline; }
+
+		.docs-nav__pages > li > a[aria-current="page"] {
+			border-color: var(--lime);
+			color: var(--lime);
+			font-weight: 700;
+		}
+
+		.docs-nav__toc { display: none; }
+
+		@media (min-width: 60rem) {
+			.docs-nav {
+				position: sticky;
+				inset-block-start: 1.5rem;
+				align-self: start;
+				max-block-size: calc(100dvh - 3rem);
+				overflow: auto;
+			}
+
+			html:has(.site-header[data-state="shown"]) .docs-nav {
+				inset-block-start: 7rem;
+				max-block-size: calc(100dvh - 8.5rem);
+			}
+
+			.docs-nav__pages {
+				display: grid;
+				gap: 0.125rem;
+			}
+
+			.docs-nav__pages > li > a {
+				padding: 0.375rem 0 0.375rem 0.875rem;
+				border: 0;
+				border-inline-start: 2px solid var(--line);
+				font-size: 0.9375rem;
+			}
+
+			.docs-nav__pages > li > a[aria-current="page"] { border-inline-start-color: var(--lime); }
+
+			.docs-nav .docs-nav__toc {
+				display: grid;
+				border-inline-start: 2px solid var(--pale);
+				font-size: 0.875rem;
+				line-height: 1.35;
+			}
+
+			.docs-nav__toc a {
+				display: block;
+				padding: 0.3125rem 0 0.3125rem 1.75rem;
+				color: var(--muted);
+				text-decoration: none;
+			}
+
+			.docs-nav__toc a:hover {
+				color: var(--text);
+				text-decoration: underline;
+			}
+		}
+
+		@media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
+			.docs-nav { transition: inset-block-start 0.3s ease; }
+		}
+
+		/* Article */
+
+		.docs-main { min-width: 0; }
+
+		.prose {
+			max-width: 48rem;
+			overflow-wrap: break-word;
+		}
+
+		.prose h1 {
+			margin: 0 0 1.25rem;
+			font-size: clamp(2.25rem, 6vw, 3.25rem);
+			font-weight: 800;
+			line-height: 1.08;
+			letter-spacing: -0.035em;
+		}
+
+		.prose h1 + p {
+			font-size: 1.1875rem;
+			color: var(--muted);
+		}
+
+		.prose h2,
+		.prose h3 { line-height: 1.25; }
+
+		.prose h2 {
+			margin: 3.5rem 0 1rem;
+			font-size: 1.75rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.prose h3 {
+			margin: 2.25rem 0 0.75rem;
+			font-size: 1.25rem;
+			font-weight: 700;
+		}
+
+		.prose :is(h2, h3) a { text-decoration: none; }
+
+		.prose :is(h2, h3) a:hover { text-decoration: underline; }
+
+		.prose :is(h2, h3) a::before {
+			content: "#";
+			content: "#" / "";
+			margin-inline-end: 0.35em;
+			color: var(--line-strong);
+			font-weight: 600;
+		}
+
+		.prose :is(h2, h3) a:hover::before { color: var(--lime); }
+
+		@media (min-width: 60rem) {
+			.prose :is(h2, h3) a { position: relative; }
+
+			.prose :is(h2, h3) a::before {
+				position: absolute;
+				inset-inline-end: 100%;
+			}
+		}
+
+		.prose p,
+		.prose ul,
+		.prose ol { margin: 0 0 1rem; }
+
+		.prose li + li { margin-top: 0.375rem; }
+
+		.prose a:not(:is(h2, h3) a) { color: var(--lime); }
+
+		.prose :not(pre) > code {
+			padding: 0.125em 0.375em;
+			border-radius: 0.25rem;
+			background: var(--code-bg);
+			font-size: 0.875em;
+		}
+
+		.prose pre {
+			margin: 0 0 1.5rem;
+			padding: 1.25rem 1.5rem;
+			overflow-x: auto;
+			border-radius: 0.75rem;
+			background: var(--pre-bg);
+			color: #dfe5d3;
+			font-size: 0.875rem;
+			line-height: 1.7;
+			tab-size: 4;
+		}
+
+		.table {
+			margin: 0 0 1.5rem;
+			overflow-x: auto;
+		}
+
+		.table table {
+			min-width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9375rem;
+		}
+
+		.table th,
+		.table td {
+			padding: 0.625rem 0.75rem;
+			border-bottom: 1px solid var(--line);
+			text-align: left;
+			vertical-align: top;
+		}
+
+		.table th {
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.table td:first-child code { white-space: nowrap; }
+
+		.docs-meta {
+			max-width: 48rem;
+			margin-top: 4rem;
+			padding-top: 1.5rem;
+			border-top: 1px solid var(--line);
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.docs-meta p { margin: 0; }
+
+		.docs-meta p + p { margin-top: 0.5rem; }
+
+		/* Footer */
+
+		.site-footer {
+			padding-block: 3rem;
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.site-footer p { margin: 0; }
+
+		.site-footer p + p { margin-top: 0.5rem; }
+	</style>
+	<script src="/header.js" defer></script>
+</head>
+<body>
+	<a class="skip" href="#content">Skip to content</a>
+	<header class="site-header">
+		<div class="site-header__bar">
+			<nav class="wrap topbar" aria-label="Main">
+				<a class="wordmark" href="/"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#d9dbd5"/><rect x="4" y="13" width="11" height="6" rx="3" fill="#22241f"/><rect x="17" y="13" width="11" height="6" rx="3" fill="#22241f"/></svg><span>Silvertrail</span></a>
+				<div class="topbar__links">
+					<a href="/#developers">Developers</a>
+					<a href="/#features">Features</a>
+					<a class="topbar__docs" href="/docs/" aria-current="true">Docs</a>
+					<a href="https://github.com/mawiswiss/silvertrail">GitHub</a>
+					<a class="topbar__licence" href="/#licence">Honour licence</a>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<div class="wrap docs">
+		<nav class="docs-nav" aria-label="Documentation">
+			<ul class="docs-nav__pages">
+				<li><a href="/docs/">Overview</a></li>
+				<li><a href="/docs/services/">Services and groups</a></li>
+				<li><a href="/docs/settings/">Settings</a></li>
+				<li><a href="/docs/api/">API</a></li>
+				<li><a href="/docs/reopen/">Reopen the preferences</a></li>
+				<li><a href="/docs/styling/">Style the banner</a></li>
+				<li><a href="/docs/texts/">Texts</a></li>
+				<li><a href="/docs/consent-signals/">Consent signals</a></li>
+				<li><a href="/docs/records/">Records</a></li>
+				<li><a href="/docs/leak-check/">Leak check</a></li>
+				<li><a href="/docs/cli/">WP-CLI</a></li>
+				<li><a href="/docs/agents/">Agents</a></li>
+				<li>
+					<a href="/docs/recipes/" aria-current="page">Recipes</a>
+					<ul class="docs-nav__toc">
+						<li><a href="#answer-the-banner-in-code">Answer the banner in code</a></li>
+						<li><a href="#decide-by-time-zone">Decide by time zone</a></li>
+						<li><a href="#decide-by-country">Decide by country</a></li>
+						<li><a href="#run-services-until-the-visitor-objects">Run services until the visitor objects</a></li>
+						<li><a href="#load-your-own-script-after-consent">Load your own script after consent</a></li>
+						<li><a href="#send-each-decision-to-another-system">Send each decision to another system</a></li>
+						<li><a href="#use-the-choice-on-a-form-post">Use the choice on a form post</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<main class="docs-main" id="content">
+			<article class="prose">
+<h1>Recipes</h1>
+<p>Silvertrail stays small, so it ships no setting for a need that only some sites have. Each recipe here is such a need, solved with a few lines of the site&#39;s own code on top of the <a href="/docs/api/">API</a>. Put the PHP in a small plugin or the theme, and the JavaScript in a script that loads on every page. Replace the example IDs, hosts and URLs with the site&#39;s own.</p>
+<h2 id="answer-the-banner-in-code"><a href="#answer-the-banner-in-code">Answer the banner in code</a></h2>
+<p>Silvertrail asks every visitor before anything that needs consent loads. It knows no regions and never starts a service before a yes on its own. The first three recipes decide for some visitors in code, through the <a href="/docs/api/#events"><code>silvertrail:before-prompt</code></a> event, and the same rules hold for all of them:</p>
+<ul>
+<li>The answer is <code>prompt</code>, <code>accept-all</code> or <code>reject-all</code>. <code>accept-all</code> and <code>reject-all</code> store the choice with the source <code>hook</code>.</li>
+<li>A check that fails or takes longer than three seconds opens the banner, so a mistake falls back to asking.</li>
+<li>Global Privacy Control is read before the event, so a browser that sends it gets only essential whatever the answer would have been.</li>
+<li>Pages come from the cache, so the browser decides, on the first visit. Add the listener in a script that runs before <code>DOMContentLoaded</code>, such as an inline, deferred or module script.</li>
+</ul>
+<p>Do not ask an outside geolocation service from the browser. The request alone hands the visitor&#39;s IP address to that service before any choice, and that is the kind of request Silvertrail holds back.</p>
+<h2 id="decide-by-time-zone"><a href="#decide-by-time-zone">Decide by time zone</a></h2>
+<p><strong>Use case:</strong> the site treats visitors in some regions differently and wants no extra request to find the region.</p>
+<p>The device&#39;s time zone costs no request. It says how the device is set, not where the visitor is:</p>
+<pre><code class="language-js">const ZONES = []; // The time zones the site has decided on, such as &#39;America/Chicago&#39;.
+
+window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
+	const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	event.detail.respondWith(ZONES.includes(zone) ? &#39;accept-all&#39; : &#39;prompt&#39;);
+});
+</code></pre>
+<h2 id="decide-by-country"><a href="#decide-by-country">Decide by country</a></h2>
+<p><strong>Use case:</strong> the site treats visitors from some countries differently, and its CDN knows the visitor&#39;s country.</p>
+<p>A CDN passes the country to WordPress in a header, such as <code>CF-IPCountry</code> on Cloudflare with IP geolocation on, or <code>CloudFront-Viewer-Country</code> on CloudFront once an origin request policy forwards it. A REST route of the site&#39;s own hands it to the browser, and must never be cached:</p>
+<pre><code class="language-php">add_action( &#39;rest_api_init&#39;, function () {
+	register_rest_route( &#39;mysite/v1&#39;, &#39;/region&#39;, [
+		&#39;methods&#39;             =&gt; &#39;GET&#39;,
+		&#39;permission_callback&#39; =&gt; &#39;__return_true&#39;,
+		&#39;callback&#39;            =&gt; function () {
+			$country  = sanitize_text_field( wp_unslash( $_SERVER[&#39;HTTP_CF_IPCOUNTRY&#39;] ?? &#39;&#39; ) );
+			$response = new WP_REST_Response( [ &#39;country&#39; =&gt; $country ] );
+			$response-&gt;header( &#39;Cache-Control&#39;, &#39;private, no-store&#39; );
+			return $response;
+		},
+	] );
+} );
+</code></pre>
+<pre><code class="language-js">const COUNTRIES = []; // The countries the site has decided on, as ISO codes such as &#39;US&#39;.
+
+window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
+	event.detail.respondWith(
+		fetch(&#39;/?rest_route=/mysite/v1/region&#39;)
+			.then((response) =&gt; response.json())
+			.then(({ country }) =&gt; (COUNTRIES.includes(country) ? &#39;accept-all&#39; : &#39;prompt&#39;)),
+	);
+});
+</code></pre>
+<h2 id="run-services-until-the-visitor-objects"><a href="#run-services-until-the-visitor-objects">Run services until the visitor objects</a></h2>
+<p><strong>Use case:</strong> in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site&#39;s decision, not Silvertrail&#39;s.</p>
+<p>Answer <code>accept-all</code> for those visitors, by time zone or by country as above:</p>
+<ul>
+<li>Every service starts at once, and no banner opens.</li>
+<li>The choice is stored like any other, with the source <code>hook</code> in <code>silvertrail:change</code> and in the records.</li>
+<li>The visitor still needs a way to see what runs and to object, so link to <code>#silvertrail</code> on every page or set <code>floating_button</code> to <code>&#39;always&#39;</code>.</li>
+</ul>
+<p>To show the preferences once, as the notice that says what runs, open them after that first choice. They open without dimming the page, because the choice is made:</p>
+<pre><code class="language-js">window.addEventListener(&#39;silvertrail:change&#39;, (event) =&gt; {
+	if (event.detail.source === &#39;hook&#39;) {
+		window.silvertrail.open();
+	}
+});
+</code></pre>
+<p>&quot;Only essential&quot; in there stores the objection. What already ran keeps running on this page, and the next page loads none of it.</p>
+<h2 id="load-your-own-script-after-consent"><a href="#load-your-own-script-after-consent">Load your own script after consent</a></h2>
+<p><strong>Use case:</strong> a script needs code around it, such as a chat widget that is configured before it loads, so a gated <code>&lt;script&gt;</code> tag is not enough.</p>
+<p>Register the service first, with its hosts, so the banner lists it and the Leak check knows it. Then ask <code>window.silvertrail</code> and listen for the change:</p>
+<pre><code class="language-js">let started = false;
+
+function startChat() {
+	if (started || !window.silvertrail.has(&#39;chat&#39;)) {
+		return;
+	}
+	started = true;
+	const script = document.createElement(&#39;script&#39;);
+	script.src = &#39;https://widget.example-chat.com/loader.js&#39;;
+	document.head.append(script);
+}
+
+document.addEventListener(&#39;DOMContentLoaded&#39;, startChat);
+window.addEventListener(&#39;silvertrail:change&#39;, startChat);
+</code></pre>
+<p>Load it as a deferred script or in the footer, so it is listening when <code>DOMContentLoaded</code> fires. The change event covers a visitor who agrees later, on the same page.</p>
+<h2 id="send-each-decision-to-another-system"><a href="#send-each-decision-to-another-system">Send each decision to another system</a></h2>
+<p><strong>Use case:</strong> the site keeps consent records in a CRM or a data warehouse, instead of or next to Silvertrail&#39;s own table.</p>
+<p>Hooking <code>silvertrail_recorded</code> is enough to make the browser post every decision. Hand the work to a scheduled event, so the visitor&#39;s request stays fast:</p>
+<pre><code class="language-php">add_action( &#39;silvertrail_recorded&#39;, function ( $record ) {
+	wp_schedule_single_event( time(), &#39;mysite_send_consent&#39;, [ $record ] );
+} );
+
+add_action( &#39;mysite_send_consent&#39;, function ( $record ) {
+	wp_remote_post( &#39;https://crm.example.com/consent&#39;, [
+		&#39;headers&#39; =&gt; [ &#39;Content-Type&#39; =&gt; &#39;application/json&#39; ],
+		&#39;body&#39;    =&gt; wp_json_encode( $record ),
+		&#39;timeout&#39; =&gt; 10,
+	] );
+} );
+</code></pre>
+<p><a href="/docs/records/#keep-records-elsewhere">Records</a> describes the array. The data comes from the browser and is not verified.</p>
+<h2 id="use-the-choice-on-a-form-post"><a href="#use-the-choice-on-a-form-post">Use the choice on a form post</a></h2>
+<p><strong>Use case:</strong> a form passes its data on to a service only with consent, such as a newsletter signup that also goes to HubSpot.</p>
+<p>A form post never comes from the page cache, so PHP can read the visitor&#39;s choice there:</p>
+<pre><code class="language-php">add_action( &#39;admin_post_nopriv_newsletter&#39;, &#39;mysite_newsletter&#39; );
+add_action( &#39;admin_post_newsletter&#39;, &#39;mysite_newsletter&#39; );
+
+function mysite_newsletter() {
+	$email = sanitize_email( wp_unslash( $_POST[&#39;email&#39;] ?? &#39;&#39; ) );
+
+	if ( silvertrail_has( &#39;hubspot&#39; ) ) {
+		wp_remote_post( &#39;https://api.example.com/subscribe&#39;, [ &#39;body&#39; =&gt; [ &#39;email&#39; =&gt; $email ] ] );
+	}
+
+	wp_safe_redirect( home_url( &#39;/thanks/&#39; ) );
+	exit;
+}
+</code></pre>
+<p>Never use <code>silvertrail_has()</code> to decide what a page prints. A cached page would hand one visitor&#39;s choice to the next, and the service would start only after a reload. Print the tag <a href="/docs/services/#gate-a-script">gated</a> instead, and let the browser decide.</p>
+			</article>
+			<footer class="docs-meta">
+				<p>Generated from Silvertrail 1.0.0. <a href="/docs/recipes.md">Markdown</a> · <a href="https://github.com/mawiswiss/silvertrail/blob/main/docs/recipes.md">Source on GitHub</a></p>
+			</footer>
+		</main>
+	</div>
+
+	<footer class="wrap site-footer">
+		<p>Silvertrail is made by <a href="https://marcwieland.name">Marc Wieland</a> and licensed under the GPL.</p>
+		<p>The plugin is on <a href="https://wordpress.org/plugins/silvertrail/">WordPress.org</a>, and its code is on <a href="https://github.com/mawiswiss/silvertrail">GitHub</a>.</p>
+	</footer>
+</body>
+</html>

@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Services and groups · Silvertrail docs</title>
+	<meta name="description" content="A service is anything the site loads from another server: a tracker, a chat widget, an embed. Silvertrail holds each one back until the visitor agrees to it. Every service belongs to a group, and the banner asks per group and per service.">
+	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/services/">
+	<link rel="alternate" type="text/markdown" href="/docs/services.md" title="Services and groups as Markdown">
+	<meta name="author" content="Marc Wieland">
+	<meta name="color-scheme" content="dark">
+	<meta name="theme-color" content="#1c2118">
+	<meta property="og:type" content="article">
+	<meta property="og:site_name" content="Silvertrail">
+	<meta property="og:locale" content="en_GB">
+	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/services/">
+	<meta property="og:title" content="Services and groups · Silvertrail docs">
+	<meta property="og:description" content="A service is anything the site loads from another server: a tracker, a chat widget, an embed. Silvertrail holds each one back until the visitor agrees to it. Every service belongs to a group, and the banner asks per group and per service.">
+	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="Silvertrail: nothing loads until visitors say yes. A cookie banner with the buttons Accept all and Only essential.">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="/favicon.ico" sizes="32x32">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+	<style>
+		@font-face {
+			font-family: Manrope;
+			src: url("/fonts/manrope.woff2") format("woff2");
+			font-weight: 200 800;
+			font-display: swap;
+		}
+
+		:root {
+			--dark: #2b3326;
+			--sage: #e3e8d8;
+			--pale: #f4f6ef;
+			--lime: #cfe39a;
+			--bg: #1c2118;
+			--hero-bg: var(--bg);
+			--hero-text: var(--pale);
+			--hero-muted: #c5ccb6;
+			--text: var(--pale);
+			--muted: #c5ccb6;
+			--line: #3a4332;
+			--line-strong: #6f7a62;
+			--tile: #2a3124;
+			--code-bg: #262d21;
+			--pre-bg: #161a13;
+
+			color-scheme: dark;
+			font-family: Manrope, system-ui, sans-serif;
+			line-height: 1.6;
+			color: var(--text);
+			background: var(--bg);
+		}
+
+		* { box-sizing: border-box; }
+
+		body { margin: 0; }
+
+		a { color: inherit; text-underline-offset: 0.2em; }
+
+		:focus-visible {
+			outline: 3px solid var(--lime);
+			outline-offset: 3px;
+		}
+
+		code, pre {
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+		}
+
+		.wrap {
+			max-width: 68rem;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+
+		.skip {
+			position: absolute;
+			inset-inline-start: 1rem;
+			inset-block-start: -10rem;
+			padding: 0.5rem 1rem;
+			background: var(--sage);
+			color: var(--dark);
+			font-weight: 600;
+			z-index: 20;
+		}
+
+		.skip:focus { inset-block-start: 1rem; }
+
+		/* Header, the same on every page. /header.js sets data-state while the page scrolls. */
+
+		html { scroll-padding-top: 1.5rem; }
+
+		html:has(.site-header[data-state="shown"]) { scroll-padding-top: 6.5rem; }
+
+		.site-header {
+			position: relative;
+			z-index: 10;
+		}
+
+		.site-header[data-state] {
+			position: sticky;
+			top: 0;
+		}
+
+		.site-header[data-state="hidden"]:not(:has(:focus-visible)) {
+			translate: 0 -100%;
+			opacity: 0;
+		}
+
+		@media (prefers-reduced-motion: no-preference) {
+			html { scroll-behavior: smooth; }
+
+			.site-header[data-state] { transition: translate 0.3s ease, opacity 0.3s ease; }
+
+			.site-header__bar { transition: box-shadow 0.3s ease; }
+		}
+
+		.site-header__bar {
+			background: var(--hero-bg);
+			color: var(--hero-text);
+		}
+
+		.site-header[data-state="shown"] .site-header__bar { box-shadow: 0 1px 0 rgb(255 255 255 / 0.08), 0 0.75rem 2rem rgb(0 0 0 / 0.35); }
+
+		.topbar {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+			padding-block: 1.25rem;
+		}
+
+		.wordmark {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.625rem;
+			font-weight: 800;
+			font-size: 1.25rem;
+			letter-spacing: -0.02em;
+			text-decoration: none;
+		}
+
+		.topbar__links {
+			display: flex;
+			align-items: center;
+			gap: 1.75rem;
+		}
+
+		.topbar__links a {
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.topbar__links a:hover,
+		.topbar__links a[aria-current] { text-decoration: underline; }
+
+		.topbar__links a.topbar__licence {
+			padding: 0.5rem 1rem;
+			border: 1.5px solid var(--hero-muted);
+		}
+
+		.topbar__links a.topbar__licence:hover {
+			background: var(--pale);
+			border-color: var(--pale);
+			color: var(--dark);
+			text-decoration: none;
+		}
+
+		@media (max-width: 40rem) {
+			.topbar__links {
+				gap: 1rem;
+				font-size: 0.9375rem;
+			}
+
+			.topbar__links a:not(.topbar__licence, .topbar__docs) { display: none; }
+		}
+
+		@media (max-width: 23rem) {
+			.wordmark span {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				overflow: hidden;
+				clip-path: inset(50%);
+				white-space: nowrap;
+			}
+		}
+
+		/* Layout */
+
+		.docs {
+			display: grid;
+			gap: 2rem;
+			padding-block: 1.5rem 5rem;
+		}
+
+		@media (min-width: 60rem) {
+			.docs {
+				grid-template-columns: 14rem minmax(0, 1fr);
+				gap: 3.5rem;
+				padding-block-start: 3rem;
+			}
+		}
+
+		/* Navigation */
+
+		.docs-nav ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.docs-nav__pages {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.375rem;
+		}
+
+		.docs-nav__pages > li > a {
+			display: block;
+			padding: 0.25rem 0.625rem;
+			border: 1px solid var(--line);
+			font-size: 0.875rem;
+			text-decoration: none;
+		}
+
+		.docs-nav__pages > li > a:hover { text-decoration: underline; }
+
+		.docs-nav__pages > li > a[aria-current="page"] {
+			border-color: var(--lime);
+			color: var(--lime);
+			font-weight: 700;
+		}
+
+		.docs-nav__toc { display: none; }
+
+		@media (min-width: 60rem) {
+			.docs-nav {
+				position: sticky;
+				inset-block-start: 1.5rem;
+				align-self: start;
+				max-block-size: calc(100dvh - 3rem);
+				overflow: auto;
+			}
+
+			html:has(.site-header[data-state="shown"]) .docs-nav {
+				inset-block-start: 7rem;
+				max-block-size: calc(100dvh - 8.5rem);
+			}
+
+			.docs-nav__pages {
+				display: grid;
+				gap: 0.125rem;
+			}
+
+			.docs-nav__pages > li > a {
+				padding: 0.375rem 0 0.375rem 0.875rem;
+				border: 0;
+				border-inline-start: 2px solid var(--line);
+				font-size: 0.9375rem;
+			}
+
+			.docs-nav__pages > li > a[aria-current="page"] { border-inline-start-color: var(--lime); }
+
+			.docs-nav .docs-nav__toc {
+				display: grid;
+				border-inline-start: 2px solid var(--pale);
+				font-size: 0.875rem;
+				line-height: 1.35;
+			}
+
+			.docs-nav__toc a {
+				display: block;
+				padding: 0.3125rem 0 0.3125rem 1.75rem;
+				color: var(--muted);
+				text-decoration: none;
+			}
+
+			.docs-nav__toc a:hover {
+				color: var(--text);
+				text-decoration: underline;
+			}
+		}
+
+		@media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
+			.docs-nav { transition: inset-block-start 0.3s ease; }
+		}
+
+		/* Article */
+
+		.docs-main { min-width: 0; }
+
+		.prose {
+			max-width: 48rem;
+			overflow-wrap: break-word;
+		}
+
+		.prose h1 {
+			margin: 0 0 1.25rem;
+			font-size: clamp(2.25rem, 6vw, 3.25rem);
+			font-weight: 800;
+			line-height: 1.08;
+			letter-spacing: -0.035em;
+		}
+
+		.prose h1 + p {
+			font-size: 1.1875rem;
+			color: var(--muted);
+		}
+
+		.prose h2,
+		.prose h3 { line-height: 1.25; }
+
+		.prose h2 {
+			margin: 3.5rem 0 1rem;
+			font-size: 1.75rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.prose h3 {
+			margin: 2.25rem 0 0.75rem;
+			font-size: 1.25rem;
+			font-weight: 700;
+		}
+
+		.prose :is(h2, h3) a { text-decoration: none; }
+
+		.prose :is(h2, h3) a:hover { text-decoration: underline; }
+
+		.prose :is(h2, h3) a::before {
+			content: "#";
+			content: "#" / "";
+			margin-inline-end: 0.35em;
+			color: var(--line-strong);
+			font-weight: 600;
+		}
+
+		.prose :is(h2, h3) a:hover::before { color: var(--lime); }
+
+		@media (min-width: 60rem) {
+			.prose :is(h2, h3) a { position: relative; }
+
+			.prose :is(h2, h3) a::before {
+				position: absolute;
+				inset-inline-end: 100%;
+			}
+		}
+
+		.prose p,
+		.prose ul,
+		.prose ol { margin: 0 0 1rem; }
+
+		.prose li + li { margin-top: 0.375rem; }
+
+		.prose a:not(:is(h2, h3) a) { color: var(--lime); }
+
+		.prose :not(pre) > code {
+			padding: 0.125em 0.375em;
+			border-radius: 0.25rem;
+			background: var(--code-bg);
+			font-size: 0.875em;
+		}
+
+		.prose pre {
+			margin: 0 0 1.5rem;
+			padding: 1.25rem 1.5rem;
+			overflow-x: auto;
+			border-radius: 0.75rem;
+			background: var(--pre-bg);
+			color: #dfe5d3;
+			font-size: 0.875rem;
+			line-height: 1.7;
+			tab-size: 4;
+		}
+
+		.table {
+			margin: 0 0 1.5rem;
+			overflow-x: auto;
+		}
+
+		.table table {
+			min-width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9375rem;
+		}
+
+		.table th,
+		.table td {
+			padding: 0.625rem 0.75rem;
+			border-bottom: 1px solid var(--line);
+			text-align: left;
+			vertical-align: top;
+		}
+
+		.table th {
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.table td:first-child code { white-space: nowrap; }
+
+		.docs-meta {
+			max-width: 48rem;
+			margin-top: 4rem;
+			padding-top: 1.5rem;
+			border-top: 1px solid var(--line);
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.docs-meta p { margin: 0; }
+
+		.docs-meta p + p { margin-top: 0.5rem; }
+
+		/* Footer */
+
+		.site-footer {
+			padding-block: 3rem;
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.site-footer p { margin: 0; }
+
+		.site-footer p + p { margin-top: 0.5rem; }
+	</style>
+	<script src="/header.js" defer></script>
+</head>
+<body>
+	<a class="skip" href="#content">Skip to content</a>
+	<header class="site-header">
+		<div class="site-header__bar">
+			<nav class="wrap topbar" aria-label="Main">
+				<a class="wordmark" href="/"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#d9dbd5"/><rect x="4" y="13" width="11" height="6" rx="3" fill="#22241f"/><rect x="17" y="13" width="11" height="6" rx="3" fill="#22241f"/></svg><span>Silvertrail</span></a>
+				<div class="topbar__links">
+					<a href="/#developers">Developers</a>
+					<a href="/#features">Features</a>
+					<a class="topbar__docs" href="/docs/" aria-current="true">Docs</a>
+					<a href="https://github.com/mawiswiss/silvertrail">GitHub</a>
+					<a class="topbar__licence" href="/#licence">Honour licence</a>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<div class="wrap docs">
+		<nav class="docs-nav" aria-label="Documentation">
+			<ul class="docs-nav__pages">
+				<li><a href="/docs/">Overview</a></li>
+				<li>
+					<a href="/docs/services/" aria-current="page">Services and groups</a>
+					<ul class="docs-nav__toc">
+						<li><a href="#register-a-service">Register a service</a></li>
+						<li><a href="#presets">Presets</a></li>
+						<li><a href="#groups">Groups</a></li>
+						<li><a href="#the-config-filter">The config filter</a></li>
+						<li><a href="#gate-a-script">Gate a script</a></li>
+						<li><a href="#embeds">Embeds</a></li>
+					</ul>
+				</li>
+				<li><a href="/docs/settings/">Settings</a></li>
+				<li><a href="/docs/api/">API</a></li>
+				<li><a href="/docs/reopen/">Reopen the preferences</a></li>
+				<li><a href="/docs/styling/">Style the banner</a></li>
+				<li><a href="/docs/texts/">Texts</a></li>
+				<li><a href="/docs/consent-signals/">Consent signals</a></li>
+				<li><a href="/docs/records/">Records</a></li>
+				<li><a href="/docs/leak-check/">Leak check</a></li>
+				<li><a href="/docs/cli/">WP-CLI</a></li>
+				<li><a href="/docs/agents/">Agents</a></li>
+				<li><a href="/docs/recipes/">Recipes</a></li>
+			</ul>
+		</nav>
+		<main class="docs-main" id="content">
+			<article class="prose">
+<h1>Services and groups</h1>
+<p>A service is anything the site loads from another server: a tracker, a chat widget, an embed. Silvertrail holds each one back until the visitor agrees to it. Every service belongs to a group, and the banner asks per group and per service.</p>
+<h2 id="register-a-service"><a href="#register-a-service">Register a service</a></h2>
+<p>Register services on the <code>silvertrail_register</code> action, in a small plugin or the theme:</p>
+<pre><code class="language-php">add_action( &#39;silvertrail_register&#39;, function () {
+	silvertrail_register_service( &#39;hubspot&#39;, [
+		&#39;group&#39;       =&gt; &#39;marketing&#39;,
+		&#39;name&#39;        =&gt; &#39;HubSpot&#39;,
+		&#39;provider&#39;    =&gt; &#39;HubSpot, Inc.&#39;,
+		&#39;purpose&#39;     =&gt; &#39;Tracks form conversions.&#39;,
+		&#39;privacy_url&#39; =&gt; &#39;https://legal.hubspot.com/privacy-policy&#39;,
+		&#39;hosts&#39;       =&gt; [ &#39;js.hs-scripts.com&#39; ],
+		&#39;handles&#39;     =&gt; [ &#39;hubspot-tracking&#39; ],
+	] );
+} );
+</code></pre>
+<div class="table" role="region" tabindex="0" aria-label="Register a service, table">
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>group</code></td>
+<td>string</td>
+<td>none, required</td>
+<td>The group the service belongs to. A service in a group that does not exist is skipped.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>the ID</td>
+<td>The name the banner shows.</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>The company behind the service, with its address.</td>
+</tr>
+<tr>
+<td><code>purpose</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>What the service does, in one sentence.</td>
+</tr>
+<tr>
+<td><code>privacy_url</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>The provider&#39;s privacy policy.</td>
+</tr>
+<tr>
+<td><code>cookies</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>The cookies it sets, as text.</td>
+</tr>
+<tr>
+<td><code>expiry</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>How long they last, as text.</td>
+</tr>
+<tr>
+<td><code>hosts</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Hosts, or host and path, such as <code>google.com/maps</code>. Embeds from them wait behind a placeholder, and the trail and the Leak check name requests to them.</td>
+</tr>
+<tr>
+<td><code>handles</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Script handles held back until consent, with their before and after code.</td>
+</tr>
+<tr>
+<td><code>google</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>The Consent Mode types the service grants, such as <code>analytics_storage</code>.</td>
+</tr>
+<tr>
+<td><code>consent</code></td>
+<td><code>&#39;required&#39;</code> or <code>&#39;exempt&#39;</code></td>
+<td><code>&#39;required&#39;</code></td>
+<td>An exempt service never needs a decision.</td>
+</tr>
+<tr>
+<td><code>tag_id</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>The ID of a tracker preset, such as <code>GTM-XXXXXXX</code>.</td>
+</tr>
+</tbody></table>
+</div>
+<p>A service ID starts with a lowercase letter or a digit and goes on with lowercase letters, digits, <code>-</code> and <code>_</code>. Registering the ID of a preset, or of a service the admin turned on, changes only the given fields. Registering the same ID twice keeps only the second call.</p>
+<p>A host matches itself and every subdomain, so <code>facebook.com</code> also covers <code>www.facebook.com</code>. A pattern with a path, such as <code>google.com/maps</code>, matches only URLs whose path starts with it. Silvertrail strips <code>https://</code>, <code>//</code> and <code>www.</code> from each pattern.</p>
+<p>The config always holds a service with the ID <code>silvertrail</code> in the <code>essential</code> group. It lists Silvertrail&#39;s own cookie in the banner, and code cannot remove it.</p>
+<p>Keep the config the same on every request, because Silvertrail asks every visitor again whenever the set of services changes. A banner opens only when at least one service outside the essential and in-place groups needs consent.</p>
+<h2 id="presets"><a href="#presets">Presets</a></h2>
+<p>Silvertrail ships eight presets. The tracker presets print the provider&#39;s official tag once their ID is set. The embed presets start switched on.</p>
+<div class="table" role="region" tabindex="0" aria-label="Presets, table">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Group</th>
+<th>ID format</th>
+<th>Grants in Consent Mode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>google-tag-manager</code></td>
+<td><code>marketing</code></td>
+<td>Container ID, <code>GTM-XXXXXXX</code></td>
+<td><code>ad_storage</code>, <code>ad_user_data</code>, <code>ad_personalization</code>, <code>analytics_storage</code></td>
+</tr>
+<tr>
+<td><code>google-analytics</code></td>
+<td><code>statistics</code></td>
+<td>Measurement ID, <code>G-XXXXXXXXXX</code></td>
+<td><code>analytics_storage</code></td>
+</tr>
+<tr>
+<td><code>google-ads</code></td>
+<td><code>marketing</code></td>
+<td>Conversion ID, <code>AW-123456789</code></td>
+<td><code>ad_storage</code>, <code>ad_user_data</code>, <code>ad_personalization</code></td>
+</tr>
+<tr>
+<td><code>linkedin-insight</code></td>
+<td><code>marketing</code></td>
+<td>Partner ID, <code>123456</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>meta-pixel</code></td>
+<td><code>marketing</code></td>
+<td>Pixel ID, <code>1234567890</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>youtube</code></td>
+<td><code>external-media</code></td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>vimeo</code></td>
+<td><code>external-media</code></td>
+<td>none</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>google-maps</code></td>
+<td><code>external-media</code></td>
+<td>none</td>
+<td>none</td>
+</tr>
+</tbody></table>
+</div>
+<p>Registering a preset&#39;s ID turns it on with its defaults, and only the given fields change:</p>
+<pre><code class="language-php">add_action( &#39;silvertrail_register&#39;, function () {
+	silvertrail_register_service( &#39;google-tag-manager&#39;, [ &#39;tag_id&#39; =&gt; &#39;GTM-XXXXXXX&#39; ] );
+	silvertrail_register_service( &#39;youtube&#39;, [ &#39;cookies&#39; =&gt; &#39;VISITOR_INFO1_LIVE, YSC&#39; ] );
+} );
+</code></pre>
+<p>To remove a service, even one the admin turned on, unset it in the <code>silvertrail_config</code> filter:</p>
+<pre><code class="language-php">add_filter( &#39;silvertrail_config&#39;, function ( $config ) {
+	unset( $config[&#39;services&#39;][&#39;google-maps&#39;] );
+	return $config;
+} );
+</code></pre>
+<p>The Services tab marks each preset that code turned on, changed or removed. <code>wp silvertrail services</code> and the <code>silvertrail/list-services</code> ability show the same.</p>
+<h2 id="groups"><a href="#groups">Groups</a></h2>
+<p>The groups are <code>essential</code>, <code>preferences</code>, <code>statistics</code>, <code>marketing</code> and <code>external-media</code>. Add your own, or change one, with <code>silvertrail_register_group()</code> on the same action:</p>
+<pre><code class="language-php">add_action( &#39;silvertrail_register&#39;, function () {
+	silvertrail_register_group( &#39;support&#39;, [
+		&#39;name&#39;        =&gt; &#39;Support&#39;,
+		&#39;description&#39; =&gt; &#39;Lets you chat with us on this page.&#39;,
+		&#39;consent_api&#39; =&gt; &#39;preferences&#39;,
+	] );
+} );
+</code></pre>
+<div class="table" role="region" tabindex="0" aria-label="Groups, table">
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>the ID</td>
+<td>The name the banner shows.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td><code>&#39;&#39;</code></td>
+<td>One sentence under the name.</td>
+</tr>
+<tr>
+<td><code>locked</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>A locked group is always on. <code>essential</code> is always locked.</td>
+</tr>
+<tr>
+<td><code>consent_api</code></td>
+<td>string</td>
+<td><code>&#39;marketing&#39;</code></td>
+<td>The WP Consent API category: <code>functional</code>, <code>preferences</code>, <code>statistics</code>, <code>statistics-anonymous</code> or <code>marketing</code>.</td>
+</tr>
+<tr>
+<td><code>in_place</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Its services ask on their placeholder and never open the banner. <code>external-media</code> asks in place.</td>
+</tr>
+</tbody></table>
+</div>
+<div class="table" role="region" tabindex="0" aria-label="Groups, table">
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Locked</th>
+<th>WP Consent API</th>
+<th>Asks in place</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>essential</code></td>
+<td>yes</td>
+<td><code>functional</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>preferences</code></td>
+<td>no</td>
+<td><code>preferences</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>statistics</code></td>
+<td>no</td>
+<td><code>statistics</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>marketing</code></td>
+<td>no</td>
+<td><code>marketing</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>external-media</code></td>
+<td>no</td>
+<td><code>marketing</code></td>
+<td>yes</td>
+</tr>
+</tbody></table>
+</div>
+<p>A group that asks in place suits embeds only. A service in it that lists <code>handles</code> or a <code>tag_id</code> gets a warning, because the banner never prompts for it.</p>
+<h2 id="the-config-filter"><a href="#the-config-filter">The config filter</a></h2>
+<p>The <code>silvertrail_config</code> filter runs last, after every registration and the admin&#39;s presets. It receives the whole config and returns it:</p>
+<pre><code class="language-php">[
+	&#39;groups&#39;   =&gt; [ &#39;essential&#39; =&gt; [ &#39;name&#39; =&gt; …, &#39;description&#39; =&gt; …, &#39;locked&#39; =&gt; true, &#39;consent_api&#39; =&gt; &#39;functional&#39;, &#39;in_place&#39; =&gt; false ], … ],
+	&#39;services&#39; =&gt; [ &#39;hubspot&#39; =&gt; [ &#39;group&#39; =&gt; &#39;marketing&#39;, &#39;name&#39; =&gt; &#39;HubSpot&#39;, … every key from the table above ], … ],
+	&#39;google&#39;   =&gt; [ &#39;mode&#39; =&gt; &#39;basic&#39;, &#39;url_passthrough&#39; =&gt; false ],
+]
+</code></pre>
+<p>Under <code>google</code>, <code>mode</code> is <code>basic</code> or <code>advanced</code>, and <code>url_passthrough</code> passes ad click IDs in links while ad cookies are denied:</p>
+<pre><code class="language-php">add_filter( &#39;silvertrail_config&#39;, function ( $config ) {
+	$config[&#39;google&#39;][&#39;mode&#39;]            = &#39;advanced&#39;;
+	$config[&#39;google&#39;][&#39;url_passthrough&#39;] = true;
+	return $config;
+} );
+</code></pre>
+<p>Unknown keys, unknown Consent Mode types, a service in a group that does not exist and a tracker ID from code that does not fit its preset each trigger a <code>_doing_it_wrong</code> notice. <code>wp silvertrail validate</code> lists them.</p>
+<h2 id="gate-a-script"><a href="#gate-a-script">Gate a script</a></h2>
+<p>Mark a script in the HTML, and the browser ignores it until the visitor agrees to its service:</p>
+<pre><code class="language-html">&lt;script type=&quot;text/plain&quot; data-silvertrail=&quot;hubspot&quot; src=&quot;https://js.hs-scripts.com/123.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>Then Silvertrail swaps in a real script and keeps the order of inline and external scripts. A module keeps its type in <code>data-silvertrail-type</code>:</p>
+<pre><code class="language-html">&lt;script type=&quot;text/plain&quot; data-silvertrail=&quot;hubspot&quot; data-silvertrail-type=&quot;module&quot; src=&quot;/widget.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>A script that WordPress enqueues needs no change. List its handle under the service&#39;s <code>handles</code>, and Silvertrail gates it together with the code WordPress adds before and after it. Data from <code>wp_localize_script()</code> stays as it is, because it loads nothing.</p>
+<p>To find the handle of a script another plugin adds, open the page&#39;s source. WordPress prints the script as <code>&lt;script src=&quot;…&quot; id=&quot;example-tracker-js&quot;&gt;</code>, and the handle is the ID without <code>-js</code>:</p>
+<pre><code class="language-php">add_action( &#39;silvertrail_register&#39;, function () {
+	silvertrail_register_service( &#39;example-tracker&#39;, [
+		&#39;group&#39;   =&gt; &#39;statistics&#39;,
+		&#39;name&#39;    =&gt; &#39;Example Tracker&#39;,
+		&#39;purpose&#39; =&gt; &#39;Counts visits and page views.&#39;,
+		&#39;handles&#39; =&gt; [ &#39;example-tracker&#39; ],
+		&#39;hosts&#39;   =&gt; [ &#39;cdn.example-tracker.com&#39;, &#39;collect.example-tracker.com&#39; ],
+	] );
+} );
+</code></pre>
+<p>A script that a plugin prints as plain HTML has no handle. Ask its author for a filter, or turn the plugin&#39;s output off and print the tag yourself, gated as above.</p>
+<p>A gated script that waits for <code>DOMContentLoaded</code> misses it, because the event has passed by the time the visitor agrees. Such a service starts only on the next page. The Leak check reports it.</p>
+<h2 id="embeds"><a href="#embeds">Embeds</a></h2>
+<p>Every <code>&lt;iframe&gt;</code> whose address matches a service&#39;s <code>hosts</code> waits in an empty <code>&lt;template&gt;</code> behind a placeholder, unless the service is essential. Silvertrail finds them in oEmbeds, in post content, in Custom HTML blocks anywhere, including templates, template parts and patterns, and in text and HTML widgets. The placeholder asks for this once or for good, and opens no banner.</p>
+<p>An iframe that the theme prints in PHP passes none of these filters. Render it as a Custom HTML block, so it gets its placeholder too:</p>
+<pre><code class="language-php">echo do_blocks( &#39;&lt;!-- wp:html --&gt;&lt;iframe src=&quot;https://www.youtube-nocookie.com/embed/VIDEO&quot; title=&quot;Video&quot;&gt;&lt;/iframe&gt;&lt;!-- /wp:html --&gt;&#39; );
+</code></pre>
+<p><a href="/docs/styling/#templates">Styling</a> shows how to change the placeholder&#39;s markup.</p>
+<p>To read the visitor&#39;s choice in PHP or in the browser, see the <a href="/docs/api/">API</a>.</p>
+			</article>
+			<footer class="docs-meta">
+				<p>Generated from Silvertrail 1.0.0. <a href="/docs/services.md">Markdown</a> · <a href="https://github.com/mawiswiss/silvertrail/blob/main/docs/services.md">Source on GitHub</a></p>
+			</footer>
+		</main>
+	</div>
+
+	<footer class="wrap site-footer">
+		<p>Silvertrail is made by <a href="https://marcwieland.name">Marc Wieland</a> and licensed under the GPL.</p>
+		<p>The plugin is on <a href="https://wordpress.org/plugins/silvertrail/">WordPress.org</a>, and its code is on <a href="https://github.com/mawiswiss/silvertrail">GitHub</a>.</p>
+	</footer>
+</body>
+</html>
