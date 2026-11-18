@@ -1,14 +1,56 @@
 # Style the banner
 
-The banner takes its colours, corners and buttons from the theme's `theme.json`. For anything beyond that, an AI assistant writes one CSS file for the theme, and the second half of this file is its brief.
+The banner takes its colours, corners and buttons from the theme's `theme.json`. For anything beyond that, change single values in PHP, or let an AI assistant write one CSS file for the theme. The last section of this file is the brief for that assistant.
 
-## How
+The layers stack up in this order, and the later one wins: the theme's `theme.json`, the `silvertrail_design` filter, the theme's `silvertrail/silvertrail.css`.
 
-1. Under Settings › Silvertrail › Design › Custom styles, copy the prompt. Paste it into an AI assistant and describe the look you want, or add a screenshot of the site. A coding agent working in the theme reads this file instead.
+## From the theme
+
+The banner, the embed placeholders and the floating button take their colours, corners and button shape from the theme's `theme.json`, including the active style variation. Under Settings › Silvertrail › Design, the appearance that matches the theme keeps its colours as they are. The other one puts the theme's lightest or darkest colour in the background. Classic themes without `theme.json` get a neutral light or dark palette.
+
+## The design filter
+
+Set your own values with the `silvertrail_design` filter. It receives the values for the chosen appearance and the appearance itself, `light` or `dark`. Its result is final. When it returns the same colours for both, the admin drops the choice:
+
+```php
+add_filter( 'silvertrail_design', function ( $design, $appearance ) {
+	$design['accent'] = 'dark' === $appearance ? '#ff8a80' : '#c62828';
+	$design['radius'] = '0.25rem';
+	return $design;
+}, 10, 2 );
+```
+
+Each key becomes a `--silvertrail-<key>` custom property: `background`, `text`, `muted`, `line`, `accent`, `on-accent`, `radius`, `button-padding` and `button-weight`. A hex `accent` without its own `on-accent` gets black or white text, whichever reads better. Values with quotes, semicolons, braces or angle brackets are dropped.
+
+## Your own stylesheet
+
+To change more than these values, add `silvertrail/silvertrail.css` to the theme or the child theme. Silvertrail loads it after its own styles and the filter's values, so a rule with the same selector wins. With `load_css` turned off in the `silvertrail_settings` filter, it is the whole stylesheet, and `assets/silvertrail.css` in the plugin folder is the place to start from.
+
+An AI assistant writes the file best:
+
+1. Under Settings › Silvertrail › Design › Custom styles, copy the prompt. Paste it into an AI assistant and describe the look you want, or add a screenshot of the site. A coding agent working in the theme reads this file instead, or calls the `silvertrail/get-styling-brief` ability.
 2. The assistant answers with one CSS block. Save it in the theme, or the child theme, as `silvertrail/silvertrail.css`. Silvertrail loads it after its own styles, and the Design tab confirms that it found the file.
 3. Check the centred banner, the box and the bar at the top and the bottom, with and without a required choice, the preferences view behind Choose, every appearance, an embed placeholder, the reopen button, a 320px wide screen and the keyboard. The Leak check under Tools should list no new connection.
 
-The theme's `theme.json` sets the defaults, the `silvertrail_design` filter overrides them in PHP, and the theme's `silvertrail/silvertrail.css` wins over both. With the default styles turned off, through `load_css` in the `silvertrail_settings` filter, that file is the whole stylesheet, and `assets/silvertrail.css` in the plugin folder is the place to start from.
+## Write with AI
+
+From WordPress 7.0, with an AI provider set up under Settings › Connectors, Write with AI under Design › Custom styles sends the prompt and a description of the look to the provider and shows the stylesheet it writes. Nothing is saved, so check it and save it in the theme. This is the one thing in Silvertrail that sends something to another server, and only when an admin clicks it.
+
+On the shell, `wp silvertrail write-styles "A dark bar with rounded buttons"` does the same and prints the file. The `silvertrail/write-styles` ability serves both and stays out of MCP.
+
+## Templates
+
+To change the markup, copy a template from the plugin's `templates/` folder into the theme's `silvertrail/` folder. A child theme wins over its parent. Keep every `data-silvertrail-*` attribute, because the script finds the parts through them. `embed.php` also keeps its empty `<template>`, which Silvertrail fills with the embed.
+
+Each template receives `$args`:
+
+| Template | `$args` |
+| --- | --- |
+| `banner.php` | `layout` (`modal`, `box` or `bar`), `position` (`top` or `bottom`, for the bar), `appearance`, `trail` (bool), `groups` (each with `name`, `description`, `locked` and its `services`), `texts`, `privacy_url`, `imprint_url` |
+| `embed.php` | `service` (the ID), `name`, `texts`, `theme` (the appearance) |
+| `reopen-button.php` | `label`, `appearance`, `mode` (`auto` or `always`), `position` (`left` or `right`), `icon` (HTML from `silvertrail_reopen_icon`) |
+
+`texts` holds every [text key](texts.md#text-keys) in the visitor's language.
 
 ## Brief for the AI
 

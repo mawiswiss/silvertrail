@@ -1,0 +1,155 @@
+# Recipes
+
+Silvertrail stays small, so it ships no setting for a need that only some sites have. Each recipe here is such a need, solved with a few lines of the site's own code on top of the [API](api.md). Put the PHP in a small plugin or the theme, and the JavaScript in a script that loads on every page. Replace the example IDs, hosts and URLs with the site's own.
+
+## Answer the banner in code
+
+Silvertrail asks every visitor before anything that needs consent loads. It knows no regions and never starts a service before a yes on its own. The first three recipes decide for some visitors in code, through the [`silvertrail:before-prompt`](api.md#events) event, and the same rules hold for all of them:
+
+- The answer is `prompt`, `accept-all` or `reject-all`. `accept-all` and `reject-all` store the choice with the source `hook`.
+- A check that fails or takes longer than three seconds opens the banner, so a mistake falls back to asking.
+- Global Privacy Control is read before the event, so a browser that sends it gets only essential whatever the answer would have been.
+- Pages come from the cache, so the browser decides, on the first visit. Add the listener in a script that runs before `DOMContentLoaded`, such as an inline, deferred or module script.
+
+Do not ask an outside geolocation service from the browser. The request alone hands the visitor's IP address to that service before any choice, and that is the kind of request Silvertrail holds back.
+
+## Decide by time zone
+
+**Use case:** the site treats visitors in some regions differently and wants no extra request to find the region.
+
+The device's time zone costs no request. It says how the device is set, not where the visitor is:
+
+```js
+const ZONES = []; // The time zones the site has decided on, such as 'America/Chicago'.
+
+window.addEventListener('silvertrail:before-prompt', (event) => {
+	const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	event.detail.respondWith(ZONES.includes(zone) ? 'accept-all' : 'prompt');
+});
+```
+
+## Decide by country
+
+**Use case:** the site treats visitors from some countries differently, and its CDN knows the visitor's country.
+
+A CDN passes the country to WordPress in a header, such as `CF-IPCountry` on Cloudflare with IP geolocation on, or `CloudFront-Viewer-Country` on CloudFront once an origin request policy forwards it. A REST route of the site's own hands it to the browser, and must never be cached:
+
+```php
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'mysite/v1', '/region', [
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$country  = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_IPCOUNTRY'] ?? '' ) );
+			$response = new WP_REST_Response( [ 'country' => $country ] );
+			$response->header( 'Cache-Control', 'private, no-store' );
+			return $response;
+		},
+	] );
+} );
+```
+
+```js
+const COUNTRIES = []; // The countries the site has decided on, as ISO codes such as 'US'.
+
+window.addEventListener('silvertrail:before-prompt', (event) => {
+	event.detail.respondWith(
+		fetch('/?rest_route=/mysite/v1/region')
+			.then((response) => response.json())
+			.then(({ country }) => (COUNTRIES.includes(country) ? 'accept-all' : 'prompt')),
+	);
+});
+```
+
+## Run services until the visitor objects
+
+**Use case:** in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site's decision, not Silvertrail's.
+
+Answer `accept-all` for those visitors, by time zone or by country as above:
+
+- Every service starts at once, and no banner opens.
+- The choice is stored like any other, with the source `hook` in `silvertrail:change` and in the records.
+- The visitor still needs a way to see what runs and to object, so link to `#silvertrail` on every page or set `floating_button` to `'always'`.
+
+To show the preferences once, as the notice that says what runs, open them after that first choice. They open without dimming the page, because the choice is made:
+
+```js
+window.addEventListener('silvertrail:change', (event) => {
+	if (event.detail.source === 'hook') {
+		window.silvertrail.open();
+	}
+});
+```
+
+"Only essential" in there stores the objection. What already ran keeps running on this page, and the next page loads none of it.
+
+## Load your own script after consent
+
+**Use case:** a script needs code around it, such as a chat widget that is configured before it loads, so a gated `<script>` tag is not enough.
+
+Register the service first, with its hosts, so the banner lists it and the Leak check knows it. Then ask `window.silvertrail` and listen for the change:
+
+```js
+let started = false;
+
+function startChat() {
+	if (started || !window.silvertrail.has('chat')) {
+		return;
+	}
+	started = true;
+	const script = document.createElement('script');
+	script.src = 'https://widget.example-chat.com/loader.js';
+	document.head.append(script);
+}
+
+document.addEventListener('DOMContentLoaded', startChat);
+window.addEventListener('silvertrail:change', startChat);
+```
+
+Load it as a deferred script or in the footer, so it is listening when `DOMContentLoaded` fires. The change event covers a visitor who agrees later, on the same page.
+
+## Send each decision to another system
+
+**Use case:** the site keeps consent records in a CRM or a data warehouse, instead of or next to Silvertrail's own table.
+
+Hooking `silvertrail_recorded` is enough to make the browser post every decision. Hand the work to a scheduled event, so the visitor's request stays fast:
+
+```php
+add_action( 'silvertrail_recorded', function ( $record ) {
+	wp_schedule_single_event( time(), 'mysite_send_consent', [ $record ] );
+} );
+
+add_action( 'mysite_send_consent', function ( $record ) {
+	wp_remote_post( 'https://crm.example.com/consent', [
+		'headers' => [ 'Content-Type' => 'application/json' ],
+		'body'    => wp_json_encode( $record ),
+		'timeout' => 10,
+	] );
+} );
+```
+
+[Records](records.md#keep-records-elsewhere) describes the array. The data comes from the browser and is not verified.
+
+## Use the choice on a form post
+
+**Use case:** a form passes its data on to a service only with consent, such as a newsletter signup that also goes to HubSpot.
+
+A form post never comes from the page cache, so PHP can read the visitor's choice there:
+
+```php
+add_action( 'admin_post_nopriv_newsletter', 'mysite_newsletter' );
+add_action( 'admin_post_newsletter', 'mysite_newsletter' );
+
+function mysite_newsletter() {
+	$email = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+
+	if ( silvertrail_has( 'hubspot' ) ) {
+		wp_remote_post( 'https://api.example.com/subscribe', [ 'body' => [ 'email' => $email ] ] );
+	}
+
+	wp_safe_redirect( home_url( '/thanks/' ) );
+	exit;
+}
+```
+
+Never use `silvertrail_has()` to decide what a page prints. A cached page would hand one visitor's choice to the next, and the service would start only after a reload. Print the tag [gated](services.md#gate-a-script) instead, and let the browser decide.

@@ -11,9 +11,11 @@ Silvertrail holds back every service a site loads from other hosts until the vis
 
 The plugin folder is usually `wp-content/plugins/silvertrail/`. If it is not there, `wp plugin path silvertrail --dir` finds it. Read these files there:
 
-- `README.md`: the complete reference for every hook, key, setting and attribute. Look things up here instead of guessing.
-- `docs/agents.md`: the briefs to set up and to check a site, with the WebMCP setup.
+- `docs/README.md`: how Silvertrail works and the list of every page in `docs/`, the complete reference for every hook, key, setting and attribute. Look things up there instead of guessing. `docs/api.md` has the PHP and JavaScript API and every hook, and `docs/recipes.md` solves needs the plugin does not ship, such as regions.
+- `docs/agents.md`: the briefs to set up and to check a site, with the WebMCP tools and the abilities.
 - `docs/styling.md`: the brief for styling the banner.
+
+Without the plugin folder, https://silvertrail.marcwieland.name/llms.txt lists the same pages as Markdown.
 
 ## Set up or change a site
 

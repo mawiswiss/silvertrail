@@ -36,7 +36,7 @@ One call turns on a preset, and the official tag waits for consent:
 
 Any script you mark with `type="text/plain" data-silvertrail="service"` waits as well. Silvertrail runs it after consent and keeps the order of inline and external scripts. A script that a theme or plugin enqueues waits once you list its handle under a service.
 
-The [README on GitHub](https://github.com/mawiswiss/silvertrail#readme) is the complete reference.
+The [documentation](https://silvertrail.marcwieland.name/docs/), also in the plugin folder under `docs/`, is the complete reference.
 
 = Styled by your theme, or by you =
 
@@ -89,7 +89,7 @@ Marc Wieland, the developer of Silvertrail, builds new functionality for it as p
 1. Install and activate the plugin. YouTube, Vimeo and Google Maps embeds are blocked from now on.
 2. Go to Settings › Silvertrail, turn on the trackers the site uses and enter their IDs.
 
-Developers set everything else in code with the `silvertrail_settings` and `silvertrail_config` filters. The [README](https://github.com/mawiswiss/silvertrail#readme), on GitHub and in the plugin folder, is the complete reference.
+Developers set everything else in code with the `silvertrail_settings` and `silvertrail_config` filters. The [documentation](https://silvertrail.marcwieland.name/docs/), on the web and in the plugin folder under `docs/`, is the complete reference.
 
 == Frequently Asked Questions ==
 
@@ -140,17 +140,17 @@ Listen for the `silvertrail:before-prompt` event and answer with a promise that 
 
 The answer must arrive within three seconds, otherwise the banner opens.
 
-The [README](https://github.com/mawiswiss/silvertrail#regions-and-opt-out) shows how to find the region without asking another server, and how to run services until the visitor objects where a site has decided to. Silvertrail does neither on its own.
+The [recipes](https://silvertrail.marcwieland.name/docs/recipes/) in the documentation show how to find the region without asking another server, and how to run services until the visitor objects where a site has decided to. Silvertrail does neither on its own.
 
 = How do I read the choice? =
 
-In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and the `silvertrail:change` event fires after every decision. In PHP, `silvertrail_has( 'hubspot' )` reads the cookie, which only works on requests a page cache never serves, such as form posts.
+In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and the `silvertrail:change` event fires after every decision. In PHP, `silvertrail_has( 'hubspot' )` reads the cookie, which only works on requests a page cache never serves, such as form posts. The [API](https://silvertrail.marcwieland.name/docs/api/) page has every function, event and hook.
 
 = Can I change the look? =
 
 The banner takes its colours, corners and buttons from the theme's `theme.json`. The appearance that matches the theme keeps its colours as they are, and the other one puts the theme's lightest or darkest colour in the background. Themes without a `theme.json` get Silvertrail's own light or dark colours. In code, the `silvertrail_design` filter sets any colour, the corner radius and the button padding and weight.
 
-For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [docs/styling.md](https://github.com/mawiswiss/silvertrail/blob/main/docs/styling.md) file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Design › Custom styles copies it together with your theme's colours and fonts. From WordPress 7.0, with an AI provider set up under Settings › Connectors, Write with AI in the same place sends the prompt there and shows the stylesheet it writes. Nothing is saved until you add the file to the theme.
+For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [styling page](https://silvertrail.marcwieland.name/docs/styling/), also `docs/styling.md` in the plugin folder, ends with a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Design › Custom styles copies it together with your theme's colours and fonts. From WordPress 7.0, with an AI provider set up under Settings › Connectors, Write with AI in the same place sends the prompt there and shows the stylesheet it writes. Nothing is saved until you add the file to the theme.
 
 You can also turn off the default styles with `load_css` in the `silvertrail_settings` filter, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
