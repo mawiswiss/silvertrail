@@ -24,19 +24,11 @@ $silvertrail_trackers  = array_filter( $silvertrail_presets, static fn( array $p
 $silvertrail_embeds    = array_diff_key( $silvertrail_presets, $silvertrail_trackers );
 $silvertrail_in_code   = static fn( string $id ): bool => SettingsPage::in_code( $id );
 $silvertrail_turn_on   = SettingsPage::turning_on();
-$silvertrail_state     = static function ( string $id ) use ( $silvertrail_config, $silvertrail_presets ): string {
-	$service = $silvertrail_config['services'][ $id ] ?? null;
-	if ( null === $service ) {
-		return Presets::switched_on( $id ) ? __( 'Removed in code', 'silvertrail' ) : '';
-	}
-	if ( ! Presets::switched_on( $id ) ) {
-		return __( 'On in code', 'silvertrail' );
-	}
-	$preset           = $silvertrail_presets[ $id ]['service'];
-	$preset['tag_id'] = $service['tag_id'];
-	ksort( $preset );
-	ksort( $service );
-	return $preset === $service ? '' : __( 'Changed in code', 'silvertrail' );
+$silvertrail_state     = static fn( string $id ): string => match ( Presets::code_state( $id ) ) {
+	'on'      => __( 'On in code', 'silvertrail' ),
+	'removed' => __( 'Removed in code', 'silvertrail' ),
+	'changed' => __( 'Changed in code', 'silvertrail' ),
+	default   => '',
 };
 $silvertrail_toggle    = static function ( string $id, string $name, string $purpose, bool $focus = false ) use ( $silvertrail_state, $silvertrail_in_code, $silvertrail_turn_on ): void {
 	$state   = $silvertrail_state( $id );

@@ -166,6 +166,26 @@ final class Presets {
 	}
 
 	/**
+	 * What code does to a preset: '' for nothing, or 'on', 'removed' or 'changed'.
+	 *
+	 * @return ''|'on'|'removed'|'changed'
+	 */
+	public static function code_state( string $id ): string {
+		$service = Config::get()['services'][ $id ] ?? null;
+		if ( null === $service ) {
+			return self::switched_on( $id ) ? 'removed' : '';
+		}
+		if ( ! self::switched_on( $id ) ) {
+			return 'on';
+		}
+		$preset           = self::all()[ $id ]['service'];
+		$preset['tag_id'] = $service['tag_id'];
+		ksort( $preset );
+		ksort( $service );
+		return $preset === $service ? '' : 'changed';
+	}
+
+	/**
 	 * @param list<string> $hosts
 	 * @param list<string> $google
 	 * @return Service

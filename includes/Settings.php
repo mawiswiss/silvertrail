@@ -125,6 +125,18 @@ final class Settings {
 	}
 
 	/**
+	 * Where the value of a setting comes from.
+	 *
+	 * @return 'code'|'admin'|'default'
+	 */
+	public static function source( string $key ): string {
+		if ( self::in_code( $key ) ) {
+			return 'code';
+		}
+		return ( self::stored()[ $key ] ?? null ) !== ( self::defaults()[ $key ] ?? null ) ? 'admin' : 'default';
+	}
+
+	/**
 	 * @param array<mixed> $values
 	 * @return array<string, mixed>
 	 */

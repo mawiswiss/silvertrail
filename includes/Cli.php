@@ -67,22 +67,13 @@ final class Cli {
 	 * @param array<string, string> $assoc_args
 	 */
 	public function settings( array $args, array $assoc_args ): void {
-		$format   = $assoc_args['format'] ?? 'table';
-		$defaults = Settings::defaults();
-		$stored   = Settings::stored();
-		$rows     = array();
+		$format = $assoc_args['format'] ?? 'table';
+		$rows   = array();
 		foreach ( array_diff_key( Settings::all(), array_flip( array( 'presets', 'texts' ) ) ) as $key => $value ) {
-			if ( Settings::in_code( $key ) ) {
-				$source = 'code';
-			} elseif ( $stored[ $key ] !== $defaults[ $key ] ) {
-				$source = 'admin';
-			} else {
-				$source = 'default';
-			}
 			$rows[] = array(
 				'key'    => $key,
 				'value'  => in_array( $format, array( 'json', 'yaml' ), true ) ? $value : (string) wp_json_encode( $value ),
-				'source' => $source,
+				'source' => Settings::source( $key ),
 			);
 		}
 		WP_CLI\Utils\format_items( $format, $rows, array( 'key', 'value', 'source' ) );
@@ -92,47 +83,21 @@ final class Cli {
 	 * Builds the settings, the config and the texts of every installed language, and reports every problem in them.
 	 */
 	public function validate(): void {
-		$problems = array();
-		$collect  = static function ( string $function_name, string $message ) use ( &$problems ): void {
-			$problems[] = html_entity_decode( wp_strip_all_tags( $message ), ENT_QUOTES );
-		};
-		add_action( 'doing_it_wrong_run', $collect, 10, 2 );
-		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
-		Settings::reset();
-		Settings::all();
-		Config::rebuild();
-		$count = count( Config::get()['services'] );
-		Texts::reset();
-		foreach ( array_unique( array_merge( array( 'en_US', get_locale() ), get_available_languages() ) ) as $locale ) {
-			$translation = Texts::translation( $locale );
-			if ( null !== $translation ) {
-				WP_CLI::log( sprintf( 'Texts for %s come from %s.', $locale, $translation['from'] ) );
-			}
-			Texts::base( $locale );
+		$report = Validation::run();
+		foreach ( $report['notes'] as $note ) {
+			WP_CLI::log( $note );
 		}
-		remove_action( 'doing_it_wrong_run', $collect );
-		remove_filter( 'doing_it_wrong_trigger_error', '__return_false' );
-
-		foreach ( WebMcp::tokens() as $token ) {
-			if ( '' !== $token['problem'] ) {
-				$problems[] = $token['problem'];
-			} else {
-				WP_CLI::log( sprintf( 'WebMCP token for %s on %s, valid until %s.', $token['feature'], $token['origin'], wp_date( 'Y-m-d', $token['expiry'] ) ) );
-			}
+		if ( '' !== $report['privacy'] ) {
+			WP_CLI::warning( Validation::privacy_warning() );
+			WP_CLI::log( $report['privacy'] );
 		}
-
-		if ( Plugin::privacy_pending() ) {
-			WP_CLI::warning( 'Silvertrail suggests this text for the privacy policy, and the Policy Guide has not shown it yet: ' . admin_url( 'options-privacy.php?tab=policyguide' ) );
-			WP_CLI::log( trim( html_entity_decode( wp_strip_all_tags( str_replace( '</p>', "</p>\n", Plugin::privacy_suggestion() ) ), ENT_QUOTES ) ) );
-		}
-
-		foreach ( $problems as $problem ) {
+		foreach ( $report['problems'] as $problem ) {
 			WP_CLI::warning( $problem );
 		}
-		if ( array() !== $problems ) {
-			WP_CLI::error( sprintf( '%d problem(s) found.', count( $problems ) ) );
+		if ( array() !== $report['problems'] ) {
+			WP_CLI::error( sprintf( '%d problem(s) found.', count( $report['problems'] ) ) );
 		}
-		WP_CLI::success( sprintf( 'The config is valid: %d services.', $count ) );
+		WP_CLI::success( sprintf( 'The config is valid: %d services.', $report['services'] ) );
 		WP_CLI::log( Plugin::license() . ' ' . SILVERTRAIL_LICENSE_URL );
 	}
 
