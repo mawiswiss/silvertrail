@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Silvertrail\Admin;
 
 use Silvertrail\Config;
+use Silvertrail\Plugin;
 use Silvertrail\Presets;
 use Silvertrail\Settings;
 use Silvertrail\WebMcp;
@@ -78,6 +79,17 @@ final class Notices {
 					'<a href="' . esc_url( admin_url( 'options-privacy.php' ) ) . '">' . esc_html__( 'Settings › Privacy', 'silvertrail' ) . '</a>'
 				),
 				'summary' => __( 'No privacy policy page is published.', 'silvertrail' ),
+			);
+		} elseif ( Plugin::privacy_pending() ) {
+			$notices[] = array(
+				'card'    => 'links',
+				'type'    => 'warning',
+				'message' => sprintf(
+					/* translators: %s: link to the Privacy Policy Guide */
+					esc_html__( 'Silvertrail suggests a paragraph for your privacy policy. Copy it from the %s.', 'silvertrail' ),
+					'<a href="' . esc_url( admin_url( 'options-privacy.php?tab=policyguide' ) ) . '">' . esc_html__( 'Privacy Policy Guide', 'silvertrail' ) . '</a>'
+				),
+				'summary' => __( 'Silvertrail suggests text for the privacy policy.', 'silvertrail' ),
 			);
 		}
 

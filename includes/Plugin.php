@@ -58,6 +58,23 @@ final class Plugin {
 	}
 
 	/**
+	 * Whether a privacy policy is published and the Policy Guide has not shown Silvertrail's current text since.
+	 */
+	public static function privacy_pending(): bool {
+		$text = self::privacy_suggestion();
+		if ( '' === $text || '' === get_privacy_policy_url() ) {
+			return false;
+		}
+		// Core keeps here what the Policy Guide last showed for each plugin.
+		foreach ( (array) get_post_meta( (int) get_option( 'wp_page_for_privacy_policy' ), '_wp_suggested_privacy_policy_content', false ) as $shown ) {
+			if ( is_array( $shown ) && empty( $shown['removed'] ) && ( $shown['policy_text'] ?? null ) === $text ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Whether Silvertrail works on this request: switched on, or previewed through the URL.
 	 */
 	public static function live(): bool {

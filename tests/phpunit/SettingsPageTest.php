@@ -8,9 +8,11 @@ use Silvertrail\Admin\Notices;
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 use Silvertrail\Design;
+use Silvertrail\Plugin;
 use Silvertrail\Presets;
 use Silvertrail\Settings;
 use Silvertrail\Texts;
+use WP_Privacy_Policy_Content;
 use WP_UnitTestCase;
 
 final class SettingsPageTest extends WP_UnitTestCase {
@@ -266,6 +268,27 @@ final class SettingsPageTest extends WP_UnitTestCase {
 		);
 		$this->assertSame( '#silvertrail-links', Notices::overview( 'banner' )[0]['url'] );
 		$this->assertStringContainsString( 'options-privacy.php', $this->card( 'links' ) );
+	}
+
+	public function test_the_policy_guide_hint_stays_until_the_guide_shows_the_current_text(): void {
+		require_once ABSPATH . 'wp-admin/includes/class-wp-privacy-policy-content.php';
+		$page = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+			)
+		);
+		update_option( 'wp_page_for_privacy_policy', $page );
+
+		$this->assertContains( 'Silvertrail suggests text for the privacy policy.', array_column( Notices::overview( 'services' ), 'summary' ) );
+		$this->assertStringContainsString( 'options-privacy.php?tab=policyguide', $this->card( 'links' ) );
+
+		WP_Privacy_Policy_Content::add( 'Silvertrail', Plugin::privacy_suggestion() );
+		WP_Privacy_Policy_Content::get_suggested_policy_text();
+		$this->assertSame( '', $this->card( 'links' ) );
+
+		add_filter( 'silvertrail_settings', static fn( array $settings ): array => array( 'records' => true ) + $settings );
+		$this->assertTrue( Plugin::privacy_pending() );
 	}
 
 	public function test_a_texts_error_moves_from_the_top_into_its_card(): void {

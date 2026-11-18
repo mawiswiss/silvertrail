@@ -121,6 +121,11 @@ final class Cli {
 			}
 		}
 
+		if ( Plugin::privacy_pending() ) {
+			WP_CLI::warning( 'Silvertrail suggests this text for the privacy policy, and the Policy Guide has not shown it yet: ' . admin_url( 'options-privacy.php?tab=policyguide' ) );
+			WP_CLI::log( trim( html_entity_decode( wp_strip_all_tags( str_replace( '</p>', "</p>\n", Plugin::privacy_suggestion() ) ), ENT_QUOTES ) ) );
+		}
+
 		foreach ( $problems as $problem ) {
 			WP_CLI::warning( $problem );
 		}
