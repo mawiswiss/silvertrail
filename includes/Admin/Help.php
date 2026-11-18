@@ -125,9 +125,9 @@ SH;
 		}
 		$screen->set_help_sidebar(
 			'<p><strong>' . esc_html__( 'Full reference', 'silvertrail' ) . '</strong></p>'
-			. '<p>' . self::code( __( '`README.md` in the plugin folder covers every hook, key and attribute. Point an AI assistant at it.', 'silvertrail' ) ) . '</p>'
+			. '<p>' . self::code( __( '`docs/` in the plugin folder covers every hook, key and attribute. Point an AI assistant at `docs/README.md`.', 'silvertrail' ) ) . '</p>'
 			. '<p>' . self::code( __( 'Coding agents can install the skill: `npx skills add mawiswiss/silvertrail`', 'silvertrail' ) ) . '</p>'
-			. '<p><a href="https://github.com/mawiswiss/silvertrail#readme">' . esc_html__( 'On GitHub', 'silvertrail' ) . '</a></p>'
+			. '<p><a href="https://silvertrail.marcwieland.name/docs/">' . esc_html__( 'Documentation', 'silvertrail' ) . '</a></p>'
 		);
 	}
 
