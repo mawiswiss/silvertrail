@@ -21,7 +21,7 @@ A generated banner shows a dialog. Silvertrail is the backbone behind it, for ev
 - Records, when turned on, keep a random ID, the choices and the time, never an IP address, and are deleted after a year.
 - Each site of a multisite network keeps its own cookie.
 - The plugin contacts no outside service, and uninstalling it removes its options, its table and its scheduled job.
-- The banner adds 4.6 KB of JavaScript and 1.7 KB of CSS, gzipped, and needs no jQuery.
+- The banner adds one lightweight script and stylesheet, and needs no jQuery.
 
 ## Free, and a licence to support it
 

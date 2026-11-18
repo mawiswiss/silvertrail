@@ -66,7 +66,7 @@ The integrations most sites need are built in, so setting it up mostly means tic
 * A link, block or shortcode reopens the preferences, and an optional floating button does the same in a corner of the page.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
 * Each site of a multisite network keeps its own cookie.
-* The front end loads one script of 15 KB, under 5 KB compressed, and no jQuery. Only a browser with WebMCP fetches a second one, of 4 KB, for the agent tools.
+* The front end loads one lightweight script and stylesheet, and no jQuery. Only a browser with WebMCP fetches a second small script for the agent tools.
 
 = Page caching =
 
