@@ -6,7 +6,8 @@
  * @package Silvertrail
  *
  * @var array{
- *     layout: 'modal'|'box',
+ *     layout: 'modal'|'box'|'bar',
+ *     position: 'top'|'bottom',
  *     appearance: string,
  *     trail: bool,
  *     groups: array<string, array{name: string, description: string, locked: bool, services: array<string, array<string, mixed>>}>,
@@ -29,7 +30,7 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 ?>
 <dialog
 	id="silvertrail-banner"
-	class="silvertrail silvertrail--<?php echo esc_attr( $args['layout'] ); ?>"
+	class="silvertrail silvertrail--<?php echo esc_attr( $args['layout'] . ( 'bar' === $args['layout'] ? " silvertrail--{$args['position']}" : '' ) ); ?>"
 	aria-labelledby="silvertrail-title"
 	data-silvertrail-banner
 	data-silvertrail-appearance="<?php echo esc_attr( $args['appearance'] ); ?>"

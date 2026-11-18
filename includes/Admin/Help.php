@@ -171,7 +171,7 @@ SH;
 				'intro' => __( 'The `silvertrail_settings` filter sets any setting. A field set in code shows “Set in code” on this page and cannot be changed here.', 'silvertrail' ),
 				'code'  => self::SETTINGS,
 				'notes' => array(
-					__( 'On this page: `enabled`, `layout`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`.', 'silvertrail' ),
+					__( 'On this page: `enabled`, `layout`, `bar_position`, `appearance`, `require_choice`, `imprint_page`, `floating_button`, `floating_position`, `records`.', 'silvertrail' ),
 					__( 'Only in code: `load_css`, `expiry_months`, `retention_days`, `gpc`, `trail`, `webmcp`, `webmcp_tokens`.', 'silvertrail' ),
 					__( '`wp silvertrail settings` lists each value and where it comes from.', 'silvertrail' ),
 				),

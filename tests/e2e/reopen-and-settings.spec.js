@@ -156,7 +156,7 @@ test.describe('appearance settings', () => {
 		await expect(page.locator('#silvertrail-banner')).toBeHidden();
 	});
 
-	for (const look of [{ layout: 'box' }]) {
+	for (const look of [{ layout: 'box' }, { layout: 'bar', bar_position: 'top' }, { layout: 'bar', bar_position: 'bottom' }]) {
 		test(`a required choice dims the page behind the ${Object.values(look).join(' ')}`, async ({ page, context }) => {
 			await withSettings(context, { ...look, require_choice: true });
 			await page.goto('/');
@@ -169,6 +169,66 @@ test.describe('appearance settings', () => {
 			await expect(banner(page)).toBeHidden();
 		});
 	}
+
+	for (const [position, edge] of [
+		['top', { top: 0 }],
+		['bottom', { bottom: 0 }],
+	]) {
+		test(`the bar at the ${position} spans the page, with Choose under the text`, async ({ page, context }) => {
+			await withSettings(context, { layout: 'bar', bar_position: position });
+			await page.setViewportSize({ width: 1280, height: 800 });
+			await page.goto('/');
+
+			expect(await placement(page)).toMatchObject({ modal: false, dimmed: false, full: true, ...edge });
+			const box = (name) => page.getByRole('button', { name }).boundingBox();
+			const text = await page.getByText('We use cookies').boundingBox();
+			const [accept, reject, choose] = [await box('Accept all'), await box('Only essential'), await box('Choose')];
+			expect(reject.y).toBe(accept.y);
+			expect(reject.width).toBe(accept.width);
+			expect(choose.x).toBe(text.x);
+			expect(choose.y).toBeGreaterThan(text.y);
+			expect(choose.x + choose.width).toBeLessThan(accept.x);
+
+			await page.mouse.click(640, 400);
+			await expect(banner(page)).toBeHidden();
+			expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
+		});
+	}
+
+	test('the bar opens the preferences as the same card as the dialog', async ({ page, context }) => {
+		await withSettings(context, { layout: 'bar' });
+		await page.setViewportSize({ width: 1280, height: 800 });
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Choose' }).click();
+
+		const card = await placement(page);
+		expect(card).toMatchObject({ full: false, centred: true });
+		expect(card.width).toBeLessThanOrEqual(34 * 16);
+		await page.getByRole('button', { name: 'Save choices' }).click();
+		await expect(banner(page)).toBeHidden();
+	});
+
+	test('on a narrow screen the bar keeps Choose above the buttons, and the preferences fit', async ({ page, context }) => {
+		await withSettings(context, { layout: 'bar', bar_position: 'bottom' });
+		await page.setViewportSize({ width: 320, height: 640 });
+		await page.goto('/');
+
+		const choose = await page.getByRole('button', { name: 'Choose' }).boundingBox();
+		const accept = await page.getByRole('button', { name: 'Accept all' }).boundingBox();
+		expect(choose.y).toBeLessThan(accept.y);
+		await page.getByRole('button', { name: 'Choose' }).click();
+
+		const fit = await page.evaluate(() => {
+			const el = document.getElementById('silvertrail-banner');
+			const rect = el.getBoundingClientRect();
+			return {
+				fits: rect.top >= 0 && rect.bottom <= window.innerHeight,
+				scrolls: el.scrollHeight > el.clientHeight,
+				wide: document.documentElement.scrollWidth > window.innerWidth,
+			};
+		});
+		expect(fit).toEqual({ fits: true, scrolls: true, wide: false });
+	});
 
 	test('always allow on an embed before a banner choice still asks about the rest', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });
@@ -299,11 +359,11 @@ test.describe('settings page', () => {
 		]);
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
 
-		await expect(page.locator('th', { hasText: /^Position/ })).toContainText('Set in code');
+		await expect(page.locator('th', { hasText: /^Layout/ })).toContainText('Set in code');
 		await expect(page.locator('th', { hasText: 'Appearance' })).not.toContainText('Set in code');
-		await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked();
-		await expect(page.getByRole('radio', { name: 'Corner' })).toBeDisabled();
-		await expect(page.getByRole('radio', { name: 'Centered' })).toBeDisabled();
+		await expect(page.getByRole('radio', { name: 'Box' })).toBeChecked();
+		await expect(page.getByRole('radio', { name: 'Box' })).toBeDisabled();
+		await expect(page.getByRole('radio', { name: 'Dialog' })).toBeDisabled();
 		await expect(page.getByRole('radio', { name: 'Dark' })).toBeEnabled();
 		await expect(page.getByLabel('Imprint page')).toBeEnabled();
 
@@ -333,7 +393,7 @@ test.describe('settings page', () => {
 
 	test('asks before leaving a tab with unsaved changes', async ({ page }) => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
-		await expect(page.getByRole('button', { name: 'Save Changes' })).toHaveCount(4);
+		await expect(page.getByRole('button', { name: 'Save Changes' })).toHaveCount(3);
 
 		await page.getByRole('radio', { name: 'Dark' }).check();
 		let asked = '';

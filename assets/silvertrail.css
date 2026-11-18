@@ -67,6 +67,110 @@
 	max-height: calc(100dvh - 2rem);
 }
 
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) {
+	position: fixed;
+	inset: auto 0 0;
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	border-width: 1px 0 0;
+	border-radius: 0;
+	box-shadow: 0 -0.5rem 1.5rem rgb(0 0 0 / 0.15);
+}
+
+.silvertrail--bar.silvertrail--top:has([data-silvertrail-view="preferences"][hidden]) {
+	inset: 0 0 auto;
+	border-width: 0 0 1px;
+	box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.15);
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__inner {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-areas:
+		"title title"
+		"text text"
+		"choose choose"
+		"accept reject"
+		"legal legal";
+	gap: 0 0.5rem;
+	max-width: 64rem;
+	margin-inline: auto;
+	padding: 1rem var(--silvertrail-gutter);
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]):has(.silvertrail__close:not([hidden])) .silvertrail__title {
+	padding-inline-end: 2.5rem;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) :is(.silvertrail__footer, .silvertrail__actions) {
+	display: contents;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__title {
+	grid-area: title;
+	margin-bottom: 0.25rem;
+	font-size: 1.0625rem;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__view {
+	grid-area: text;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__text {
+	margin: 0;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) [data-silvertrail-action="preferences"] {
+	grid-area: choose;
+	justify-self: start;
+	margin: 0.25rem 0 0.75rem;
+	padding: 0;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) [data-silvertrail-action="accept-all"] {
+	grid-area: accept;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) [data-silvertrail-action="reject-all"] {
+	grid-area: reject;
+}
+
+.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__legal {
+	grid-area: legal;
+	justify-content: flex-start;
+	margin-top: 0.75rem;
+	padding-bottom: 0;
+}
+
+@media (min-width: 48rem) {
+	.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__inner {
+		grid-template-columns: auto auto minmax(0, 1fr) repeat(2, minmax(max-content, 12rem));
+		grid-template-areas:
+			"title title title accept reject"
+			"text text text accept reject"
+			"choose legal . accept reject";
+		align-items: center;
+		column-gap: 1rem;
+	}
+
+	.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) [data-silvertrail-action="preferences"] {
+		margin-bottom: 0;
+	}
+
+	.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]):has(.silvertrail__close:not([hidden])) .silvertrail__inner {
+		padding-inline-end: 3.5rem;
+	}
+
+	.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) :is(.silvertrail__title, .silvertrail__view) {
+		margin-right: 1rem;
+	}
+
+	.silvertrail--bar:has([data-silvertrail-view="preferences"][hidden]) .silvertrail__legal {
+		margin-top: 0.25rem;
+	}
+}
+
 .silvertrail__inner {
 	padding: var(--silvertrail-gutter) var(--silvertrail-gutter) 0;
 }

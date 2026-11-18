@@ -189,7 +189,8 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 | Key | Admin | Values | Default |
 | --- | --- | --- | --- |
 | `enabled` | Top of the page | bool. Turned off, Silvertrail adds nothing to the site: no banner, no blocking, none of its tags. | `true` |
-| `layout` | Banner | `'modal'` (centred) or `'box'` (corner) | `'modal'` |
+| `layout` | Banner | `'modal'` (a dialog in the middle), `'box'` (the bottom right corner) or `'bar'` (across the page) | `'modal'` |
+| `bar_position` | Banner | `'top'` or `'bottom'`, the edge the bar sits on | `'top'` |
 | `appearance` | Banner | `'light'` or `'dark'`. The default `'theme'` takes whichever the theme is. | `'theme'` |
 | `require_choice` | Banner | bool. Turned on, the page dims and the banner stays until the visitor chooses. Turned off, the page stays as it is, and a click outside or Escape closes the banner without storing anything. `null` requires a choice for `'modal'` only. | `null` |
 | `imprint_page` | Banner | page ID, `0` for none | `0` |

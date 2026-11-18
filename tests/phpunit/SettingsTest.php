@@ -36,18 +36,25 @@ final class SettingsTest extends WP_UnitTestCase {
 	public function test_only_the_centred_banner_requires_a_choice_unless_set(): void {
 		$this->assertTrue( Settings::get( 'require_choice' ) );
 
-		foreach ( array( 'box' ) as $layout ) {
+		foreach ( array( 'box', 'bar' ) as $layout ) {
 			update_option( Settings::OPTION, array( 'layout' => $layout ) );
 			$this->assertSame( $layout, Settings::get( 'layout' ) );
 			$this->assertFalse( Settings::get( 'require_choice' ), $layout );
 		}
 
 		update_option( Settings::OPTION, array( 'layout' => 'modal' ) );
-		$this->set( array( 'layout' => 'box' ) );
+		$this->set( array( 'layout' => 'bar' ) );
 		$this->assertFalse( Settings::get( 'require_choice' ), 'The position set in code decides the default.' );
 
 		update_option( Settings::OPTION, array( 'require_choice' => true ) );
-		$this->assertTrue( Settings::get( 'require_choice' ), 'A box can still require a choice.' );
+		$this->assertTrue( Settings::get( 'require_choice' ), 'A bar can still require a choice.' );
+	}
+
+	public function test_the_bar_sits_at_the_top_unless_set_to_the_bottom(): void {
+		$this->assertSame( 'top', Settings::get( 'bar_position' ) );
+
+		$this->set( array( 'bar_position' => 'bottom' ) );
+		$this->assertSame( 'bottom', Settings::get( 'bar_position' ) );
 	}
 
 	public function test_invalid_values_are_corrected_and_reported(): void {

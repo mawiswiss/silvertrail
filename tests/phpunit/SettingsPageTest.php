@@ -381,8 +381,8 @@ final class SettingsPageTest extends WP_UnitTestCase {
 
 		$this->assertSame( array( 'require_choice' => false ), $save( array( 'layout' => 'modal' ) ) );
 		$this->assertSame( array(), $save( array( 'layout' => 'modal', 'require_choice' => '1' ) ) );
-		$this->assertSame( array( 'layout' => 'box' ), $save( array( 'layout' => 'box' ) ) );
-		$this->assertSame( array( 'layout' => 'box', 'require_choice' => true ), $save( array( 'layout' => 'box', 'require_choice' => '1' ) ) );
+		$this->assertSame( array( 'layout' => 'bar' ), $save( array( 'layout' => 'bar' ) ) );
+		$this->assertSame( array( 'layout' => 'bar', 'require_choice' => true ), $save( array( 'layout' => 'bar', 'require_choice' => '1' ) ) );
 	}
 
 	public function test_a_save_keeps_only_what_differs_from_the_defaults(): void {

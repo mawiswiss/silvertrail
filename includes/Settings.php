@@ -13,7 +13,8 @@ defined( 'ABSPATH' ) || exit;
  * @phpstan-type PresetSetting array{enabled: bool, tag_id: string}
  * @phpstan-type SettingsArray array{
  *     enabled: bool,
- *     layout: 'modal'|'box',
+ *     layout: 'modal'|'box'|'bar',
+ *     bar_position: 'top'|'bottom',
  *     require_choice: bool|null,
  *     appearance: 'theme'|'light'|'dark',
  *     texts: array<string, array<string, string>>,
@@ -52,6 +53,7 @@ final class Settings {
 		return array(
 			'enabled'           => true,
 			'layout'            => 'modal',
+			'bar_position'      => 'top',
 			'require_choice'    => null,
 			'appearance'        => 'theme',
 			'texts'             => array(),
@@ -131,13 +133,14 @@ final class Settings {
 		$clean    = array();
 		foreach ( $values as $key => $value ) {
 			$clean[ $key ] = match ( $key ) {
-				'layout'            => 'box' === $value ? 'box' : 'modal',
+				'layout'            => self::layout( $value ),
 				'appearance'        => in_array( $value, array( 'light', 'dark' ), true ) ? $value : 'theme',
 				'imprint_page'      => absint( $value ),
 				'expiry_months'     => self::clamp( $value, 1, 13, $defaults['expiry_months'] ),
 				'retention_days'    => self::clamp( $value, 30, 3650, $defaults['retention_days'] ),
 				'floating_button'   => self::floating_button( $value ),
 				'floating_position' => 'right' === $value ? 'right' : 'left',
+				'bar_position'      => 'bottom' === $value ? 'bottom' : 'top',
 				'webmcp_tokens'     => self::tokens( $value ),
 				'require_choice'    => null === $value ? null : (bool) $value,
 				'enabled', 'load_css', 'records', 'gpc', 'trail', 'webmcp' => (bool) $value,
@@ -180,6 +183,10 @@ final class Settings {
 			}
 		}
 		return $clean;
+	}
+
+	private static function layout( mixed $value ): string {
+		return in_array( $value, array( 'box', 'bar' ), true ) ? $value : 'modal';
 	}
 
 	private static function floating_button( mixed $value ): string {

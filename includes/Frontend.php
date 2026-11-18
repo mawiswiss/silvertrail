@@ -75,7 +75,8 @@ final class Frontend {
 		Templates::render(
 			'banner',
 			array(
-				'layout'      => 'box' === Settings::get( 'layout' ) ? 'box' : 'modal',
+				'layout'      => Settings::get( 'layout' ),
+				'position'    => Settings::get( 'bar_position' ),
 				'appearance'  => self::appearance(),
 				'trail'       => (bool) Settings::get( 'trail' ),
 				'groups'      => $groups,

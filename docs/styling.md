@@ -6,7 +6,7 @@ The banner takes its colours, corners and buttons from the theme's `theme.json`.
 
 1. Under Settings › Silvertrail › Banner › Custom styles, copy the prompt. Paste it into an AI assistant and describe the look you want, or add a screenshot of the site. A coding agent working in the theme reads this file instead.
 2. The assistant answers with one CSS block. Save it in the theme, or the child theme, as `silvertrail/silvertrail.css`. Silvertrail loads it after its own styles, and the Banner tab confirms that it found the file.
-3. Check the centred banner and the box, the preferences view behind Choose, every appearance, an embed placeholder, the reopen button, a 320px wide screen and the keyboard. The Leak check tab should list no new connection.
+3. Check the centred banner, the box and the bar at the top and the bottom, with and without a required choice, the preferences view behind Choose, every appearance, an embed placeholder, the reopen button, a 320px wide screen and the keyboard. The Leak check tab should list no new connection.
 
 The theme's `theme.json` sets the defaults, the `silvertrail_design` filter overrides them in PHP, and the theme's `silvertrail/silvertrail.css` wins over both. With the default styles turned off, through `load_css` in the `silvertrail_settings` filter, that file is the whole stylesheet, and `assets/silvertrail.css` in the plugin folder is the place to start from.
 
@@ -29,7 +29,7 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
 ### Classes
 
 ```
-.silvertrail                        <dialog>, plus .silvertrail--modal (centred) or .silvertrail--box (corner)
+.silvertrail                        <dialog>, plus .silvertrail--modal (centred), .silvertrail--box (corner), or .silvertrail--bar with .silvertrail--top or .silvertrail--bottom
   .silvertrail__inner
     .silvertrail__title
     .silvertrail__view              entrance view, then the preferences view
@@ -60,7 +60,8 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
 - Load nothing: no `@import`, no `@font-face`, no `url()`. A consent banner must not contact anyone before a choice. Use the theme's presets, `var(--wp--preset--color--<slug>)` and `var(--wp--preset--font-family--<slug>)`.
 - Contrast meets WCAG AA: 4.5:1 for text and button labels, 3:1 for borders and focus outlines. Keep every focus outline visible.
 - Never hide, fade or clip content, and keep text at 0.875rem or larger. When you set `display` on a class, also set `[hidden] { display: none }` for it.
-- Keep `display`, `position` and `z-index` of `.silvertrail`, `.silvertrail--box` and `.silvertrail-reopen`. Move the box or the reopen button with `inset`.
+- Keep `display`, `position` and `z-index` of `.silvertrail`, `.silvertrail--box`, `.silvertrail--bar` and `.silvertrail-reopen`. Move the box or the reopen button with `inset`.
 - Below 30rem the defaults set the box to `inset: auto 0.5rem 0.5rem; width: auto` and the gutter to `1.25rem`. Repeat any change to these inside `@media (max-width: 30rem)`.
+- The bar's entrance view lays out `.silvertrail__inner` as a grid with the areas `title`, `text`, `choose`, `legal`, `accept` and `reject`, and sets `.silvertrail__footer` and `.silvertrail__actions` to `display: contents`. From 48rem the buttons sit on the right. Its preferences view is the same card as the other layouts. Keep these rules when you restyle the bar.
 - A few defaults pair a class with an element, such as `.silvertrail a`, `.silvertrail__switch input` and `.silvertrail__details summary`. Override them with the same selector.
 - Put motion inside `@media (prefers-reduced-motion: no-preference)`. Never use `!important`.

@@ -313,6 +313,26 @@
 	border: 0;
 }
 
+.silvertrail-suboption {
+	display: none;
+	margin: 16px 0 0;
+	padding: 0;
+	border: 0;
+
+	legend {
+		margin-bottom: 4px;
+		font-weight: 600;
+	}
+
+	label {
+		padding-right: 16px;
+	}
+}
+
+.silvertrail-cards:has([value="bar"]:checked) + .silvertrail-suboption {
+	display: block;
+}
+
 /* Core sets labels in a form-table fieldset to inline-block, with a margin it marks !important. */
 .silvertrail-cards > .silvertrail-card {
 	display: grid;

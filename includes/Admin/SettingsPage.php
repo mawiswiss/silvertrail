@@ -28,7 +28,7 @@ final class SettingsPage {
 	 */
 	public const TABS = array(
 		'services' => array( 'presets' ),
-		'banner'   => array( 'layout', 'require_choice', 'appearance', 'texts', 'imprint_page', 'floating_button', 'floating_position' ),
+		'banner'   => array( 'layout', 'bar_position', 'require_choice', 'appearance', 'texts', 'imprint_page', 'floating_button', 'floating_position' ),
 		'tools'    => array( 'records' ),
 		'agents'   => array(),
 	);
