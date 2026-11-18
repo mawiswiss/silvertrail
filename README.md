@@ -4,7 +4,7 @@ A cookie banner for WordPress that loads nothing before the visitor says yes and
 
 ## Why not just generate a banner?
 
-A generated banner shows a dialog. Silvertrail is the backbone behind it, for everything the site loads from another server. It knows each service, holds it back until the visitor agrees and passes the choice on. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with Global Privacy Control. That backbone does the work a generated banner leaves out:
+A generated banner shows a dialog. Silvertrail is the backbone behind it, for everything the site loads from another server. It knows each service, holds it back until the visitor agrees and passes the choice on. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with [Global Privacy Control](https://globalprivacycontrol.org/). That backbone does the work a generated banner leaves out:
 
 - Nothing loads before yes. Marked scripts wait as `text/plain`, scripts that WordPress enqueues are held back by their handle, and embeds wait in a `<template>` behind a placeholder.
 - Page caches need no setup. The server renders every gated script and embed blocked, and the browser decides on each page view, so a cached page never hands one visitor's choice to the next.
@@ -12,7 +12,7 @@ A generated banner shows a dialog. Silvertrail is the backbone behind it, for ev
 - Visitors are asked again by themselves when the set of services changes. A config that changes from one request to the next gets a warning, because it would ask on every page.
 - Gated scripts run in their original order, external and inline, including the code WordPress adds before and after an enqueued script.
 - Google Consent Mode v2 sets its default in `<head>` before any tag, with `wait_for_update` and ad data redaction, and a returning visitor's choice reaches Google before the tags load. Advanced mode is one line of code.
-- Every choice goes to the WP Consent API, so plugins that read the API follow it. A browser that sends Global Privacy Control gets "only essential" without a banner.
+- Every choice goes to the WP Consent API, so plugins that read the API follow it. A browser that sends [Global Privacy Control](#global-privacy-control) gets "only essential" without a banner, even over an earlier choice, and the visitor can still allow more.
 - YouTube, Vimeo and Google Maps embeds are blocked as soon as the plugin is active, in posts, oEmbeds, HTML blocks, templates and widgets. Each embed asks on its placeholder, for this once or for good, and opens no banner.
 - Visitors can always change their mind. A small button appears on every page that has no link to the settings, and it steps aside on pages that have one.
 - "Accept all" and "Only essential" are the same button, side by side. The banner is a native `<dialog>`, and while a choice is required, neither Escape nor a click outside closes it.
@@ -199,7 +199,7 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 | `load_css` | code | bool. Turned off, the theme's `silvertrail/silvertrail.css` is the whole stylesheet. | `true` |
 | `expiry_months` | code | 1 to 13 | `6` |
 | `retention_days` | code | 30 to 3650 | `365` |
-| `gpc` | code | bool. Global Privacy Control counts as "only essential". | `true` |
+| `gpc` | code | bool. [Global Privacy Control](#global-privacy-control) counts as "only essential". | `true` |
 | `trail` | code | bool. The preferences list what the page held back and loaded. | `true` |
 | `webmcp` | code | bool. Offers agents the [WebMCP](#webmcp) tools in browsers that support WebMCP. | `true` |
 | `webmcp_tokens` | code | list of WebMCP origin trial tokens, printed in the page head until they expire | `[]` |
@@ -289,7 +289,7 @@ Chrome DevTools MCP lets a coding agent call the tools. `docs/agents.md` has the
 
 ## In PHP
 
-`silvertrail_has( 'hubspot' )` reads the cookie. Use it only on requests a page cache never serves, such as form posts. Pages render every gated thing blocked, and the browser decides. `silvertrail_config()` returns the final config.
+`silvertrail_has( 'hubspot' )` reads the cookie and the `Sec-GPC` header. Use it only on requests a page cache never serves, such as form posts. Pages render every gated thing blocked, and the browser decides. `silvertrail_config()` returns the final config.
 
 ## Texts
 
@@ -347,6 +347,20 @@ To change the markup, copy `templates/banner.php`, `templates/embed.php` or `tem
 A service lists the Consent Mode types it grants, for example `'google' => [ 'analytics_storage' ]`. Silvertrail prints the default (everything denied except `security_storage`) first in `<head>` and sends an update after every decision. Google tags stay blocked until consent. Set `$config['google']['mode'] = 'advanced'` in the `silvertrail_config` filter to load them before consent, so they send cookieless pings.
 
 Each group maps to a WP Consent API category through its `consent_api` key. A category is allowed when the visitor agreed to every service in it.
+
+## Global Privacy Control
+
+[Global Privacy Control](https://globalprivacycontrol.org/) is a signal that a browser or an extension sends to every site, asking it not to sell or share the visitor's data. Silvertrail reads it as "only essential". A browser that sends it gets no banner and nothing that needs consent loads. The `silvertrail:change` event and the records name the source `gpc`.
+
+The signal names no services, so the visitor can still allow more. The preferences say that the browser sends the signal, and what the visitor allows there, or with "Always allow" on an embed, is kept for later visits. A choice made before the signal was turned on no longer counts while it is on, so a visitor who once accepted everything gets only essential again. Silvertrail tells the two apart because the cookie marks every choice made under the signal with `"g": 1`. When the visitor turns the signal off, their last choice stays.
+
+The same rule holds wherever Silvertrail reads the cookie: in the browser, in the Consent Mode update in `<head>`, and in `silvertrail_has()`, which also reads the `Sec-GPC` header.
+
+Silvertrail answers `/.well-known/gpc.json` with `{"gpc": true, "lastUpdate": "…"}`, where the date is the day it first served the file. Tools that look for the file learn from it that the site honours the signal. The file must sit at the root of the domain, so a WordPress in a subdirectory and the subsites of a subdirectory multisite cannot serve it. The request also has to reach WordPress, which pretty permalinks arrange on Apache and the usual `try_files` rule arranges on nginx. A real file at that path wins.
+
+The privacy policy guide under Settings › Privacy suggests a paragraph on how the site treats the signal, and one on records when they are on. Until the guide has shown Silvertrail's current text, the overview links to it, and `wp silvertrail validate` warns and prints the text. Set `gpc` to `false` in the `silvertrail_settings` filter to ask these visitors like everyone else, which also stops the file.
+
+The [implementation guide](https://globalprivacycontrol.org/implementation) and the [W3C specification](https://w3c.github.io/gpc/) describe the signal in full.
 
 ## Records
 

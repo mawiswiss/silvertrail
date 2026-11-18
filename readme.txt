@@ -15,7 +15,7 @@ A small cookie consent banner. Nothing loads before the visitor agrees, and reje
 
 Nothing loads until visitors say yes. Silvertrail is a small cookie banner that blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes. "Accept all" and "Only essential" sit side by side at the same size, and a third button opens the choice per group and per service, with the provider, the purpose and a link to its privacy policy.
 
-Behind the banner, Silvertrail is the backbone for everything the site loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google and to plugins that read the WP Consent API. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with Global Privacy Control.
+Behind the banner, Silvertrail is the backbone for everything the site loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google and to plugins that read the WP Consent API. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with [Global Privacy Control](https://globalprivacycontrol.org/).
 
 The banner only appears when the site uses something that needs consent. A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
 
@@ -59,7 +59,7 @@ The integrations most sites need are built in, so setting it up mostly means tic
 
 * Presets print the official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel once you turn one on and enter its ID.
 * It works behind any page cache, as the next section explains.
-* A browser that sends Global Privacy Control gets "only essential" without a banner.
+* A browser that sends Global Privacy Control gets "only essential" without a banner, even over an earlier choice. The visitor can still allow more, and the site answers `/.well-known/gpc.json`.
 * An agent that browses for a person and speaks WebMCP answers through tools instead of clicking the banner. It may allow only essential on its own, and more only with its person's answer.
 * It asks every visitor again when the set of services changes.
 * It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
