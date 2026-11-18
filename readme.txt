@@ -24,8 +24,8 @@ The banner only appears when the site uses something that needs consent. A site 
 Set everything in PHP and check it on the shell. The admin keeps only the decisions a site owner makes.
 
 * Code wins over the admin. One filter sets any setting, and the settings page marks each field that code sets.
-* Agents work on the shell. `wp silvertrail services` and `wp silvertrail settings` show every service and each setting with its source, and `wp silvertrail validate` reports what is wrong, so an agent can check its own work.
-* Prompts are built in. The Agents tab copies prompts to check and to set up the site with an agent, the Banner tab one to style the banner, and the Leak check writes one for the services it finds.
+* Agents work on the shell. `wp silvertrail services` and `wp silvertrail settings` show every service and each setting with its source, and `wp silvertrail validate` reports what is wrong, so an agent can check its own work. From WordPress 6.9, the same reads, the presets and the check are abilities, which an MCP client reaches through the MCP Adapter plugin.
+* Prompts are built in. The Agents tab copies prompts to check and to set up the site with an agent, the Banner tab one to style the banner, and the Leak check writes one for the services it finds. From WordPress 7.0, the Banner tab can also send its prompt to the site's own AI provider.
 * Agents check the site in the browser. In a browser with WebMCP, an experiment in Chrome, Silvertrail offers them tools to read and set the choice and to list what the page loaded.
 
 One call turns on a preset, and the official tag waits for consent:
@@ -150,7 +150,7 @@ In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and th
 
 The banner takes its colours, corners and buttons from the theme's `theme.json`. The appearance that matches the theme keeps its colours as they are, and the other one puts the theme's lightest or darkest colour in the background. Themes without a `theme.json` get Silvertrail's own light or dark colours. In code, the `silvertrail_design` filter sets any colour, the corner radius and the button padding and weight.
 
-For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [docs/styling.md](https://github.com/mawiswiss/silvertrail/blob/main/docs/styling.md) file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts.
+For anything else, add `silvertrail/silvertrail.css` to your theme. Silvertrail loads it after its own styles. The [docs/styling.md](https://github.com/mawiswiss/silvertrail/blob/main/docs/styling.md) file in the plugin folder is a brief for an AI assistant that writes this stylesheet, and Settings › Silvertrail › Banner › Custom styles copies it together with your theme's colours and fonts. From WordPress 7.0, with an AI provider set up under Settings › Connectors, Write with AI in the same place sends the prompt there and shows the stylesheet it writes. Nothing is saved until you add the file to the theme.
 
 You can also turn off the default styles with `load_css` in the `silvertrail_settings` filter, or copy `templates/banner.php` into your theme as `silvertrail/banner.php` and change the markup while keeping the `data-silvertrail-*` attributes.
 
@@ -202,7 +202,7 @@ Yes, with the floating button. It is off by default. Under Settings › Silvertr
 
 == Privacy ==
 
-Silvertrail sets one first-party cookie, `silvertrail` (on the other sites of a multisite network `silvertrail_` and the site ID), which holds the chosen services, the version of the settings and the time of the decision. It lasts six months by default, and a developer changes the lifetime with the `silvertrail_settings` filter. With records turned on, the cookie also holds a random consent ID, and each decision is stored in a database table with that ID, the choices and the time. Silvertrail never stores an IP address or browser details. The plugin itself contacts no outside service. The services a site turns on load from their providers only after the visitor agrees, as the next section lists.
+Silvertrail sets one first-party cookie, `silvertrail` (on the other sites of a multisite network `silvertrail_` and the site ID), which holds the chosen services, the version of the settings and the time of the decision. It lasts six months by default, and a developer changes the lifetime with the `silvertrail_settings` filter. With records turned on, the cookie also holds a random consent ID, and each decision is stored in a database table with that ID, the choices and the time. Silvertrail never stores an IP address or browser details. The plugin contacts no outside service on its own. Write with AI, which only an admin starts, sends the styling prompt to the AI provider the site set up. The services a site turns on load from their providers only after the visitor agrees, as the next section lists.
 
 == External services ==
 
@@ -212,6 +212,8 @@ Each tracker preset below connects to its provider only when an admin turns it o
 * The LinkedIn Insight Tag loads from snap.licdn.com with the partner ID. Provided by LinkedIn: [terms](https://www.linkedin.com/legal/user-agreement), [privacy policy](https://www.linkedin.com/legal/privacy-policy).
 * The Meta Pixel loads from connect.facebook.net with the pixel ID. Provided by Meta: [terms](https://www.facebook.com/legal/terms), [privacy policy](https://www.facebook.com/privacy/policy/).
 * The YouTube, Vimeo and Google Maps presets start switched on, but they load nothing themselves. They hold back embeds the site already contains and let the browser load them from youtube.com, vimeo.com or google.com once the visitor agrees. Provided by Google for YouTube ([terms](https://www.youtube.com/t/terms), [privacy policy](https://policies.google.com/privacy)) and Google Maps ([terms](https://maps.google.com/help/terms_maps/), [privacy policy](https://policies.google.com/privacy)), and by Vimeo ([terms](https://vimeo.com/terms), [privacy policy](https://vimeo.com/privacy)).
+
+Write with AI, on WordPress 7.0 and later, sends the styling prompt and the admin's description of the look to the AI provider set up under Settings › Connectors, through WordPress's AI Client, and only when an admin clicks it. The prompt holds the styling brief, the theme's colour and font presets and its current `silvertrail/silvertrail.css`, and nothing about visitors. The terms and privacy policy of the provider the site chose apply.
 
 == Changelog ==
 

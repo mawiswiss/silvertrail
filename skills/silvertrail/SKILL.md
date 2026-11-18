@@ -18,7 +18,7 @@ The plugin folder is usually `wp-content/plugins/silvertrail/`. If it is not the
 ## Set up or change a site
 
 1. Register services in a small plugin or the theme, with `silvertrail_register_service()` on the `silvertrail_register` action. Set settings with the `silvertrail_settings` filter. Do not change them in the admin.
-2. Run `wp silvertrail validate` until it reports no problem. `wp silvertrail services` and `wp silvertrail settings` show what is active and where each value comes from.
+2. Run `wp silvertrail validate` until it reports no problem. `wp silvertrail services` and `wp silvertrail settings` show what is active and where each value comes from. Without a shell, the abilities `silvertrail/validate`, `silvertrail/list-services` and `silvertrail/get-settings` do the same through the MCP Adapter, and `silvertrail/update-presets` turns a preset on with its ID.
 3. Check the result in a browser, as below.
 
 ## Check a site in the browser

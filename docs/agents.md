@@ -1,6 +1,6 @@
 # Agents and Silvertrail
 
-Agents meet Silvertrail in three roles. A developer's agent sets the site up. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.
+Agents meet Silvertrail in three roles. A developer's agent sets the site up, in code or through WordPress's abilities. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.
 
 ## How
 
@@ -13,6 +13,10 @@ npx skills add mawiswiss/silvertrail
 ```
 
 The skill ships in the plugin folder as well, under `skills/silvertrail/`.
+
+### Set up a site through MCP
+
+An agent without access to the site's code works through Silvertrail's abilities instead, from WordPress 6.9. Install the MCP Adapter plugin, create an application password for an administrator and connect the agent's MCP client to `/wp-json/mcp/mcp-adapter-default-server`. The agent then reads the services and settings, turns presets on with their IDs, asks every visitor again and validates the config. It cannot register services that are not presets, because those live in code. `README.md` lists the abilities under Abilities and MCP.
 
 ### Check a site
 
