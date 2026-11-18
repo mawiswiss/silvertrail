@@ -53,7 +53,7 @@ final class Texts {
 			/* translators: %s: service name */
 			'embed_remember'    => __( 'Always allow %s', 'silvertrail' ),
 			'reopen'            => __( 'Privacy settings', 'silvertrail' ),
-			'gpc'               => __( 'Your browser sends Global Privacy Control, so only essential services run. You can still allow more here.', 'silvertrail' ),
+			'gpc'               => __( 'Your browser sends Global Privacy Control, so only essential services run unless you allow more here.', 'silvertrail' ),
 			'trail_title'       => __( 'On this page', 'silvertrail' ),
 			'trail_held'        => __( 'Held back', 'silvertrail' ),
 			'trail_loaded'      => __( 'Loaded from', 'silvertrail' ),

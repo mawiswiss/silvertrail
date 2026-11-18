@@ -43,6 +43,18 @@ test.describe('consent signals', () => {
 		expect(calls[1].values.ad_storage).toBe('granted');
 	});
 
+	test('Global Privacy Control keeps Google denied over an earlier accept all', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Accept all' }).first().click();
+		await page.addInitScript(() => Object.defineProperty(navigator, 'globalPrivacyControl', { value: true }));
+		await page.reload();
+
+		await expect.poll(async () => (await consentCalls(page)).filter((call) => call.action === 'update').length).toBe(1);
+		const granted = (await consentCalls(page)).filter((call) => Object.values(call.values).includes('granted'));
+		expect(granted.map((call) => call.action)).toEqual(['default']);
+		expect(await page.evaluate(() => window.wp_has_consent('marketing'))).toBe(false);
+	});
+
 	test('the WP Consent API reads the choice', async ({ page }) => {
 		await page.goto('/');
 		await page.getByRole('button', { name: 'Choose' }).click();

@@ -5,6 +5,7 @@ const ALL_IDS = ['google-tag-manager', 'youtube', 'google-maps', 'test-analytics
 const ALL_RAN = ['gated-src', 'gated-after', 'analytics', 'pixel'];
 
 const ran = (page) => page.evaluate(() => window.silvertrailTest || []);
+const sendGpc = (page) => page.addInitScript(() => Object.defineProperty(navigator, 'globalPrivacyControl', { value: true }));
 const cookie = async (context) => {
 	const found = (await context.cookies()).find((c) => c.name === 'silvertrail');
 	return found ? JSON.parse(decodeURIComponent(found.value)) : null;
@@ -102,11 +103,38 @@ test.describe('banner', () => {
 	});
 
 	test('global privacy control means only essential and no banner', async ({ page, context }) => {
-		await page.addInitScript(() => Object.defineProperty(navigator, 'globalPrivacyControl', { value: true }));
+		await sendGpc(page);
 		await page.goto('/');
 
 		await expect(page.getByRole('dialog')).toBeHidden();
+		expect(await cookie(context)).toMatchObject({ c: [], g: 1 });
+	});
+
+	test('global privacy control wins over a choice made without it', async ({ page, context }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Accept all' }).first().click();
+		await expect.poll(() => ran(page)).toEqual(ALL_RAN);
+
+		await sendGpc(page);
+		await page.reload();
+
+		await expect.poll(async () => (await cookie(context)).g).toBe(1);
+		await expect(page.getByRole('dialog')).toBeHidden();
 		expect((await cookie(context)).c).toEqual([]);
+		expect(await page.evaluate(() => window.silvertrail.has('test-analytics'))).toBe(false);
+		expect(await ran(page)).toEqual([]);
+	});
+
+	test('a choice made under global privacy control stays', async ({ page, context }) => {
+		await sendGpc(page);
+		await page.goto('/#silvertrail');
+		await page.getByRole('checkbox', { name: 'Statistics' }).check();
+		await page.getByRole('button', { name: 'Save choices' }).click();
+		await page.goto('/');
+
+		await expect(page.getByRole('dialog')).toBeHidden();
+		await expect.poll(() => ran(page)).toEqual(['gated-src', 'gated-after', 'analytics']);
+		expect(await cookie(context)).toMatchObject({ c: ['test-analytics', 'test-gated'], g: 1 });
 	});
 
 	test('the before-prompt hook can accept for the visitor', async ({ page, context }) => {
@@ -154,6 +182,32 @@ test.describe('banner', () => {
 		expect((await cookie(context)).c).toEqual(['test-video']);
 		await page.reload();
 		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
+	});
+
+	test('always allow on an embed under global privacy control stays', async ({ page, context }) => {
+		await sendGpc(page);
+		await page.goto('/?pagename=silvertrail-embeds');
+		await expect(page.getByRole('dialog')).toBeHidden();
+		await page.getByRole('checkbox', { name: 'Always allow Test Video' }).check();
+		await page.getByRole('button', { name: 'Load content' }).click();
+
+		const frame = page.locator('iframe[title="Test video"]');
+		await expect(frame).toHaveCount(1);
+		expect(await cookie(context)).toMatchObject({ c: ['test-video'], g: 1 });
+		await page.reload();
+		await expect(frame).toHaveCount(1);
+	});
+
+	test('loading an embed once under global privacy control stores nothing', async ({ page, context }) => {
+		await sendGpc(page);
+		await page.goto('/?pagename=silvertrail-embeds');
+		await page.getByRole('button', { name: 'Load content' }).click();
+
+		const frame = page.locator('iframe[title="Test video"]');
+		await expect(frame).toHaveCount(1);
+		expect((await cookie(context)).c).toEqual([]);
+		await page.reload();
+		await expect(frame).toHaveCount(0);
 	});
 
 	test('saving on a stale page keeps the newer revision and unknown services', async ({ page, context }) => {

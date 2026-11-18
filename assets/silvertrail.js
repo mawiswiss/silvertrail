@@ -8,6 +8,7 @@
 	const SCRIPT_TIMEOUT = 10000;
 	const serviceIds = Object.keys(config.services);
 	const consentIds = serviceIds.filter((id) => !config.essential.includes(id));
+	const gpc = config.gpc && navigator.globalPrivacyControl === true;
 
 	// Consent store
 
@@ -25,9 +26,10 @@
 	}
 
 	// A stale cached page carries a lower n than the cookie, so >= keeps it from re-prompting.
+	// Under Global Privacy Control, only a choice made while the signal was on counts.
 	function read() {
 		const data = readRaw();
-		return data && data.n >= config.n ? data : null;
+		return data && data.n >= config.n && (!gpc || data.g) ? data : null;
 	}
 
 	// A grant from an embed before any banner choice leaves the other services undecided.
@@ -55,6 +57,9 @@
 		const data = { n: newer ? stored.n : config.n, c: consents, t: Math.floor(Date.now() / 1000) };
 		if (partial) {
 			data.p = 1;
+		}
+		if (gpc) {
+			data.g = 1;
 		}
 		if (stored && stored.i) {
 			data.i = stored.i;
@@ -302,7 +307,7 @@
 		}
 		const gpcNote = banner.querySelector('[data-silvertrail-gpc]');
 		if (gpcNote) {
-			gpcNote.hidden = !(config.gpc && navigator.globalPrivacyControl === true);
+			gpcNote.hidden = !gpc;
 		}
 		const canClose = closable();
 		banner.querySelector('[data-silvertrail-action="close"]').hidden = !canClose;
@@ -469,15 +474,14 @@
 			return;
 		}
 		registerTools();
+		if (gpc && config.needsBanner && !decided()) {
+			set([], { silent: true, source: 'gpc' });
+		}
 		if (window.location.hash === '#silvertrail') {
 			open();
 			return;
 		}
 		if (decided() || !config.needsBanner) {
-			return;
-		}
-		if (config.gpc && navigator.globalPrivacyControl === true) {
-			set([], { silent: true, source: 'gpc' });
 			return;
 		}
 

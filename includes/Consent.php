@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 final class Consent {
 
 	/**
-	 * @return array{n: int, c: list<string>, t: int}|null
+	 * @return array{n: int, c: list<string>, t: int, g: bool}|null
 	 */
 	public static function cookie(): ?array {
 		$name = Config::cookie();
@@ -31,6 +31,7 @@ final class Consent {
 			'n' => (int) $data['n'],
 			'c' => array_values( array_filter( $data['c'], 'is_string' ) ),
 			't' => (int) ( $data['t'] ?? 0 ),
+			'g' => ! empty( $data['g'] ),
 		);
 	}
 
@@ -39,7 +40,7 @@ final class Consent {
 	 */
 	public static function consented_ids(): array {
 		$cookie = self::cookie();
-		if ( null === $cookie || $cookie['n'] < Config::revision() ) {
+		if ( null === $cookie || $cookie['n'] < Config::revision() || ( ! $cookie['g'] && Gpc::header() ) ) {
 			return array();
 		}
 		return array_values( array_intersect( $cookie['c'], array_keys( Config::get()['services'] ) ) );

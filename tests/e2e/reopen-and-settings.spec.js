@@ -68,11 +68,14 @@ test.describe('reopen', () => {
 		await expect(banner(page)).toBeVisible();
 	});
 
-	test('the preferences say so when Global Privacy Control was honoured', async ({ page }) => {
+	test('the preferences say so when Global Privacy Control was honoured, and close', async ({ page, context }) => {
+		await withSettings(context, { require_choice: true });
 		await page.addInitScript(() => Object.defineProperty(navigator, 'globalPrivacyControl', { value: true }));
 		await page.goto('/#silvertrail');
 
 		await expect(page.getByText('Your browser sends Global Privacy Control')).toBeVisible();
+		await page.getByRole('button', { name: 'Close' }).click();
+		await expect(banner(page)).toBeHidden();
 	});
 });
 

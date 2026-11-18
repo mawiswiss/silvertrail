@@ -48,11 +48,12 @@ final class ConsentMode {
 			$code .= 'gtag("set","url_passthrough",true);';
 		}
 		$code .= sprintf(
-			'(function(c,n,m,e){var x=document.cookie.match(new RegExp("(?:^|; )"+c+"=([^;]*)"));if(!x)return;try{var d=JSON.parse(decodeURIComponent(x[1]));if(!(d.n>=n))return;var u={};for(var t in m){u[t]=m[t].some(function(s){return d.c.indexOf(s)>-1||e.indexOf(s)>-1})?"granted":"denied"}gtag("consent","update",u)}catch(z){}})(%s,%d,%s,%s);',
+			'(function(c,n,m,e,g){var x=document.cookie.match(new RegExp("(?:^|; )"+c+"=([^;]*)"));if(!x)return;try{var d=JSON.parse(decodeURIComponent(x[1]));if(!(d.n>=n))return;if(g&&navigator.globalPrivacyControl===true&&!d.g)return;var u={};for(var t in m){u[t]=m[t].some(function(s){return d.c.indexOf(s)>-1||e.indexOf(s)>-1})?"granted":"denied"}gtag("consent","update",u)}catch(z){}})(%s,%d,%s,%s,%d);',
 			wp_json_encode( Config::cookie(), JSON_HEX_TAG | JSON_HEX_AMP ),
 			Config::revision(),
 			wp_json_encode( $map, JSON_HEX_TAG | JSON_HEX_AMP ),
-			wp_json_encode( Config::essential_ids(), JSON_HEX_TAG | JSON_HEX_AMP )
+			wp_json_encode( Config::essential_ids(), JSON_HEX_TAG | JSON_HEX_AMP ),
+			Settings::get( 'gpc' ) ? 1 : 0
 		);
 
 		wp_print_inline_script_tag( $code, array( 'id' => 'silvertrail-consent-mode' ) );
