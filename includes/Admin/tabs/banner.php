@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+use Silvertrail\Abilities;
 use Silvertrail\Admin\Notices;
 use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Admin\StylingPrompt;
@@ -329,6 +330,52 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 				</details>
 			</td>
 		</tr>
+		<?php if ( Abilities::ai_available() ) : ?>
+			<tr class="hide-if-no-js">
+				<th scope="row"><label for="silvertrail-style-want"><?php esc_html_e( 'With this site’s AI', 'silvertrail' ); ?></label></th>
+				<td>
+					<textarea id="silvertrail-style-want" class="large-text" rows="3" aria-describedby="silvertrail-style-want-description"></textarea>
+					<p class="description" id="silvertrail-style-want-description">
+						<?php
+						printf(
+							/* translators: %s: link to Settings › Connectors */
+							esc_html__( 'Describe the look you want. Write with AI sends it with the prompt to the AI provider set up under %s.', 'silvertrail' ),
+							'<a href="' . esc_url( admin_url( 'options-connectors.php' ) ) . '">' . esc_html__( 'Settings › Connectors', 'silvertrail' ) . '</a>'
+						);
+						?>
+					</p>
+					<p>
+						<button
+							type="button"
+							class="button"
+							id="silvertrail-write-styles"
+							data-busy="<?php esc_attr_e( 'Writing the styles. This can take a minute.', 'silvertrail' ); ?>"
+							data-done="<?php esc_attr_e( 'The styles are ready below the button.', 'silvertrail' ); ?>"
+							data-empty="<?php esc_attr_e( 'Describe the look you want first.', 'silvertrail' ); ?>"
+						><?php esc_html_e( 'Write with AI', 'silvertrail' ); ?></button>
+						<span class="spinner silvertrail-spinner"></span>
+					</p>
+					<div class="notice notice-error inline" id="silvertrail-style-error" hidden><p></p></div>
+					<div id="silvertrail-style-output" hidden>
+						<label for="silvertrail-style-answer" class="screen-reader-text"><?php esc_html_e( 'Stylesheet written by AI', 'silvertrail' ); ?></label>
+						<textarea id="silvertrail-style-answer" class="large-text code" rows="16" readonly></textarea>
+						<p>
+							<?php
+							printf(
+								/* translators: %s: silvertrail/silvertrail.css */
+								esc_html__( 'Nothing is saved yet. Check it, then save it in the theme as %s.', 'silvertrail' ),
+								'<code>' . esc_html( Frontend::THEME_CSS ) . '</code>'
+							);
+							?>
+							<span class="copy-to-clipboard-container">
+								<button type="button" class="button" data-silvertrail-copy="silvertrail-style-answer"><?php esc_html_e( 'Copy stylesheet', 'silvertrail' ); ?></button>
+								<span class="success hidden" aria-hidden="true"><?php esc_html_e( 'Copied', 'silvertrail' ); ?></span>
+							</span>
+						</p>
+					</div>
+				</td>
+			</tr>
+		<?php endif; ?>
 	</table>
 </section>
 

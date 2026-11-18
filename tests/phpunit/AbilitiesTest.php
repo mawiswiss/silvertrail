@@ -26,6 +26,7 @@ final class AbilitiesTest extends WP_UnitTestCase {
 	public function tear_down(): void {
 		remove_all_actions( 'silvertrail_register' );
 		remove_all_filters( 'silvertrail_settings' );
+		remove_all_filters( 'wp_ai_client_prevent_prompt' );
 		Config::reset();
 		Settings::reset();
 		delete_option( Settings::OPTION );
@@ -38,6 +39,10 @@ final class AbilitiesTest extends WP_UnitTestCase {
 			$this->assertNotNull( $ability, $name );
 			$this->assertSame( 'silvertrail', $ability->get_category() );
 			$this->assertTrue( $ability->get_meta()['public'], $name );
+		}
+		if ( function_exists( 'wp_ai_client_prompt' ) ) {
+			$this->assertFalse( wp_get_ability( 'silvertrail/write-styles' )->get_meta()['public'], 'MCP clients write the styles themselves.' );
+			$this->assertTrue( wp_get_ability( 'silvertrail/write-styles' )->get_meta()['show_in_rest'], 'The Banner tab calls it over REST.' );
 		}
 	}
 
@@ -152,6 +157,18 @@ final class AbilitiesTest extends WP_UnitTestCase {
 		$this->assertFalse( $broken['valid'] );
 		$this->assertStringContainsString( 'colour', implode( ' ', $broken['problems'] ) );
 		$this->assertArrayNotHasKey( 'support', $broken );
+	}
+
+	public function test_writing_styles_stops_when_the_site_prevents_prompts(): void {
+		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
+			$this->markTestSkipped( 'The AI Client needs WordPress 7.0.' );
+		}
+		add_filter( 'wp_ai_client_prevent_prompt', '__return_true' );
+
+		$result = $this->run_ability( 'write-styles', array( 'want' => 'A dark bar' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'silvertrail_no_ai', $result->get_error_code() );
 	}
 
 	/**

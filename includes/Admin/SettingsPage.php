@@ -73,7 +73,7 @@ final class SettingsPage {
 	}
 
 	public static function enqueue(): void {
-		$deps = array( 'clipboard', 'wp-a11y' );
+		$deps = array( 'clipboard', 'wp-a11y', 'wp-api-fetch' );
 		wp_enqueue_style( 'silvertrail-admin', plugins_url( 'assets/admin.css', SILVERTRAIL_FILE ), array(), SILVERTRAIL_VERSION );
 		$tab = self::tab();
 		if ( 'banner' === $tab || 'agents' === $tab ) {

@@ -181,6 +181,33 @@ final class Abilities {
 			array( 'revision' => array( 'type' => 'integer' ) ),
 			array( 'destructive' => true )
 		);
+
+		if ( function_exists( 'wp_ai_client_prompt' ) ) {
+			self::add(
+				'write-styles',
+				__( 'Write the banner styles with AI', 'silvertrail' ),
+				__( 'Sends the styling brief and the wanted look to the AI provider set up under Settings › Connectors, and returns the stylesheet it writes. Nothing is saved.', 'silvertrail' ),
+				array( self::class, 'write_styles' ),
+				array(
+					'css'  => array( 'type' => 'string' ),
+					'file' => array( 'type' => 'string' ),
+				),
+				array(),
+				array(
+					'type'                 => 'object',
+					'properties'           => array(
+						'want' => array(
+							'type'        => 'string',
+							'minLength'   => 1,
+							'description' => __( 'The look you want, for example: a dark bar with rounded buttons in the theme’s accent color.', 'silvertrail' ),
+						),
+					),
+					'required'             => array( 'want' ),
+					'additionalProperties' => false,
+				),
+				false
+			);
+		}
 	}
 
 	/**
@@ -326,6 +353,40 @@ final class Abilities {
 	}
 
 	/**
+	 * Whether WordPress offers its AI Client and allows AI. Core's support check can call the provider, so this one stays local.
+	 */
+	public static function ai_available(): bool {
+		return function_exists( 'wp_ai_client_prompt' ) && wp_supports_ai();
+	}
+
+	/**
+	 * @param array{want?: string}|null $input
+	 * @return array{css: string, file: string}|WP_Error
+	 */
+	public static function write_styles( ?array $input = null ): array|WP_Error {
+		$timeout = static fn( mixed $seconds ): float => max( 120.0, is_numeric( $seconds ) ? (float) $seconds : 0.0 );
+		add_filter( 'wp_ai_client_default_request_timeout', $timeout );
+		$builder = wp_ai_client_prompt( StylingPrompt::text() . trim( (string) ( $input['want'] ?? '' ) ) );
+		remove_filter( 'wp_ai_client_default_request_timeout', $timeout );
+
+		if ( ! $builder->is_supported_for_text_generation() ) {
+			return new WP_Error( 'silvertrail_no_ai', __( 'Set up an AI provider under Settings › Connectors first.', 'silvertrail' ), array( 'status' => 503 ) );
+		}
+		$answer = $builder->generate_text();
+		if ( is_wp_error( $answer ) ) {
+			return $answer;
+		}
+		$css = preg_match( '/```css\s*\n(.*?)```/s', $answer, $block ) ? trim( $block[1] ) : trim( $answer );
+		if ( ! str_starts_with( $css, '/* ' . Frontend::THEME_CSS ) ) {
+			return new WP_Error( 'silvertrail_no_css', __( 'The answer held no stylesheet. Try again, or describe the look in other words.', 'silvertrail' ), array( 'status' => 502 ) );
+		}
+		return array(
+			'css'  => $css,
+			'file' => Frontend::THEME_CSS,
+		);
+	}
+
+	/**
 	 * @return list<array<string, mixed>>
 	 */
 	private static function presets(): array {
@@ -414,7 +475,7 @@ final class Abilities {
 	 * @param array<string, bool>               $annotations
 	 * @param array<string, mixed>              $input
 	 */
-	private static function add( string $name, string $label, string $description, callable $execute, array $output, array $annotations, array $input = self::NO_INPUT ): void {
+	private static function add( string $name, string $label, string $description, callable $execute, array $output, array $annotations, array $input = self::NO_INPUT, bool $expose = true ): void {
 		wp_register_ability(
 			self::CATEGORY . '/' . $name,
 			array(
@@ -435,7 +496,7 @@ final class Abilities {
 						'idempotent'  => ! empty( $annotations['readonly'] ),
 					),
 					'show_in_rest' => true,
-					'public'       => true,
+					'public'       => $expose,
 				),
 			)
 		);

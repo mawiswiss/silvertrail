@@ -427,8 +427,18 @@ test.describe('settings page', () => {
 		await expect(preview.getByLabel('Prompt for an AI assistant')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Copy prompt' }).click();
-		await expect(page.locator('#wpbody-content').getByText('Copied', { exact: true })).toBeVisible();
+		await expect(page.locator('#silvertrail-custom-styles .silvertrail-steps').getByText('Copied', { exact: true })).toBeVisible();
 		await expect(page.locator('#a11y-speak-polite')).toHaveText('Copied');
 		expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(await prompt.inputValue());
+	});
+
+	test('Write with AI asks for an AI provider when the site has none', async ({ page }) => {
+		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=banner');
+
+		await page.getByLabel('With this site’s AI').fill('A dark bar with rounded buttons');
+		await page.getByRole('button', { name: 'Write with AI' }).click();
+
+		await expect(page.locator('#silvertrail-style-error')).toHaveText('Set up an AI provider under Settings › Connectors first.');
+		await expect(page.locator('#silvertrail-style-output')).toBeHidden();
 	});
 });

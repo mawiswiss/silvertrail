@@ -12,5 +12,6 @@ parameters:
         - tests/phpstan-bootstrap.php
     scanFiles:
         - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - tests/phpstan-ai-client.php
     # Filter callbacks can return anything, whatever the hook's docblock says.
     treatPhpDocTypesAsCertain: false

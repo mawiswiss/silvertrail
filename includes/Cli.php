@@ -102,6 +102,34 @@ final class Cli {
 	}
 
 	/**
+	 * Writes the banner's custom styles with the AI provider set up under Settings › Connectors, and prints them. Needs WordPress 7.0.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <want>
+	 * : The look you want.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp silvertrail write-styles "A dark bar with rounded buttons" > wp-content/themes/my-theme/silvertrail/silvertrail.css
+	 *
+	 * @subcommand write-styles
+	 *
+	 * @param list<string> $args
+	 */
+	public function write_styles( array $args ): void {
+		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
+			WP_CLI::error( 'Writing styles with AI needs WordPress 7.0 or later.' );
+		}
+		$result = Abilities::write_styles( array( 'want' => $args[0] ) );
+		if ( is_wp_error( $result ) ) {
+			WP_CLI::error( $result->get_error_message() );
+			return;
+		}
+		WP_CLI::line( $result['css'] );
+	}
+
+	/**
 	 * Asks every visitor again on their next page view.
 	 *
 	 * @subcommand ask-again

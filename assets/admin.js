@@ -15,7 +15,7 @@ document.querySelectorAll('[data-silvertrail-editor]').forEach((textarea) => {
 
 const settings = document.querySelector('form[action="options.php"]');
 let unsaved = false;
-settings?.addEventListener('input', () => (unsaved = true));
+settings?.addEventListener('input', (event) => (unsaved ||= Boolean(event.target.name)));
 settings?.addEventListener('submit', () => (unsaved = false));
 settings?.addEventListener('change', (event) => {
 	const require = document.getElementById('silvertrail-require-choice');
@@ -40,6 +40,41 @@ new ClipboardJS('[data-silvertrail-copy]', {
 	wp.a11y.speak(success.textContent);
 	clearTimeout(success.timer);
 	success.timer = setTimeout(() => success.classList.add('hidden'), 3000);
+});
+
+const write = document.getElementById('silvertrail-write-styles');
+write?.addEventListener('click', async () => {
+	const want = document.getElementById('silvertrail-style-want');
+	const answer = document.getElementById('silvertrail-style-answer');
+	const output = document.getElementById('silvertrail-style-output');
+	const error = document.getElementById('silvertrail-style-error');
+	const spinner = write.nextElementSibling;
+	error.hidden = true;
+	if (!want.value.trim()) {
+		want.focus();
+		wp.a11y.speak(write.dataset.empty, 'assertive');
+		return;
+	}
+	write.disabled = true;
+	spinner.classList.add('is-active');
+	wp.a11y.speak(write.dataset.busy);
+	try {
+		const result = await wp.apiFetch({
+			path: '/wp-abilities/v1/abilities/silvertrail/write-styles/run',
+			method: 'POST',
+			data: { input: { want: want.value } },
+		});
+		answer.value = result.css;
+		output.hidden = false;
+		wp.a11y.speak(write.dataset.done);
+	} catch (failure) {
+		error.firstElementChild.textContent = failure.message;
+		error.hidden = false;
+		wp.a11y.speak(failure.message, 'assertive');
+	} finally {
+		write.disabled = false;
+		spinner.classList.remove('is-active');
+	}
 });
 
 document.addEventListener('click', (event) => {
