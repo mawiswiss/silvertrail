@@ -20,6 +20,7 @@ final class Plugin {
 		Scan::register();
 		Records::register();
 		Cli::register();
+		Abilities::register();
 		// Waits until a silvertrail_settings filter added on init counts too.
 		add_action( 'wp_loaded', array( self::class, 'start' ) );
 		add_action( 'admin_init', array( self::class, 'privacy_text' ) );
