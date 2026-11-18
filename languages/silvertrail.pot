@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-18T06:15:11+00:00\n"
+"POT-Creation-Date: 2026-11-18T07:12:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -136,7 +136,7 @@ msgid "`wp silvertrail settings` lists each value and where it comes from."
 msgstr ""
 
 #: includes/Admin/Help.php:180
-#: includes/Admin/Notices.php:128
+#: includes/Admin/Notices.php:140
 #: includes/Admin/tabs/banner.php:316
 msgid "Texts"
 msgstr ""
@@ -293,68 +293,82 @@ msgstr ""
 msgid "Check and run Silvertrail from the command line. `services` and `settings` take `--format=json` for scripts."
 msgstr ""
 
-#: includes/Admin/Notices.php:52
+#: includes/Admin/Notices.php:53
 msgid "Some texts were not saved."
 msgstr ""
 
 #. translators: 1: service name, 2: example ID
-#: includes/Admin/Notices.php:65
+#: includes/Admin/Notices.php:66
 #, php-format
 msgid "%1$s needs an ID like %2$s. Its tag is not printed until the ID is valid."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Admin/Notices.php:67
+#: includes/Admin/Notices.php:68
 #, php-format
 msgid "%s needs a valid ID."
 msgstr ""
 
 #. translators: %s: link to the privacy settings
-#: includes/Admin/Notices.php:77
+#: includes/Admin/Notices.php:78
 #, php-format
 msgid "Publish a privacy policy page under %s, so the banner can link to it."
 msgstr ""
 
-#: includes/Admin/Notices.php:78
+#: includes/Admin/Notices.php:79
 #: includes/Admin/tabs/banner.php:429
 msgid "Settings › Privacy"
 msgstr ""
 
-#: includes/Admin/Notices.php:80
+#: includes/Admin/Notices.php:81
 msgid "No privacy policy page is published."
 msgstr ""
 
+#. translators: %s: link to the Privacy Policy Guide
+#: includes/Admin/Notices.php:89
+#, php-format
+msgid "Silvertrail suggests a paragraph for your privacy policy. Copy it from the %s."
+msgstr ""
+
+#: includes/Admin/Notices.php:90
+msgid "Privacy Policy Guide"
+msgstr ""
+
+#: includes/Admin/Notices.php:92
+msgid "Silvertrail suggests text for the privacy policy."
+msgstr ""
+
 #. translators: 1: origin of the token, 2: date
-#: includes/Admin/Notices.php:88
+#: includes/Admin/Notices.php:100
 #, php-format
 msgid "The WebMCP trial token for %1$s expires on %2$s. Renew it in the browser’s origin trial console."
 msgstr ""
 
-#: includes/Admin/Notices.php:95
+#: includes/Admin/Notices.php:107
 msgid "A WebMCP trial token needs attention."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Admin/Notices.php:107
+#: includes/Admin/Notices.php:119
 #, php-format
 msgid "%s is ticked. Save Changes to turn it on."
 msgstr ""
 
-#: includes/Admin/Notices.php:115
+#: includes/Admin/Notices.php:127
 msgid "Every visitor will be asked again on their next page view."
 msgstr ""
 
-#: includes/Admin/Notices.php:127
+#: includes/Admin/Notices.php:139
 #: includes/Admin/tabs/services.php:60
 msgid "Trackers"
 msgstr ""
 
-#: includes/Admin/Notices.php:129
+#: includes/Admin/Notices.php:141
 #: includes/Admin/tabs/banner.php:413
 msgid "Links"
 msgstr ""
 
-#: includes/Admin/Notices.php:130
+#: includes/Admin/Notices.php:142
 #: includes/Admin/tabs/agents.php:129
 msgid "Visiting agents"
 msgstr ""
@@ -401,7 +415,7 @@ msgstr ""
 #: includes/Admin/SettingsPage.php:335
 #: includes/Admin/SettingsPage.php:345
 #: includes/Admin/SettingsPage.php:354
-#: includes/Records.php:201
+#: includes/Records.php:200
 msgid "You are not allowed to do this."
 msgstr ""
 
@@ -1213,7 +1227,11 @@ msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Plugin.php:59
+#: includes/Gpc.php:55
+msgid "If your browser sends Global Privacy Control, we treat it as a refusal of every service that needs consent and load only essential ones, even if you allowed more before. You can still allow more in the privacy settings, and we keep that choice."
+msgstr ""
+
+#: includes/Plugin.php:92
 msgid "Silvertrail is free. When you are paid to put it on a client’s site, consider supporting its development with a site license."
 msgstr ""
 
@@ -1269,7 +1287,7 @@ msgstr ""
 msgid "Shows embedded maps."
 msgstr ""
 
-#: includes/Records.php:222
+#: includes/Records.php:218
 msgid "When you make a choice in the privacy settings, we store a random consent ID, the choices, the version of the settings and the time. We store no IP address and no browser details. The record lets us show that you consented, and we delete it after the retention period."
 msgstr ""
 
@@ -1706,7 +1724,7 @@ msgid "Always allow %s"
 msgstr ""
 
 #: includes/Texts.php:56
-msgid "Your browser sends Global Privacy Control, so only essential services run. You can still allow more here."
+msgid "Your browser sends Global Privacy Control, so only essential services run unless you allow more here."
 msgstr ""
 
 #: includes/Texts.php:57
