@@ -260,8 +260,19 @@
 
 .silvertrail__save {
 	display: block;
+	width: 100%;
 	margin: 0 0 1rem;
-	padding-inline: 0;
+	padding: var(--silvertrail-button-padding, 0.7rem 1rem);
+	border: 2px solid var(--silvertrail-accent);
+	border-radius: var(--silvertrail-radius);
+	font-weight: var(--silvertrail-button-weight, 600);
+	text-decoration: none;
+}
+
+@media (hover: hover) {
+	.silvertrail__save:hover {
+		background: color-mix(in srgb, var(--silvertrail-accent) 12%, var(--silvertrail-background));
+	}
 }
 
 .silvertrail__button:focus-visible,
@@ -358,6 +369,7 @@
 	}
 
 	.silvertrail__button,
+	.silvertrail__save,
 	.silvertrail-embed__button {
 		transition: background-color 0.15s, border-color 0.15s;
 	}
