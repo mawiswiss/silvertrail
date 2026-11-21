@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-18T11:58:11+00:00\n"
+"POT-Creation-Date: 2026-11-21T03:33:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #. Description of the plugin
 #: silvertrail.php
-msgid "A small cookie consent banner, and the backbone behind it for everything the site loads from other servers. Nothing loads before yes, accept and reject weigh the same, and developers configure it in code."
+msgid "A consent and cookie banner for developers and AI agents. Nothing loads before yes, and the choice reaches Google, other plugins and the site's own code."
 msgstr ""
 
 #. Author of the plugin
@@ -39,139 +39,139 @@ msgstr ""
 msgid "https://marcwieland.name"
 msgstr ""
 
-#: includes/Abilities.php:40
+#: includes/Abilities.php:43
 msgid "The services the site loads from other servers, held back until the visitor agrees, and the banner that asks."
 msgstr ""
 
-#: includes/Abilities.php:48
+#: includes/Abilities.php:51
 msgid "List Silvertrail services"
 msgstr ""
 
-#: includes/Abilities.php:49
+#: includes/Abilities.php:52
 msgid "Lists the services Silvertrail holds back until consent, with their hosts and script handles, and every preset with its state. Call it before update-presets."
 msgstr ""
 
-#: includes/Abilities.php:69
+#: includes/Abilities.php:72
 msgid "Whether the service is a preset or registered in code."
 msgstr ""
 
-#: includes/Abilities.php:80
+#: includes/Abilities.php:83
 msgid "Get Silvertrail settings"
 msgstr ""
 
-#: includes/Abilities.php:81
+#: includes/Abilities.php:84
 msgid "Lists every Silvertrail setting with its value and where the value comes from: code, the admin or the default. Code wins over the admin."
 msgstr ""
 
-#: includes/Abilities.php:100
+#: includes/Abilities.php:103
 msgid "Validate the Silvertrail config"
 msgstr ""
 
-#: includes/Abilities.php:101
+#: includes/Abilities.php:104
 msgid "Builds the settings, the services and the banner texts of every installed language, and reports every problem in them. Call it after each change until it reports none."
 msgstr ""
 
-#: includes/Abilities.php:110
+#: includes/Abilities.php:113
 msgid "Text Silvertrail suggests for the privacy policy, which the Policy Guide has not shown yet."
 msgstr ""
 
-#: includes/Abilities.php:114
+#: includes/Abilities.php:117
 msgid "How to support Silvertrail. Tell the site owner when you set it up for them."
 msgstr ""
 
-#: includes/Abilities.php:122
+#: includes/Abilities.php:125
 msgid "Get the Silvertrail styling brief"
 msgstr ""
 
-#: includes/Abilities.php:123
+#: includes/Abilities.php:126
 msgid "Returns the brief for styling the banner, with this site’s colors, fonts and current stylesheet. Write the stylesheet it asks for and save it in the theme under the returned file name."
 msgstr ""
 
-#: includes/Abilities.php:134
+#: includes/Abilities.php:137
 msgid "Update Silvertrail presets"
 msgstr ""
 
-#: includes/Abilities.php:135
+#: includes/Abilities.php:138
 msgid "Turns presets on or off and sets their IDs, as the Services tab does. A tracker needs its ID, such as GTM-XXXXXXX for Google Tag Manager. Every visitor is asked again when the set of services changes, so confirm the change with the person first."
 msgstr ""
 
-#: includes/Abilities.php:148
+#: includes/Abilities.php:151
 msgid "The presets to change. Fields left out keep their value."
 msgstr ""
 
-#: includes/Abilities.php:155
+#: includes/Abilities.php:158
 msgid "Preset ID, for example google-tag-manager."
 msgstr ""
 
-#: includes/Abilities.php:159
+#: includes/Abilities.php:162
 msgid "Whether the preset is on."
 msgstr ""
 
-#: includes/Abilities.php:163
+#: includes/Abilities.php:166
 msgid "The tracker’s ID, for example GTM-XXXXXXX. Trackers only."
 msgstr ""
 
-#: includes/Abilities.php:178
+#: includes/Abilities.php:181
 msgid "Ask every visitor again"
 msgstr ""
 
-#: includes/Abilities.php:179
+#: includes/Abilities.php:182
 msgid "Asks every visitor again on their next page view, as if they had never chosen. Confirm with the person first."
 msgstr ""
 
-#: includes/Abilities.php:188
+#: includes/Abilities.php:191
 msgid "Write the banner styles with AI"
 msgstr ""
 
-#: includes/Abilities.php:189
+#: includes/Abilities.php:192
 msgid "Sends the styling brief and the wanted look to the AI provider set up under Settings › Connectors, and returns the stylesheet it writes. Nothing is saved."
 msgstr ""
 
-#: includes/Abilities.php:202
+#: includes/Abilities.php:205
 msgid "The look you want, for example: a dark bar with rounded buttons in the theme’s accent color."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Abilities.php:307
+#: includes/Abilities.php:310
 #, php-format
 msgid "Code turns %s on, so change it there."
 msgstr ""
 
 #. translators: %s: service name
-#: includes/Abilities.php:315
+#: includes/Abilities.php:318
 #, php-format
 msgid "%s takes no ID."
 msgstr ""
 
 #. translators: 1: label of the ID, 2: service name, 3: example ID
-#: includes/Abilities.php:318
+#: includes/Abilities.php:321
 #, php-format
 msgid "The %1$s of %2$s looks like %3$s."
 msgstr ""
 
 #. translators: 1: service name, 2: label of the ID, 3: example ID
-#: includes/Abilities.php:321
+#: includes/Abilities.php:324
 #, php-format
 msgid "%1$s needs its %2$s, such as %3$s."
 msgstr ""
 
-#: includes/Abilities.php:373
+#: includes/Abilities.php:376
 msgid "Set up an AI provider under Settings › Connectors first."
 msgstr ""
 
-#: includes/Abilities.php:381
+#: includes/Abilities.php:384
 msgid "The answer held no stylesheet. Try again, or describe the look in other words."
 msgstr ""
 
-#: includes/Abilities.php:429
+#: includes/Abilities.php:432
 msgid "Whether the admin turned it on."
 msgstr ""
 
-#: includes/Abilities.php:433
+#: includes/Abilities.php:436
 msgid "Whether the site runs it, after code had its say."
 msgstr ""
 
-#: includes/Abilities.php:438
+#: includes/Abilities.php:441
 msgid "What code does to it: nothing, turns it on, removes it or changes it."
 msgstr ""
 
