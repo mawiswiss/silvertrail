@@ -1,6 +1,6 @@
 {
     "name": "mawiswiss/silvertrail",
-    "description": "A small cookie consent banner for WordPress. Nothing loads before yes.",
+    "description": "A consent and cookie banner for WordPress, built for developers and AI agents.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
