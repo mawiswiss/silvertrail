@@ -42,7 +42,7 @@ $silvertrail_prompt = static function ( string $id, string $text ) use ( $silver
 $silvertrail_copy = static function ( string $id ): void {
 	?>
 	<span class="copy-to-clipboard-container hide-if-no-js">
-		<button type="button" class="button" data-silvertrail-copy="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
+		<button type="button" class="button silvertrail-copy" data-silvertrail-copy="<?php echo esc_attr( $id ); ?>"><span class="dashicons dashicons-admin-page" aria-hidden="true"></span><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
 		<span class="success hidden" aria-hidden="true"><?php esc_html_e( 'Copied', 'silvertrail' ); ?></span>
 	</span>
 	<?php

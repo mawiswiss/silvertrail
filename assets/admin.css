@@ -618,6 +618,40 @@
 	}
 }
 
+.silvertrail-steps > li:has(> .copy-to-clipboard-container) {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 8px 16px;
+
+	&::before {
+		top: calc(50% - 12px);
+	}
+
+	.copy-to-clipboard-container {
+		margin: 0;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.silvertrail-steps > li:has(> .copy-to-clipboard-container) {
+		grid-template-columns: minmax(0, 1fr);
+		justify-items: start;
+
+		&::before {
+			top: 0;
+		}
+	}
+}
+
+.silvertrail-copy .dashicons {
+	width: 16px;
+	height: 16px;
+	margin-inline: -2px 4px;
+	font-size: 16px;
+	vertical-align: text-bottom;
+}
+
 /* Core's Site Health accordion, on <details> so it opens without JavaScript. */
 .silvertrail-accordion {
 	> summary {

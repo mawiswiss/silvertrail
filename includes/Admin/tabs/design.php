@@ -288,7 +288,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 					<li>
 						<?php esc_html_e( 'Copy the prompt. It holds the brief and this site’s colors, fonts and current stylesheet.', 'silvertrail' ); ?>
 						<span class="copy-to-clipboard-container hide-if-no-js">
-							<button type="button" class="button" data-silvertrail-copy="silvertrail-styling-prompt"><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
+							<button type="button" class="button silvertrail-copy" data-silvertrail-copy="silvertrail-styling-prompt"><span class="dashicons dashicons-admin-page" aria-hidden="true"></span><?php esc_html_e( 'Copy prompt', 'silvertrail' ); ?></button>
 							<span class="success hidden" aria-hidden="true"><?php esc_html_e( 'Copied', 'silvertrail' ); ?></span>
 						</span>
 					</li>
