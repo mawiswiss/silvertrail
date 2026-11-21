@@ -1,6 +1,6 @@
 # API
 
-The PHP functions, the JavaScript API and the events read the visitor's choice, change it and open the preferences. Every hook Silvertrail offers is listed at the end, with the page that explains it.
+The PHP functions, the JavaScript API and the events read the visitor's choice, change it and open the preferences. Other plugins and the site's own code use them to base their own decisions on the same choice that Google and the WP Consent API get. Every hook Silvertrail offers is listed at the end, with the page that explains it.
 
 ## PHP functions
 

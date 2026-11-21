@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Agents and Silvertrail · Silvertrail docs</title>
-	<meta name="description" content="Agents meet Silvertrail in three roles. A developer's agent sets the site up, in code or through WordPress's abilities. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.">
+	<meta name="description" content="Silvertrail is built for agents as much as for people, and each agent gets an interface for its job. A developer's agent sets the site up in code and checks its work with WP-CLI, or works through WordPress's abilities over MCP. An admin's agent checks what the site loads before and after consent, with WebMCP tools in the browser. A visitor's agent browses the site for a person and answers through the same tools instead of the banner, where the browser offers them. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.">
 	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/agents/">
 	<link rel="alternate" type="text/markdown" href="/docs/agents.md" title="Agents and Silvertrail as Markdown">
 	<meta name="author" content="Marc Wieland">
@@ -15,7 +15,7 @@
 	<meta property="og:locale" content="en_GB">
 	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/agents/">
 	<meta property="og:title" content="Agents and Silvertrail · Silvertrail docs">
-	<meta property="og:description" content="Agents meet Silvertrail in three roles. A developer's agent sets the site up, in code or through WordPress's abilities. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.">
+	<meta property="og:description" content="Silvertrail is built for agents as much as for people, and each agent gets an interface for its job. A developer's agent sets the site up in code and checks its work with WP-CLI, or works through WordPress's abilities over MCP. An admin's agent checks what the site loads before and after consent, with WebMCP tools in the browser. A visitor's agent browses the site for a person and answers through the same tools instead of the banner, where the browser offers them. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.">
 	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
@@ -480,7 +480,7 @@
 		<main class="docs-main" id="content">
 			<article class="prose">
 <h1>Agents and Silvertrail</h1>
-<p>Agents meet Silvertrail in three roles. A developer&#39;s agent sets the site up, in code or through WordPress&#39;s abilities. An admin&#39;s agent checks what the site loads before and after consent. A visitor&#39;s agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.</p>
+<p>Silvertrail is built for agents as much as for people, and each agent gets an interface for its job. A developer&#39;s agent sets the site up in code and checks its work with WP-CLI, or works through WordPress&#39;s abilities over MCP. An admin&#39;s agent checks what the site loads before and after consent, with WebMCP tools in the browser. A visitor&#39;s agent browses the site for a person and answers through the same tools instead of the banner, where the browser offers them. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.</p>
 <h2 id="how"><a href="#how">How</a></h2>
 <h3 id="set-up-a-site"><a href="#set-up-a-site">Set up a site</a></h3>
 <p>A coding agent with a shell sets Silvertrail up in code, reads <code>docs/README.md</code> and the pages it links for every hook and key, and runs <code>wp silvertrail validate</code> until it reports no problem. Under Settings › Silvertrail › Agents, Set up with an agent copies a prompt with this brief and the services the site has now. Coding agents that read skills can also install the Silvertrail skill:</p>
@@ -594,7 +594,7 @@
 }, 10, 2 );
 </code></pre>
 <h2 id="brief-check-the-site"><a href="#brief-check-the-site">Brief: check the site</a></h2>
-<p>You check the consent setup of a WordPress site that runs Silvertrail, a cookie consent banner. Silvertrail holds back every service that needs consent until the visitor agrees. Your job is to find what loads anyway. The site owner asked for this test, so you may allow services without asking again. Change nothing on the site.</p>
+<p>You check the consent setup of a WordPress site that runs Silvertrail, a consent plugin. Silvertrail holds back every service that needs consent until the visitor agrees. Your job is to find what loads anyway. The site owner asked for this test, so you may allow services without asking again. Change nothing on the site.</p>
 <p>Use a browser you control, with no ad blocker, because ad blockers hide requests that real visitors make. If the page offers WebMCP tools, use them:</p>
 <ul>
 <li><code>get_cookie_consent</code>: the services that need consent, the essential ones and the current choice.</li>
@@ -613,7 +613,7 @@
 <p>After each state, compare the hosts the page loaded with the services below. A host of a service that is not allowed is a leak. A host that belongs to no service is unknown: name it and say what it probably is.</p>
 <p>Reply with one table per page: state, host, service or &quot;unknown&quot;, allowed or not. Then list each leak with its likely cause, such as a script or embed that is not gated, a service without its hosts, or a host the site should register as a service. Point to the place in the documentation that fixes it, from <code>docs/</code> in the plugin folder or <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>. Finish by resetting the choice.</p>
 <h2 id="brief-set-up-the-site"><a href="#brief-set-up-the-site">Brief: set up the site</a></h2>
-<p>You set up Silvertrail, a cookie consent banner, on a WordPress site. The documentation in the plugin folder is the complete reference: start at <code>docs/README.md</code> and read the pages it links for your task. The same pages are at <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>, and <a href="https://silvertrail.marcwieland.name/llms.txt">https://silvertrail.marcwieland.name/llms.txt</a> lists them as Markdown.</p>
+<p>You set up Silvertrail on a WordPress site. Silvertrail holds back each service until the visitor agrees, and passes the choice on to Google, to other plugins and to the site&#39;s own code. The documentation in the plugin folder is the complete reference: start at <code>docs/README.md</code> and read the pages it links for your task. The same pages are at <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>, and <a href="https://silvertrail.marcwieland.name/llms.txt">https://silvertrail.marcwieland.name/llms.txt</a> lists them as Markdown.</p>
 <p>Work in code, not in the admin. Register services in a small plugin or the theme with <code>silvertrail_register_service()</code> on the <code>silvertrail_register</code> action, and set settings with the <code>silvertrail_settings</code> filter. A preset turns on by its ID, and a tracker needs its tag ID. Every other script or embed from another host becomes a service with its hosts or its script handles.</p>
 <p>Run <code>wp silvertrail validate</code> until it reports no problem, and <code>wp silvertrail services</code> to see what is active. Then check the site in a browser as the brief &quot;Check the site&quot; in <code>docs/agents.md</code> describes, and fix what it finds. Follow the README&#39;s note to agents on the licence.</p>
 			</article>

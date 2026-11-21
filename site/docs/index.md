@@ -1,16 +1,19 @@
 # Silvertrail documentation
 
-Silvertrail holds back everything a WordPress site loads from other servers until the visitor agrees, and passes the choice on. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under `docs/` and on https://silvertrail.marcwieland.name/docs/, where https://silvertrail.marcwieland.name/llms.txt lists them as Markdown for agents.
+Silvertrail is the one place where a WordPress site handles everything it loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google, to other plugins and to the site's own code. The cookie banner is the part that asks visitors today, and it steps aside wherever the browser or an agent answers instead. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under `docs/` and on https://silvertrail.marcwieland.name/docs/, where https://silvertrail.marcwieland.name/llms.txt lists them as Markdown for agents.
 
 ## How it works
 
 - **Services and groups.** A [service](https://silvertrail.marcwieland.name/docs/services.md) is anything the site loads from another server. It belongs to a group, such as statistics or marketing. Presets cover the common trackers and embeds, and code registers the rest.
-- **Nothing loads before yes.** Marked scripts wait as `type="text/plain"`, scripts that WordPress enqueues are held back by their handle, and embeds wait in a `<template>` behind a placeholder.
-- **The browser decides.** The server renders every gated script and embed blocked, and Silvertrail's script decides on each page view. That is why page caches need no setup, and why PHP reads the choice only on requests a cache never serves.
-- **One cookie.** The choice lives in a [first-party cookie](https://silvertrail.marcwieland.name/docs/api.md#the-cookie) with a revision number. When the set of services changes, the revision goes up and every visitor is asked again.
-- **Signals pass on.** Every choice goes to [Google Consent Mode and the WP Consent API](https://silvertrail.marcwieland.name/docs/consent-signals.md). Global Privacy Control counts as "only essential" without a banner.
+- **Nothing loads before yes.** Marked scripts wait as `type="text/plain"`, scripts that WordPress enqueues are held back by their handle, and embeds wait in a `<template>` behind a placeholder. Gated scripts run in their original order once allowed, external and inline.
+- **The browser decides.** The server renders every gated script and embed blocked, and Silvertrail's script decides on each page view. That is why page caches need no setup, and why PHP reads the choice only on requests a cache never serves. A stale cached page neither asks again nor overwrites a newer choice.
+- **One cookie.** The choice lives in a [first-party cookie](https://silvertrail.marcwieland.name/docs/api.md#the-cookie) with a revision number. When the set of services changes, the revision goes up and every visitor is asked again. Services that flip back and forth within a minute trigger a `_doing_it_wrong` notice, because they would ask on every page.
+- **One choice, passed on.** Every choice goes to [Google Consent Mode and the WP Consent API](https://silvertrail.marcwieland.name/docs/consent-signals.md). Other plugins and the site's own code read the same choice through `window.silvertrail`, the `silvertrail:change` event and `silvertrail_has()`, and the `silvertrail_recorded` action hands each decision to the site's own records. The [API](https://silvertrail.marcwieland.name/docs/api.md) lists them all.
+- **Several ways to answer.** The banner asks visitors, with "Accept all" and "Only essential" as the same button side by side. An embed asks on its own placeholder. A browser that sends [Global Privacy Control](https://silvertrail.marcwieland.name/docs/consent-signals.md#global-privacy-control) gets "only essential" without a banner, and an agent in a browser with [WebMCP](https://silvertrail.marcwieland.name/docs/agents.md#webmcp) answers through tools.
+- **Built for agents.** This reference ships in the plugin, so an agent reads the version the site runs. `wp silvertrail settings` and `wp silvertrail validate` let it check its own work, the [abilities](https://silvertrail.marcwieland.name/docs/agents.md#abilities-and-mcp) do the same over MCP, and the WebMCP tools let it check a site in the browser. [Agents](https://silvertrail.marcwieland.name/docs/agents.md) covers each of them.
 - **Code wins over the admin.** The admin holds only decisions, and it marks every field that code sets with "Set in code".
 - **Mistakes are loud.** An unknown key, a tag ID that does not fit or an invalid setting triggers a `_doing_it_wrong` notice, and [`wp silvertrail validate`](https://silvertrail.marcwieland.name/docs/cli.md#validate) lists them all.
+- **Small and self-contained.** The front end adds one deferred script and one stylesheet, and the plugin has no external dependencies. Only a browser with WebMCP fetches a second small script for the agent tools. The plugin contacts no outside service on its own, except Write with AI when an admin clicks it, and uninstalling it removes its options, its table and its scheduled job.
 
 ## Set up in code
 
@@ -60,6 +63,10 @@ The callbacks run only while Silvertrail is active, so the file does no harm whe
 | Shell | `wp silvertrail services`, `settings`, `validate`, `ask-again`, `write-styles` and `records export`, see [WP-CLI](https://silvertrail.marcwieland.name/docs/cli.md) |
 | Agents | the WebMCP tools and the abilities through the MCP Adapter, see [Agents](https://silvertrail.marcwieland.name/docs/agents.md) |
 | What the plugin does not ship | regions, opt-out and other needs solved in the site's own code, see [Recipes](https://silvertrail.marcwieland.name/docs/recipes.md) |
+
+## What it does not do
+
+Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries. A site that treats regions differently decides in the `silvertrail:before-prompt` event, as the [recipes](https://silvertrail.marcwieland.name/docs/recipes.md) show. It does not crawl the site for cookies either. The [Leak check](https://silvertrail.marcwieland.name/docs/leak-check.md) looks at the pages you list and shows what they actually load.
 
 ## Pages
 

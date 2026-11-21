@@ -1,6 +1,6 @@
 # Silvertrail
 
-> Silvertrail is a small cookie consent plugin for WordPress. It holds back everything a site loads from other servers until the visitor agrees, and passes the choice on to Google Consent Mode and the WP Consent API. These pages are the complete reference for developers and their agents.
+> Silvertrail is the one place where a WordPress site handles everything it loads from other servers. It holds each service back until the visitor agrees, asks through a cookie banner, and passes the choice on to Google Consent Mode, the WP Consent API, other plugins and the site's own code. Agents set it up and check it through WP-CLI, abilities over MCP and WebMCP tools. These pages are the complete reference for developers and their agents.
 
 The plugin ships the same pages in its folder under `docs/`, for the version it runs.
 

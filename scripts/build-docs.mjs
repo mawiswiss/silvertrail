@@ -6,7 +6,7 @@ import { Marked, Renderer, TextRenderer } from 'marked';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://silvertrail.marcwieland.name';
 const SOURCE = 'https://github.com/mawiswiss/silvertrail/blob/main';
-const SUMMARY = 'Silvertrail is a small cookie consent plugin for WordPress. It holds back everything a site loads from other servers until the visitor agrees, and passes the choice on to Google Consent Mode and the WP Consent API. These pages are the complete reference for developers and their agents.';
+const SUMMARY = 'Silvertrail is the one place where a WordPress site handles everything it loads from other servers. It holds each service back until the visitor agrees, asks through a cookie banner, and passes the choice on to Google Consent Mode, the WP Consent API, other plugins and the site\'s own code. Agents set it up and check it through WP-CLI, abilities over MCP and WebMCP tools. These pages are the complete reference for developers and their agents.';
 
 const read = (path) => readFileSync(join(ROOT, path), 'utf8');
 const write = (path, content) => {

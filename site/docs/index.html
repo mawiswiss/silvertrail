@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Silvertrail documentation · Silvertrail docs</title>
-	<meta name="description" content="Silvertrail holds back everything a WordPress site loads from other servers until the visitor agrees, and passes the choice on. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under docs/ and on https://silvertrail.marcwieland.name/docs/, where https://silvertrail.marcwieland.name/llms.txt lists them as Markdown for agents.">
+	<meta name="description" content="Silvertrail is the one place where a WordPress site handles everything it loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google, to other plugins and to the site's own code. The cookie banner is the part that asks visitors today, and it steps aside wherever the browser or an agent answers instead. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under docs/ and on https://silvertrail.marcwieland.name/docs/, where https://silvertrail.marcwieland.name/llms.txt lists them as Markdown for agents.">
 	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/">
 	<link rel="alternate" type="text/markdown" href="/docs/index.md" title="Silvertrail documentation as Markdown">
 	<meta name="author" content="Marc Wieland">
@@ -15,7 +15,7 @@
 	<meta property="og:locale" content="en_GB">
 	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/">
 	<meta property="og:title" content="Silvertrail documentation · Silvertrail docs">
-	<meta property="og:description" content="Silvertrail holds back everything a WordPress site loads from other servers until the visitor agrees, and passes the choice on. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under docs/ and on https://silvertrail.marcwieland.name/docs/, where https://silvertrail.marcwieland.name/llms.txt lists them as Markdown for agents.">
+	<meta property="og:description" content="Silvertrail is the one place where a WordPress site handles everything it loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google, to other plugins and to the site's own code. The cookie banner is the part that asks visitors today, and it steps aside wherever the browser or an agent answers instead. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under docs/ and on https://silvertrail.marcwieland.name/docs/, where https://silvertrail.marcwieland.name/llms.txt lists them as Markdown for agents.">
 	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
@@ -459,6 +459,7 @@
 						<li><a href="#how-it-works">How it works</a></li>
 						<li><a href="#set-up-in-code">Set up in code</a></li>
 						<li><a href="#where-each-concern-lives">Where each concern lives</a></li>
+						<li><a href="#what-it-does-not-do">What it does not do</a></li>
 						<li><a href="#pages">Pages</a></li>
 					</ul>
 				</li>
@@ -479,16 +480,19 @@
 		<main class="docs-main" id="content">
 			<article class="prose">
 <h1>Silvertrail documentation</h1>
-<p>Silvertrail holds back everything a WordPress site loads from other servers until the visitor agrees, and passes the choice on. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under <code>docs/</code> and on <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>, where <a href="https://silvertrail.marcwieland.name/llms.txt">https://silvertrail.marcwieland.name/llms.txt</a> lists them as Markdown for agents.</p>
+<p>Silvertrail is the one place where a WordPress site handles everything it loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google, to other plugins and to the site&#39;s own code. The cookie banner is the part that asks visitors today, and it steps aside wherever the browser or an agent answers instead. This is the complete reference for developers and their agents: every hook, key, setting, attribute and command. The same pages are in the plugin folder under <code>docs/</code> and on <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>, where <a href="https://silvertrail.marcwieland.name/llms.txt">https://silvertrail.marcwieland.name/llms.txt</a> lists them as Markdown for agents.</p>
 <h2 id="how-it-works"><a href="#how-it-works">How it works</a></h2>
 <ul>
 <li><strong>Services and groups.</strong> A <a href="/docs/services/">service</a> is anything the site loads from another server. It belongs to a group, such as statistics or marketing. Presets cover the common trackers and embeds, and code registers the rest.</li>
-<li><strong>Nothing loads before yes.</strong> Marked scripts wait as <code>type=&quot;text/plain&quot;</code>, scripts that WordPress enqueues are held back by their handle, and embeds wait in a <code>&lt;template&gt;</code> behind a placeholder.</li>
-<li><strong>The browser decides.</strong> The server renders every gated script and embed blocked, and Silvertrail&#39;s script decides on each page view. That is why page caches need no setup, and why PHP reads the choice only on requests a cache never serves.</li>
-<li><strong>One cookie.</strong> The choice lives in a <a href="/docs/api/#the-cookie">first-party cookie</a> with a revision number. When the set of services changes, the revision goes up and every visitor is asked again.</li>
-<li><strong>Signals pass on.</strong> Every choice goes to <a href="/docs/consent-signals/">Google Consent Mode and the WP Consent API</a>. Global Privacy Control counts as &quot;only essential&quot; without a banner.</li>
+<li><strong>Nothing loads before yes.</strong> Marked scripts wait as <code>type=&quot;text/plain&quot;</code>, scripts that WordPress enqueues are held back by their handle, and embeds wait in a <code>&lt;template&gt;</code> behind a placeholder. Gated scripts run in their original order once allowed, external and inline.</li>
+<li><strong>The browser decides.</strong> The server renders every gated script and embed blocked, and Silvertrail&#39;s script decides on each page view. That is why page caches need no setup, and why PHP reads the choice only on requests a cache never serves. A stale cached page neither asks again nor overwrites a newer choice.</li>
+<li><strong>One cookie.</strong> The choice lives in a <a href="/docs/api/#the-cookie">first-party cookie</a> with a revision number. When the set of services changes, the revision goes up and every visitor is asked again. Services that flip back and forth within a minute trigger a <code>_doing_it_wrong</code> notice, because they would ask on every page.</li>
+<li><strong>One choice, passed on.</strong> Every choice goes to <a href="/docs/consent-signals/">Google Consent Mode and the WP Consent API</a>. Other plugins and the site&#39;s own code read the same choice through <code>window.silvertrail</code>, the <code>silvertrail:change</code> event and <code>silvertrail_has()</code>, and the <code>silvertrail_recorded</code> action hands each decision to the site&#39;s own records. The <a href="/docs/api/">API</a> lists them all.</li>
+<li><strong>Several ways to answer.</strong> The banner asks visitors, with &quot;Accept all&quot; and &quot;Only essential&quot; as the same button side by side. An embed asks on its own placeholder. A browser that sends <a href="/docs/consent-signals/#global-privacy-control">Global Privacy Control</a> gets &quot;only essential&quot; without a banner, and an agent in a browser with <a href="/docs/agents/#webmcp">WebMCP</a> answers through tools.</li>
+<li><strong>Built for agents.</strong> This reference ships in the plugin, so an agent reads the version the site runs. <code>wp silvertrail settings</code> and <code>wp silvertrail validate</code> let it check its own work, the <a href="/docs/agents/#abilities-and-mcp">abilities</a> do the same over MCP, and the WebMCP tools let it check a site in the browser. <a href="/docs/agents/">Agents</a> covers each of them.</li>
 <li><strong>Code wins over the admin.</strong> The admin holds only decisions, and it marks every field that code sets with &quot;Set in code&quot;.</li>
 <li><strong>Mistakes are loud.</strong> An unknown key, a tag ID that does not fit or an invalid setting triggers a <code>_doing_it_wrong</code> notice, and <a href="/docs/cli/#validate"><code>wp silvertrail validate</code></a> lists them all.</li>
+<li><strong>Small and self-contained.</strong> The front end adds one deferred script and one stylesheet, and the plugin has no external dependencies. Only a browser with WebMCP fetches a second small script for the agent tools. The plugin contacts no outside service on its own, except Write with AI when an admin clicks it, and uninstalling it removes its options, its table and its scheduled job.</li>
 </ul>
 <h2 id="set-up-in-code"><a href="#set-up-in-code">Set up in code</a></h2>
 <p>A must-use plugin keeps the whole setup out of the admin and in version control. Save it as <code>wp-content/mu-plugins/silvertrail-setup.php</code>:</p>
@@ -570,6 +574,8 @@ add_filter( &#39;silvertrail_settings&#39;, function ( $settings ) {
 </tr>
 </tbody></table>
 </div>
+<h2 id="what-it-does-not-do"><a href="#what-it-does-not-do">What it does not do</a></h2>
+<p>Silvertrail does not implement the IAB Transparency and Consent Framework, so an ad network that requires a TCF consent string needs a different banner. It does not detect countries. A site that treats regions differently decides in the <code>silvertrail:before-prompt</code> event, as the <a href="/docs/recipes/">recipes</a> show. It does not crawl the site for cookies either. The <a href="/docs/leak-check/">Leak check</a> looks at the pages you list and shows what they actually load.</p>
 <h2 id="pages"><a href="#pages">Pages</a></h2>
 <ul>
 <li><a href="/docs/services/">Services and groups</a>: register services, presets, groups, the config filter, gated scripts and embeds.</li>

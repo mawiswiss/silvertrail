@@ -1,6 +1,6 @@
 # Agents and Silvertrail
 
-Agents meet Silvertrail in three roles. A developer's agent sets the site up, in code or through WordPress's abilities. An admin's agent checks what the site loads before and after consent. A visitor's agent browses the site for a person and meets the banner. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.
+Silvertrail is built for agents as much as for people, and each agent gets an interface for its job. A developer's agent sets the site up in code and checks its work with WP-CLI, or works through WordPress's abilities over MCP. An admin's agent checks what the site loads before and after consent, with WebMCP tools in the browser. A visitor's agent browses the site for a person and answers through the same tools instead of the banner, where the browser offers them. This file is the guide for all three, and its last two sections are the briefs that Settings › Silvertrail › Agents copies as prompts.
 
 ## How
 
@@ -95,7 +95,7 @@ add_filter( 'wp_register_ability_args', function ( $args, $name ) {
 
 ## Brief: check the site
 
-You check the consent setup of a WordPress site that runs Silvertrail, a cookie consent banner. Silvertrail holds back every service that needs consent until the visitor agrees. Your job is to find what loads anyway. The site owner asked for this test, so you may allow services without asking again. Change nothing on the site.
+You check the consent setup of a WordPress site that runs Silvertrail, a consent plugin. Silvertrail holds back every service that needs consent until the visitor agrees. Your job is to find what loads anyway. The site owner asked for this test, so you may allow services without asking again. Change nothing on the site.
 
 Use a browser you control, with no ad blocker, because ad blockers hide requests that real visitors make. If the page offers WebMCP tools, use them:
 
@@ -119,7 +119,7 @@ Reply with one table per page: state, host, service or "unknown", allowed or not
 
 ## Brief: set up the site
 
-You set up Silvertrail, a cookie consent banner, on a WordPress site. The documentation in the plugin folder is the complete reference: start at `docs/README.md` and read the pages it links for your task. The same pages are at https://silvertrail.marcwieland.name/docs/, and https://silvertrail.marcwieland.name/llms.txt lists them as Markdown.
+You set up Silvertrail on a WordPress site. Silvertrail holds back each service until the visitor agrees, and passes the choice on to Google, to other plugins and to the site's own code. The documentation in the plugin folder is the complete reference: start at `docs/README.md` and read the pages it links for your task. The same pages are at https://silvertrail.marcwieland.name/docs/, and https://silvertrail.marcwieland.name/llms.txt lists them as Markdown.
 
 Work in code, not in the admin. Register services in a small plugin or the theme with `silvertrail_register_service()` on the `silvertrail_register` action, and set settings with the `silvertrail_settings` filter. A preset turns on by its ID, and a tracker needs its tag ID. Every other script or embed from another host becomes a service with its hosts or its script handles.
 
