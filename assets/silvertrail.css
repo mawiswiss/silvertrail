@@ -376,6 +376,11 @@
 
 .silvertrail a {
 	color: inherit;
+	font: inherit;
+	letter-spacing: inherit;
+	text-transform: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
 }
 
 .silvertrail__legal {
