@@ -243,4 +243,14 @@ Write with AI, on WordPress 7.0 and later, sends the styling prompt and the admi
 
 = 1.0.0 =
 
-* First release.
+* A banner where "Accept all" and "Only essential" sit side by side at the same size, and "Choose" opens the choice per group and per service.
+* Presets print the official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel, and hold them back until consent.
+* YouTube, Vimeo and Google Maps embeds wait behind a placeholder that asks in place.
+* Marked scripts and enqueued scripts listed by their handle wait until consent and run in their original order, behind any page cache.
+* Every choice updates Google Consent Mode v2 and the WP Consent API.
+* A browser that sends Global Privacy Control gets "only essential" without a banner.
+* The Leak check shows what a page loads before and after consent, and a Playwright helper runs it in CI.
+* `wp silvertrail services`, `settings` and `validate` show and check the setup on the shell.
+* The banner takes its colours from the theme's `theme.json`, and the `silvertrail_design` filter, a theme stylesheet or templates change its look.
+* Optional records keep each decision without an IP address.
+* A link, block, shortcode or floating button reopens the preferences.
