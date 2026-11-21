@@ -250,6 +250,14 @@
 	cursor: pointer;
 }
 
+@media (hover: hover) {
+	.silvertrail__button:hover,
+	.silvertrail-embed__button:hover {
+		border-color: color-mix(in srgb, var(--silvertrail-accent) 85%, var(--silvertrail-on-accent));
+		background: color-mix(in srgb, var(--silvertrail-accent) 85%, var(--silvertrail-on-accent));
+	}
+}
+
 .silvertrail__save {
 	display: block;
 	margin: 0 0 1rem;
@@ -348,6 +356,11 @@
 	.silvertrail__details summary::before {
 		transition: transform 0.15s;
 	}
+
+	.silvertrail__button,
+	.silvertrail-embed__button {
+		transition: background-color 0.15s, border-color 0.15s;
+	}
 }
 
 .silvertrail__service {
@@ -381,6 +394,11 @@
 	text-transform: inherit;
 	text-decoration: underline;
 	text-underline-offset: 0.2em;
+}
+
+.silvertrail a:hover,
+.silvertrail__link:hover {
+	text-decoration-thickness: 2px;
 }
 
 .silvertrail__legal {
