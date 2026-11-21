@@ -41,7 +41,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 		disabled( $in_code, true, false ),
 		esc_html( $name ),
 		esc_html( $id ),
-		'' === $state ? '' : ' ' . wp_kses_post( SettingsPage::in_code_chip( $state ) ),
+		'' === $state ? '' : ' ' . wp_kses_post( SettingsPage::in_code_chip( $state, $in_code ) ),
 		esc_html( $purpose ),
 		$focus ? ' autofocus' : ''
 	);

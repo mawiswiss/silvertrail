@@ -4,7 +4,7 @@ Settings decide how the banner looks and behaves and what Silvertrail keeps. The
 
 ## The settings filter
 
-The `silvertrail_settings` filter sets any setting, and code wins over the admin. The admin shows a field that code sets as "Set in code" and keeps the admin's own value underneath.
+The `silvertrail_settings` filter sets any setting, and code wins over the admin. The admin locks a field that code sets, marks it "Set in code" beside its name, and keeps the admin's own value underneath.
 
 ```php
 add_filter( 'silvertrail_settings', function ( $settings ) {

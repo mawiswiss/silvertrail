@@ -202,7 +202,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Closing', 'silvertrail' ); ?></th>
+			<th scope="row"><?php esc_html_e( 'Closing', 'silvertrail' ); ?><?php echo wp_kses_post( SettingsPage::in_code_label( 'require_choice' ) ); ?></th>
 			<td>
 				<?php
 				SettingsPage::checkbox(

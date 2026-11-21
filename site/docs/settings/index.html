@@ -479,7 +479,7 @@
 <h1>Settings</h1>
 <p>Settings decide how the banner looks and behaves and what Silvertrail keeps. The admin holds the decisions a site owner makes, and code can set every one of them.</p>
 <h2 id="the-settings-filter"><a href="#the-settings-filter">The settings filter</a></h2>
-<p>The <code>silvertrail_settings</code> filter sets any setting, and code wins over the admin. The admin shows a field that code sets as &quot;Set in code&quot; and keeps the admin&#39;s own value underneath.</p>
+<p>The <code>silvertrail_settings</code> filter sets any setting, and code wins over the admin. The admin locks a field that code sets, marks it &quot;Set in code&quot; beside its name, and keeps the admin&#39;s own value underneath.</p>
 <pre><code class="language-php">add_filter( &#39;silvertrail_settings&#39;, function ( $settings ) {
 	$settings[&#39;expiry_months&#39;] = 12;
 	$settings[&#39;records&#39;]       = true;

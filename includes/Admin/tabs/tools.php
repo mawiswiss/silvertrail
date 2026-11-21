@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 	<?php echo wp_kses_post( SettingsPage::docs_link( 'records/' ) ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Decisions', 'silvertrail' ); ?></th>
+			<th scope="row"><?php esc_html_e( 'Decisions', 'silvertrail' ); ?><?php echo wp_kses_post( SettingsPage::in_code_label( 'records' ) ); ?></th>
 			<td>
 				<?php
 				SettingsPage::checkbox(

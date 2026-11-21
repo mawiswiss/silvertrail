@@ -128,13 +128,12 @@ final class SettingsPage {
 
 	public static function checkbox( string $key, string $label, string $help = '' ): void {
 		printf(
-			'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s> %5$s</label>%6$s',
+			'<label for="%1$s"><input type="checkbox" id="%1$s" name="%2$s" value="1" %3$s %4$s> %5$s</label>',
 			esc_attr( 'silvertrail-' . str_replace( '_', '-', $key ) ),
 			esc_attr( self::field( $key ) ),
 			checked( ! empty( Settings::get( $key ) ), true, false ),
 			disabled( Settings::in_code( $key ), true, false ),
-			esc_html( $label ),
-			wp_kses_post( self::in_code_label( $key ) )
+			esc_html( $label )
 		);
 		if ( '' !== $help ) {
 			echo '<p class="description">' . esc_html( $help ) . '</p>';
@@ -172,11 +171,18 @@ final class SettingsPage {
 	}
 
 	public static function in_code_label( string $key ): string {
-		return Settings::in_code( $key ) ? ' ' . self::in_code_chip( __( 'Set in code', 'silvertrail' ) ) : '';
+		return Settings::in_code( $key ) ? ' ' . self::in_code_chip( __( 'Set in code', 'silvertrail' ), true ) : '';
 	}
 
-	public static function in_code_chip( string $text ): string {
-		return '<span class="silvertrail-chip">' . esc_html( $text ) . '</span>';
+	public static function in_code_chip( string $text, bool $locked = false ): string {
+		if ( ! $locked ) {
+			return '<span class="silvertrail-chip">' . esc_html( $text ) . '</span>';
+		}
+		return sprintf(
+			'<span class="silvertrail-chip silvertrail-chip--locked" title="%1$s"><span class="dashicons dashicons-lock" aria-hidden="true"></span>%2$s</span>',
+			esc_attr__( 'Code sets this, so it cannot be changed here.', 'silvertrail' ),
+			esc_html( $text )
+		);
 	}
 
 	public static function url( string $tab = 'services' ): string {

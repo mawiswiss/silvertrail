@@ -134,11 +134,10 @@ $silvertrail_copy = static function ( string $id ): void {
 	<?php Notices::card( 'webmcp' ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
-			<th scope="row"><?php esc_html_e( 'WebMCP tools', 'silvertrail' ); ?></th>
+			<th scope="row"><?php esc_html_e( 'WebMCP tools', 'silvertrail' ); ?><?php echo wp_kses_post( SettingsPage::in_code_label( 'webmcp' ) ); ?></th>
 			<td>
 				<?php
 				echo Settings::get( 'webmcp' ) ? esc_html__( 'On, in every browser that supports WebMCP.', 'silvertrail' ) : esc_html__( 'Off.', 'silvertrail' );
-				echo wp_kses_post( SettingsPage::in_code_label( 'webmcp' ) );
 				?>
 			</td>
 		</tr>
