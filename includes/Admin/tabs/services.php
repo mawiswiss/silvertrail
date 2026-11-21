@@ -107,7 +107,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 			<?php foreach ( $silvertrail_embeds as $silvertrail_id => $silvertrail_preset ) : ?>
 				<tr>
 					<td><?php $silvertrail_toggle( $silvertrail_id, $silvertrail_preset['service']['name'], $silvertrail_preset['service']['purpose'], $silvertrail_turn_on === $silvertrail_id ); ?></td>
-					<td><?php echo wp_kses_post( $silvertrail_codes( $silvertrail_config['services'][ $silvertrail_id ]['hosts'] ?? $silvertrail_preset['service']['hosts'] ) ); ?></td>
+					<td class="silvertrail-list__hosts"><?php echo wp_kses_post( $silvertrail_codes( $silvertrail_config['services'][ $silvertrail_id ]['hosts'] ?? $silvertrail_preset['service']['hosts'] ) ); ?></td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>
@@ -161,7 +161,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 						</td>
 						<td><?php echo esc_html( $silvertrail_group( $silvertrail_service['group'] ) ); ?></td>
 						<td><?php echo in_array( $silvertrail_id, $silvertrail_essential, true ) ? esc_html__( 'Not needed', 'silvertrail' ) : esc_html__( 'Required', 'silvertrail' ); ?></td>
-						<td>
+						<td class="silvertrail-list__hosts">
 							<?php if ( array() !== $silvertrail_service['hosts'] ) : ?>
 								<?php echo wp_kses_post( $silvertrail_codes( $silvertrail_service['hosts'] ) ); ?><br>
 							<?php endif; ?>

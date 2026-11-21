@@ -213,6 +213,18 @@
 	.silvertrail-section.card .form-table + .submit {
 		padding-left: 220px;
 	}
+
+	.silvertrail-list th:first-child {
+		width: 45%;
+	}
+
+	.silvertrail-list td:first-child {
+		white-space: nowrap;
+	}
+
+	.silvertrail-list td:first-child > .description {
+		white-space: normal;
+	}
 }
 
 .silvertrail-list {
@@ -243,6 +255,10 @@
 
 	label:has(:disabled) {
 		cursor: default;
+	}
+
+	.silvertrail-list__hosts {
+		line-height: 2;
 	}
 
 	tbody tr:last-child td {
