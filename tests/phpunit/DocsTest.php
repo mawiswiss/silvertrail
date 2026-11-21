@@ -118,4 +118,26 @@ final class DocsTest extends WP_UnitTestCase {
 			$this->assertDocumented( '`' . basename( $file ) . '`', 'the template' );
 		}
 	}
+
+	public function test_every_docs_link_in_the_admin_finds_its_page_and_heading(): void {
+		$tabs  = implode( '', array_map( 'file_get_contents', glob( self::root() . '/includes/Admin/tabs/*.php' ) ?: array() ) );
+		$links = self::found( "/docs_link\(\s*'([^']+)'/", $tabs );
+		$this->assertNotEmpty( $links );
+		foreach ( $links as $link ) {
+			$this->assertSame( 1, preg_match( '/^([a-z-]+)\/(?:#([a-z0-9-]+))?$/', $link, $parts ), "The docs link {$link} names a page." );
+			$file = self::root() . "/docs/{$parts[1]}.md";
+			$this->assertFileExists( $file );
+			if ( isset( $parts[2] ) ) {
+				preg_match_all( '/^#{1,6} (.+)$/m', (string) file_get_contents( $file ), $headings );
+				$this->assertContains( $parts[2], array_map( array( self::class, 'slug' ), $headings[1] ), "docs/{$parts[1]}.md has a heading for #{$parts[2]}." );
+			}
+		}
+	}
+
+	/**
+	 * The rule of slugger() in scripts/build-docs.mjs, which sets the heading IDs on the site.
+	 */
+	private static function slug( string $heading ): string {
+		return (string) preg_replace( '/\s/u', '-', (string) preg_replace( '/[^\p{L}\p{N}\s_-]/u', '', mb_strtolower( trim( $heading ) ) ) );
+	}
 }

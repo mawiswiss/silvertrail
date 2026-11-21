@@ -50,6 +50,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 
 <section class="card silvertrail-section" id="silvertrail-trackers">
 	<h2><?php esc_html_e( 'Trackers', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'services/#presets' ) ); ?>
 	<?php Notices::card( 'trackers' ); ?>
 	<p><?php esc_html_e( 'Silvertrail prints the official tag and holds it back until the visitor agrees.', 'silvertrail' ); ?></p>
 	<table class="silvertrail-list">
@@ -94,6 +95,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 
 <section class="card silvertrail-section" id="silvertrail-embeds">
 	<h2><?php esc_html_e( 'Embeds', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'services/#embeds' ) ); ?>
 	<?php Notices::card( 'embeds' ); ?>
 	<p><?php esc_html_e( 'Videos and maps from these providers show a placeholder and ask there, without opening the banner.', 'silvertrail' ); ?></p>
 	<table class="silvertrail-list">
@@ -117,6 +119,7 @@ $silvertrail_toggle    = static function ( string $id, string $name, string $pur
 
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Registered in code', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'services/#register-a-service' ) ); ?>
 	<p>
 		<?php
 		printf(

@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 use Silvertrail\Admin\Notices;
+use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 
 defined( 'ABSPATH' ) || exit;
@@ -13,6 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 <section class="card silvertrail-section" id="silvertrail-ask-again">
 	<h2><?php esc_html_e( 'Ask everyone again', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'cli/#ask-again' ) ); ?>
 	<?php Notices::card( 'ask-again' ); ?>
 	<p><?php esc_html_e( 'Silvertrail asks again by itself when services are added or removed. Use this after changing what a service does.', 'silvertrail' ); ?></p>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">

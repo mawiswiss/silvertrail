@@ -5,11 +5,14 @@
 
 declare(strict_types=1);
 
+use Silvertrail\Admin\SettingsPage;
+
 defined( 'ABSPATH' ) || exit;
 ?>
 
 <section id="silvertrail-scan" class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Leak check', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'leak-check/' ) ); ?>
 	<p><?php esc_html_e( 'Opens each page as a first-time visitor, declines, agrees to each service on its own and loads the page again. Lists what runs without consent, what starts only after a reload, and what to do about each.', 'silvertrail' ); ?></p>
 	<p class="hide-if-js"><?php esc_html_e( 'The check runs in this browser and needs JavaScript.', 'silvertrail' ); ?></p>
 	<table class="form-table hide-if-no-js" role="presentation">

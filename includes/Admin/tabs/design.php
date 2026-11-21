@@ -55,6 +55,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Look', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'styling/#from-the-theme' ) ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Source', 'silvertrail' ); ?></th>
@@ -277,6 +278,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 
 <section class="card silvertrail-section" id="silvertrail-custom-styles">
 	<h2><?php esc_html_e( 'Custom styles', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'styling/#your-own-stylesheet' ) ); ?>
 	<p><?php esc_html_e( 'For anything beyond the theme’s colors and buttons, the theme adds its own stylesheet. An AI assistant can write it.', 'silvertrail' ); ?></p>
 	<table class="form-table" role="presentation">
 		<tr>

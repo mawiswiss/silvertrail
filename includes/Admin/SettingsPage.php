@@ -23,6 +23,8 @@ final class SettingsPage {
 
 	public const LICENSE_SEEN = 'silvertrail_license_seen';
 
+	public const DOCS = 'https://silvertrail.marcwieland.name/docs/';
+
 	/**
 	 * The settings each tab posts. Saving one tab keeps the others as stored.
 	 */
@@ -154,6 +156,18 @@ final class SettingsPage {
 			'<button type="button" class="button-link hide-if-no-js" data-silvertrail-help="%1$s">%2$s</button>',
 			esc_attr( $tab ),
 			esc_html( $label )
+		);
+	}
+
+	/**
+	 * @param string $page A page of the documentation with an optional anchor, such as `services/#embeds`.
+	 */
+	public static function docs_link( string $page ): string {
+		return sprintf(
+			'<a class="silvertrail-docs-link" href="%1$s" target="_blank">%2$s<span class="screen-reader-text"> %3$s</span><span class="silvertrail-docs-link__icon" aria-hidden="true">↗</span></a>',
+			esc_url( self::DOCS . $page ),
+			esc_html__( 'Documentation', 'silvertrail' ),
+			esc_html__( '(opens in a new tab)', 'silvertrail' )
 		);
 	}
 

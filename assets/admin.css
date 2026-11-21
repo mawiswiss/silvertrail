@@ -200,6 +200,34 @@
 
 }
 
+.silvertrail-docs-link {
+	position: absolute;
+	top: 21px;
+	inset-inline-end: 24px;
+	display: inline-flex;
+	align-items: baseline;
+	gap: 4px;
+	color: var(--wp-admin-theme-color);
+	font-weight: 500;
+	text-decoration: none;
+
+	&:hover,
+	&:active {
+		color: var(--wp-admin-theme-color-darker-20, var(--wp-admin-theme-color));
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+}
+
+.silvertrail-docs-link__icon {
+	font-size: 12px;
+	line-height: 1;
+}
+
+.silvertrail-section.card > h2:has(+ .silvertrail-docs-link) {
+	padding-inline-end: 120px;
+}
+
 .silvertrail-section--highlighted {
 	box-shadow: 0 0 0 2px var(--wp-admin-theme-color);
 }

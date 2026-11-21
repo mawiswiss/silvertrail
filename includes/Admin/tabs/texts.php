@@ -24,6 +24,7 @@ $silvertrail_editor      = SettingsPage::editor( 'json' );
 
 <section class="card silvertrail-section" id="silvertrail-texts">
 	<h2><?php esc_html_e( 'Texts', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'texts/' ) ); ?>
 	<?php Notices::card( 'texts' ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
@@ -121,6 +122,7 @@ $silvertrail_editor      = SettingsPage::editor( 'json' );
 
 <section class="card silvertrail-section" id="silvertrail-links">
 	<h2><?php esc_html_e( 'Links', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'reopen/#links' ) ); ?>
 	<?php Notices::card( 'links' ); ?>
 	<table class="form-table" role="presentation">
 		<tr>

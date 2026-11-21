@@ -51,6 +51,7 @@ $silvertrail_copy = static function ( string $id ): void {
 
 <section class="card silvertrail-section" id="silvertrail-agent-check">
 	<h2><?php esc_html_e( 'Check the site with an agent', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'agents/#check-a-site' ) ); ?>
 	<p><?php esc_html_e( 'An agent that controls a browser goes through every consent state of a page, watches what loads and reports what slipped through before consent. Silvertrail hands it a WebMCP tool for each step, so it does not have to click the banner.', 'silvertrail' ); ?></p>
 	<table class="form-table" role="presentation">
 		<tr>
@@ -89,6 +90,7 @@ $silvertrail_copy = static function ( string $id ): void {
 
 <section class="card silvertrail-section" id="silvertrail-agent-setup">
 	<h2><?php esc_html_e( 'Set up with an agent', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'agents/#set-up-a-site' ) ); ?>
 	<p><?php esc_html_e( 'A coding agent sets Silvertrail up in code and checks its own work on the command line.', 'silvertrail' ); ?></p>
 	<table class="form-table" role="presentation">
 		<tr>
@@ -127,6 +129,7 @@ $silvertrail_copy = static function ( string $id ): void {
 
 <section class="card silvertrail-section" id="silvertrail-webmcp">
 	<h2><?php esc_html_e( 'Visiting agents', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'agents/#visiting-agents' ) ); ?>
 	<p><?php esc_html_e( 'Agents that browse for a person meet the banner too. A browser that sends Global Privacy Control gets “only essential” without a banner. An agent that speaks WebMCP reads the services and answers through tools. It may allow only essential on its own, and more only with its person’s answer.', 'silvertrail' ); ?></p>
 	<?php Notices::card( 'webmcp' ); ?>
 	<table class="form-table" role="presentation">
@@ -178,6 +181,7 @@ $silvertrail_copy = static function ( string $id ): void {
 
 <section class="card silvertrail-section" id="silvertrail-agent-more">
 	<h2><?php esc_html_e( 'More prompts', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'agents/' ) ); ?>
 	<ul>
 		<li>
 			<a href="<?php echo esc_url( SettingsPage::url( 'design' ) . '#silvertrail-custom-styles' ); ?>"><?php esc_html_e( 'Design › Custom styles', 'silvertrail' ); ?></a>:

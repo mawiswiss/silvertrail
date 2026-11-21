@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+use Silvertrail\Admin\SettingsPage;
 use Silvertrail\Config;
 
 defined( 'ABSPATH' ) || exit;
@@ -12,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Setup', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'consent-signals/' ) ); ?>
 	<table class="form-table silvertrail-facts" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Version', 'silvertrail' ); ?></th>

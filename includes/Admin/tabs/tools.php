@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 <section class="card silvertrail-section">
 	<h2><?php esc_html_e( 'Records', 'silvertrail' ); ?></h2>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'records/' ) ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Decisions', 'silvertrail' ); ?></th>
