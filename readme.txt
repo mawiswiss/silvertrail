@@ -9,24 +9,39 @@ Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A small cookie consent banner. Nothing loads before the visitor agrees, and rejecting takes the same one click as accepting.
+A consent and cookie banner for WordPress, built for developers and AI agents. Lightweight, and nothing loads before the visitor agrees.
 
 == Description ==
 
-Nothing loads until visitors say yes. Silvertrail is a small cookie banner that blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes. "Accept all" and "Only essential" sit side by side at the same size, and a third button opens the choice per group and per service, with the provider, the purpose and a link to its privacy policy.
+Silvertrail is a consent and cookie banner for WordPress, built for developers and AI agents. Behind the banner, it holds back each tracker, script and embed that a preset or the site's code names until the visitor agrees, and passes the choice on to Google, to other plugins and to the site's own code.
 
-Behind the banner, Silvertrail is the backbone for everything the site loads from other servers. It knows each service, holds it back until the visitor agrees and passes the choice on to Google and to plugins that read the WP Consent API. The banner is only the part that asks, so it steps aside wherever the browser answers instead, as with [Global Privacy Control](https://globalprivacycontrol.org/).
+Saying no is as easy as saying yes. "Accept all" and "Only essential" sit side by side at the same size, and a third button opens the choice per group and per service, with the provider, the purpose and a link to its privacy policy.
 
-The banner only appears when the site uses something that needs consent. A site whose only services are embeds, or whose services are all marked exempt, shows no banner at all.
+= Why Silvertrail =
 
-= Built for developers and their agents =
+* **Developers and AI first.** The setup lives in code, and code wins over the admin. The shell and MCP read it and check it, and over MCP an agent turns presets on too. The complete documentation ships in the plugin, so an agent reads the version the site runs.
+* **Lightweight.** The front end adds one small script and one stylesheet, and the plugin has no external dependencies. It contacts no outside service on its own.
+* **Fewer cookie banners.** A browser that sends [Global Privacy Control](https://globalprivacycontrol.org/) gets "only essential" without a banner, and a site that only embeds videos and maps shows none, because each embed asks on its own placeholder. As browsers answer more of these questions, the banner can go, and everything behind it keeps working.
+* **A solid base for consent.** One place in WordPress knows each service, holds it back and hands the choice to Google, to other plugins and to the site's own code.
 
-Set everything in PHP and check it on the shell. The admin keeps only the decisions a site owner makes.
+= One choice, passed on =
 
+The visitor decides once, and Silvertrail hands the same choice to each of these.
+
+* It sets the Google Consent Mode v2 default before any Google tag, and every choice updates it. Google tags stay blocked until consent, and developers can switch to Advanced mode in code.
+* It supports the WP Consent API, so plugins that read the API follow the visitor's choice.
+* Other plugins and the site's own code read the same choice through `window.silvertrail`, the `silvertrail:change` event and `silvertrail_has()`, and base their own decisions on it.
+* It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address. The `silvertrail_recorded` action hands each decision to records of your own.
+
+= Built for agents and developers =
+
+Agents set Silvertrail up as often as people do. The setup lives in code. The shell and MCP read it and check it, and over MCP an agent turns presets on too. The admin keeps only the decisions a site owner makes.
+
+* The complete documentation ships in the plugin folder under `docs/` and as [llms.txt](https://silvertrail.marcwieland.name/llms.txt), so an agent reads the version the site runs.
 * Code wins over the admin. One filter sets any setting, and the settings page marks each field that code sets.
 * Agents work on the shell. `wp silvertrail services` and `wp silvertrail settings` show every service and each setting with its source, and `wp silvertrail validate` reports what is wrong, so an agent can check its own work. From WordPress 6.9, the same reads, the presets and the check are abilities, which an MCP client reaches through the MCP Adapter plugin.
+* Agents check the site in the browser. In a browser with WebMCP, an experiment in Chrome, Silvertrail offers them tools to read and set the choice and to list what the page loaded. On a site with a WebMCP trial token, an agent that browses for a person answers through the same tools. It may allow only essential on its own, and more only with its person's answer.
 * Prompts are built in. The Agents tab copies prompts to check and to set up the site with an agent, the Design tab one to style the banner, and the Leak check writes one for the services it finds. From WordPress 7.0, the Design tab can also send its prompt to the site's own AI provider.
-* Agents check the site in the browser. In a browser with WebMCP, an experiment in Chrome, Silvertrail offers them tools to read and set the choice and to list what the page loaded.
 
 One call turns on a preset, and the official tag waits for consent:
 
@@ -50,8 +65,6 @@ Out of the box, the banner looks like part of the site. Change a few values or r
 
 The integrations most sites need are built in, so setting it up mostly means ticking boxes.
 
-* It supports the WP Consent API, so plugins that read the API follow the visitor's choice.
-* It sets the Google Consent Mode v2 default before any Google tag, and every choice updates it. Google tags stay blocked until consent, and developers can switch to Advanced mode in code.
 * YouTube, Vimeo and Google Maps embeds wait behind a placeholder from the moment the plugin is active, and so do embeds from every host you register. The placeholder asks in place, loads the embed once or remembers the service, and opens no banner.
 * The Leak check, under Settings › Silvertrail › Tools, opens pages as a first-time visitor, declines, agrees to each service on its own and loads them again. It lists what runs without consent and what starts only after a reload, with what to do about each. It writes a prompt to paste into an AI assistant, which asks for the provider, purpose and privacy policy of each service. A Playwright helper in the plugin's `testing` folder runs the same check in CI.
 
@@ -59,14 +72,12 @@ The integrations most sites need are built in, so setting it up mostly means tic
 
 * Presets print the official tags of Google Tag Manager, Google Analytics, Google Ads, the LinkedIn Insight Tag and the Meta Pixel once you turn one on and enter its ID.
 * It works behind any page cache, as the next section explains.
-* A browser that sends Global Privacy Control gets "only essential" without a banner, even over an earlier choice. The visitor can still allow more, and the site answers `/.well-known/gpc.json`.
-* An agent that browses for a person and speaks WebMCP answers through tools instead of clicking the banner. It may allow only essential on its own, and more only with its person's answer.
+* Global Privacy Control wins even over an earlier choice. The visitor can still allow more, and the site answers `/.well-known/gpc.json`.
 * It asks every visitor again when the set of services changes.
-* It keeps optional records of each decision: a random consent ID, the choices and the time, with no IP address.
 * A link, block or shortcode reopens the preferences, and an optional floating button does the same in a corner of the page.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
 * Each site of a multisite network keeps its own cookie.
-* The front end loads one lightweight script and stylesheet, and no jQuery. Only a browser with WebMCP fetches a second small script for the agent tools.
+* Only a browser with WebMCP fetches a second small script for the agent tools.
 
 = Page caching =
 
@@ -195,10 +206,11 @@ Yes, with the floating button. It is off by default. Under Settings › Silvertr
 2. "Choose" opens the choice per group and per service, with the provider, the purpose and a link to the privacy policy.
 3. A YouTube video waits behind a placeholder. The visitor loads it once or allows YouTube for good, and no banner opens.
 4. Under Settings › Silvertrail, the admin ticks the trackers the site uses and enters their IDs. The status panel counts what the banner asks about.
-5. The banner takes its colours, corners and buttons from the theme's `theme.json`. Under Settings › Silvertrail › Design, the admin picks the position, the appearance and the floating button.
-6. The Leak check opens each page as a first-time visitor, declines, agrees to each service on its own and loads the page again. A read-only preview shows each step.
-7. The report says what runs without consent and what to do about it. A tracker that matches a preset gets a button that opens it under Services, ticked and ready to save. The table shows how each service behaved before a choice, after declining and after agreeing.
-8. When nothing runs without consent and nothing waits for a reload, the report says so.
+5. The Agents tab copies a prompt to check the site and one to set it up, both with the site's services, and shows how to connect a browser with WebMCP.
+6. The banner takes its colours, corners and buttons from the theme's `theme.json`. Under Settings › Silvertrail › Design, the admin picks the position, the appearance and the floating button.
+7. The Leak check opens each page as a first-time visitor, declines, agrees to each service on its own and loads the page again. A read-only preview shows each step.
+8. The report says what runs without consent and what to do about it. A tracker that matches a preset gets a button that opens it under Services, ticked and ready to save. The table shows how each service behaved before a choice, after declining and after agreeing.
+9. When nothing runs without consent and nothing waits for a reload, the report says so.
 
 == Privacy ==
 
