@@ -311,9 +311,43 @@
 }
 
 .silvertrail__details summary {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	width: fit-content;
 	color: var(--silvertrail-muted);
 	font-size: 0.9375rem;
+	list-style: none;
 	cursor: pointer;
+}
+
+.silvertrail__details summary::-webkit-details-marker {
+	display: none;
+}
+
+.silvertrail__details summary::before {
+	content: "";
+	flex: none;
+	width: 0.5rem;
+	height: 0.5rem;
+	margin-inline: 0.125rem;
+	border: solid currentColor;
+	border-width: 0 2px 2px 0;
+	transform: translateX(-0.0625rem) rotate(-45deg);
+}
+
+.silvertrail__details[open] > summary::before {
+	transform: translateY(-0.125rem) rotate(45deg);
+}
+
+.silvertrail__details summary:hover {
+	color: var(--silvertrail-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.silvertrail__details summary::before {
+		transition: transform 0.15s;
+	}
 }
 
 .silvertrail__service {
