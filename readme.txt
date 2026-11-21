@@ -5,7 +5,7 @@ Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -228,6 +228,11 @@ Each tracker preset below connects to its provider only when an admin turns it o
 Write with AI, on WordPress 7.0 and later, sends the styling prompt and the admin's description of the look to the AI provider set up under Settings › Connectors, through WordPress's AI Client, and only when an admin clicks it. The prompt holds the styling brief, the theme's colour and font presets and its current `silvertrail/silvertrail.css`, and nothing about visitors. The terms and privacy policy of the provider the site chose apply.
 
 == Changelog ==
+
+= 1.1.1 =
+
+* Changed: the Plugins screen describes Silvertrail as a consent and cookie banner for developers and AI agents.
+* Docs: the README, the plugin page and the documentation lead with what Silvertrail does behind the banner and with its four goals. The plugin page shows the Agents tab and lists what the first release shipped.
 
 = 1.1.0 =
 
