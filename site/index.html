@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Silvertrail, a small cookie banner for WordPress</title>
-	<meta name="description" content="A small cookie consent banner for WordPress. It blocks trackers and embeds until visitors agree, and no is as easy as yes. Free, with an honour licence.">
+	<title>Silvertrail, a consent and cookie banner for WordPress</title>
+	<meta name="description" content="A consent and cookie banner for WordPress. Behind it, Silvertrail holds back each tracker, script and embed until visitors agree, passes the choice on to Google and other plugins, and lets agents set it up. Free, with an honour licence.">
 	<link rel="canonical" href="https://silvertrail.marcwieland.name/">
 	<meta name="author" content="Marc Wieland">
 	<meta name="color-scheme" content="dark">
@@ -13,12 +13,12 @@
 	<meta property="og:site_name" content="Silvertrail">
 	<meta property="og:locale" content="en_GB">
 	<meta property="og:url" content="https://silvertrail.marcwieland.name/">
-	<meta property="og:title" content="Silvertrail, a small cookie banner for WordPress">
-	<meta property="og:description" content="A small cookie consent banner for WordPress. It blocks trackers and embeds until visitors agree, and no is as easy as yes. Free, with an honour licence.">
+	<meta property="og:title" content="Silvertrail, a consent and cookie banner for WordPress">
+	<meta property="og:description" content="A consent and cookie banner for WordPress. Behind it, Silvertrail holds back each tracker, script and embed until visitors agree, passes the choice on to Google and other plugins, and lets agents set it up. Free, with an honour licence.">
 	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
-	<meta property="og:image:alt" content="Silvertrail: nothing loads until visitors say yes. A cookie banner with the buttons Accept all and Only essential.">
+	<meta property="og:image:alt" content="Silvertrail: consent and cookie banner for WordPress, built for developers and AI agents. A banner with the buttons Accept all and Only essential.">
 	<meta name="twitter:card" content="summary_large_image">
 	<link rel="icon" href="favicon.ico" sizes="32x32">
 	<link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -433,9 +433,144 @@
 			font-weight: 600;
 		}
 
-		/* Developers */
+		/* Why */
 
-		.developers { background: var(--b-bg); }
+		.goals {
+			padding-top: 0;
+			background: var(--hero-bg);
+		}
+
+		.goals__list {
+			display: grid;
+			gap: 2.5rem 2rem;
+			margin: 3rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		@media (min-width: 36rem) {
+			.goals__list { grid-template-columns: repeat(2, 1fr); }
+		}
+
+		@media (min-width: 62rem) {
+			.goals__list { grid-template-columns: repeat(4, 1fr); }
+		}
+
+		.goals__list li {
+			padding-top: 1.25rem;
+			border-top: 3px solid var(--lime);
+		}
+
+		.goals__list h3 {
+			font-size: 1.25rem;
+			font-weight: 700;
+			letter-spacing: -0.01em;
+		}
+
+		.goals__list p {
+			margin-top: 0.5rem;
+			color: var(--muted);
+		}
+
+		/* How it works */
+
+		.how { background: var(--a-bg); }
+
+		.flow {
+			display: grid;
+			gap: 2.5rem;
+			margin: 3.5rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		@media (min-width: 60rem) {
+			.flow {
+				grid-template-columns: repeat(3, 1fr);
+				gap: 3rem;
+			}
+		}
+
+		.flow > li {
+			position: relative;
+			padding: 1.75rem 1.5rem;
+			border: 1px solid #4f5a43;
+			background: #343d2c;
+		}
+
+		.flow > li + li::before {
+			content: "";
+			position: absolute;
+			left: 50%;
+			top: -1.25rem;
+			width: 1.75rem;
+			height: 1.75rem;
+			background: var(--lime);
+			mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h16M14 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+			transform: translate(-50%, -50%) rotate(90deg);
+		}
+
+		@media (min-width: 60rem) {
+			.flow > li + li::before {
+				left: -1.5rem;
+				top: 50%;
+				transform: translate(-50%, -50%);
+			}
+		}
+
+		.flow > li.flow__core {
+			border-color: var(--strong-bg);
+			background: var(--strong-bg);
+			color: var(--strong-text);
+			box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.3);
+		}
+
+		.flow h3 {
+			display: flex;
+			align-items: center;
+			gap: 0.625rem;
+			font-size: 1.25rem;
+			font-weight: 700;
+			letter-spacing: -0.01em;
+		}
+
+		.flow ul {
+			display: grid;
+			gap: 0.75rem;
+			margin: 1.5rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.flow ul li {
+			display: flex;
+			align-items: center;
+			gap: 0.875rem;
+		}
+
+		.flow ul svg {
+			flex: none;
+			width: 2.25rem;
+			height: 2.25rem;
+			padding: 0.5rem;
+			border-radius: 0.5rem;
+			background: rgb(207 227 154 / 0.12);
+			color: var(--lime);
+			fill: none;
+			stroke: currentColor;
+			stroke-width: 1.75;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+
+		.flow .flow__core ul svg {
+			background: var(--olive);
+			color: var(--pale);
+		}
+
+		/* Agents */
+
+		.agents { background: var(--b-bg); }
 
 		.split {
 			display: grid;
@@ -469,6 +604,12 @@
 		.tiles p {
 			margin-top: 0.25rem;
 			color: var(--muted);
+		}
+
+		.more {
+			display: inline-block;
+			margin-top: 2rem;
+			font-weight: 600;
 		}
 
 		.code {
@@ -728,34 +869,35 @@
 		.support:hover { background: var(--text); }
 
 		.custom {
-			display: grid;
-			gap: 1.25rem;
-			margin-top: 4rem;
-			padding-top: 2rem;
-			border-top: 1px solid var(--muted);
+			margin-top: 5rem;
+			padding: 1.75rem 1.5rem;
+			border: 1px solid #3f4837;
 		}
 
 		@media (min-width: 48rem) {
-			.custom {
-				grid-template-columns: minmax(0, 1fr) auto;
-				align-items: center;
-				gap: 3rem;
-			}
+			.custom { padding: 2.5rem 2.75rem; }
 		}
 
-		.custom h3 { font-size: 1.25rem; }
+		.custom h3 {
+			font-size: clamp(1.375rem, 3vw, 1.75rem);
+			letter-spacing: -0.02em;
+		}
 
 		.custom p {
-			max-width: 40rem;
-			margin-top: 0.5rem;
-			font-size: 1rem;
+			max-width: 52rem;
+			margin-top: 1rem;
+			font-size: 1.0625rem;
+			color: var(--muted);
 		}
+
+		.custom > div + div { margin-top: 2rem; }
 
 		.custom__write {
 			display: inline-block;
-			padding: 0.625rem 1.25rem;
-			border: 2px solid currentColor;
+			padding: 0.75rem 1.5rem;
+			border: 1.5px solid var(--muted);
 			color: var(--text);
+			font-size: 1rem;
 			font-weight: 600;
 			text-decoration: none;
 		}
@@ -763,6 +905,7 @@
 		.custom__write[hidden] { display: none; }
 
 		.custom__write:hover {
+			border-color: var(--text);
 			background: var(--text);
 			color: var(--a-bg);
 		}
@@ -784,8 +927,8 @@
 			<nav class="wrap topbar" aria-label="Main">
 				<a class="wordmark" href="/"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#d9dbd5"/><rect x="4" y="13" width="11" height="6" rx="3" fill="#22241f"/><rect x="17" y="13" width="11" height="6" rx="3" fill="#22241f"/></svg><span>Silvertrail</span></a>
 				<div class="topbar__links">
-					<a href="/#developers">Developers</a>
-					<a href="/#features">Features</a>
+					<a href="/#how">How it works</a>
+					<a href="/#agents">Agents</a>
 					<a class="topbar__docs" href="/docs/">Docs</a>
 					<a href="https://github.com/mawiswiss/silvertrail">GitHub</a>
 					<a class="topbar__licence" href="/#licence">Honour licence</a>
@@ -797,8 +940,8 @@
 	<main>
 		<div class="hero">
 			<div class="wrap">
-				<h1>Nothing loads until visitors say&nbsp;<em>yes.</em></h1>
-				<p class="lead">Silvertrail is a small cookie banner for WordPress. It blocks trackers and embeds until the visitor agrees, and saying no is as easy as saying yes. Behind the banner, it is the backbone for everything the site loads from other servers.</p>
+				<h1>Consent and cookie banner for&nbsp;<em>WordPress.</em></h1>
+				<p class="lead">Silvertrail holds back each tracker, script and embed until the visitor agrees, and passes the choice on to Google, to other plugins and to your own code. Agents set it up and check it through interfaces made for them.</p>
 
 				<div class="cta">
 					<a class="get" href="https://wordpress.org/plugins/silvertrail/">Get it on WordPress.org</a>
@@ -838,35 +981,112 @@
 			</div>
 		</div>
 
-		<section class="developers" id="developers">
+		<section class="goals" id="why">
 			<div class="wrap">
-				<h2>Built for developers and their agents</h2>
-				<p class="intro">Set everything in PHP and check it on the shell. The admin keeps only the decisions a site owner makes.</p>
+				<h2>Why Silvertrail</h2>
+				<ul class="goals__list">
+					<li>
+						<h3>Developers and AI first</h3>
+						<p>The setup lives in code, and the shell and MCP check it. The docs ship in the plugin, so an agent reads the version the site runs.</p>
+					</li>
+					<li>
+						<h3>Lightweight</h3>
+						<p>Silvertrail adds one small script and one stylesheet, and has no external dependencies. It contacts no outside service on its own.</p>
+					</li>
+					<li>
+						<h3>Fewer cookie banners</h3>
+						<p>No banner where the browser already answers, or where a site only embeds videos and maps. As browsers answer more, the banner can go.</p>
+					</li>
+					<li>
+						<h3>A solid base for consent</h3>
+						<p>One place in WordPress knows each service, holds it back and hands the choice to the rest of the site.</p>
+					</li>
+				</ul>
+			</div>
+		</section>
+
+		<section class="how" id="how">
+			<div class="wrap">
+				<h2>One choice, passed on</h2>
+				<p class="intro">The visitor answers once. Silvertrail holds every service back until then and passes the same choice on.</p>
+
+				<ol class="flow">
+					<li>
+						<h3>Who answers</h3>
+						<ul>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M13 15h4"/></svg>The banner</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>An embed’s placeholder</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></svg>Global Privacy Control</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 4v4M9.5 13v.01M14.5 13v.01"/></svg>A visitor’s agent</li>
+						</ul>
+					</li>
+					<li class="flow__core">
+						<h3><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#5a6646"/><rect x="4" y="13" width="11" height="6" rx="3" fill="#f4f6ef"/><rect x="17" y="13" width="11" height="6" rx="3" fill="#f4f6ef"/></svg>Silvertrail holds back</h3>
+						<ul>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg>Trackers</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>Scripts</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>Embeds</li>
+						</ul>
+					</li>
+					<li>
+						<h3>Who gets the choice</h3>
+						<ul>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.5"/></svg>Google Consent Mode</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v5M15 2v5M6 7h12v3a6 6 0 0 1-12 0zM12 16v6"/></svg>WP Consent API</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H7a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h1M16 4h1a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-1"/></svg>Your plugins and code</li>
+							<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg>Your records</li>
+						</ul>
+					</li>
+				</ol>
+
+				<p class="readme">The <a href="/docs/api/">API</a> shows how your own code reads the choice.</p>
+			</div>
+		</section>
+
+		<section class="agents" id="agents">
+			<div class="wrap">
+				<h2>Built for agents</h2>
+				<p class="intro">Agents set Silvertrail up as often as people do. The setup lives in code, and the shell and MCP read it and check it.</p>
 
 				<div class="split">
-					<ul class="points">
-						<li>
-							<h3>Code wins over the admin</h3>
-							<p>One filter sets any setting, and the admin marks each field that code sets.</p>
-						</li>
-						<li>
-							<h3>Agents work on the shell</h3>
-							<p>WP-CLI shows an agent every service and each setting with its source, so it can check its own work. Without a shell, the same runs as abilities over MCP.</p>
-						</li>
-						<li>
-							<h3>Prompts built in</h3>
-							<p>The admin copies a prompt to style the banner, and the page scan writes one for the services it finds.</p>
-						</li>
-					</ul>
+					<div>
+						<ul class="points">
+							<li>
+								<h3>Set up in code</h3>
+								<p>An agent writes the setup and runs <code>wp silvertrail validate</code> until it passes.</p>
+							</li>
+							<li>
+								<h3>Checked in the browser</h3>
+								<p>WebMCP tools walk an agent through every consent state.</p>
+							</li>
+							<li>
+								<h3>Answered by agents</h3>
+								<p>A visitor’s agent answers through the same tools, without clicking.</p>
+							</li>
+						</ul>
+						<a class="more" href="/docs/agents/">How agents work with Silvertrail</a>
+					</div>
 
 					<div class="code" data-tabs>
-						<div role="tablist" aria-label="Ways to set up Silvertrail">
-							<button type="button" role="tab" id="tab-php" aria-controls="panel-php" aria-selected="true">PHP</button>
-							<button type="button" role="tab" id="tab-html" aria-controls="panel-html" aria-selected="false">HTML</button>
+						<div role="tablist" aria-label="Ways to work with Silvertrail">
+							<button type="button" role="tab" id="tab-agent" aria-controls="panel-agent" aria-selected="true">Agent</button>
+							<button type="button" role="tab" id="tab-php" aria-controls="panel-php" aria-selected="false">PHP</button>
 							<button type="button" role="tab" id="tab-shell" aria-controls="panel-shell" aria-selected="false">WP-CLI</button>
-							<button type="button" role="tab" id="tab-agent" aria-controls="panel-agent" aria-selected="false">Agent</button>
+							<button type="button" role="tab" id="tab-webmcp" aria-controls="panel-webmcp" aria-selected="false">WebMCP</button>
+							<button type="button" role="tab" id="tab-html" aria-controls="panel-html" aria-selected="false">HTML</button>
 						</div>
-						<div role="tabpanel" id="panel-php" aria-labelledby="tab-php">
+						<div role="tabpanel" id="panel-agent" aria-labelledby="tab-agent">
+<pre><code><span class="who">You</span>
+Turn on Google Tag Manager with GTM-XXXXXXX, keep
+choices for 12 months and check the setup.
+
+<span class="who">Agent</span>
+Added both to a small plugin. Checking it now.
+<span class="c">$</span> wp silvertrail validate
+<span class="ok">Success:</span> The config is valid: 5 services.</code></pre>
+							<p class="code__note">The agent writes the config in code and runs <code>validate</code> until it reports no problem.</p>
+						</div>
+						<div role="tabpanel" id="panel-php" aria-labelledby="tab-php" hidden>
 <pre><code><span class="f">add_action</span>( <span class="s">'silvertrail_register'</span>, <span class="f">function</span> () {
 	<span class="f">silvertrail_register_service</span>( <span class="s">'google-tag-manager'</span>, [
 		<span class="s">'tag_id'</span> => <span class="s">'GTM-XXXXXXX'</span>,
@@ -878,12 +1098,6 @@
 	<span class="f">return</span> $settings;
 } );</code></pre>
 							<p class="code__note">One call turns on the preset, and the official tag waits for consent.</p>
-						</div>
-						<div role="tabpanel" id="panel-html" aria-labelledby="tab-html" hidden>
-<pre><code><span class="c">&lt;!-- Runs only after the visitor agrees to HubSpot --&gt;</span>
-&lt;script <span class="f">type</span>=<span class="s">"text/plain"</span> <span class="f">data-silvertrail</span>=<span class="s">"hubspot"</span>
-	<span class="f">src</span>=<span class="s">"https://js.hs-scripts.com/123.js"</span>&gt;&lt;/script&gt;</code></pre>
-							<p class="code__note">Mark any script, and Silvertrail runs it after consent, in its original order.</p>
 						</div>
 						<div role="tabpanel" id="panel-shell" aria-labelledby="tab-shell" hidden>
 <pre><code><span class="c">$</span> wp silvertrail settings
@@ -900,16 +1114,26 @@
 <span class="ok">Success:</span> The config is valid: 5 services.</code></pre>
 							<p class="code__note">Every value shows where it comes from: code, the admin or the default.</p>
 						</div>
-						<div role="tabpanel" id="panel-agent" aria-labelledby="tab-agent" hidden>
-<pre><code><span class="who">You</span>
-Turn on Google Tag Manager with GTM-XXXXXXX, keep
-choices for 12 months and check the setup.
+						<div role="tabpanel" id="panel-webmcp" aria-labelledby="tab-webmcp" hidden>
+<pre><code><span class="c">→</span> <span class="f">get_cookie_consent</span>
+{
+	<span class="s">"decided"</span>: false,
+	<span class="s">"gpc"</span>: false,
+	<span class="s">"services"</span>: [
+		{ <span class="s">"id"</span>: <span class="s">"google-analytics"</span>, <span class="s">"group"</span>: <span class="s">"statistics"</span>, <span class="s">"allowed"</span>: false },
+		{ <span class="s">"id"</span>: <span class="s">"youtube"</span>, <span class="s">"group"</span>: <span class="s">"external-media"</span>, <span class="s">"allowed"</span>: false }
+	]
+}
 
-<span class="who">Agent</span>
-Added both to a small plugin. Checking it now.
-<span class="c">$</span> wp silvertrail validate
-<span class="ok">Success:</span> The config is valid: 5 services.</code></pre>
-							<p class="code__note">The agent writes the config in code and runs <code>validate</code> until it reports no problem.</p>
+<span class="c">→</span> <span class="f">allow_only_essential</span>
+{ <span class="s">"allowed"</span>: [] }</code></pre>
+							<p class="code__note">A visiting agent reads the services and answers without clicking the banner. The output is shortened here.</p>
+						</div>
+						<div role="tabpanel" id="panel-html" aria-labelledby="tab-html" hidden>
+<pre><code><span class="c">&lt;!-- Runs only after the visitor agrees to HubSpot --&gt;</span>
+&lt;script <span class="f">type</span>=<span class="s">"text/plain"</span> <span class="f">data-silvertrail</span>=<span class="s">"hubspot"</span>
+	<span class="f">src</span>=<span class="s">"https://js.hs-scripts.com/123.js"</span>&gt;&lt;/script&gt;</code></pre>
+							<p class="code__note">Mark any script, and Silvertrail runs it after consent, in its original order.</p>
 						</div>
 					</div>
 				</div>
@@ -918,7 +1142,7 @@ Added both to a small plugin. Checking it now.
 
 		<section class="looks">
 			<div class="wrap">
-				<h2>Styled by your theme, or by you</h2>
+				<h2>Styled by your theme,<br> or by you</h2>
 				<p class="intro">Out of the box, the banner looks like part of your site. Change a few values or replace the whole design, as far as the project needs.</p>
 
 				<ul class="variants">
@@ -957,14 +1181,14 @@ Added both to a small plugin. Checking it now.
 
 				<ul class="tiles">
 					<li>
-						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v5M15 2v5M6 7h12v3a6 6 0 0 1-12 0zM12 16v6"/></svg>
-						<h3>WP Consent API</h3>
-						<p>Plugins that read the API follow the visitor’s choice.</p>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/></svg>
+						<h3>Presets</h3>
+						<p>Google, LinkedIn and Meta tags print themselves once you enter an ID, and wait for consent.</p>
 					</li>
 					<li>
-						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16" cy="12" r="2.5"/></svg>
-						<h3>Google Consent Mode v2</h3>
-						<p>The default is set before any Google tag, and every choice updates it.</p>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>
+						<h3>Page caches</h3>
+						<p>The browser decides on each page view, so cached pages need no setup.</p>
 					</li>
 					<li>
 						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>
@@ -981,14 +1205,14 @@ Added both to a small plugin. Checking it now.
 				<div class="extras">
 					<h3>Also in the box</h3>
 					<ul>
-						<li>Ships presets for Google, LinkedIn and Meta tags</li>
-						<li>Works behind any page cache</li>
-						<li>Honours <a href="https://globalprivacycontrol.org/">Global Privacy Control</a></li>
 						<li>Asks again when services change</li>
 						<li>Keeps optional records without IP addresses</li>
 						<li>Reopens from a link, a block or a floating button</li>
+						<li>Shows visitors what each page held back</li>
 						<li>Keeps one cookie per site on multisite</li>
-						<li>Adds one lightweight script and stylesheet, no jQuery</li>
+						<li>Runs gated scripts in their original order</li>
+						<li>Previews the setup before it goes live</li>
+						<li>Removes its options, table and job when uninstalled</li>
 					</ul>
 				</div>
 
