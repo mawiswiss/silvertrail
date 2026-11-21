@@ -220,29 +220,31 @@
 		const texts = config.texts;
 		const name = (id) => (config.services[id] ? config.services[id].name : id);
 		const { held, loaded } = trail();
-		const list = document.createElement('dl');
-		const row = (term, items) => {
-			if (items.length === 0) {
-				return;
+		const make = (tag, className, text = '') => {
+			const node = document.createElement(tag);
+			if (className) {
+				node.className = className;
 			}
-			const dt = document.createElement('dt');
-			dt.textContent = term;
-			const dd = document.createElement('dd');
-			dd.textContent = items.join(', ');
-			list.append(dt, dd);
+			node.textContent = text;
+			return node;
 		};
-		row(texts.held, held.map(name));
-		row(
-			texts.loaded,
-			loaded.map((item) => (item.service ? `${name(item.service)} (${item.host})` : `${item.host} (${texts.unknown})`)),
+		const list = (items) => {
+			const ul = make('ul', 'silvertrail__trail-list');
+			ul.append(...items.map((item) => make('li', '', item)));
+			return ul;
+		};
+		const parts = document.createElement('div');
+		parts.dataset.silvertrailTrailParts = '';
+		parts.append(
+			loaded.length === 0
+				? make('p', 'silvertrail__trail-none', texts.none)
+				: list(loaded.map((item) => (item.service ? `${name(item.service)} (${item.host})` : `${item.host} (${texts.unknown})`))),
 		);
-		if (list.children.length === 0) {
-			const dd = document.createElement('dd');
-			dd.textContent = texts.none;
-			list.append(dd);
+		if (held.length > 0) {
+			parts.append(make('h3', 'silvertrail__trail-title', texts.held), list(held.map(name)));
 		}
-		section.querySelector('dl')?.remove();
-		section.append(list);
+		section.querySelector('[data-silvertrail-trail-parts]')?.remove();
+		section.append(parts);
 		section.hidden = false;
 	}
 

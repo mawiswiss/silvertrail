@@ -54,9 +54,8 @@ final class Texts {
 			'embed_remember'    => __( 'Always allow %s', 'silvertrail' ),
 			'reopen'            => __( 'Privacy settings', 'silvertrail' ),
 			'gpc'               => __( 'Your browser sends Global Privacy Control, so only essential services run unless you allow more here.', 'silvertrail' ),
-			'trail_title'       => __( 'On this page', 'silvertrail' ),
-			'trail_held'        => __( 'Held back', 'silvertrail' ),
-			'trail_loaded'      => __( 'Loaded from', 'silvertrail' ),
+			'trail_title'       => __( 'Loaded on this page', 'silvertrail' ),
+			'trail_held'        => __( 'Held back on this page', 'silvertrail' ),
 			'trail_unknown'     => __( 'not listed here', 'silvertrail' ),
 			'trail_none'        => __( 'Nothing from other sites.', 'silvertrail' ),
 		);

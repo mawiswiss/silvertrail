@@ -84,7 +84,7 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
           .silvertrail__switch > input + .silvertrail__service-name
           .silvertrail__info        <dl>
       .silvertrail__link.silvertrail__save
-      .silvertrail__trail > .silvertrail__trail-title + <dl>
+      .silvertrail__trail > .silvertrail__trail-title + .silvertrail__trail-list (or .silvertrail__trail-none), again for what it held back
     .silvertrail__footer > .silvertrail__actions
       .silvertrail__button          Accept all
       .silvertrail__button          Only essential

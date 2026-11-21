@@ -451,7 +451,7 @@
 }
 
 .silvertrail__trail {
-	padding: 1rem 0 0;
+	padding: 1rem 0;
 	border-top: 1px solid var(--silvertrail-line);
 	font-size: 0.875rem;
 }
@@ -462,20 +462,24 @@
 	color: inherit;
 }
 
-.silvertrail__trail dl {
-	display: grid;
-	grid-template-columns: max-content 1fr;
-	gap: 0.25rem 0.75rem;
+.silvertrail__trail-list {
 	margin: 0;
+	padding-inline-start: 1.25rem;
+	list-style: disc;
+	overflow-wrap: anywhere;
 }
 
-.silvertrail__trail dt {
+.silvertrail__trail-list li + li {
+	margin-top: 0.125rem;
+}
+
+.silvertrail__trail-none {
+	margin: 0;
 	color: var(--silvertrail-muted);
 }
 
-.silvertrail__trail dd {
-	margin: 0;
-	overflow-wrap: anywhere;
+:is(.silvertrail__trail-list, .silvertrail__trail-none) + .silvertrail__trail-title {
+	margin-top: 1rem;
 }
 
 /* Reopen button */

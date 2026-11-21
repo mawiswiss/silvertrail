@@ -45,9 +45,8 @@ The Texts tab shows the same JSON with every key, ready to copy into the file. A
 | `embed_remember` | Always allow %s |
 | `reopen` | Privacy settings |
 | `gpc` | Your browser sends Global Privacy Control, so only essential services run unless you allow more here. |
-| `trail_title` | On this page |
-| `trail_held` | Held back |
-| `trail_loaded` | Loaded from |
+| `trail_title` | Loaded on this page |
+| `trail_held` | Held back on this page |
 | `trail_unknown` | not listed here |
 | `trail_none` | Nothing from other sites. |
 

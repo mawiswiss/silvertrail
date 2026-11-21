@@ -101,7 +101,6 @@ final class Frontend {
 		$texts = Texts::all();
 		return array(
 			'held'    => $texts['trail_held'],
-			'loaded'  => $texts['trail_loaded'],
 			'unknown' => $texts['trail_unknown'],
 			'none'    => $texts['trail_none'],
 		);
