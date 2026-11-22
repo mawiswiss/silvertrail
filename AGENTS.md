@@ -23,6 +23,7 @@
 - A GitHub release publishes a version. Its tag must match the `Version` header, `SILVERTRAIL_VERSION` and readme.txt's `Stable tag`. The release workflow builds the package from `.distignore`, runs Plugin Check on it and attaches `silvertrail.zip` to the release.
 - With the repository variable `WPORG_DEPLOY` set to `true` and the secrets `SVN_USERNAME` and `SVN_PASSWORD`, it also commits the package to WordPress.org. The icon, banners and screenshots for the plugin page go into `.wordpress-org/`.
 - `npx wrangler deploy` publishes `site/` to silvertrail.marcwieland.name, and `wrangler.jsonc` makes it run `npm run docs` first. Deploy from a clean `main` after `npm ci`, because the build takes whatever `docs/` is checked out.
+- Wrangler takes the Cloudflare account from `CLOUDFLARE_ACCOUNT_ID`, in the shell or in a `.env` file in the repository root, which git ignores. The account ID never goes into the repository.
 
 ## Quality Assurance
 

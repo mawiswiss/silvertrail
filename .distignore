@@ -23,6 +23,7 @@
 /.claude
 /site
 /wrangler.jsonc
+/.env*
 /scripts
 /.wordpress-org
 /.mwgrc
