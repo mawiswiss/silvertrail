@@ -1,0 +1,63 @@
+/* The rules Twenty Twenty-One puts on every button and checkbox, loaded after Silvertrail's stylesheet. */
+
+button {
+	padding: 15px 30px;
+	border: 3px solid transparent;
+	border-radius: 4px;
+	font-family: serif;
+	font-size: 20px;
+	line-height: 1.5;
+	text-decoration: none;
+}
+
+button:not(:hover):not(:active):not(.has-text-color) {
+	color: rgb(209, 228, 221);
+}
+
+button:not(:hover):not(:active):not(.has-background) {
+	background-color: rgb(40, 48, 61);
+}
+
+button:hover,
+button:active {
+	border-color: currentColor;
+	background-color: transparent;
+	color: inherit;
+}
+
+button:focus {
+	outline: 2px dotted currentColor;
+	outline-offset: -6px;
+}
+
+input[type=checkbox] {
+	-webkit-appearance: none;
+	appearance: none;
+	position: relative;
+	width: 25px;
+	height: 25px;
+	border: 3px solid rgb(57, 65, 77);
+	background: rgb(255, 255, 255);
+}
+
+input[type=checkbox]:disabled {
+	opacity: 0.7;
+}
+
+input[type=checkbox]:focus {
+	outline: 2px dotted rgb(57, 65, 77);
+	outline-offset: 2px;
+}
+
+input[type=checkbox]:after {
+	content: "";
+	position: absolute;
+	top: 2px;
+	left: 5px;
+	width: 7px;
+	height: 13px;
+	border: 3px solid rgb(57, 65, 77);
+	border-top: 0;
+	border-left: 0;
+	transform: rotate(30deg);
+}

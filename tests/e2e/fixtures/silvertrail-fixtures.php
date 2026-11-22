@@ -74,6 +74,16 @@ add_action(
 );
 
 add_action(
+	'wp_enqueue_scripts',
+	static function (): void {
+		if ( ! empty( $_COOKIE['silvertrail_test_theme_controls'] ) ) {
+			wp_enqueue_style( 'silvertrail-test-theme-controls', content_url( 'mu-plugins/theme-controls.css' ), array( 'silvertrail' ), '1' );
+		}
+	},
+	100
+);
+
+add_action(
 	'init',
 	static function (): void {
 		$pages = array(

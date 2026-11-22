@@ -16,7 +16,7 @@ $silvertrail_texts = $args['texts'];
 <div class="silvertrail-embed" data-silvertrail-embed="<?php echo esc_attr( $args['service'] ); ?>" data-silvertrail-appearance="<?php echo esc_attr( $args['theme'] ); ?>">
 	<div class="silvertrail-embed__inner">
 		<p class="silvertrail-embed__text"><?php echo esc_html( sprintf( $silvertrail_texts['embed_text'], $args['name'] ) ); ?></p>
-		<button type="button" class="silvertrail-embed__button" data-silvertrail-load><?php echo esc_html( $silvertrail_texts['embed_load'] ); ?></button>
+		<button type="button" class="silvertrail-embed__button has-background has-text-color" data-silvertrail-load><?php echo esc_html( $silvertrail_texts['embed_load'] ); ?></button>
 		<label class="silvertrail-embed__remember">
 			<input type="checkbox" data-silvertrail-remember>
 			<?php echo esc_html( sprintf( $silvertrail_texts['embed_remember'], $args['name'] ) ); ?>

@@ -102,7 +102,7 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<button type="button" class="silvertrail__link silvertrail__save" data-silvertrail-action="save"><?php echo esc_html( $silvertrail_texts['save'] ); ?></button>
+			<button type="button" class="silvertrail__link silvertrail__save has-background has-text-color" data-silvertrail-action="save"><?php echo esc_html( $silvertrail_texts['save'] ); ?></button>
 			<?php if ( $args['trail'] ) : ?>
 				<section class="silvertrail__trail" data-silvertrail-trail hidden>
 					<h3 class="silvertrail__trail-title"><?php echo esc_html( $silvertrail_texts['trail_title'] ); ?></h3>
@@ -112,9 +112,9 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 
 		<div class="silvertrail__footer">
 			<div class="silvertrail__actions">
-				<button type="button" class="silvertrail__button" data-silvertrail-action="accept-all"><?php echo esc_html( $silvertrail_texts['accept_all'] ); ?></button>
-				<button type="button" class="silvertrail__button" data-silvertrail-action="reject-all"><?php echo esc_html( $silvertrail_texts['reject_all'] ); ?></button>
-				<button type="button" class="silvertrail__link" data-silvertrail-action="preferences" data-silvertrail-view="entrance"><?php echo esc_html( $silvertrail_texts['preferences'] ); ?></button>
+				<button type="button" class="silvertrail__button has-background has-text-color" data-silvertrail-action="accept-all"><?php echo esc_html( $silvertrail_texts['accept_all'] ); ?></button>
+				<button type="button" class="silvertrail__button has-background has-text-color" data-silvertrail-action="reject-all"><?php echo esc_html( $silvertrail_texts['reject_all'] ); ?></button>
+				<button type="button" class="silvertrail__link has-background has-text-color" data-silvertrail-action="preferences" data-silvertrail-view="entrance"><?php echo esc_html( $silvertrail_texts['preferences'] ); ?></button>
 			</div>
 		</div>
 
@@ -127,7 +127,7 @@ $silvertrail_info  = array( 'provider', 'purpose', 'cookies', 'expiry' );
 		<?php endif; ?>
 	</div>
 
-	<button type="button" class="silvertrail__close" data-silvertrail-action="close" aria-label="<?php echo esc_attr( $silvertrail_texts['close'] ); ?>" hidden>
+	<button type="button" class="silvertrail__close has-background has-text-color" data-silvertrail-action="close" aria-label="<?php echo esc_attr( $silvertrail_texts['close'] ); ?>" hidden>
 		<span aria-hidden="true">&times;</span>
 	</button>
 </dialog>

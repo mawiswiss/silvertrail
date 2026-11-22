@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <button
 	type="button"
-	class="<?php echo esc_attr( 'silvertrail-reopen silvertrail-reopen--' . $args['position'] ); ?>"
+	class="<?php echo esc_attr( 'silvertrail-reopen silvertrail-reopen--' . $args['position'] . ' has-background has-text-color' ); ?>"
 	data-silvertrail-open
 	data-silvertrail-reopen="<?php echo esc_attr( $args['mode'] ); ?>"
 	data-silvertrail-appearance="<?php echo esc_attr( $args['appearance'] ); ?>"

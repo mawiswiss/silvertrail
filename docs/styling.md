@@ -40,7 +40,7 @@ On the shell, `wp silvertrail write-styles "A dark bar with rounded buttons"` do
 
 ## Templates
 
-To change the markup, copy a template from the plugin's `templates/` folder into the theme's `silvertrail/` folder. A child theme wins over its parent. Keep every `data-silvertrail-*` attribute, because the script finds the parts through them. `embed.php` also keeps its empty `<template>`, which Silvertrail fills with the embed.
+To change the markup, copy a template from the plugin's `templates/` folder into the theme's `silvertrail/` folder. A child theme wins over its parent. Keep every `data-silvertrail-*` attribute, because the script finds the parts through them. Keep `has-background has-text-color` on every button too: WordPress themes such as Twenty Twenty-One colour every other button with their own. `embed.php` also keeps its empty `<template>`, which Silvertrail fills with the embed.
 
 Each template receives `$args`:
 
@@ -105,6 +105,6 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
 - Keep `display`, `position` and `z-index` of `.silvertrail`, `.silvertrail--box`, `.silvertrail--bar` and `.silvertrail-reopen`. Move the box or the reopen button with `inset`.
 - Below 30rem the defaults set the box to `inset: auto 0.5rem 0.5rem; width: auto` and the gutter to `1.25rem`. Repeat any change to these inside `@media (max-width: 30rem)`.
 - The bar's entrance view lays out `.silvertrail__inner` as a grid with the areas `title`, `text`, `choose`, `legal`, `accept` and `reject`, and sets `.silvertrail__footer` and `.silvertrail__actions` to `display: contents`. From 48rem the buttons sit on the right. Its preferences view is the same card as the other layouts. Keep these rules when you restyle the bar.
-- A few defaults pair a class with an element, such as `.silvertrail a`, `.silvertrail__switch input` and `.silvertrail__details summary`. Override them with the same selector.
-- The marker of `.silvertrail__details summary` is its `::before`, a chevron drawn with borders in `currentColor`. On hover, buttons mix 15% of `--silvertrail-on-accent` into the accent, and links and `.silvertrail__link` thicken their underline. `.silvertrail__save` is an outlined button.
+- A few defaults pair a class with an element, such as `.silvertrail a`, `.silvertrail__switch input[type="checkbox"]` and `.silvertrail__details summary`. Override them with the same selector.
+- The marker of `.silvertrail__details summary` is its `::before`, a chevron drawn with borders in `currentColor`. On hover, buttons mix 15% of `--silvertrail-on-accent` into the accent, and links and `.silvertrail__link` thicken their underline. `.silvertrail__save` is an outlined button. Hover and press take the button colours from the tokens again, against themes that restyle every button, so change button colours through the tokens.
 - Put motion inside `@media (prefers-reduced-motion: no-preference)`. Never use `!important`.

@@ -353,6 +353,79 @@ test.describe('appearance settings', () => {
 	});
 });
 
+test.describe('a theme that styles every button and checkbox', () => {
+	const style = (locator, pseudo = null) =>
+		locator.evaluate((el, pseudo) => {
+			const s = getComputedStyle(el, pseudo);
+			return {
+				background: s.backgroundColor,
+				border: s.borderTopColor,
+				color: s.color,
+				padding: s.padding,
+				appearance: s.appearance,
+				content: s.content,
+				opacity: s.opacity,
+				outline: s.outlineStyle,
+				width: s.width,
+				height: s.height,
+			};
+		}, pseudo);
+
+	test.beforeEach(async ({ context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_theme_controls', value: '1', url: 'http://localhost:8892' }]);
+	});
+
+	test('leaves the banner its own buttons and checkboxes', async ({ page }) => {
+		await page.goto('/');
+		const accept = page.getByRole('button', { name: 'Accept all' });
+		const atRest = await style(accept);
+		expect(atRest.background).toBe(atRest.border);
+
+		await accept.hover();
+		const hovered = await style(accept);
+		expect(hovered.background).toBe(hovered.border);
+		expect(hovered.color).toBe(atRest.color);
+
+		await page.mouse.down();
+		const pressed = await style(accept);
+		expect(pressed.background).toBe(pressed.border);
+		expect(pressed.color).toBe(atRest.color);
+		await page.mouse.move(5, 5);
+		await page.mouse.up();
+
+		await page.getByRole('button', { name: 'Only essential' }).click();
+		await page.evaluate(() => window.silvertrail.open());
+		const close = await style(page.getByRole('button', { name: 'Close' }));
+		expect(close).toMatchObject({ background: 'rgba(0, 0, 0, 0)', padding: '0px' });
+		expect(close.width).toBe(close.height);
+		expect((await style(page.getByRole('button', { name: 'Save choices' }))).background).toBe('rgba(0, 0, 0, 0)');
+
+		const statistics = page.getByRole('checkbox', { name: 'Statistics' });
+		await statistics.click();
+		expect(await style(statistics)).toMatchObject({ appearance: 'auto', outline: 'none' });
+		expect((await style(statistics, '::after')).content).toBe('none');
+		expect((await style(page.getByRole('checkbox', { name: 'Essential' }))).opacity).toBe('1');
+	});
+
+	test('leaves the embed placeholder and the floating button their own look', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'always' });
+		await page.goto('/?pagename=silvertrail-embeds');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+		const load = await style(page.getByRole('button', { name: 'Load content' }));
+		expect(load.background).toBe(load.border);
+		const remember = page.locator('[data-silvertrail-remember]');
+		const label = await remember.evaluate((el) => getComputedStyle(el.parentElement).fontSize);
+		expect(await style(remember)).toMatchObject({ appearance: 'auto', width: label });
+
+		const reopen = page.locator('.silvertrail-reopen');
+		const atRest = await style(reopen);
+		expect(atRest.background).not.toBe('rgb(40, 48, 61)');
+		await reopen.hover();
+		expect(await style(reopen)).toMatchObject({ background: atRest.background, color: atRest.color });
+	});
+});
+
 test.describe('settings page', () => {
 	test.use({ storageState: ADMIN_STATE });
 
