@@ -507,15 +507,15 @@
 <td>Imprint</td>
 <td><code>imprint_page</code>, under Texts › Links</td>
 <td><code>wp option patch insert silvertrail imprint_page &lt;id&gt;</code></td>
-<td>as soon as it is set, whatever the page&#39;s status</td>
+<td>once the page is published</td>
 </tr>
 </tbody></table>
 </div>
-<p>WordPress creates a draft &quot;Privacy Policy&quot; page when it installs and selects it, so <code>wp option get wp_page_for_privacy_policy</code> usually names a page already. Until a selected page is published, the banner shows no privacy link and the admin warns that no privacy policy page is published.</p>
-<p>The imprint link does not wait. A draft gives visitors a link to a page they cannot open, so set <code>imprint_page</code> only once the page is published. The page lives in the site&#39;s database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the <code>silvertrail_settings</code> filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:</p>
+<p>Both pages can be selected while they are drafts, because the banner shows no link to a page visitors cannot open. WordPress creates a draft &quot;Privacy Policy&quot; page when it installs and selects it, so <code>wp option get wp_page_for_privacy_policy</code> usually names a page already. Until it is published, the admin warns that no privacy policy page is published.</p>
+<p>The imprint page lives in the site&#39;s database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the <code>silvertrail_settings</code> filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:</p>
 <pre><code class="language-php">add_filter( &#39;silvertrail_settings&#39;, function ( $settings ) {
 	$imprint = get_page_by_path( &#39;imprint&#39; );
-	if ( $imprint &amp;&amp; &#39;publish&#39; === $imprint-&gt;post_status ) {
+	if ( $imprint ) {
 		$settings[&#39;imprint_page&#39;] = $imprint-&gt;ID;
 	}
 	return $settings;
@@ -664,11 +664,11 @@
 </code></pre>
 <p>Fill in what you know, and mark every fact you do not know as a visible placeholder, such as <code>[postal address]</code>. Send visitors to the preferences for the services instead of listing them, and write the rest from <a href="#what-goes-on-the-privacy-page">what goes on the privacy page</a>.</p>
 </li>
-<li><p><strong>Select the privacy page</strong> with <code>wp option update wp_page_for_privacy_policy &lt;id&gt;</code>. The banner links it only once it is published, so a draft is safe. A link to the preferences can go into the footer now as well.</p>
+<li><p><strong>Select the pages</strong> with <code>wp option update wp_page_for_privacy_policy &lt;id&gt;</code> and <code>wp option patch insert silvertrail imprint_page &lt;id&gt;</code>. The banner links each only once it is published, so drafts are safe. A link to the preferences can go into the footer now as well.</p>
 </li>
 <li><p><strong>Hand over.</strong> Tell the owner which pages you drafted and why, which facts are placeholders, what you assumed, and which points a lawyer should check. The owner reviews and publishes.</p>
 </li>
-<li><p><strong>Link the rest once the pages are published.</strong> A link to a draft leads visitors to a page they cannot open. Add links to both pages to the footer, so they are on every page and not only under the banner, and set <code>imprint_page</code>. Then run <code>wp silvertrail validate</code>, which prints Silvertrail&#39;s suggested text for the privacy page until the Privacy Policy Guide has shown it.</p>
+<li><p><strong>Add footer links once the pages are published.</strong> A link to a draft leads visitors to a page they cannot open. Links in the footer put both pages on every page, not only under the banner. Then run <code>wp silvertrail validate</code>, which prints Silvertrail&#39;s suggested text for the privacy page until the Privacy Policy Guide has shown it.</p>
 </li>
 </ol>
 			</article>

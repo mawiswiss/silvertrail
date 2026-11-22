@@ -7,16 +7,16 @@ Most sites need a privacy page, and some also need an imprint, a page that says 
 | Page | Where it is set | On the shell | Linked under the banner |
 | --- | --- | --- | --- |
 | Privacy page | WordPress's privacy policy page, under Settings › Privacy | `wp option update wp_page_for_privacy_policy <id>` | once the page is published |
-| Imprint | `imprint_page`, under Texts › Links | `wp option patch insert silvertrail imprint_page <id>` | as soon as it is set, whatever the page's status |
+| Imprint | `imprint_page`, under Texts › Links | `wp option patch insert silvertrail imprint_page <id>` | once the page is published |
 
-WordPress creates a draft "Privacy Policy" page when it installs and selects it, so `wp option get wp_page_for_privacy_policy` usually names a page already. Until a selected page is published, the banner shows no privacy link and the admin warns that no privacy policy page is published.
+Both pages can be selected while they are drafts, because the banner shows no link to a page visitors cannot open. WordPress creates a draft "Privacy Policy" page when it installs and selects it, so `wp option get wp_page_for_privacy_policy` usually names a page already. Until it is published, the admin warns that no privacy policy page is published.
 
-The imprint link does not wait. A draft gives visitors a link to a page they cannot open, so set `imprint_page` only once the page is published. The page lives in the site's database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the `silvertrail_settings` filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:
+The imprint page lives in the site's database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the `silvertrail_settings` filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:
 
 ```php
 add_filter( 'silvertrail_settings', function ( $settings ) {
 	$imprint = get_page_by_path( 'imprint' );
-	if ( $imprint && 'publish' === $imprint->post_status ) {
+	if ( $imprint ) {
 		$settings['imprint_page'] = $imprint->ID;
 	}
 	return $settings;
@@ -153,6 +153,6 @@ If the site offers goods or services to people in the EU or monitors their behav
    ```
 
    Fill in what you know, and mark every fact you do not know as a visible placeholder, such as `[postal address]`. Send visitors to the preferences for the services instead of listing them, and write the rest from [what goes on the privacy page](#what-goes-on-the-privacy-page).
-4. **Select the privacy page** with `wp option update wp_page_for_privacy_policy <id>`. The banner links it only once it is published, so a draft is safe. A link to the preferences can go into the footer now as well.
+4. **Select the pages** with `wp option update wp_page_for_privacy_policy <id>` and `wp option patch insert silvertrail imprint_page <id>`. The banner links each only once it is published, so drafts are safe. A link to the preferences can go into the footer now as well.
 5. **Hand over.** Tell the owner which pages you drafted and why, which facts are placeholders, what you assumed, and which points a lawyer should check. The owner reviews and publishes.
-6. **Link the rest once the pages are published.** A link to a draft leads visitors to a page they cannot open. Add links to both pages to the footer, so they are on every page and not only under the banner, and set `imprint_page`. Then run `wp silvertrail validate`, which prints Silvertrail's suggested text for the privacy page until the Privacy Policy Guide has shown it.
+6. **Add footer links once the pages are published.** A link to a draft leads visitors to a page they cannot open. Links in the footer put both pages on every page, not only under the banner. Then run `wp silvertrail validate`, which prints Silvertrail's suggested text for the privacy page until the Privacy Policy Guide has shown it.

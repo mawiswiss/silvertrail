@@ -26,7 +26,7 @@ Without the plugin folder, https://silvertrail.marcwieland.name/llms.txt lists t
 
 ## Privacy and imprint pages
 
-Follow `docs/privacy-pages.md`. In short: find out who runs the site, whether it sells and whom it addresses, and ask the owner what the site cannot tell you. Write the pages the site needs as drafts, never publish legal text yourself, and leave the owner's name and address as placeholders unless the owner gave them. Select the privacy page with `wp option update wp_page_for_privacy_policy <id>`. Set the imprint with `wp option patch insert silvertrail imprint_page <id>`, and add footer links to both pages, only once the owner has published them, because a link to a draft leads visitors to a page they cannot open.
+Follow `docs/privacy-pages.md`. In short: find out who runs the site, whether it sells and whom it addresses, and ask the owner what the site cannot tell you. Write the pages the site needs as drafts, never publish legal text yourself, and leave the owner's name and address as placeholders unless the owner gave them. Select the privacy page with `wp option update wp_page_for_privacy_policy <id>`. Set the imprint with `wp option patch insert silvertrail imprint_page <id>`. The banner links each page only once it is published. Add footer links to both pages only after the owner has published them, because a link to a draft leads visitors to a page they cannot open.
 
 The page is a rough orientation, not legal advice. Verify each point against the site's actual case and the current law, and tell the owner which points a lawyer should check.
 
