@@ -31,8 +31,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run docs
-      - name: Check that site/ matches docs/
-        run: test -z "$(git status --porcelain site/)" || { git status --porcelain site/; echo "::error::site/ is stale. Run npm run docs and commit the result."; exit 1; }
 
   test:
     runs-on: ubuntu-latest

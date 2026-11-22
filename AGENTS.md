@@ -13,7 +13,7 @@
 
 - Prose is short, complete sentences with no em-dashes and no marketing. The README, readme.txt and everything in `docs/` are British English. The admin's source strings are US English, as WordPress core's are, and en_GB gets its spelling through the translation.
 - A change in behaviour updates `docs/` in the same commit. `docs/README.md` lists every page under `## Pages`, and `tests/phpunit/DocsTest.php` fails when the docs miss a setting, hook, command, ability or tool. The briefs in `docs/agents.md` and `docs/styling.md` stay the last `##` sections, because the admin copies them from their heading to the end.
-- `site/docs/` and `site/llms.txt` are generated from `docs/` by `npm run docs`. Never edit them by hand, and commit them with the change in `docs/`. CI fails when they are stale.
+- `docs/` is the only source of the documentation site. `npm run docs` builds `site/docs/` and `site/llms.txt` from it, and git ignores both.
 - No text claims or implies that Silvertrail makes a site legally compliant, because WordPress.org guideline 9 forbids it. Describe what the plugin does instead, such as loading nothing before consent.
 - Every UI string goes through the `silvertrail` text domain. After changing one, regenerate `languages/silvertrail.pot` with `wp i18n make-pot . languages/silvertrail.pot --exclude=build` in its own `chore(i18n)` commit.
 - Commits are Conventional Commits, signed, without a sign-off trailer.
@@ -22,6 +22,7 @@
 
 - A GitHub release publishes a version. Its tag must match the `Version` header, `SILVERTRAIL_VERSION` and readme.txt's `Stable tag`. The release workflow builds the package from `.distignore`, runs Plugin Check on it and attaches `silvertrail.zip` to the release.
 - With the repository variable `WPORG_DEPLOY` set to `true` and the secrets `SVN_USERNAME` and `SVN_PASSWORD`, it also commits the package to WordPress.org. The icon, banners and screenshots for the plugin page go into `.wordpress-org/`.
+- `npx wrangler deploy` publishes `site/` to silvertrail.marcwieland.name, and `wrangler.jsonc` makes it run `npm run docs` first. Deploy from a clean `main` after `npm ci`, because the build takes whatever `docs/` is checked out.
 
 ## Quality Assurance
 

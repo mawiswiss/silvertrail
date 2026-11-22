@@ -5,6 +5,8 @@
 /playwright-report/
 /.phpunit.result.cache
 /.wp-env.override.json
+/site/docs/
+/site/llms.txt
 
 # AI
 .claude/settings.local.json
