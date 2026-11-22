@@ -74,7 +74,7 @@ The integrations most sites need are built in, so setting it up mostly means tic
 * It works behind any page cache, as the next section explains.
 * Global Privacy Control wins even over an earlier choice. The visitor can still allow more, and the site answers `/.well-known/gpc.json`.
 * It asks every visitor again when the set of services changes.
-* A link, block or shortcode reopens the preferences, and an optional floating button does the same in a corner of the page.
+* A link, block, shortcode or menu item reopens the preferences, and an optional floating button does the same in a corner of the page.
 * The preferences show the visitor what the current page held back and which other hosts it loaded from.
 * Each site of a multisite network keeps its own cookie.
 * Only a browser with WebMCP fetches a second small script for the agent tools.
@@ -211,7 +211,7 @@ Cached pages still carry the old version of the settings. Purge the page cache a
 
 = Does it work without a footer link? =
 
-Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Design › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
+Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Design › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer, or add the Privacy settings item from the Silvertrail box under Appearance › Menus. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
 
 == Screenshots ==
 

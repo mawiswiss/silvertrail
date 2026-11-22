@@ -15,7 +15,7 @@ Install it from [WordPress.org](https://wordpress.org/plugins/silvertrail/) or w
 
 1. Install and activate the plugin. YouTube, Vimeo and Google Maps embeds are blocked from now on.
 2. Under Settings › Silvertrail, tick the trackers the site uses and enter their IDs.
-3. Put the Privacy settings link block or the `[silvertrail_link]` shortcode in the footer, or turn on the floating button under Settings › Silvertrail › Design › Look.
+3. Put the Privacy settings link block, the `[silvertrail_link]` shortcode or the Silvertrail menu item in the footer, or turn on the floating button under Settings › Silvertrail › Design › Look.
 
 Or give an agent something like this:
 

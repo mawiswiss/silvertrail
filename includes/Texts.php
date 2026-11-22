@@ -64,8 +64,8 @@ final class Texts {
 	/**
 	 * @return array<string, string>
 	 */
-	public static function all(): array {
-		$locale = determine_locale();
+	public static function all( string $locale = '' ): array {
+		$locale = '' !== $locale ? $locale : determine_locale();
 		$texts  = array_replace( self::base( $locale ), self::custom( $locale ) );
 
 		/**

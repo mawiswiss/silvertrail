@@ -88,6 +88,55 @@ final class PluginTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( '<line x1="1" y1="1" x2="5" y2="5">', $icon );
 	}
 
+	public function test_the_menu_box_adds_a_link_to_the_preferences_in_the_site_language(): void {
+		update_option( Settings::OPTION, array( 'texts' => array( 'en_US' => array( 'reopen' => 'Cookie settings' ) ) ) );
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		update_user_meta( $admin, 'locale', 'de_CH' );
+		wp_set_current_user( $admin );
+		set_current_screen( 'nav-menus' );
+
+		ob_start();
+		Reopen::render_menu_box();
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'id="silvertrail-menu-item"', $html );
+		$this->assertStringContainsString( 'id="submit-silvertrail-menu-item"', $html );
+		$this->assertStringContainsString( 'name="menu-item[-1][menu-item-type]" value="custom"', $html );
+		$this->assertStringContainsString( 'name="menu-item[-1][menu-item-url]" value="#silvertrail"', $html );
+		$this->assertStringContainsString( 'name="menu-item[-1][menu-item-title]" value="Cookie settings"', $html );
+	}
+
+	public function test_switched_off_menus_drop_the_link_to_the_preferences(): void {
+		$menu = wp_create_nav_menu( 'Footer' );
+		$this->assertIsInt( $menu );
+		foreach ( array( 'Privacy settings' => '#silvertrail', 'Imprint' => '/imprint/' ) as $title => $url ) {
+			wp_update_nav_menu_item(
+				$menu,
+				0,
+				array(
+					'menu-item-title'  => $title,
+					'menu-item-url'    => $url,
+					'menu-item-type'   => 'custom',
+					'menu-item-status' => 'publish',
+				)
+			);
+		}
+		$render = static fn(): string => (string) wp_nav_menu(
+			array(
+				'menu'        => $menu,
+				'echo'        => false,
+				'fallback_cb' => false,
+			)
+		);
+
+		$this->assertStringContainsString( 'href="#silvertrail"', $render() );
+
+		update_option( Settings::OPTION, array( 'enabled' => false ) );
+
+		$this->assertStringNotContainsString( '#silvertrail', $render() );
+		$this->assertStringContainsString( 'href="/imprint/"', $render() );
+	}
+
 	private function button(): string {
 		ob_start();
 		Reopen::button();

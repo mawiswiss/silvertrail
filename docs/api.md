@@ -53,7 +53,7 @@ Silvertrail's script loads with `defer`, so `window.silvertrail` exists from `DO
 <button type="button" data-silvertrail-open>Privacy settings</button>
 ```
 
-[Reopen the preferences](reopen.md) covers the shortcode, the block and the floating button.
+[Reopen the preferences](reopen.md) covers the shortcode, the block, menus and the floating button.
 
 ## Events
 

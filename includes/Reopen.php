@@ -10,9 +10,11 @@ namespace Silvertrail;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Ways back to the preferences: the shortcode, the block and the floating button.
+ * Ways back to the preferences: the shortcode, the block, the menu item and the floating button.
  */
 final class Reopen {
+
+	public const HASH = '#silvertrail';
 
 	public const ICON = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-4.6-4.2A4 4 0 0 1 12 2Zm-3.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm7 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-6 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>';
 
@@ -23,6 +25,52 @@ final class Reopen {
 	public static function register(): void {
 		add_shortcode( 'silvertrail_link', array( self::class, 'shortcode' ) );
 		add_action( 'init', array( self::class, 'block' ) );
+		// Fires after core hides new users' extra boxes, so this one starts visible.
+		add_action( 'admin_head-nav-menus.php', array( self::class, 'menu_box' ) );
+		add_filter( 'wp_nav_menu_objects', array( self::class, 'menu_items' ) );
+	}
+
+	public static function menu_box(): void {
+		add_meta_box( 'silvertrail-menu-item', 'Silvertrail', array( self::class, 'render_menu_box' ), 'nav-menus', 'side' );
+	}
+
+	public static function render_menu_box(): void {
+		$title = Texts::all( get_locale() )['reopen'];
+		?>
+		<div id="silvertrail-menu-item" class="posttypediv">
+			<div class="tabs-panel tabs-panel-active">
+				<ul class="categorychecklist form-no-clear">
+					<li>
+						<label class="menu-item-title">
+							<input type="checkbox" class="menu-item-checkbox" name="menu-item[-1][menu-item-object-id]" value="-1"> <?php echo esc_html( $title ); ?>
+						</label>
+						<input type="hidden" class="menu-item-type" name="menu-item[-1][menu-item-type]" value="custom">
+						<input type="hidden" class="menu-item-title" name="menu-item[-1][menu-item-title]" value="<?php echo esc_attr( $title ); ?>">
+						<input type="hidden" class="menu-item-url" name="menu-item[-1][menu-item-url]" value="<?php echo esc_attr( self::HASH ); ?>">
+					</li>
+				</ul>
+			</div>
+			<p class="button-controls wp-clearfix">
+				<span class="add-to-menu">
+					<input type="submit" class="button submit-add-to-menu right" value="<?php esc_attr_e( 'Add to Menu', 'silvertrail' ); ?>" name="add-silvertrail-menu-item" id="submit-silvertrail-menu-item">
+					<span class="spinner"></span>
+				</span>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Drops links to the preferences while Silvertrail is off, as the shortcode and the block do.
+	 *
+	 * @param array<int, object> $items
+	 * @return array<int, object>
+	 */
+	public static function menu_items( array $items ): array {
+		if ( Plugin::live() ) {
+			return $items;
+		}
+		return array_filter( $items, static fn( object $item ): bool => ! str_ends_with( (string) ( $item->url ?? '' ), self::HASH ) );
 	}
 
 	/**

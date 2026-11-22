@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Reopen the preferences · Silvertrail docs</title>
-	<meta name="description" content="Visitors need a way back to their choice on every page. A link, the shortcode, the block or the floating button opens the preferences, and the API does the same from a script.">
+	<meta name="description" content="Visitors need a way back to their choice on every page. A link, the shortcode, the block, a menu item or the floating button opens the preferences, and the API does the same from a script.">
 	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/reopen/">
 	<link rel="alternate" type="text/markdown" href="/docs/reopen.md" title="Reopen the preferences as Markdown">
 	<meta name="author" content="Marc Wieland">
@@ -15,7 +15,7 @@
 	<meta property="og:locale" content="en_GB">
 	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/reopen/">
 	<meta property="og:title" content="Reopen the preferences · Silvertrail docs">
-	<meta property="og:description" content="Visitors need a way back to their choice on every page. A link, the shortcode, the block or the floating button opens the preferences, and the API does the same from a script.">
+	<meta property="og:description" content="Visitors need a way back to their choice on every page. A link, the shortcode, the block, a menu item or the floating button opens the preferences, and the API does the same from a script.">
 	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
@@ -461,6 +461,7 @@
 					<a href="/docs/reopen/" aria-current="page">Reopen the preferences</a>
 					<ul class="docs-nav__toc">
 						<li><a href="#links">Links</a></li>
+						<li><a href="#menus">Menus</a></li>
 						<li><a href="#floating-button">Floating button</a></li>
 					</ul>
 				</li>
@@ -477,13 +478,16 @@
 		<main class="docs-main" id="content">
 			<article class="prose">
 <h1>Reopen the preferences</h1>
-<p>Visitors need a way back to their choice on every page. A link, the shortcode, the block or the floating button opens the preferences, and the <a href="/docs/api/#open-the-preferences">API</a> does the same from a script.</p>
+<p>Visitors need a way back to their choice on every page. A link, the shortcode, the block, a menu item or the floating button opens the preferences, and the <a href="/docs/api/#open-the-preferences">API</a> does the same from a script.</p>
 <h2 id="links"><a href="#links">Links</a></h2>
 <p>Any link to <code>#silvertrail</code> opens the preferences, and so does any element with <code>data-silvertrail-open</code>:</p>
 <pre><code class="language-html">&lt;a href=&quot;#silvertrail&quot;&gt;Privacy settings&lt;/a&gt;
 &lt;button type=&quot;button&quot; data-silvertrail-open&gt;Privacy settings&lt;/button&gt;
 </code></pre>
 <p>The <code>[silvertrail_link]</code> shortcode prints such a link, with its own text as <code>[silvertrail_link]Cookie settings[/silvertrail_link]</code>. The Privacy settings link block (<code>silvertrail/reopen-link</code>) does the same in the editor. Put one in the footer, so it is on every page.</p>
+<h2 id="menus"><a href="#menus">Menus</a></h2>
+<p>In a classic theme, Appearance › Menus has a Silvertrail box. Its Privacy settings item adds a custom link to <code>#silvertrail</code>, which moves like any other menu item. It takes its label from the site&#39;s language, and the label stays editable in the menu. On the shell, <code>wp menu item add-custom &lt;menu&gt; &quot;Privacy settings&quot; &quot;#silvertrail&quot;</code> adds the same link. While Silvertrail is switched off, menus leave such links out, as the shortcode and the block print nothing.</p>
+<p>The Navigation block of a block theme and the Customizer have no Silvertrail box. Add a custom link to <code>#silvertrail</code> there.</p>
 <h2 id="floating-button"><a href="#floating-button">Floating button</a></h2>
 <p>The floating button is off by default. Turned on under Settings › Silvertrail › Design › Look, or with <code>floating_button</code> set to <code>&#39;auto&#39;</code>, it sits in a bottom corner of every page without such a link. <code>&#39;always&#39;</code> shows it next to a link too, and <code>floating_position</code> picks the left or the right corner. The <code>silvertrail_reopen_icon</code> filter swaps its icon for inline SVG or an <code>&lt;img&gt;</code>, and the button keeps its label for screen readers:</p>
 <pre><code class="language-php">add_filter( &#39;silvertrail_reopen_icon&#39;, function () {

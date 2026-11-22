@@ -1,6 +1,6 @@
 # Reopen the preferences
 
-Visitors need a way back to their choice on every page. A link, the shortcode, the block or the floating button opens the preferences, and the [API](https://silvertrail.marcwieland.name/docs/api.md#open-the-preferences) does the same from a script.
+Visitors need a way back to their choice on every page. A link, the shortcode, the block, a menu item or the floating button opens the preferences, and the [API](https://silvertrail.marcwieland.name/docs/api.md#open-the-preferences) does the same from a script.
 
 ## Links
 
@@ -12,6 +12,12 @@ Any link to `#silvertrail` opens the preferences, and so does any element with `
 ```
 
 The `[silvertrail_link]` shortcode prints such a link, with its own text as `[silvertrail_link]Cookie settings[/silvertrail_link]`. The Privacy settings link block (`silvertrail/reopen-link`) does the same in the editor. Put one in the footer, so it is on every page.
+
+## Menus
+
+In a classic theme, Appearance › Menus has a Silvertrail box. Its Privacy settings item adds a custom link to `#silvertrail`, which moves like any other menu item. It takes its label from the site's language, and the label stays editable in the menu. On the shell, `wp menu item add-custom <menu> "Privacy settings" "#silvertrail"` adds the same link. While Silvertrail is switched off, menus leave such links out, as the shortcode and the block print nothing.
+
+The Navigation block of a block theme and the Customizer have no Silvertrail box. Add a custom link to `#silvertrail` there.
 
 ## Floating button
 
