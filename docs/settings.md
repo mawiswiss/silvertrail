@@ -20,7 +20,7 @@ add_filter( 'silvertrail_settings', function ( $settings ) {
 | `layout` | Design | `'modal'` (a dialog in the middle), `'box'` (the bottom right corner) or `'bar'` (across the page) | `'modal'` |
 | `bar_position` | Design | `'top'` or `'bottom'`, the edge the bar sits on | `'top'` |
 | `appearance` | Design | `'light'` or `'dark'`. The default `'theme'` takes whichever the theme is. | `'theme'` |
-| `require_choice` | Design | bool. Turned on, the page dims and the banner stays until the visitor chooses. Turned off, the page stays as it is, and a click outside or Escape closes the banner without storing anything. `null` requires a choice for `'modal'` only. | `null` |
+| `require_choice` | Design | bool. Turned on, the banner stays until the visitor chooses. Turned off, the close button, a click outside or Escape closes it without storing anything. `'modal'` always dims the page, `'box'` and `'bar'` only while a choice is required. `null` requires a choice for `'modal'` only. | `null` |
 | `imprint_page` | Texts | page ID, `0` for none | `0` |
 | `floating_button` | Design | `'never'`, `'auto'` for pages without a link to `#silvertrail`, or `'always'` | `'never'` |
 | `floating_position` | Design | `'left'` or `'right'`, the bottom corner of the floating button | `'left'` |

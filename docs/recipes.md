@@ -71,7 +71,7 @@ Answer `accept-all` for those visitors, by time zone or by country as above:
 - The choice is stored like any other, with the source `hook` in `silvertrail:change` and in the records.
 - The visitor still needs a way to see what runs and to object, so link to `#silvertrail` on every page or set `floating_button` to `'always'`.
 
-To show the preferences once, as the notice that says what runs, open them after that first choice. They open without dimming the page, because the choice is made:
+To show the preferences once, as the notice that says what runs, open them after that first choice. Because the choice is made, they close on a click outside, and only the dialog dims the page:
 
 ```js
 window.addEventListener('silvertrail:change', (event) => {

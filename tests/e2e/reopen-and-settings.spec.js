@@ -103,11 +103,15 @@ test.describe('closing', () => {
 		await expect(banner(page)).toBeVisible();
 	});
 
-	test('without a required choice a click outside closes the banner and stores nothing', async ({ page, context }) => {
+	test('without a required choice the dialog still dims the page, and a click outside closes it and stores nothing', async ({
+		page,
+		context,
+	}) => {
 		await withSettings(context, { layout: 'modal', require_choice: false });
 		await page.goto('/');
 		await expect(banner(page)).toBeVisible();
-		expect(await placement(page)).toMatchObject({ modal: false, dimmed: false, centred: true });
+		expect(await placement(page)).toMatchObject({ modal: true, dimmed: true, centred: true });
+		await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
 		await page.mouse.click(5, 5);
 
 		await expect(banner(page)).toBeHidden();
@@ -126,6 +130,43 @@ test.describe('closing', () => {
 		await page.mouse.click(5, 5);
 
 		await expect(banner(page)).toBeHidden();
+	});
+
+	test('the dialog reopened after a choice dims the page and closes on a click outside', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Only essential' }).click();
+		await page.evaluate(() => window.silvertrail.open());
+
+		expect(await placement(page)).toMatchObject({ modal: true, dimmed: true });
+		await page.mouse.click(5, 5);
+		await expect(banner(page)).toBeHidden();
+	});
+
+	for (const look of [{}, { layout: 'modal', require_choice: false }, { layout: 'box', require_choice: true }]) {
+		test(`the page behind the backdrop does not scroll, ${JSON.stringify(look)}`, async ({ page, context }) => {
+			await withSettings(context, look);
+			await page.goto('/');
+			await expect(banner(page)).toBeVisible();
+			expect(await placement(page)).toMatchObject({ modal: true, dimmed: true });
+			await page.evaluate(() => (document.body.style.minHeight = '300vh'));
+			await page.mouse.move(5, 300);
+			await page.mouse.wheel(0, 600);
+			await page.waitForTimeout(500);
+
+			expect(await page.evaluate(() => window.scrollY)).toBe(0);
+		});
+	}
+
+	test('the page behind the box without a required choice still scrolls', async ({ page, context }) => {
+		await withSettings(context, { layout: 'box', require_choice: false });
+		await page.goto('/');
+		await expect(banner(page)).toBeVisible();
+		await page.evaluate(() => (document.body.style.minHeight = '300vh'));
+		await page.mouse.move(5, 300);
+		await page.mouse.wheel(0, 600);
+
+		await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+		await expect(banner(page)).toBeVisible();
 	});
 });
 

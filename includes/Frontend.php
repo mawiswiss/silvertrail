@@ -146,6 +146,7 @@ final class Frontend {
 			'consentApi'  => ConsentApi::map(),
 			'gpc'         => (bool) Settings::get( 'gpc' ),
 			'webmcp'      => Settings::get( 'webmcp' ) ? add_query_arg( 'ver', self::version( 'webmcp.js' ), plugins_url( 'assets/webmcp.js', SILVERTRAIL_FILE ) ) : '',
+			'layout'      => Settings::get( 'layout' ),
 			'require'     => (bool) Settings::get( 'require_choice' ),
 			'check'       => Scan::active(),
 			'record'      => Records::listening() && ! Scan::active() ? rest_url( 'silvertrail/v1/record' ) : '',

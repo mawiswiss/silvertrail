@@ -313,7 +313,7 @@
 		}
 		const canClose = closable();
 		banner.querySelector('[data-silvertrail-action="close"]').hidden = !canClose;
-		if (isPopover && canClose && !banner.open) {
+		if (isPopover && canClose && config.layout !== 'modal' && !banner.open) {
 			if (typeof banner.showPopover !== 'function') {
 				banner.show();
 			} else if (!popoverOpen()) {
@@ -423,7 +423,7 @@
 		});
 
 		// Safari has no closedby, so a press and release on the backdrop closes the modal here.
-		if (!isPopover && !('closedBy' in HTMLDialogElement.prototype)) {
+		if (!('closedBy' in HTMLDialogElement.prototype)) {
 			const outside = (event) => {
 				const r = banner.getBoundingClientRect();
 				return event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom;
@@ -433,7 +433,7 @@
 				pressedOutside = outside(event);
 			});
 			banner.addEventListener('pointerup', (event) => {
-				if (pressedOutside && outside(event) && closable()) {
+				if (pressedOutside && outside(event) && banner.matches(':modal') && closable()) {
 					hide();
 				}
 			});

@@ -165,7 +165,7 @@ test.describe('banner', () => {
 
 			await expect(page.getByRole('dialog')).toBeVisible();
 			await expect.poll(() => ran(page)).toEqual(ALL_RAN);
-			expect(await page.evaluate(() => document.getElementById('silvertrail-banner').matches(':modal'))).toBe(false);
+			expect(await page.evaluate(() => document.getElementById('silvertrail-banner').matches(':modal'))).toBe(layout === 'modal');
 			await page.getByRole('button', { name: 'Only essential' }).first().click();
 			expect((await cookie(context)).c).toEqual([]);
 

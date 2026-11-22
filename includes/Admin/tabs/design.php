@@ -208,7 +208,7 @@ $silvertrail_swatch        = static function ( string $mode ): string {
 				SettingsPage::checkbox(
 					'require_choice',
 					__( 'Require a choice before the banner closes', 'silvertrail' ),
-					__( 'On by default for the dialog, off for the box and the bar. Turned on, the page dims until the visitor chooses. Turned off, the page stays usable, and a click outside or Escape closes the banner without storing anything. Only services that need no consent run, and it asks again on the next page.', 'silvertrail' )
+					__( 'On by default for the dialog, off for the box and the bar. Turned on, the banner stays until the visitor chooses. Turned off, the close button, a click outside or Escape closes it without storing anything. Only services that need no consent run, and it asks again on the next page. The dialog always dims the page, the box and the bar only while a choice is required.', 'silvertrail' )
 				);
 				?>
 			</td>

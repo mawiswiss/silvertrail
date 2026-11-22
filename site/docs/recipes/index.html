@@ -536,7 +536,7 @@ window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
 <li>The choice is stored like any other, with the source <code>hook</code> in <code>silvertrail:change</code> and in the records.</li>
 <li>The visitor still needs a way to see what runs and to object, so link to <code>#silvertrail</code> on every page or set <code>floating_button</code> to <code>&#39;always&#39;</code>.</li>
 </ul>
-<p>To show the preferences once, as the notice that says what runs, open them after that first choice. They open without dimming the page, because the choice is made:</p>
+<p>To show the preferences once, as the notice that says what runs, open them after that first choice. Because the choice is made, they close on a click outside, and only the dialog dims the page:</p>
 <pre><code class="language-js">window.addEventListener(&#39;silvertrail:change&#39;, (event) =&gt; {
 	if (event.detail.source === &#39;hook&#39;) {
 		window.silvertrail.open();
