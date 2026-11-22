@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-22T11:16:51+00:00\n"
+"POT-Creation-Date: 2026-11-22T11:17:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -333,7 +333,7 @@ msgid "Any link to `#silvertrail` opens the preferences, and so does any element
 msgstr ""
 
 #: includes/Admin/Help.php:206
-msgid "The `[silvertrail_link]` shortcode and the Silvertrail Link block print such a link. In a classic theme, the Silvertrail box under Appearance › Menus adds one to a menu."
+msgid "The `[silvertrail_link]` shortcode and the Silvertrail Link block print such a link, and the Silvertrail Menu Item block does so inside a Navigation block. In a classic theme, the Silvertrail box under Appearance › Menus adds one to a menu."
 msgstr ""
 
 #: includes/Admin/Help.php:207
@@ -1866,7 +1866,7 @@ msgstr ""
 
 #: includes/Texts.php:35
 #: includes/Texts.php:55
-#: blocks/reopen-link/editor.js:20
+#: blocks/editor.js:21
 msgid "Privacy settings"
 msgstr ""
 
@@ -2008,6 +2008,40 @@ msgid_plural "%d services"
 msgstr[0] ""
 msgstr[1] ""
 
+#: blocks/navigation-link/block.json
+msgctxt "block title"
+msgid "Silvertrail Menu Item"
+msgstr ""
+
+#: blocks/navigation-link/block.json
+msgctxt "block description"
+msgid "A menu item that opens Silvertrail's privacy settings again."
+msgstr ""
+
+#: blocks/navigation-link/block.json
+#: blocks/reopen-link/block.json
+msgctxt "block keyword"
+msgid "silvertrail"
+msgstr ""
+
+#: blocks/navigation-link/block.json
+#: blocks/reopen-link/block.json
+msgctxt "block keyword"
+msgid "cookie"
+msgstr ""
+
+#: blocks/navigation-link/block.json
+#: blocks/reopen-link/block.json
+msgctxt "block keyword"
+msgid "consent"
+msgstr ""
+
+#: blocks/navigation-link/block.json
+#: blocks/reopen-link/block.json
+msgctxt "block keyword"
+msgid "privacy"
+msgstr ""
+
 #: blocks/reopen-link/block.json
 msgctxt "block title"
 msgid "Silvertrail Link"
@@ -2016,24 +2050,4 @@ msgstr ""
 #: blocks/reopen-link/block.json
 msgctxt "block description"
 msgid "A link that opens Silvertrail's privacy settings again."
-msgstr ""
-
-#: blocks/reopen-link/block.json
-msgctxt "block keyword"
-msgid "silvertrail"
-msgstr ""
-
-#: blocks/reopen-link/block.json
-msgctxt "block keyword"
-msgid "cookie"
-msgstr ""
-
-#: blocks/reopen-link/block.json
-msgctxt "block keyword"
-msgid "consent"
-msgstr ""
-
-#: blocks/reopen-link/block.json
-msgctxt "block keyword"
-msgid "privacy"
 msgstr ""
