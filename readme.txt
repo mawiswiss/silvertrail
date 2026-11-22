@@ -5,7 +5,7 @@ Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -241,6 +241,17 @@ Each tracker preset below connects to its provider only when an admin turns it o
 Write with AI, on WordPress 7.0 and later, sends the styling prompt and the admin's description of the look to the AI provider set up under Settings › Connectors, through WordPress's AI Client, and only when an admin clicks it. The prompt holds the styling brief, the theme's colour and font presets and its current `silvertrail/silvertrail.css`, and nothing about visitors. The terms and privacy policy of the provider the site chose apply.
 
 == Changelog ==
+
+= 1.3.0 =
+
+* New: Appearance › Menus has a Privacy settings item that reopens the preferences. Menus leave it out while Silvertrail is switched off.
+* New: the Navigation block of a block theme offers a Silvertrail Menu Item block that opens the privacy settings.
+* Changed: the block is called Silvertrail Link and shows the Silvertrail logo. Without a label of its own it shows the site's privacy settings text in the editor and in the inserter preview.
+* Fixed: the bar's preferences dim the page like the centred banner, also when reopened after a choice.
+* Fixed: themes such as Twenty Twenty-One no longer restyle the buttons and checkboxes in the banner, the embed placeholder and the floating button.
+* Fixed: `silvertrail:before-prompt` also fires on a site whose services all ask in place, so such a site can answer it by region.
+* Fixed: the banner links the imprint only once its page is published, as it already did for the privacy policy.
+* Docs: a new guide explains which privacy and imprint pages a site needs. The setup prompt has agents draft them for the owner to review, never publish them, and the Links card in the settings links to the guide.
 
 = 1.2.1 =
 
