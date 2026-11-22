@@ -1,5 +1,6 @@
 (({ blocks, data, element, blockEditor, i18n }) => {
 	const el = element.createElement;
+	const label = window.silvertrailBlocks?.label || i18n.__('Privacy settings', 'silvertrail');
 	const navigationLink = 'silvertrail/navigation-link';
 	const icon = el(
 		'svg',
@@ -16,16 +17,16 @@
 				el(blockEditor.RichText, {
 					tagName: 'a',
 					className: className ? 'wp-block-navigation-item__content' : undefined,
-					value: attributes.text,
+					value: attributes.text ?? label,
 					allowedFormats: [],
-					placeholder: i18n.__('Privacy settings', 'silvertrail'),
+					placeholder: label,
 					onChange: (text) => setAttributes({ text }),
 				}),
 			);
 		};
 
-	blocks.registerBlockType('silvertrail/reopen-link', { icon, edit: link('p') });
-	blocks.registerBlockType(navigationLink, { icon, edit: link('div', 'wp-block-navigation-item') });
+	blocks.registerBlockType('silvertrail/reopen-link', { icon, example: {}, edit: link('p') });
+	blocks.registerBlockType(navigationLink, { icon, example: {}, edit: link('div', 'wp-block-navigation-item') });
 
 	// Navigation pins Page link and Custom Link at the top of its Add block list. This pins the privacy link after them.
 	data.subscribe(() => {

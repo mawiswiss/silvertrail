@@ -25,6 +25,7 @@ final class Reopen {
 	public static function register(): void {
 		add_shortcode( 'silvertrail_link', array( self::class, 'shortcode' ) );
 		add_action( 'init', array( self::class, 'block' ) );
+		add_action( 'enqueue_block_editor_assets', array( self::class, 'block_label' ) );
 		// Fires after core hides new users' extra boxes, so this one starts visible.
 		add_action( 'admin_head-nav-menus.php', array( self::class, 'menu_box' ) );
 		add_filter( 'wp_nav_menu_objects', array( self::class, 'menu_items' ) );
@@ -100,6 +101,13 @@ final class Reopen {
 		wp_set_script_translations( 'silvertrail-blocks', 'silvertrail' );
 		register_block_type( $blocks . '/reopen-link' );
 		register_block_type( $blocks . '/navigation-link' );
+	}
+
+	/**
+	 * Hands the editor the label visitors see, so a block without its own label shows it.
+	 */
+	public static function block_label(): void {
+		wp_add_inline_script( 'silvertrail-blocks', 'window.silvertrailBlocks = ' . wp_json_encode( array( 'label' => Texts::all( get_locale() )['reopen'] ) ) . ';', 'before' );
 	}
 
 	public static function button(): void {

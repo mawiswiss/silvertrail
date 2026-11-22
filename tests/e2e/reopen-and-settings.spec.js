@@ -459,7 +459,7 @@ test.describe('settings page', () => {
 		await expect(page.locator('.silvertrail-section h2').first()).toHaveText('Setup');
 	});
 
-	test('the block editor offers the Silvertrail Link block among the widgets, with its logo', async ({ page }) => {
+	test('the block editor offers the Silvertrail Link block among the widgets, with its logo and a preview', async ({ page }) => {
 		await page.goto('/wp-admin/post-new.php');
 		await page.waitForFunction(() => window.wp?.blocks?.getBlockType('silvertrail/reopen-link'));
 
@@ -470,10 +470,14 @@ test.describe('settings page', () => {
 				category: type.category,
 				searchable: type.keywords.includes('silvertrail'),
 				logo: type.icon.src?.type === 'svg',
+				preview: !!type.example,
 				collection: !!window.wp.data.select('core/blocks').getCollections().silvertrail,
 			};
 		});
-		expect(block).toEqual({ title: 'Silvertrail Link', category: 'widgets', searchable: true, logo: true, collection: false });
+		expect(block).toEqual({ title: 'Silvertrail Link', category: 'widgets', searchable: true, logo: true, preview: true, collection: false });
+
+		await page.evaluate(() => window.wp.data.dispatch('core/block-editor').insertBlocks(window.wp.blocks.createBlock('silvertrail/reopen-link')));
+		await expect(page.frameLocator('iframe[name="editor-canvas"]').locator('.wp-block-silvertrail-reopen-link a')).toHaveText('Privacy settings');
 	});
 
 	test('a Navigation block takes the Silvertrail Menu Item block, pinned after its own links, and only a Navigation does', async ({
@@ -507,10 +511,10 @@ test.describe('settings page', () => {
 			)
 			.toEqual(['core/navigation-link/page', 'core/navigation-link', 'silvertrail/navigation-link']);
 		const type = await page.evaluate(() => {
-			const { title, category, icon } = window.wp.blocks.getBlockType('silvertrail/navigation-link');
-			return { title, category, logo: icon.src?.type === 'svg' };
+			const { title, category, icon, example } = window.wp.blocks.getBlockType('silvertrail/navigation-link');
+			return { title, category, logo: icon.src?.type === 'svg', preview: !!example };
 		});
-		expect(type).toEqual({ title: 'Silvertrail Menu Item', category: 'design', logo: true });
+		expect(type).toEqual({ title: 'Silvertrail Menu Item', category: 'design', logo: true, preview: true });
 
 		await page.evaluate((id) => window.wp.data.dispatch('core').deleteEntityRecord('postType', 'wp_navigation', id, { force: true }), menu);
 	});

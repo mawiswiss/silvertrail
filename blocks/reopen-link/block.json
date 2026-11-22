@@ -9,8 +9,7 @@
 	"textdomain": "silvertrail",
 	"attributes": {
 		"text": {
-			"type": "string",
-			"default": ""
+			"type": "string"
 		}
 	},
 	"supports": {
