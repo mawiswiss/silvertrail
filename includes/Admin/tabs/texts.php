@@ -122,7 +122,7 @@ $silvertrail_editor      = SettingsPage::editor( 'json' );
 
 <section class="card silvertrail-section" id="silvertrail-links">
 	<h2><?php esc_html_e( 'Links', 'silvertrail' ); ?></h2>
-	<?php echo wp_kses_post( SettingsPage::docs_link( 'reopen/#links' ) ); ?>
+	<?php echo wp_kses_post( SettingsPage::docs_link( 'privacy-pages/#how-silvertrail-links-them' ) ); ?>
 	<?php Notices::card( 'links' ); ?>
 	<table class="form-table" role="presentation">
 		<tr>
