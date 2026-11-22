@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-22T09:41:02+00:00\n"
+"POT-Creation-Date: 2026-11-22T11:16:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -333,7 +333,7 @@ msgid "Any link to `#silvertrail` opens the preferences, and so does any element
 msgstr ""
 
 #: includes/Admin/Help.php:206
-msgid "The `[silvertrail_link]` shortcode and the Privacy settings link block print such a link. In a classic theme, the Silvertrail box under Appearance › Menus adds one to a menu."
+msgid "The `[silvertrail_link]` shortcode and the Silvertrail Link block print such a link. In a classic theme, the Silvertrail box under Appearance › Menus adds one to a menu."
 msgstr ""
 
 #: includes/Admin/Help.php:207
@@ -1173,7 +1173,7 @@ msgstr ""
 #. translators: 1: #silvertrail, 2: [silvertrail_link]
 #: includes/Admin/tabs/texts.php:186
 #, php-format
-msgid "Visitors change their choice through a link to %1$s, usually in the footer. Add one with the %2$s shortcode or the Privacy settings link block."
+msgid "Visitors change their choice through a link to %1$s, usually in the footer. Add one with the %2$s shortcode, the Silvertrail Link block or a Silvertrail menu item."
 msgstr ""
 
 #: includes/Admin/tabs/texts.php:191
@@ -1866,7 +1866,7 @@ msgstr ""
 
 #: includes/Texts.php:35
 #: includes/Texts.php:55
-#: blocks/reopen-link/editor.js:11
+#: blocks/reopen-link/editor.js:20
 msgid "Privacy settings"
 msgstr ""
 
@@ -2010,12 +2010,17 @@ msgstr[1] ""
 
 #: blocks/reopen-link/block.json
 msgctxt "block title"
-msgid "Privacy settings link"
+msgid "Silvertrail Link"
 msgstr ""
 
 #: blocks/reopen-link/block.json
 msgctxt "block description"
-msgid "A link that opens the cookie preferences again."
+msgid "A link that opens Silvertrail's privacy settings again."
+msgstr ""
+
+#: blocks/reopen-link/block.json
+msgctxt "block keyword"
+msgid "silvertrail"
 msgstr ""
 
 #: blocks/reopen-link/block.json
