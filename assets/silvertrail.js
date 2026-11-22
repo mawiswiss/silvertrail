@@ -83,6 +83,12 @@
 		set([...consentIds.filter(has), id], { ...options, partial: !decided() });
 	}
 
+	function revoke(id) {
+		if (consentIds.includes(id) && has(id)) {
+			set(consentIds.filter((other) => other !== id && has(other)), { partial: !decided() });
+		}
+	}
+
 	function reset() {
 		const secure = window.location.protocol === 'https:' ? '; Secure' : '';
 		document.cookie = `${config.cookie}=; Max-Age=0; Path=${config.path}; SameSite=Lax${secure}`;
@@ -520,7 +526,7 @@
 		}
 	});
 
-	window.silvertrail = { has, set, grant, open, decided, trail, reset };
+	window.silvertrail = { has, set, grant, revoke, open, decided, trail, reset };
 
 	let started = false;
 	const once = () => {

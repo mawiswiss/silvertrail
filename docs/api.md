@@ -37,6 +37,7 @@ window.silvertrail.set(['google-analytics', 'youtube']);
 | `has(id)` | Whether the visitor agreed to the service. Essential services are always `true`. |
 | `set(ids)` | Stores exactly these services as the choice. Unknown and essential IDs are ignored. |
 | `grant(id)` | Adds one service to the choice, as "Always allow" on an embed does. |
+| `revoke(id)` | Removes one service from the choice and leaves the others as they are. What already runs on the page stops on the next page view. |
 | `open()` | Opens the preferences. |
 | `decided()` | Whether the visitor made a full choice. A grant from an embed alone does not count. |
 | `trail()` | `{ held, loaded }`: the services the page held back and the other hosts it loaded from. |

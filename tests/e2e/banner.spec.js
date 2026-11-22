@@ -240,6 +240,33 @@ test.describe('banner', () => {
 		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
 	});
 
+	test('revoke removes one service and keeps the rest of the choice', async ({ page, context }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Accept all' }).first().click();
+		await page.evaluate(() => window.silvertrail.revoke('test-analytics'));
+
+		expect((await cookie(context)).c).toEqual(ALL_IDS.filter((id) => id !== 'test-analytics'));
+		await page.reload();
+		await expect(page.getByRole('dialog')).toBeHidden();
+		await expect.poll(() => ran(page)).toEqual(['gated-src', 'gated-after', 'pixel']);
+	});
+
+	test('revoke leaves an undecided visitor undecided', async ({ page, context }) => {
+		await page.goto('/');
+		await page.evaluate(() => {
+			window.silvertrail.revoke('silvertrail');
+			window.silvertrail.revoke('test-analytics');
+		});
+		expect(await cookie(context)).toBeNull();
+
+		await page.evaluate(() => {
+			window.silvertrail.grant('test-video');
+			window.silvertrail.revoke('test-video');
+		});
+		expect(await cookie(context)).toMatchObject({ c: [], p: 1 });
+		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
+	});
+
 	test('always allow on an embed under global privacy control stays', async ({ page, context }) => {
 		await sendGpc(page);
 		await page.goto('/?pagename=silvertrail-embeds');
