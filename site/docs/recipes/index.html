@@ -533,7 +533,7 @@ window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
 <p><strong>Use case:</strong> in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site&#39;s decision, not Silvertrail&#39;s. <a href="#opt-in-and-opt-out-by-region">Opt-in and opt-out by region</a> gives a first orientation.</p>
 <p>Answer <code>accept-all</code> for those visitors, by time zone or by country as above:</p>
 <ul>
-<li>Every service starts at once, and no banner opens.</li>
+<li>Every service starts at once, and no banner opens. On a site whose services all ask in place, such as embeds only, the placeholders load their content without a click.</li>
 <li>The choice is stored like any other, with the source <code>hook</code> in <code>silvertrail:change</code> and in the records.</li>
 <li>The visitor still needs a way to see what runs and to object, so link to <code>#silvertrail</code> on every page or set <code>floating_button</code> to <code>&#39;always&#39;</code>.</li>
 </ul>

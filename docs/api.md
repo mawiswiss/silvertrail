@@ -71,7 +71,7 @@ window.addEventListener('silvertrail:change', (event) => {
 | `silent` | `true` when the choice came from Global Privacy Control or a `before-prompt` answer, without the visitor. |
 | `source` | `banner`, `embed`, `gpc`, `hook` or `agent`. |
 
-`silvertrail:before-prompt` fires on `window` before the banner opens for a visitor who has not chosen yet. Add the listener in a script that runs before `DOMContentLoaded`, such as an inline, deferred or module script, because an `async` script may come too late. It answers with `prompt`, `accept-all` or `reject-all`, or with a promise of one:
+`silvertrail:before-prompt` fires on `window` once per page view for a visitor who has not chosen yet, before the banner opens. It also fires on a site that needs no banner because its services all ask in place, and never under Global Privacy Control. Add the listener in a script that runs before `DOMContentLoaded`, such as an inline, deferred or module script, because an `async` script may come too late. It answers with `prompt`, `accept-all` or `reject-all`, or with a promise of one:
 
 ```js
 window.addEventListener('silvertrail:before-prompt', (event) => {

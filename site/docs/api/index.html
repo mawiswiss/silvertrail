@@ -595,7 +595,7 @@ window.silvertrail.set([&#39;google-analytics&#39;, &#39;youtube&#39;]);
 </tr>
 </tbody></table>
 </div>
-<p><code>silvertrail:before-prompt</code> fires on <code>window</code> before the banner opens for a visitor who has not chosen yet. Add the listener in a script that runs before <code>DOMContentLoaded</code>, such as an inline, deferred or module script, because an <code>async</code> script may come too late. It answers with <code>prompt</code>, <code>accept-all</code> or <code>reject-all</code>, or with a promise of one:</p>
+<p><code>silvertrail:before-prompt</code> fires on <code>window</code> once per page view for a visitor who has not chosen yet, before the banner opens. It also fires on a site that needs no banner because its services all ask in place, and never under Global Privacy Control. Add the listener in a script that runs before <code>DOMContentLoaded</code>, such as an inline, deferred or module script, because an <code>async</code> script may come too late. It answers with <code>prompt</code>, <code>accept-all</code> or <code>reject-all</code>, or with a promise of one:</p>
 <pre><code class="language-js">window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
 	event.detail.respondWith(fetch(&#39;/my-region-check&#39;).then((r) =&gt; r.text()));
 });

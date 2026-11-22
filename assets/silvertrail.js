@@ -490,7 +490,8 @@
 			open();
 			return;
 		}
-		if (decided() || !config.needsBanner) {
+		// Global Privacy Control has answered already, and a site without a banner can still decide by region.
+		if (decided() || consentIds.length === 0 || gpc) {
 			return;
 		}
 
@@ -502,7 +503,7 @@
 			set(consentIds, { silent: true, source: 'hook' });
 		} else if (answer === 'reject-all') {
 			set([], { silent: true, source: 'hook' });
-		} else {
+		} else if (config.needsBanner) {
 			show('entrance');
 		}
 	}

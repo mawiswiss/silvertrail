@@ -148,6 +148,35 @@ test.describe('banner', () => {
 		expect((await cookie(context)).c).toEqual(ALL_IDS);
 	});
 
+	test('on a site that asks in place, the before-prompt hook can accept and embeds load without a click', async ({ page, context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_in_place', value: '1', url: 'http://localhost:8892' }]);
+		await page.addInitScript(() =>
+			window.addEventListener('silvertrail:before-prompt', (event) => event.detail.respondWith('accept-all')),
+		);
+		await page.goto('/?pagename=silvertrail-embeds');
+
+		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
+		await expect(page.getByRole('dialog')).toBeHidden();
+		expect((await cookie(context)).c).toEqual(ALL_IDS);
+	});
+
+	test('on a site that asks in place, global privacy control keeps the before-prompt hook from being asked', async ({ page, context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_in_place', value: '1', url: 'http://localhost:8892' }]);
+		await sendGpc(page);
+		await page.addInitScript(() =>
+			window.addEventListener('silvertrail:before-prompt', (event) => {
+				window.silvertrailAsked = true;
+				event.detail.respondWith('accept-all');
+			}),
+		);
+		await page.goto('/?pagename=silvertrail-embeds');
+
+		await expect(page.getByRole('button', { name: 'Load content' })).toBeVisible();
+		expect(await page.evaluate(() => window.silvertrailAsked === true)).toBe(false);
+		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(0);
+		expect(await cookie(context)).toBeNull();
+	});
+
 	for (const layout of ['modal', 'bar']) {
 		test(`the opt-out recipe runs everything and shows the preferences once, ${layout}`, async ({ page, context }) => {
 			await context.addCookies([

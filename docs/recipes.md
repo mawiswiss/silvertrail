@@ -67,7 +67,7 @@ window.addEventListener('silvertrail:before-prompt', (event) => {
 
 Answer `accept-all` for those visitors, by time zone or by country as above:
 
-- Every service starts at once, and no banner opens.
+- Every service starts at once, and no banner opens. On a site whose services all ask in place, such as embeds only, the placeholders load their content without a click.
 - The choice is stored like any other, with the source `hook` in `silvertrail:change` and in the records.
 - The visitor still needs a way to see what runs and to object, so link to `#silvertrail` on every page or set `floating_button` to `'always'`.
 
