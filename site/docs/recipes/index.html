@@ -472,6 +472,7 @@
 						<li><a href="#decide-by-time-zone">Decide by time zone</a></li>
 						<li><a href="#decide-by-country">Decide by country</a></li>
 						<li><a href="#run-services-until-the-visitor-objects">Run services until the visitor objects</a></li>
+						<li><a href="#opt-in-and-opt-out-by-region">Opt-in and opt-out by region</a></li>
 						<li><a href="#load-your-own-script-after-consent">Load your own script after consent</a></li>
 						<li><a href="#send-each-decision-to-another-system">Send each decision to another system</a></li>
 						<li><a href="#use-the-choice-on-a-form-post">Use the choice on a form post</a></li>
@@ -529,7 +530,7 @@ window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
 });
 </code></pre>
 <h2 id="run-services-until-the-visitor-objects"><a href="#run-services-until-the-visitor-objects">Run services until the visitor objects</a></h2>
-<p><strong>Use case:</strong> in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site&#39;s decision, not Silvertrail&#39;s.</p>
+<p><strong>Use case:</strong> in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site&#39;s decision, not Silvertrail&#39;s. <a href="#opt-in-and-opt-out-by-region">Opt-in and opt-out by region</a> gives a first orientation.</p>
 <p>Answer <code>accept-all</code> for those visitors, by time zone or by country as above:</p>
 <ul>
 <li>Every service starts at once, and no banner opens.</li>
@@ -544,6 +545,16 @@ window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
 });
 </code></pre>
 <p>&quot;Only essential&quot; in there stores the objection. What already ran keeps running on this page, and the next page loads none of it.</p>
+<h2 id="opt-in-and-opt-out-by-region"><a href="#opt-in-and-opt-out-by-region">Opt-in and opt-out by region</a></h2>
+<p>Opt-in asks first and starts a service only after a yes. Silvertrail works this way for every visitor until the site&#39;s code answers the banner. Opt-out starts the services at once and stops them when the visitor objects, as the recipe above does.</p>
+<p>Which of the two a region expects is a legal question. As a rough orientation, not legal advice:</p>
+<ul>
+<li><strong>EU and EEA:</strong> opt-in. What the site does not strictly need to deliver the page waits for consent.</li>
+<li><strong>UK:</strong> opt-in for most services. Under the Data (Use and Access) Act 2025, statistics whose only purpose is to improve the site may run until the visitor objects, as long as the site says so clearly. Advertising and tracking across sites still wait for consent.</li>
+<li><strong>Switzerland:</strong> telling visitors what runs and that they can refuse is generally enough, under Article 45c of the Telecommunications Act. The Federal Data Protection and Information Commissioner expects consent for more intrusive tracking, such as high-risk profiling.</li>
+<li><strong>US states:</strong> the state privacy laws use opt-out. California and a growing number of other states require honouring signals such as <a href="/docs/consent-signals/#global-privacy-control">Global Privacy Control</a>, which Silvertrail reads by default.</li>
+</ul>
+<p>The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out.</p>
 <h2 id="load-your-own-script-after-consent"><a href="#load-your-own-script-after-consent">Load your own script after consent</a></h2>
 <p><strong>Use case:</strong> a script needs code around it, such as a chat widget that is configured before it loads, so a gated <code>&lt;script&gt;</code> tag is not enough.</p>
 <p>Register the service first, with its hosts, so the banner lists it and the Leak check knows it. Then ask <code>window.silvertrail</code> and listen for the change:</p>

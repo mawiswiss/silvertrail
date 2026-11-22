@@ -63,7 +63,7 @@ window.addEventListener('silvertrail:before-prompt', (event) => {
 
 ## Run services until the visitor objects
 
-**Use case:** in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site's decision, not Silvertrail's.
+**Use case:** in some regions, the site runs its services until the visitor objects, instead of asking first. Whether that fits a region is the site's decision, not Silvertrail's. [Opt-in and opt-out by region](#opt-in-and-opt-out-by-region) gives a first orientation.
 
 Answer `accept-all` for those visitors, by time zone or by country as above:
 
@@ -82,6 +82,19 @@ window.addEventListener('silvertrail:change', (event) => {
 ```
 
 "Only essential" in there stores the objection. What already ran keeps running on this page, and the next page loads none of it.
+
+## Opt-in and opt-out by region
+
+Opt-in asks first and starts a service only after a yes. Silvertrail works this way for every visitor until the site's code answers the banner. Opt-out starts the services at once and stops them when the visitor objects, as the recipe above does.
+
+Which of the two a region expects is a legal question. As a rough orientation, not legal advice:
+
+- **EU and EEA:** opt-in. What the site does not strictly need to deliver the page waits for consent.
+- **UK:** opt-in for most services. Under the Data (Use and Access) Act 2025, statistics whose only purpose is to improve the site may run until the visitor objects, as long as the site says so clearly. Advertising and tracking across sites still wait for consent.
+- **Switzerland:** telling visitors what runs and that they can refuse is generally enough, under Article 45c of the Telecommunications Act. The Federal Data Protection and Information Commissioner expects consent for more intrusive tracking, such as high-risk profiling.
+- **US states:** the state privacy laws use opt-out. California and a growing number of other states require honouring signals such as [Global Privacy Control](consent-signals.md#global-privacy-control), which Silvertrail reads by default.
+
+The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out.
 
 ## Load your own script after consent
 

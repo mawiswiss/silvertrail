@@ -153,6 +153,19 @@ The answer must arrive within three seconds, otherwise the banner opens.
 
 The [recipes](https://silvertrail.marcwieland.name/docs/recipes/) in the documentation show how to find the region without asking another server, and how to run services until the visitor objects where a site has decided to. Silvertrail does neither on its own.
 
+= Does Silvertrail support opt-in and opt-out? =
+
+Silvertrail is opt-in: it asks first and starts a service only after a yes. A site can switch visitors in some regions to opt-out, where the services start at once and stop when the visitor objects, with a few lines of its own code. The [recipes](https://silvertrail.marcwieland.name/docs/recipes/#run-services-until-the-visitor-objects) show how.
+
+Which of the two a region expects is a legal question. As a rough orientation, not legal advice:
+
+* EU and EEA: opt-in.
+* UK: opt-in for most services. Statistics whose only purpose is to improve the site may run until the visitor objects.
+* Switzerland: telling visitors what runs and that they can refuse is generally enough. Intrusive tracking needs consent.
+* US states: opt-out. California and a growing number of other states require honouring Global Privacy Control, which Silvertrail reads by default.
+
+The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves. The [documentation](https://silvertrail.marcwieland.name/docs/recipes/#opt-in-and-opt-out-by-region) has more detail.
+
 = How do I read the choice? =
 
 In the browser, `window.silvertrail.has( 'hubspot' )` returns the choice, and the `silvertrail:change` event fires after every decision. In PHP, `silvertrail_has( 'hubspot' )` reads the cookie, which only works on requests a page cache never serves, such as form posts. The [API](https://silvertrail.marcwieland.name/docs/api/) page has every function, event and hook.
