@@ -478,6 +478,7 @@
 						<li><a href="#use-the-choice-on-a-form-post">Use the choice on a form post</a></li>
 					</ul>
 				</li>
+				<li><a href="/docs/privacy-pages/">Privacy and imprint pages</a></li>
 			</ul>
 		</nav>
 		<main class="docs-main" id="content">
@@ -554,7 +555,7 @@ window.addEventListener(&#39;silvertrail:before-prompt&#39;, (event) =&gt; {
 <li><strong>Switzerland:</strong> telling visitors what runs and that they can refuse is generally enough, under Article 45c of the Telecommunications Act. The Federal Data Protection and Information Commissioner expects consent for more intrusive tracking, such as high-risk profiling.</li>
 <li><strong>US states:</strong> the state privacy laws use opt-out. California and a growing number of other states require honouring signals such as <a href="/docs/consent-signals/#global-privacy-control">Global Privacy Control</a>, which Silvertrail reads by default.</li>
 </ul>
-<p>The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out.</p>
+<p>The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out. <a href="/docs/privacy-pages/">Privacy and imprint pages</a> gives the same kind of orientation for the pages the banner links.</p>
 <h2 id="load-your-own-script-after-consent"><a href="#load-your-own-script-after-consent">Load your own script after consent</a></h2>
 <p><strong>Use case:</strong> a script needs code around it, such as a chat widget that is configured before it loads, so a gated <code>&lt;script&gt;</code> tag is not enough.</p>
 <p>Register the service first, with its hosts, so the banner lists it and the Leak check knows it. Then ask <code>window.silvertrail</code> and listen for the change:</p>

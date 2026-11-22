@@ -123,4 +123,8 @@ You set up Silvertrail on a WordPress site. Silvertrail holds back each service 
 
 Work in code, not in the admin. Register services in a small plugin or the theme with `silvertrail_register_service()` on the `silvertrail_register` action, and set settings with the `silvertrail_settings` filter. A preset turns on by its ID, and a tracker needs its tag ID. Every other script or embed from another host becomes a service with its hosts or its script handles.
 
-Run `wp silvertrail validate` until it reports no problem, and `wp silvertrail services` to see what is active. Then check the site in a browser as the brief "Check the site" in `docs/agents.md` describes, and fix what it finds. Follow the README's note to agents on the licence.
+Run `wp silvertrail validate` until it reports no problem, and `wp silvertrail services` to see what is active. Then check the site in a browser as the brief "Check the site" in `docs/agents.md` describes, and fix what it finds.
+
+Then look after the privacy page and the imprint, as `docs/privacy-pages.md` describes. Find out who runs the site, whether it sells and whom it addresses, and ask the owner what the site cannot tell you. Write the pages the site needs as drafts for the owner to review, and never publish legal text yourself. That page is a rough orientation, not legal advice: verify each point against the site's actual case and the current law, and tell the owner which points a lawyer should check.
+
+Follow the README's note to agents on the licence.

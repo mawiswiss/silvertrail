@@ -475,6 +475,7 @@
 					</ul>
 				</li>
 				<li><a href="/docs/recipes/">Recipes</a></li>
+				<li><a href="/docs/privacy-pages/">Privacy and imprint pages</a></li>
 			</ul>
 		</nav>
 		<main class="docs-main" id="content">
@@ -615,7 +616,9 @@
 <h2 id="brief-set-up-the-site"><a href="#brief-set-up-the-site">Brief: set up the site</a></h2>
 <p>You set up Silvertrail on a WordPress site. Silvertrail holds back each service until the visitor agrees, and passes the choice on to Google, to other plugins and to the site&#39;s own code. The documentation in the plugin folder is the complete reference: start at <code>docs/README.md</code> and read the pages it links for your task. The same pages are at <a href="https://silvertrail.marcwieland.name/docs/">https://silvertrail.marcwieland.name/docs/</a>, and <a href="https://silvertrail.marcwieland.name/llms.txt">https://silvertrail.marcwieland.name/llms.txt</a> lists them as Markdown.</p>
 <p>Work in code, not in the admin. Register services in a small plugin or the theme with <code>silvertrail_register_service()</code> on the <code>silvertrail_register</code> action, and set settings with the <code>silvertrail_settings</code> filter. A preset turns on by its ID, and a tracker needs its tag ID. Every other script or embed from another host becomes a service with its hosts or its script handles.</p>
-<p>Run <code>wp silvertrail validate</code> until it reports no problem, and <code>wp silvertrail services</code> to see what is active. Then check the site in a browser as the brief &quot;Check the site&quot; in <code>docs/agents.md</code> describes, and fix what it finds. Follow the README&#39;s note to agents on the licence.</p>
+<p>Run <code>wp silvertrail validate</code> until it reports no problem, and <code>wp silvertrail services</code> to see what is active. Then check the site in a browser as the brief &quot;Check the site&quot; in <code>docs/agents.md</code> describes, and fix what it finds.</p>
+<p>Then look after the privacy page and the imprint, as <code>docs/privacy-pages.md</code> describes. Find out who runs the site, whether it sells and whom it addresses, and ask the owner what the site cannot tell you. Write the pages the site needs as drafts for the owner to review, and never publish legal text yourself. That page is a rough orientation, not legal advice: verify each point against the site&#39;s actual case and the current law, and tell the owner which points a lawyer should check.</p>
+<p>Follow the README&#39;s note to agents on the licence.</p>
 			</article>
 			<footer class="docs-meta">
 				<p>Generated from Silvertrail 1.2.1. <a href="/docs/agents.md">Markdown</a> · <a href="https://github.com/mawiswiss/silvertrail/blob/main/docs/agents.md">Source on GitHub</a></p>

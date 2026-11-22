@@ -19,6 +19,7 @@ The plugin ships the same pages in its folder under `docs/`, for the version it 
 - [WP-CLI](https://silvertrail.marcwieland.name/docs/cli.md): Every `wp silvertrail` command.
 - [Agents](https://silvertrail.marcwieland.name/docs/agents.md): Setting up and checking a site with an agent, the WebMCP tools and the abilities.
 - [Recipes](https://silvertrail.marcwieland.name/docs/recipes.md): Use cases the plugin does not ship, solved with the site's own code, such as regions and opt-out.
+- [Privacy and imprint pages](https://silvertrail.marcwieland.name/docs/privacy-pages.md): Which pages a site needs, what goes on them and how Silvertrail links them.
 
 ## Optional
 

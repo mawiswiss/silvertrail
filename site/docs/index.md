@@ -62,6 +62,7 @@ The callbacks run only while Silvertrail is active, so the file does no harm whe
 | Records | `silvertrail_recorded` action, see [Records](https://silvertrail.marcwieland.name/docs/records.md) |
 | Shell | `wp silvertrail services`, `settings`, `validate`, `ask-again`, `write-styles` and `records export`, see [WP-CLI](https://silvertrail.marcwieland.name/docs/cli.md) |
 | Agents | the WebMCP tools and the abilities through the MCP Adapter, see [Agents](https://silvertrail.marcwieland.name/docs/agents.md) |
+| Privacy page and imprint | WordPress's privacy policy page and `imprint_page`, see [Privacy and imprint pages](https://silvertrail.marcwieland.name/docs/privacy-pages.md) |
 | What the plugin does not ship | regions, opt-out and other needs solved in the site's own code, see [Recipes](https://silvertrail.marcwieland.name/docs/recipes.md) |
 
 ## What it does not do
@@ -82,3 +83,4 @@ Silvertrail does not implement the IAB Transparency and Consent Framework, so an
 - [WP-CLI](https://silvertrail.marcwieland.name/docs/cli.md): every `wp silvertrail` command.
 - [Agents](https://silvertrail.marcwieland.name/docs/agents.md): setting up and checking a site with an agent, the WebMCP tools and the abilities.
 - [Recipes](https://silvertrail.marcwieland.name/docs/recipes.md): use cases the plugin does not ship, solved with the site's own code, such as regions and opt-out.
+- [Privacy and imprint pages](https://silvertrail.marcwieland.name/docs/privacy-pages.md): which pages a site needs, what goes on them and how Silvertrail links them.

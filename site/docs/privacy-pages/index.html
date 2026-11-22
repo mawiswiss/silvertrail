@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Privacy and imprint pages · Silvertrail docs</title>
+	<meta name="description" content="Most sites need a privacy page, and some also need an imprint, a page that says who runs the site and how to reach them. Silvertrail links both under the banner, so visitors can read them before they choose. This page is for site owners and for the agents that set sites up. It is a rough orientation, not legal advice. The rules depend on who runs the site, what it does and whom it addresses, and they change. Check every point against the actual case and the current law, with the owner and, where it matters, a lawyer. Agents follow the steps at the end.">
+	<link rel="canonical" href="https://silvertrail.marcwieland.name/docs/privacy-pages/">
+	<link rel="alternate" type="text/markdown" href="/docs/privacy-pages.md" title="Privacy and imprint pages as Markdown">
+	<meta name="author" content="Marc Wieland">
+	<meta name="color-scheme" content="dark">
+	<meta name="theme-color" content="#1c2118">
+	<meta property="og:type" content="article">
+	<meta property="og:site_name" content="Silvertrail">
+	<meta property="og:locale" content="en_GB">
+	<meta property="og:url" content="https://silvertrail.marcwieland.name/docs/privacy-pages/">
+	<meta property="og:title" content="Privacy and imprint pages · Silvertrail docs">
+	<meta property="og:description" content="Most sites need a privacy page, and some also need an imprint, a page that says who runs the site and how to reach them. Silvertrail links both under the banner, so visitors can read them before they choose. This page is for site owners and for the agents that set sites up. It is a rough orientation, not legal advice. The rules depend on who runs the site, what it does and whom it addresses, and they change. Check every point against the actual case and the current law, with the owner and, where it matters, a lawyer. Agents follow the steps at the end.">
+	<meta property="og:image" content="https://silvertrail.marcwieland.name/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="Silvertrail: consent and cookie banner for WordPress, built for developers and AI agents. A banner with the buttons Accept all and Only essential.">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="/favicon.ico" sizes="32x32">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="preload" href="/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+	<style>
+		@font-face {
+			font-family: Manrope;
+			src: url("/fonts/manrope.woff2") format("woff2");
+			font-weight: 200 800;
+			font-display: swap;
+		}
+
+		:root {
+			--dark: #2b3326;
+			--sage: #e3e8d8;
+			--pale: #f4f6ef;
+			--lime: #cfe39a;
+			--bg: #1c2118;
+			--hero-bg: var(--bg);
+			--hero-text: var(--pale);
+			--hero-muted: #c5ccb6;
+			--text: var(--pale);
+			--muted: #c5ccb6;
+			--line: #3a4332;
+			--line-strong: #6f7a62;
+			--tile: #2a3124;
+			--code-bg: #262d21;
+			--pre-bg: #161a13;
+
+			color-scheme: dark;
+			font-family: Manrope, system-ui, sans-serif;
+			line-height: 1.6;
+			color: var(--text);
+			background: var(--bg);
+		}
+
+		* { box-sizing: border-box; }
+
+		body { margin: 0; }
+
+		a { color: inherit; text-underline-offset: 0.2em; }
+
+		:focus-visible {
+			outline: 3px solid var(--lime);
+			outline-offset: 3px;
+		}
+
+		code, pre {
+			font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+		}
+
+		.wrap {
+			max-width: 68rem;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+
+		.skip {
+			position: absolute;
+			inset-inline-start: 1rem;
+			inset-block-start: -10rem;
+			padding: 0.5rem 1rem;
+			background: var(--sage);
+			color: var(--dark);
+			font-weight: 600;
+			z-index: 20;
+		}
+
+		.skip:focus { inset-block-start: 1rem; }
+
+		/* Header, the same on every page. /header.js sets data-state while the page scrolls. */
+
+		html { scroll-padding-top: 1.5rem; }
+
+		html:has(.site-header[data-state="shown"]) { scroll-padding-top: 6.5rem; }
+
+		.site-header {
+			position: relative;
+			z-index: 10;
+		}
+
+		.site-header[data-state] {
+			position: sticky;
+			top: 0;
+		}
+
+		.site-header[data-state="hidden"]:not(:has(:focus-visible)) {
+			translate: 0 -100%;
+			opacity: 0;
+		}
+
+		@media (prefers-reduced-motion: no-preference) {
+			html { scroll-behavior: smooth; }
+
+			.site-header[data-state] { transition: translate 0.3s ease, opacity 0.3s ease; }
+
+			.site-header__bar { transition: box-shadow 0.3s ease; }
+		}
+
+		.site-header__bar {
+			background: var(--hero-bg);
+			color: var(--hero-text);
+		}
+
+		.site-header[data-state="shown"] .site-header__bar { box-shadow: 0 1px 0 rgb(255 255 255 / 0.08), 0 0.75rem 2rem rgb(0 0 0 / 0.35); }
+
+		.topbar {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+			padding-block: 1.25rem;
+		}
+
+		.wordmark {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.625rem;
+			font-weight: 800;
+			font-size: 1.25rem;
+			letter-spacing: -0.02em;
+			text-decoration: none;
+		}
+
+		.topbar__links {
+			display: flex;
+			align-items: center;
+			gap: 1.75rem;
+		}
+
+		.topbar__links a {
+			font-weight: 600;
+			text-decoration: none;
+		}
+
+		.topbar__links a:hover,
+		.topbar__links a[aria-current] { text-decoration: underline; }
+
+		.topbar__links a.topbar__licence {
+			padding: 0.5rem 1rem;
+			border: 1.5px solid var(--hero-muted);
+		}
+
+		.topbar__links a.topbar__licence:hover {
+			background: var(--pale);
+			border-color: var(--pale);
+			color: var(--dark);
+			text-decoration: none;
+		}
+
+		@media (max-width: 40rem) {
+			.topbar__links {
+				gap: 1rem;
+				font-size: 0.9375rem;
+			}
+
+			.topbar__links a:not(.topbar__licence, .topbar__docs) { display: none; }
+		}
+
+		@media (max-width: 23rem) {
+			.wordmark span {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				overflow: hidden;
+				clip-path: inset(50%);
+				white-space: nowrap;
+			}
+		}
+
+		/* Layout */
+
+		.docs {
+			display: grid;
+			gap: 2rem;
+			padding-block: 1.5rem 5rem;
+		}
+
+		@media (min-width: 60rem) {
+			.docs {
+				grid-template-columns: 14rem minmax(0, 1fr);
+				gap: 3.5rem;
+				padding-block-start: 3rem;
+			}
+		}
+
+		/* Navigation */
+
+		.docs-nav ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.docs-nav__pages {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.375rem;
+		}
+
+		.docs-nav__pages > li > a {
+			display: block;
+			padding: 0.25rem 0.625rem;
+			border: 1px solid var(--line);
+			font-size: 0.875rem;
+			text-decoration: none;
+		}
+
+		.docs-nav__pages > li > a:hover { text-decoration: underline; }
+
+		.docs-nav__pages > li > a[aria-current="page"] {
+			border-color: var(--lime);
+			color: var(--lime);
+			font-weight: 700;
+		}
+
+		.docs-nav__toc { display: none; }
+
+		@media (min-width: 60rem) {
+			.docs-nav {
+				position: sticky;
+				inset-block-start: 1.5rem;
+				align-self: start;
+				max-block-size: calc(100dvh - 3rem);
+				overflow: auto;
+			}
+
+			html:has(.site-header[data-state="shown"]) .docs-nav {
+				inset-block-start: 7rem;
+				max-block-size: calc(100dvh - 8.5rem);
+			}
+
+			.docs-nav__pages {
+				display: grid;
+				gap: 0.125rem;
+			}
+
+			.docs-nav__pages > li > a {
+				padding: 0.375rem 0 0.375rem 0.875rem;
+				border: 0;
+				border-inline-start: 2px solid var(--line);
+				font-size: 0.9375rem;
+			}
+
+			.docs-nav__pages > li > a[aria-current="page"] { border-inline-start-color: var(--lime); }
+
+			.docs-nav .docs-nav__toc {
+				display: grid;
+				border-inline-start: 2px solid var(--pale);
+				font-size: 0.875rem;
+				line-height: 1.35;
+			}
+
+			.docs-nav__toc a {
+				display: block;
+				padding: 0.3125rem 0 0.3125rem 1.75rem;
+				color: var(--muted);
+				text-decoration: none;
+			}
+
+			.docs-nav__toc a:hover {
+				color: var(--text);
+				text-decoration: underline;
+			}
+		}
+
+		@media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
+			.docs-nav { transition: inset-block-start 0.3s ease; }
+		}
+
+		/* Article */
+
+		.docs-main { min-width: 0; }
+
+		.prose {
+			max-width: 48rem;
+			overflow-wrap: break-word;
+		}
+
+		.prose h1 {
+			margin: 0 0 1.25rem;
+			font-size: clamp(2.25rem, 6vw, 3.25rem);
+			font-weight: 800;
+			line-height: 1.08;
+			letter-spacing: -0.035em;
+		}
+
+		.prose h1 + p {
+			font-size: 1.1875rem;
+			color: var(--muted);
+		}
+
+		.prose h2,
+		.prose h3 { line-height: 1.25; }
+
+		.prose h2 {
+			margin: 3.5rem 0 1rem;
+			font-size: 1.75rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.prose h3 {
+			margin: 2.25rem 0 0.75rem;
+			font-size: 1.25rem;
+			font-weight: 700;
+		}
+
+		.prose :is(h2, h3) a { text-decoration: none; }
+
+		.prose :is(h2, h3) a:hover { text-decoration: underline; }
+
+		.prose :is(h2, h3) a::before {
+			content: "#";
+			content: "#" / "";
+			margin-inline-end: 0.35em;
+			color: var(--line-strong);
+			font-weight: 600;
+		}
+
+		.prose :is(h2, h3) a:hover::before { color: var(--lime); }
+
+		@media (min-width: 60rem) {
+			.prose :is(h2, h3) a { position: relative; }
+
+			.prose :is(h2, h3) a::before {
+				position: absolute;
+				inset-inline-end: 100%;
+			}
+		}
+
+		.prose p,
+		.prose ul,
+		.prose ol { margin: 0 0 1rem; }
+
+		.prose li + li { margin-top: 0.375rem; }
+
+		.prose a:not(:is(h2, h3) a) { color: var(--lime); }
+
+		.prose :not(pre) > code {
+			padding: 0.125em 0.375em;
+			border-radius: 0.25rem;
+			background: var(--code-bg);
+			font-size: 0.875em;
+		}
+
+		.prose pre {
+			margin: 0 0 1.5rem;
+			padding: 1.25rem 1.5rem;
+			overflow-x: auto;
+			border-radius: 0.75rem;
+			background: var(--pre-bg);
+			color: #dfe5d3;
+			font-size: 0.875rem;
+			line-height: 1.7;
+			tab-size: 4;
+		}
+
+		.table {
+			margin: 0 0 1.5rem;
+			overflow-x: auto;
+		}
+
+		.table table {
+			min-width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9375rem;
+		}
+
+		.table th,
+		.table td {
+			padding: 0.625rem 0.75rem;
+			border-bottom: 1px solid var(--line);
+			text-align: left;
+			vertical-align: top;
+		}
+
+		.table th {
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.table td:first-child code { white-space: nowrap; }
+
+		.docs-meta {
+			max-width: 48rem;
+			margin-top: 4rem;
+			padding-top: 1.5rem;
+			border-top: 1px solid var(--line);
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.docs-meta p { margin: 0; }
+
+		.docs-meta p + p { margin-top: 0.5rem; }
+
+		/* Footer */
+
+		.site-footer {
+			padding-block: 3rem;
+			color: var(--muted);
+			font-size: 0.9375rem;
+		}
+
+		.site-footer p { margin: 0; }
+
+		.site-footer p + p { margin-top: 0.5rem; }
+	</style>
+	<script src="/header.js" defer></script>
+</head>
+<body>
+	<a class="skip" href="#content">Skip to content</a>
+	<header class="site-header">
+		<div class="site-header__bar">
+			<nav class="wrap topbar" aria-label="Main">
+				<a class="wordmark" href="/"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#d9dbd5"/><rect x="4" y="13" width="11" height="6" rx="3" fill="#22241f"/><rect x="17" y="13" width="11" height="6" rx="3" fill="#22241f"/></svg><span>Silvertrail</span></a>
+				<div class="topbar__links">
+					<a href="/#how">How it works</a>
+					<a href="/#agents">Agents</a>
+					<a class="topbar__docs" href="/docs/" aria-current="true">Docs</a>
+					<a href="https://github.com/mawiswiss/silvertrail">GitHub</a>
+					<a class="topbar__licence" href="/#licence">Honour licence</a>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<div class="wrap docs">
+		<nav class="docs-nav" aria-label="Documentation">
+			<ul class="docs-nav__pages">
+				<li><a href="/docs/">Overview</a></li>
+				<li><a href="/docs/services/">Services and groups</a></li>
+				<li><a href="/docs/settings/">Settings</a></li>
+				<li><a href="/docs/api/">API</a></li>
+				<li><a href="/docs/reopen/">Reopen the preferences</a></li>
+				<li><a href="/docs/styling/">Style the banner</a></li>
+				<li><a href="/docs/texts/">Texts</a></li>
+				<li><a href="/docs/consent-signals/">Consent signals</a></li>
+				<li><a href="/docs/records/">Records</a></li>
+				<li><a href="/docs/leak-check/">Leak check</a></li>
+				<li><a href="/docs/cli/">WP-CLI</a></li>
+				<li><a href="/docs/agents/">Agents</a></li>
+				<li><a href="/docs/recipes/">Recipes</a></li>
+				<li>
+					<a href="/docs/privacy-pages/" aria-current="page">Privacy and imprint pages</a>
+					<ul class="docs-nav__toc">
+						<li><a href="#how-silvertrail-links-them">How Silvertrail links them</a></li>
+						<li><a href="#what-the-preferences-already-list">What the preferences already list</a></li>
+						<li><a href="#find-out-the-situation">Find out the situation</a></li>
+						<li><a href="#which-pages-a-site-needs">Which pages a site needs</a></li>
+						<li><a href="#notes-by-country">Notes by country</a></li>
+						<li><a href="#selling-online">Selling online</a></li>
+						<li><a href="#what-goes-on-the-privacy-page">What goes on the privacy page</a></li>
+						<li><a href="#example-a-private-site-in-switzerland">Example: a private site in Switzerland</a></li>
+						<li><a href="#steps-for-an-agent">Steps for an agent</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<main class="docs-main" id="content">
+			<article class="prose">
+<h1>Privacy and imprint pages</h1>
+<p>Most sites need a privacy page, and some also need an imprint, a page that says who runs the site and how to reach them. Silvertrail links both under the banner, so visitors can read them before they choose. This page is for site owners and for the agents that set sites up. It is a rough orientation, not legal advice. The rules depend on who runs the site, what it does and whom it addresses, and they change. Check every point against the actual case and the current law, with the owner and, where it matters, a lawyer. Agents follow the <a href="#steps-for-an-agent">steps</a> at the end.</p>
+<h2 id="how-silvertrail-links-them"><a href="#how-silvertrail-links-them">How Silvertrail links them</a></h2>
+<div class="table" role="region" tabindex="0" aria-label="How Silvertrail links them, table">
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Where it is set</th>
+<th>On the shell</th>
+<th>Linked under the banner</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Privacy page</td>
+<td>WordPress&#39;s privacy policy page, under Settings › Privacy</td>
+<td><code>wp option update wp_page_for_privacy_policy &lt;id&gt;</code></td>
+<td>once the page is published</td>
+</tr>
+<tr>
+<td>Imprint</td>
+<td><code>imprint_page</code>, under Texts › Links</td>
+<td><code>wp option patch insert silvertrail imprint_page &lt;id&gt;</code></td>
+<td>as soon as it is set, whatever the page&#39;s status</td>
+</tr>
+</tbody></table>
+</div>
+<p>WordPress creates a draft &quot;Privacy Policy&quot; page when it installs and selects it, so <code>wp option get wp_page_for_privacy_policy</code> usually names a page already. Until a selected page is published, the banner shows no privacy link and the admin warns that no privacy policy page is published.</p>
+<p>The imprint link does not wait. A draft gives visitors a link to a page they cannot open, so set <code>imprint_page</code> only once the page is published. The page lives in the site&#39;s database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the <code>silvertrail_settings</code> filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:</p>
+<pre><code class="language-php">add_filter( &#39;silvertrail_settings&#39;, function ( $settings ) {
+	$imprint = get_page_by_path( &#39;imprint&#39; );
+	if ( $imprint &amp;&amp; &#39;publish&#39; === $imprint-&gt;post_status ) {
+		$settings[&#39;imprint_page&#39;] = $imprint-&gt;ID;
+	}
+	return $settings;
+} );
+</code></pre>
+<p>The texts <code>privacy_link</code> and <code>imprint_link</code> label the two links, see <a href="/docs/texts/">Texts</a>.</p>
+<h2 id="what-the-preferences-already-list"><a href="#what-the-preferences-already-list">What the preferences already list</a></h2>
+<p>The preferences list every service the site registered, with its provider, purpose, cookies, how long they last and a link to its privacy policy. Silvertrail&#39;s own cookie is among the essential services. A privacy page can send visitors there instead of repeating the list, with a link to <code>#silvertrail</code> or the <code>[silvertrail_link]</code> shortcode, see <a href="/docs/reopen/">Reopen the preferences</a>. The list stays current when the services change, and a copy on the page does not.</p>
+<p>They cannot show what happens without any service: who runs the site, what the host and a CDN receive, data that leaves the country, what the site stores itself, and people&#39;s rights. <a href="#what-goes-on-the-privacy-page">What goes on the privacy page</a> lists it. A service the site never registered is missing from the preferences as well. The <a href="/docs/leak-check/">Leak check</a> finds it.</p>
+<p>Silvertrail also suggests text for the privacy page in the Privacy Policy Guide under Settings › Privacy: a paragraph on <a href="/docs/consent-signals/#global-privacy-control">Global Privacy Control</a>, and one on <a href="/docs/records/">records</a> when they are on. Once the privacy page is published, <code>wp silvertrail validate</code> prints the text until the guide has shown it.</p>
+<h2 id="find-out-the-situation"><a href="#find-out-the-situation">Find out the situation</a></h2>
+<p>Which pages a site needs depends on a few facts. Read what the site shows, and ask the owner the rest:</p>
+<ul>
+<li><strong>Who runs it:</strong> a private person, a sole trader, a company or an association, and in which country.</li>
+<li><strong>Whether it sells:</strong> goods, services, paid memberships or downloads, or advertising and affiliate income. Ask what contributors get in return, if the site takes voluntary contributions.</li>
+<li><strong>Whom it addresses:</strong> the countries its language, prices, currency, shipping or content are meant for.</li>
+<li><strong>What it collects:</strong> comments, form entries, accounts, orders, newsletter or push subscriptions, statistics.</li>
+<li><strong>Who handles data for it:</strong> the host, a CDN, email delivery, a payment provider, and the countries they work from.</li>
+<li><strong>What it publishes:</strong> news or commentary brings extra duties in some countries.</li>
+<li><strong>Children:</strong> a site aimed at children falls under stricter rules.</li>
+</ul>
+<p>On the shell, <code>wp plugin list</code> shows shop, membership, form and newsletter plugins, <code>wp silvertrail services</code> the services, <code>wp option get default_comment_status</code> whether new posts take comments, and <code>wp option get users_can_register</code> whether visitors can sign up.</p>
+<h2 id="which-pages-a-site-needs"><a href="#which-pages-a-site-needs">Which pages a site needs</a></h2>
+<p>A privacy page, nearly always. Data protection law exempts only purely personal or household use, and a page anyone can read on the internet is not that. A public site almost always handles personal data, if only the IP addresses its host and CDN receive.</p>
+<p>An imprint depends on where the owner is and whether the site is commercial, which here means that it sells goods or services or is otherwise run as a business. The table is an overview, and the <a href="#notes-by-country">notes by country</a> give the law behind each cell.</p>
+<div class="table" role="region" tabindex="0" aria-label="Which pages a site needs, table">
+<table>
+<thead>
+<tr>
+<th>Owner in</th>
+<th>Not commercial</th>
+<th>Commercial</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Switzerland</td>
+<td>No imprint duty</td>
+<td>Identity and contact address, including email</td>
+</tr>
+<tr>
+<td>Germany</td>
+<td>Name and address, unless the site serves only personal or family purposes</td>
+<td>Name, address, email and business details</td>
+</tr>
+<tr>
+<td>Austria</td>
+<td>Name and place of residence for a site that only presents its owner, more for one that can shape public opinion</td>
+<td>Name, address, email and business details, and the media disclosure</td>
+</tr>
+<tr>
+<td>Other EU countries</td>
+<td>Depends on the country</td>
+<td>Name, address, email and business details</td>
+</tr>
+<tr>
+<td>United Kingdom</td>
+<td>No general duty</td>
+<td>Name, address, email and business details, and a company&#39;s registration details</td>
+</tr>
+<tr>
+<td>United States</td>
+<td>No general duty</td>
+<td>No general duty</td>
+</tr>
+</tbody></table>
+</div>
+<p>Where the visitors are matters too, because data protection law can reach a site run from another country, as the notes say. The imprint rules are written for owners in each country. Whether they also reach a site run from elsewhere that addresses that country&#39;s visitors is a question for a lawyer.</p>
+<h2 id="notes-by-country"><a href="#notes-by-country">Notes by country</a></h2>
+<p>As a rough orientation, not legal advice. Each note names the law, so you can read the current text.</p>
+<h3 id="switzerland"><a href="#switzerland">Switzerland</a></h3>
+<ul>
+<li><strong>Privacy page.</strong> The Federal Act on Data Protection (FADP) applies to private persons as well, unless they process data exclusively for personal use (<a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en#art_2">Art. 2</a>). When a site collects personal data, it tells people at least who is responsible and how to reach them, the purpose, the recipients, the countries the data goes to with the safeguards that apply, and what they need to exercise their rights (<a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en#art_19">Art. 19</a>). Unlike the GDPR, the FADP does not list each right or the right to complain. The Federal Data Protection and Information Commissioner (FDPIC) explains the duty in its <a href="https://www.edoeb.admin.ch/de/datenschutzerklaerungen-im-internet">guidance on privacy notices</a>.</li>
+<li><strong>Imprint.</strong> Whoever offers goods, works or services online gives clear and complete details of their identity and contact address, including email (<a href="https://www.fedlex.admin.ch/eli/cc/1988/223_223_223/en#art_3">Unfair Competition Act, Art. 3(1)(s)</a>). A site that sells nothing has no imprint duty under it. Voluntary contributions are not a sale, so a private site that only takes contributions is arguably outside it. No official guidance addresses that case, so confirm it for the site.</li>
+<li><strong>From abroad.</strong> The FADP applies to whatever has effects in Switzerland, even when it starts abroad (<a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en#art_3">Art. 3</a>). A private controller abroad names a representative in Switzerland only when its processing of data on people in Switzerland is large-scale, regular and high-risk, among other conditions (<a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en#art_14">Art. 14</a>).</li>
+</ul>
+<h3 id="european-union"><a href="#european-union">European Union</a></h3>
+<ul>
+<li><strong>Privacy page.</strong> The GDPR lists what to tell people when a site collects their data (<a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj">Art. 13</a>): who is responsible and how to reach them, the purposes and the legal basis for each, the recipients, transfers outside the EU and their safeguards, how long data is kept, people&#39;s rights, the right to withdraw consent and the right to complain to a supervisory authority. A purely personal or household activity is exempt (Art. 2(2)(c)), but the Court of Justice held, under the directive before the GDPR, that publishing on the internet for anyone to read is not one (<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:62001CJ0101">Lindqvist, C-101/01, paragraph 47</a>).</li>
+<li><strong>From outside the EU.</strong> The GDPR also applies to a site outside the EU that offers goods or services to people in the EU, paid or not, or monitors their behaviour there (Art. 3(2)). Such a site names a representative in the EU, unless its processing is occasional, includes no large-scale processing of special categories of data and is unlikely to result in a risk to people (Art. 27).</li>
+<li><strong>Imprint.</strong> The E-Commerce Directive asks providers of information society services, those normally provided for remuneration, for their name, geographic address and email, and where they apply their trade register and number, supervisory authority, professional details and VAT number (<a href="https://eur-lex.europa.eu/eli/dir/2000/31/oj">Art. 5</a>). Each country carries it into its own law, and some add duties for sites that are not commercial, as Germany and Austria do.</li>
+<li><strong>Content from users.</strong> A site that stores content from its users, such as a forum or a marketplace, can be a hosting service under the Digital Services Act, with duties such as points of contact (<a href="https://eur-lex.europa.eu/eli/reg/2022/2065/oj">Art. 11 and 12</a>). Whether comments alone make a site one is a question for a lawyer.</li>
+</ul>
+<h3 id="germany"><a href="#germany">Germany</a></h3>
+<ul>
+<li><strong>Imprint for commercial sites.</strong> The Digitale-Dienste-Gesetz (DDG) replaced the Telemediengesetz (TMG) on 14 May 2024. Providers of commercial digital services, usually offered for payment, keep their name and address, a fast electronic contact including email, and where they apply their register, VAT number, supervisory authority and professional details easily recognisable, directly accessible and permanently available (<a href="https://www.gesetze-im-internet.de/ddg/__5.html">§ 5 DDG</a>). A missing detail can cost a fine of up to 50,000 euros (<a href="https://www.gesetze-im-internet.de/ddg/__33.html">§ 33 DDG</a>).</li>
+<li><strong>Name and address for nearly every site.</strong> The Medienstaatsvertrag asks for a name and address from every provider whose site does not serve exclusively personal or family purposes, commercial or not (<a href="https://www.gesetze-bayern.de/Content/Document/MStV-18">§ 18(1) MStV</a>). Whether a public blog is purely personal is contested, so plan for name and address and let a lawyer decide. A site with journalistic or editorial content, such as news or commentary, also names a responsible person with their address (§ 18(2)).</li>
+<li><strong>Consumer arbitration.</strong> A trader with a website or general terms says whether it takes part in dispute resolution before a consumer arbitration board. A trader with ten or fewer employees on 31 December of the previous year need not say so, but one that is obliged or has committed to take part still names the board (<a href="https://www.gesetze-im-internet.de/vsbg/__36.html">§ 36 VSBG</a>).</li>
+</ul>
+<h3 id="austria"><a href="#austria">Austria</a></h3>
+<ul>
+<li><strong>Imprint for commercial sites.</strong> A provider of an information society service gives its name or firm, geographic address and contact details including email, and where they apply its company register number, supervisory authority, chamber and VAT number (<a href="https://ogd.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40025801/NOR40025801.html">§ 5 ECG</a>). The law counts online information and online advertising among such services (<a href="https://ogd.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40258259/NOR40258259.html">§ 3 ECG</a>). A registered company also gives its firm, legal form, seat, register number and register court on its website (<a href="https://ogd.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40263725/NOR40263725.html">§ 14 UGB</a>), and a tradesperson who is not registered gives their name and the location of their trade licence (<a href="https://ogd.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40168088/NOR40168088.html">§ 63 GewO</a>).</li>
+<li><strong>Disclosure for every site.</strong> The Media Act asks every website for a disclosure, the Offenlegung, easy and direct to find at all times (<a href="https://ogd.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40134353/NOR40134353.html">§ 25 MedienG</a>). A site with no content capable of shaping public opinion beyond its owner&#39;s personal life or the presentation of its owner gives only the name or firm, any business purpose, and the place of residence or seat, not the full address (§ 25(5)). A website needs no imprint under § 24, which covers recurring electronic media, not websites. The <a href="https://www.usp.gv.at/themen/brancheninformationen/information-und-kommunikation/offenlegungspflicht-gemaess-para-25-mediengesetz.html">business service portal</a> explains the disclosure.</li>
+</ul>
+<h3 id="united-kingdom"><a href="#united-kingdom">United Kingdom</a></h3>
+<ul>
+<li><strong>Privacy page.</strong> The UK GDPR keeps the EU&#39;s list (<a href="https://www.legislation.gov.uk/eur/2016/679/article/13">Art. 13</a>). Since 19 June 2026, a controller handles data protection complaints itself and acknowledges each within 30 days (<a href="https://www.legislation.gov.uk/ukpga/2025/18/section/103">Data (Use and Access) Act 2025, s. 103</a>), so tell people on the page how to complain to the site. Complaints beyond that go to the Information Commission, which took over from the Information Commissioner&#39;s Office on 30 September 2026 (<a href="https://www.legislation.gov.uk/uksi/2026/1015/made">SI 2026/1015</a>).</li>
+<li><strong>Imprint.</strong> A provider of an information society service gives its name, geographic address, email, register entry, supervisory body and VAT number, easily, directly and permanently accessible (<a href="https://www.legislation.gov.uk/uksi/2002/2013/regulation/6">Electronic Commerce Regulations 2002, reg. 6</a>). A company also shows its registered name, registered number, registered office and the part of the UK it is registered in on its website (<a href="https://www.legislation.gov.uk/uksi/2015/17/part/6">SI 2015/17, regs. 24 and 25</a>). This page found no general duty for a private site that sells nothing.</li>
+</ul>
+<h3 id="united-states"><a href="#united-states">United States</a></h3>
+<ul>
+<li><strong>Privacy page.</strong> No general federal law asks every site for one. California&#39;s Online Privacy Protection Act asks the operator of a commercial site that collects personally identifiable information from California residents to post a privacy policy conspicuously (<a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&amp;sectionNum=22575">Bus. &amp; Prof. Code § 22575</a>). The policy says what the site collects and with whom it shares it, and a site that tracks visitors across other sites also says how it responds to Do Not Track signals. The <a href="https://oag.ca.gov/sites/all/files/agweb/pdfs/cybersecurity/making_your_privacy_practices_public.pdf">Attorney General&#39;s guide</a> explains it.</li>
+<li><strong>State privacy laws.</strong> The California Consumer Privacy Act covers a business above one of three thresholds: annual revenue over 26,625,000 dollars since 2025, the personal information of 100,000 or more consumers or households bought, sold or shared, or half its revenue from selling or sharing it (<a href="https://cppa.ca.gov/regulations/pdf/ccpa_statute.pdf">Civil Code § 1798.140</a>, <a href="https://cppa.ca.gov/regulations/cpi_adjustment.html">adjusted threshold</a>). A business that sells or shares personal information honours opt-out signals such as <a href="/docs/consent-signals/#global-privacy-control">Global Privacy Control</a>, which Silvertrail reads by default. Roughly twenty states have comprehensive privacy laws of this kind, most with thresholds such as data on 100,000 consumers (<a href="https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-576/">Virginia, § 59.1-576</a>), so a small site often falls below them.</li>
+<li><strong>Children.</strong> A site directed at children under 13, or one that knowingly collects their data, follows the Children&#39;s Online Privacy Protection Rule and links a notice of its practices prominently (<a href="https://www.ecfr.gov/current/title-16/part-312">16 CFR Part 312</a>). Compliance with the amended rule has been required since 22 April 2026.</li>
+<li><strong>Imprint.</strong> This page found no general US duty to name a site&#39;s operator and address.</li>
+</ul>
+<h2 id="selling-online"><a href="#selling-online">Selling online</a></h2>
+<p>A site that sells needs more than an imprint. Most of it belongs at the checkout and in the terms rather than on these two pages, and a shop plugin covers part of it. A shop that sells abroad checks the consumer law of its buyers&#39; countries too. As a rough orientation:</p>
+<ul>
+<li><strong>Switzerland.</strong> The shop explains the technical steps to a contract, lets buyers find and correct input errors before they order, and confirms each order promptly and electronically (<a href="https://www.fedlex.admin.ch/eli/cc/1988/223_223_223/en#art_3">Unfair Competition Act, Art. 3(1)(s)</a>). There is no general right to withdraw from an online purchase: the Code of Obligations grants one for doorstep and telephone sales, among others, but not for orders online (<a href="https://www.fedlex.admin.ch/eli/cc/27/317_321_377/en#art_40_a">Art. 40a and 40b</a>). Prices to consumers are the amount actually payable, in Swiss francs, with every charge the buyer cannot opt out of included, while shipping may be shown separately (<a href="https://www.fedlex.admin.ch/eli/cc/1978/2081_2081_2081/de#art_3">Price Indication Ordinance, Art. 3 and 4</a>).</li>
+<li><strong>European Union.</strong> Buyers get the pre-contractual information, an order button that says &quot;order with obligation to pay&quot; or the like, and 14 days to withdraw (<a href="https://eur-lex.europa.eu/eli/dir/2011/83/oj">Consumer Rights Directive, Art. 6, 8(2) and 9</a>). A contract concluded online also needs a withdrawal function on the site, labelled &quot;withdraw from contract here&quot; or the like (<a href="https://eur-lex.europa.eu/eli/dir/2023/2673/oj">Art. 11a, added by Directive (EU) 2023/2673</a>). It applies from 19 June 2026, in Germany on that date (<a href="https://www.gesetze-im-internet.de/bgb/__356a.html">§ 356a BGB</a>) and in Austria from 1 October 2026 (<a href="https://ogd.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40279256/NOR40279256.html">§ 13a FAGG</a>). The link to the EU&#39;s online dispute resolution platform is no longer required: the platform closed, and the regulation behind it was repealed with effect from 20 July 2025 (<a href="https://eur-lex.europa.eu/eli/reg/2024/3228/oj">Regulation (EU) 2024/3228</a>). Remove old links to it.</li>
+<li><strong>United Kingdom.</strong> The Consumer Contracts Regulations 2013 ask for the information in Schedule 2, an order button that says &quot;order with obligation to pay&quot; or the like (reg. 14(4)), and 14 days to cancel (reg. 30) (<a href="https://www.legislation.gov.uk/uksi/2013/3134/contents">SI 2013/3134</a>). New rules for subscriptions under the Digital Markets, Competition and Consumers Act 2024 are planned for 1 January 2027 and not in force yet.</li>
+<li><strong>United States.</strong> There is no general federal right to withdraw from an online purchase. The FTC&#39;s mail, internet and telephone order rule sets shipping times (<a href="https://www.ecfr.gov/current/title-16/part-435">16 CFR Part 435</a>). Subscriptions offered to Californians follow the Automatic Renewal Law (<a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&amp;sectionNum=17600">Bus. &amp; Prof. Code § 17600 and following</a>). The FTC&#39;s 2024 click-to-cancel rule was vacated in July 2025 (<a href="https://ecf.ca8.uscourts.gov/opndir/25/07/243137P.pdf">Eighth Circuit</a>), so it does not apply.</li>
+</ul>
+<h2 id="what-goes-on-the-privacy-page"><a href="#what-goes-on-the-privacy-page">What goes on the privacy page</a></h2>
+<p>Send visitors to the preferences for the services, and write the rest. Which items a law requires differs, as the notes by country say. Most pages cover:</p>
+<ul>
+<li>who is responsible, with a name and an email address, and a representative or data protection officer where the site has one;</li>
+<li>the host and any CDN, whose servers receive every visitor&#39;s IP address, and how long their logs keep it;</li>
+<li>what the site stores itself, why, and for how long, such as comments, form entries, accounts, orders, newsletter and push subscriptions, and the names and email addresses that come with payments or contributions;</li>
+<li>the legal basis for each purpose, where the GDPR applies;</li>
+<li>who else receives data, such as an email or payment provider;</li>
+<li>data that leaves the country, with the country and the safeguard, such as a host or a CDN in the United States;</li>
+<li>people&#39;s rights and how to use them, the right to withdraw consent, and where to complain: the supervisory authority in the EU, the FDPIC in Switzerland, the Information Commission in the United Kingdom;</li>
+<li>Silvertrail&#39;s suggested text from the Privacy Policy Guide, on Global Privacy Control and on records.</li>
+</ul>
+<p>WordPress&#39;s draft privacy page and its Privacy Policy Guide suggest more, such as what comments and embedded content collect. Keep what is true for the site and remove the rest.</p>
+<h2 id="example-a-private-site-in-switzerland"><a href="#example-a-private-site-in-switzerland">Example: a private site in Switzerland</a></h2>
+<p>A private person in Switzerland runs a site that sells nothing and takes voluntary contributions through a payment provider. It runs on a host with a CDN in the United States, and it sends push notifications.</p>
+<p>It arguably needs no imprint, because the Unfair Competition Act covers offers of goods, works or services, and a contribution is not a sale. No official guidance addresses contributions, so confirm this for the site. Without an imprint, a contact email on the privacy page is enough. The privacy page can be short. The preferences already list each service with its provider, purpose, cookies and privacy link, so the page links to them instead of repeating them, and covers what the preferences cannot show:</p>
+<ul>
+<li>who is responsible: the owner&#39;s name and an email address;</li>
+<li>the data that exists without any service: the host&#39;s and the CDN&#39;s servers receive every visitor&#39;s IP address;</li>
+<li>data sent abroad, here to the CDN in the United States, with the safeguard that applies;</li>
+<li>what the site stores itself: push subscriptions, and the names and email addresses the payment provider passes on with each contribution;</li>
+<li>people&#39;s rights, and where they can complain.</li>
+</ul>
+<p>If the site offers goods or services to people in the EU or monitors their behaviour there, the GDPR may apply as well (Art. 3(2)), and the page then also names the legal basis and how long data is kept.</p>
+<h2 id="steps-for-an-agent"><a href="#steps-for-an-agent">Steps for an agent</a></h2>
+<ol>
+<li><p><strong>Find out the situation</strong>, as <a href="#find-out-the-situation">above</a>. Never guess the owner&#39;s name, address or legal form.</p>
+</li>
+<li><p><strong>Decide which pages the site needs</strong>, with the <a href="#which-pages-a-site-needs">table</a> and the <a href="#notes-by-country">notes by country</a>. Where the case is unclear, say so and name the question a lawyer should answer.</p>
+</li>
+<li><p><strong>Write drafts.</strong> Build on WordPress&#39;s draft privacy page if there is one, and create the imprint as a new draft:</p>
+<pre><code class="language-sh">wp post create --post_type=page --post_status=draft --post_title=&#39;Imprint&#39; --post_name=imprint --porcelain
+</code></pre>
+<p>Fill in what you know, and mark every fact you do not know as a visible placeholder, such as <code>[postal address]</code>. Send visitors to the preferences for the services instead of listing them, and write the rest from <a href="#what-goes-on-the-privacy-page">what goes on the privacy page</a>.</p>
+</li>
+<li><p><strong>Select the privacy page</strong> with <code>wp option update wp_page_for_privacy_policy &lt;id&gt;</code>. The banner links it only once it is published, so a draft is safe. A link to the preferences can go into the footer now as well.</p>
+</li>
+<li><p><strong>Hand over.</strong> Tell the owner which pages you drafted and why, which facts are placeholders, what you assumed, and which points a lawyer should check. The owner reviews and publishes.</p>
+</li>
+<li><p><strong>Link the rest once the pages are published.</strong> A link to a draft leads visitors to a page they cannot open. Add links to both pages to the footer, so they are on every page and not only under the banner, and set <code>imprint_page</code>. Then run <code>wp silvertrail validate</code>, which prints Silvertrail&#39;s suggested text for the privacy page until the Privacy Policy Guide has shown it.</p>
+</li>
+</ol>
+			</article>
+			<footer class="docs-meta">
+				<p>Generated from Silvertrail 1.2.1. <a href="/docs/privacy-pages.md">Markdown</a> · <a href="https://github.com/mawiswiss/silvertrail/blob/main/docs/privacy-pages.md">Source on GitHub</a></p>
+			</footer>
+		</main>
+	</div>
+
+	<footer class="wrap site-footer">
+		<p>Silvertrail is made by <a href="https://marcwieland.name">Marc Wieland</a> and licensed under the GPL.</p>
+		<p>The plugin is on <a href="https://wordpress.org/plugins/silvertrail/">WordPress.org</a>, and its code is on <a href="https://github.com/mawiswiss/silvertrail">GitHub</a>.</p>
+	</footer>
+</body>
+</html>

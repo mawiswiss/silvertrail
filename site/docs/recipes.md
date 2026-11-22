@@ -94,7 +94,7 @@ Which of the two a region expects is a legal question. As a rough orientation, n
 - **Switzerland:** telling visitors what runs and that they can refuse is generally enough, under Article 45c of the Telecommunications Act. The Federal Data Protection and Information Commissioner expects consent for more intrusive tracking, such as high-risk profiling.
 - **US states:** the state privacy laws use opt-out. California and a growing number of other states require honouring signals such as [Global Privacy Control](https://silvertrail.marcwieland.name/docs/consent-signals.md#global-privacy-control), which Silvertrail reads by default.
 
-The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out.
+The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out. [Privacy and imprint pages](https://silvertrail.marcwieland.name/docs/privacy-pages.md) gives the same kind of orientation for the pages the banner links.
 
 ## Load your own script after consent
 
