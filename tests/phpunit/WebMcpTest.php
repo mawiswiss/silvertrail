@@ -114,6 +114,35 @@ final class WebMcpTest extends WP_UnitTestCase {
 		$this->assertStringStartsWith( '## Brief: set up the site', AgentPrompts::setup() );
 	}
 
+	public function test_the_setup_prompt_states_the_privacy_and_imprint_pages(): void {
+		$privacy = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'draft',
+				'post_title'  => 'Privacy Policy',
+			)
+		);
+		$imprint = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Imprint',
+			)
+		);
+		update_option( 'wp_page_for_privacy_policy', $privacy );
+		update_option( Settings::OPTION, array( 'imprint_page' => $imprint ) );
+
+		$prompt = AgentPrompts::setup();
+		$this->assertStringContainsString( "- Privacy page: `{$privacy}` Privacy Policy, draft, not linked under the banner until it is published", $prompt );
+		$this->assertStringContainsString( "- Imprint page: `{$imprint}` Imprint, published and linked under the banner", $prompt );
+		$this->assertStringNotContainsString( '- Privacy page:', AgentPrompts::check() );
+
+		update_option( 'wp_page_for_privacy_policy', 0 );
+		delete_option( Settings::OPTION );
+		$prompt = AgentPrompts::setup();
+		$this->assertStringContainsString( '- Privacy page: none', $prompt );
+		$this->assertStringContainsString( '- Imprint page: none', $prompt );
+	}
+
 	public function test_the_agents_tab_renders_both_prompts_and_the_tokens(): void {
 		$this->tokens( array( $this->token( home_url(), time() + 30 * DAY_IN_SECONDS ) ) );
 

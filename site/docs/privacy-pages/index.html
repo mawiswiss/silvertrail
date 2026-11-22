@@ -511,7 +511,7 @@
 </tr>
 </tbody></table>
 </div>
-<p>Both pages can be selected while they are drafts, because the banner shows no link to a page visitors cannot open. WordPress creates a draft &quot;Privacy Policy&quot; page when it installs and selects it, so <code>wp option get wp_page_for_privacy_policy</code> usually names a page already. Until it is published, the admin warns that no privacy policy page is published.</p>
+<p>Both pages can be selected while they are drafts, because the banner shows no link to a page visitors cannot open. WordPress creates a draft &quot;Privacy Policy&quot; page when it installs and selects it, so <code>wp option get wp_page_for_privacy_policy</code> usually names a page already. Until it is published, the admin warns that no privacy policy page is published. The setup prompt under Settings › Silvertrail › Agents names both pages and whether each is published.</p>
 <p>The imprint page lives in the site&#39;s database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the <code>silvertrail_settings</code> filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:</p>
 <pre><code class="language-php">add_filter( &#39;silvertrail_settings&#39;, function ( $settings ) {
 	$imprint = get_page_by_path( &#39;imprint&#39; );

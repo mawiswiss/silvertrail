@@ -9,7 +9,7 @@ Most sites need a privacy page, and some also need an imprint, a page that says 
 | Privacy page | WordPress's privacy policy page, under Settings › Privacy | `wp option update wp_page_for_privacy_policy <id>` | once the page is published |
 | Imprint | `imprint_page`, under Texts › Links | `wp option patch insert silvertrail imprint_page <id>` | once the page is published |
 
-Both pages can be selected while they are drafts, because the banner shows no link to a page visitors cannot open. WordPress creates a draft "Privacy Policy" page when it installs and selects it, so `wp option get wp_page_for_privacy_policy` usually names a page already. Until it is published, the admin warns that no privacy policy page is published.
+Both pages can be selected while they are drafts, because the banner shows no link to a page visitors cannot open. WordPress creates a draft "Privacy Policy" page when it installs and selects it, so `wp option get wp_page_for_privacy_policy` usually names a page already. Until it is published, the admin warns that no privacy policy page is published. The setup prompt under Settings › Silvertrail › Agents names both pages and whether each is published.
 
 The imprint page lives in the site's database, so the shell is the natural place to set it. A setup that creates its pages in code sets it with the `silvertrail_settings` filter instead, which wins over the admin. Page IDs differ between a staging site and production, so look the page up by its path:
 

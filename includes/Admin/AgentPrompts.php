@@ -20,10 +20,10 @@ final class AgentPrompts {
 	}
 
 	public static function setup(): string {
-		return self::brief( '## Brief: set up the site' ) . "\n\n" . self::site() . "\n\n## What the site needs\n\n";
+		return self::brief( '## Brief: set up the site' ) . "\n\n" . self::site( true ) . "\n\n## What the site needs\n\n";
 	}
 
-	private static function site(): string {
+	private static function site( bool $pages = false ): string {
 		$config    = Config::get();
 		$essential = Config::essential_ids();
 		$lines     = array(
@@ -37,6 +37,10 @@ final class AgentPrompts {
 		}
 		$lines[] = '- Global Privacy Control counts as "only essential": ' . ( Settings::get( 'gpc' ) ? 'yes' : 'no' );
 		$lines[] = '- WebMCP tools: ' . ( Settings::get( 'webmcp' ) ? 'on, in browsers that support WebMCP' : 'off, so use `window.silvertrail`' );
+		if ( $pages ) {
+			$lines[] = '- Privacy page: ' . self::page( (int) get_option( 'wp_page_for_privacy_policy' ) );
+			$lines[] = '- Imprint page: ' . self::page( (int) Settings::get( 'imprint_page' ) );
+		}
 		$lines[] = '- Services:';
 		foreach ( $config['services'] as $id => $service ) {
 			$facts = array( in_array( $id, $essential, true ) ? 'always runs' : 'needs consent' );
@@ -49,6 +53,15 @@ final class AgentPrompts {
 			$lines[] = "  - `{$id}` {$service['name']} ({$service['group']}): " . implode( '; ', $facts );
 		}
 		return implode( "\n", $lines );
+	}
+
+	private static function page( int $id ): string {
+		$status = $id ? get_post_status( $id ) : false;
+		if ( false === $status ) {
+			return 'none';
+		}
+		$page = "`{$id}` " . get_the_title( $id );
+		return 'publish' === $status ? "{$page}, published and linked under the banner" : "{$page}, {$status}, not linked under the banner until it is published";
 	}
 
 	private static function address( string $url ): string {

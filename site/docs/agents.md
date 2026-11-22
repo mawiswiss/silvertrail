@@ -6,7 +6,7 @@ Silvertrail is built for agents as much as for people, and each agent gets an in
 
 ### Set up a site
 
-A coding agent with a shell sets Silvertrail up in code, reads `docs/README.md` and the pages it links for every hook and key, and runs `wp silvertrail validate` until it reports no problem. Under Settings › Silvertrail › Agents, Set up with an agent copies a prompt with this brief and the services the site has now. Coding agents that read skills can also install the Silvertrail skill:
+A coding agent with a shell sets Silvertrail up in code, reads `docs/README.md` and the pages it links for every hook and key, and runs `wp silvertrail validate` until it reports no problem. Under Settings › Silvertrail › Agents, Set up with an agent copies a prompt with this brief, the services the site has now, and its privacy and imprint pages with whether each is published. Coding agents that read skills can also install the Silvertrail skill:
 
 ```sh
 npx skills add mawiswiss/silvertrail
