@@ -183,7 +183,7 @@ $silvertrail_editor      = SettingsPage::editor( 'json' );
 				<?php
 				printf(
 					/* translators: 1: #silvertrail, 2: [silvertrail_link] */
-					esc_html__( 'Visitors change their choice through a link to %1$s, usually in the footer. Add one with the %2$s shortcode or the Privacy settings link block.', 'silvertrail' ),
+					esc_html__( 'Visitors change their choice through a link to %1$s, usually in the footer. Add one with the %2$s shortcode, the Silvertrail Link block or a Silvertrail menu item.', 'silvertrail' ),
 					'<code>#silvertrail</code>',
 					'<code>[silvertrail_link]</code>'
 				);

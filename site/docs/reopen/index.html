@@ -484,7 +484,7 @@
 <pre><code class="language-html">&lt;a href=&quot;#silvertrail&quot;&gt;Privacy settings&lt;/a&gt;
 &lt;button type=&quot;button&quot; data-silvertrail-open&gt;Privacy settings&lt;/button&gt;
 </code></pre>
-<p>The <code>[silvertrail_link]</code> shortcode prints such a link, with its own text as <code>[silvertrail_link]Cookie settings[/silvertrail_link]</code>. The Privacy settings link block (<code>silvertrail/reopen-link</code>) does the same in the editor. Put one in the footer, so it is on every page.</p>
+<p>The <code>[silvertrail_link]</code> shortcode prints such a link, with its own text as <code>[silvertrail_link]Cookie settings[/silvertrail_link]</code>. The Silvertrail Link block (<code>silvertrail/reopen-link</code>) under Widgets does the same in the editor. Put one in the footer, so it is on every page.</p>
 <h2 id="menus"><a href="#menus">Menus</a></h2>
 <p>In a classic theme, Appearance › Menus has a Silvertrail box. Its Privacy settings item adds a custom link to <code>#silvertrail</code>, which moves like any other menu item. It takes its label from the site&#39;s language, and the label stays editable in the menu. On the shell, <code>wp menu item add-custom &lt;menu&gt; &quot;Privacy settings&quot; &quot;#silvertrail&quot;</code> adds the same link. While Silvertrail is switched off, menus leave such links out, as the shortcode and the block print nothing.</p>
 <p>The Navigation block of a block theme and the Customizer have no Silvertrail box. Add a custom link to <code>#silvertrail</code> there.</p>

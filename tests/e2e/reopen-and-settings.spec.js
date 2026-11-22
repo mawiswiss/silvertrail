@@ -375,6 +375,23 @@ test.describe('settings page', () => {
 		await expect(page.locator('.silvertrail-section h2').first()).toHaveText('Setup');
 	});
 
+	test('the block editor offers the Silvertrail Link block among the widgets, with its logo', async ({ page }) => {
+		await page.goto('/wp-admin/post-new.php');
+		await page.waitForFunction(() => window.wp?.blocks?.getBlockType('silvertrail/reopen-link'));
+
+		const block = await page.evaluate(() => {
+			const type = window.wp.blocks.getBlockType('silvertrail/reopen-link');
+			return {
+				title: type.title,
+				category: type.category,
+				searchable: type.keywords.includes('silvertrail'),
+				logo: type.icon.src?.type === 'svg',
+				collection: !!window.wp.data.select('core/blocks').getCollections().silvertrail,
+			};
+		});
+		expect(block).toEqual({ title: 'Silvertrail Link', category: 'widgets', searchable: true, logo: true, collection: false });
+	});
+
 	test('highlights a linked section until the next action', async ({ page }) => {
 		await page.goto('/wp-admin/options-general.php?page=silvertrail&tab=texts#silvertrail-links');
 		const links = page.locator('#silvertrail-links');

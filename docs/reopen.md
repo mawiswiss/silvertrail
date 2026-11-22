@@ -11,7 +11,7 @@ Any link to `#silvertrail` opens the preferences, and so does any element with `
 <button type="button" data-silvertrail-open>Privacy settings</button>
 ```
 
-The `[silvertrail_link]` shortcode prints such a link, with its own text as `[silvertrail_link]Cookie settings[/silvertrail_link]`. The Privacy settings link block (`silvertrail/reopen-link`) does the same in the editor. Put one in the footer, so it is on every page.
+The `[silvertrail_link]` shortcode prints such a link, with its own text as `[silvertrail_link]Cookie settings[/silvertrail_link]`. The Silvertrail Link block (`silvertrail/reopen-link`) under Widgets does the same in the editor. Put one in the footer, so it is on every page.
 
 ## Menus
 

@@ -2,11 +2,10 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "silvertrail/reopen-link",
-	"title": "Privacy settings link",
+	"title": "Silvertrail Link",
 	"category": "widgets",
-	"icon": "privacy",
-	"description": "A link that opens the cookie preferences again.",
-	"keywords": [ "cookie", "consent", "privacy" ],
+	"description": "A link that opens Silvertrail's privacy settings again.",
+	"keywords": [ "silvertrail", "cookie", "consent", "privacy" ],
 	"textdomain": "silvertrail",
 	"attributes": {
 		"text": {

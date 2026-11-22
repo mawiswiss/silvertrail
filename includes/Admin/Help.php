@@ -203,7 +203,7 @@ SH;
 				'intro' => __( 'Any link to `#silvertrail` opens the preferences, and so does any element with `data-silvertrail-open`.', 'silvertrail' ),
 				'code'  => self::LINKS,
 				'notes' => array(
-					__( 'The `[silvertrail_link]` shortcode and the Privacy settings link block print such a link. In a classic theme, the Silvertrail box under Appearance › Menus adds one to a menu.', 'silvertrail' ),
+					__( 'The `[silvertrail_link]` shortcode and the Silvertrail Link block print such a link. In a classic theme, the Silvertrail box under Appearance › Menus adds one to a menu.', 'silvertrail' ),
 					__( 'Every page needs such a link, unless the floating button is on.', 'silvertrail' ),
 				),
 			),
