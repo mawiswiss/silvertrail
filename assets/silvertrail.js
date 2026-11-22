@@ -313,7 +313,8 @@
 		}
 		const canClose = closable();
 		banner.querySelector('[data-silvertrail-action="close"]').hidden = !canClose;
-		if (isPopover && canClose && config.layout !== 'modal' && !banner.open) {
+		const centred = config.layout === 'modal' || (config.layout === 'bar' && name === 'preferences');
+		if (isPopover && canClose && !centred && !banner.open) {
 			if (typeof banner.showPopover !== 'function') {
 				banner.show();
 			} else if (!popoverOpen()) {
@@ -322,7 +323,12 @@
 			}
 		} else {
 			banner.setAttribute('closedby', canClose ? 'any' : 'none');
-			if (!banner.open && !popoverOpen()) {
+			if (popoverOpen()) {
+				banner.hidePopover();
+			} else if (banner.open && !banner.matches(':modal')) {
+				banner.close();
+			}
+			if (!banner.open) {
 				banner.showModal();
 			}
 		}
@@ -389,8 +395,7 @@
 			} else if (action === 'save') {
 				choose([...banner.querySelectorAll('[data-silvertrail-service]:checked')].map((input) => input.value));
 			} else if (action === 'preferences') {
-				view('preferences');
-				renderTrail();
+				show('preferences');
 			} else if (action === 'close') {
 				hide();
 			}

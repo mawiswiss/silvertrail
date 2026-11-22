@@ -243,9 +243,24 @@ test.describe('appearance settings', () => {
 		await page.getByRole('button', { name: 'Choose' }).click();
 
 		const card = await placement(page);
-		expect(card).toMatchObject({ full: false, centred: true });
+		expect(card).toMatchObject({ modal: true, dimmed: true, full: false, centred: true });
 		expect(card.width).toBeLessThanOrEqual(34 * 16);
 		await page.getByRole('button', { name: 'Save choices' }).click();
+		await expect(banner(page)).toBeHidden();
+	});
+
+	test('the bar reopens the preferences after a choice as the dimmed card, and a click outside closes them', async ({
+		page,
+		context,
+	}) => {
+		await withSettings(context, { layout: 'bar' });
+		await page.setViewportSize({ width: 1280, height: 800 });
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Only essential' }).click();
+		await page.evaluate(() => window.silvertrail.open());
+
+		expect(await placement(page)).toMatchObject({ modal: true, dimmed: true, centred: true });
+		await page.mouse.click(5, 5);
 		await expect(banner(page)).toBeHidden();
 	});
 
