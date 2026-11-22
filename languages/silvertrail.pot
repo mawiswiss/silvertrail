@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-21T09:42:50+00:00\n"
+"POT-Creation-Date: 2026-11-22T05:22:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: silvertrail\n"
@@ -899,7 +899,7 @@ msgid "Require a choice before the banner closes"
 msgstr ""
 
 #: includes/Admin/tabs/design.php:211
-msgid "On by default for the dialog, off for the box and the bar. Turned on, the page dims until the visitor chooses. Turned off, the page stays usable, and a click outside or Escape closes the banner without storing anything. Only services that need no consent run, and it asks again on the next page."
+msgid "On by default for the dialog, off for the box and the bar. Turned on, the banner stays until the visitor chooses. Turned off, the close button, a click outside or Escape closes it without storing anything. Only services that need no consent run, and it asks again on the next page. The dialog always dims the page, the box and the bar only while a choice is required."
 msgstr ""
 
 #: includes/Admin/tabs/design.php:232
