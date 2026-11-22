@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "silvertrail/navigation-link",
+	"title": "Silvertrail Menu Item",
+	"category": "design",
+	"parent": [ "core/navigation", "core/navigation-submenu" ],
+	"description": "A menu item that opens Silvertrail's privacy settings again.",
+	"keywords": [ "silvertrail", "cookie", "consent", "privacy" ],
+	"textdomain": "silvertrail",
+	"attributes": {
+		"text": {
+			"type": "string",
+			"default": "",
+			"role": "content"
+		}
+	},
+	"supports": {
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "silvertrail-blocks",
+	"render": "file:./render.php"
+}

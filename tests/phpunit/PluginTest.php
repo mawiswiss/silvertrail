@@ -88,6 +88,16 @@ final class PluginTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( '<line x1="1" y1="1" x2="5" y2="5">', $icon );
 	}
 
+	public function test_the_navigation_block_prints_a_navigation_item_until_switched_off(): void {
+		$render = static fn(): string => render_block( parse_blocks( '<!-- wp:silvertrail/navigation-link {"text":"Cookie settings"} /-->' )[0] );
+
+		$this->assertMatchesRegularExpression( '#^<li [^>]*class="[^"]*wp-block-navigation-item[^"]*"[^>]*><a href="\#silvertrail" data-silvertrail-open class="wp-block-navigation-item__content">Cookie settings</a></li>$#', trim( $render() ) );
+
+		update_option( Settings::OPTION, array( 'enabled' => false ) );
+
+		$this->assertSame( '', trim( $render() ) );
+	}
+
 	public function test_the_menu_box_adds_a_link_to_the_preferences_in_the_site_language(): void {
 		update_option( Settings::OPTION, array( 'texts' => array( 'en_US' => array( 'reopen' => 'Cookie settings' ) ) ) );
 		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );

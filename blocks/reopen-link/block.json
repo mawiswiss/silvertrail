@@ -23,6 +23,6 @@
 			"fontSize": true
 		}
 	},
-	"editorScript": "file:./editor.js",
+	"editorScript": "silvertrail-blocks",
 	"render": "file:./render.php"
 }

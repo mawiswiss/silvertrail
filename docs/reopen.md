@@ -17,7 +17,7 @@ The `[silvertrail_link]` shortcode prints such a link, with its own text as `[si
 
 In a classic theme, Appearance › Menus has a Silvertrail box. Its Privacy settings item adds a custom link to `#silvertrail`, which moves like any other menu item. It takes its label from the site's language, and the label stays editable in the menu. On the shell, `wp menu item add-custom <menu> "Privacy settings" "#silvertrail"` adds the same link. While Silvertrail is switched off, menus leave such links out, as the shortcode and the block print nothing.
 
-The Navigation block of a block theme and the Customizer have no Silvertrail box. Add a custom link to `#silvertrail` there.
+In the Navigation block of a block theme, Add block offers the Silvertrail Menu Item block (`silvertrail/navigation-link`) right after Page link and Custom Link. It fits only into a Navigation or one of its submenus, and it prints a navigation item in the Navigation's own look. Without a label of its own it shows the `reopen` text in the visitor's language, and while Silvertrail is switched off it prints nothing. The Customizer has no Silvertrail box, so add a custom link to `#silvertrail` there.
 
 ## Floating button
 

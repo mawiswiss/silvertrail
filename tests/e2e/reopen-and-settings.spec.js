@@ -34,6 +34,17 @@ test.describe('reopen', () => {
 		await expect(banner(page)).toBeVisible();
 	});
 
+	test('the Privacy settings item in a Navigation block reopens the preferences', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'never' });
+		await page.goto('/?pagename=silvertrail-nav');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+		const item = page.locator('nav li.wp-block-navigation-item', { hasText: 'Cookie settings' });
+		await expect(item.locator('a.wp-block-navigation-item__content')).toHaveAttribute('href', '#silvertrail');
+		await item.getByRole('link', { name: 'Cookie settings' }).click();
+		await expect(banner(page)).toBeVisible();
+	});
+
 	test('the floating button appears after a choice and reopens the preferences', async ({ page, context }) => {
 		await withSettings(context, { floating_button: 'auto' });
 		await page.goto('/');
@@ -463,6 +474,45 @@ test.describe('settings page', () => {
 			};
 		});
 		expect(block).toEqual({ title: 'Silvertrail Link', category: 'widgets', searchable: true, logo: true, collection: false });
+	});
+
+	test('a Navigation block takes the Silvertrail Menu Item block, pinned after its own links, and only a Navigation does', async ({
+		page,
+	}) => {
+		await page.goto('/wp-admin/post-new.php');
+		await page.waitForFunction(() => window.wp?.blocks?.getBlockType('silvertrail/navigation-link'));
+
+		// Core pins its links only in a Navigation tied to a saved menu. A draft never becomes the site's fallback menu.
+		const [navigation, menu] = await page.evaluate(async () => {
+			const record = await window.wp.data.dispatch('core').saveEntityRecord('postType', 'wp_navigation', {
+				title: 'Silvertrail test',
+				status: 'draft',
+				content: '<!-- wp:navigation-link {"label":"Home","url":"/"} /-->',
+			});
+			const block = window.wp.blocks.createBlock('core/navigation', { ref: record.id });
+			window.wp.data.dispatch('core/block-editor').insertBlocks(block);
+			return [block.clientId, record.id];
+		});
+		const insertable = (name, root) =>
+			page.evaluate(([name, root]) => window.wp.data.select('core/block-editor').canInsertBlockType(name, root), [name, root]);
+
+		// The Navigation sets which blocks it takes once it has rendered.
+		await expect.poll(() => insertable('core/navigation-link', navigation)).toBe(true);
+		expect(await insertable('silvertrail/navigation-link', navigation)).toBe(true);
+		expect(await insertable('silvertrail/navigation-link', '')).toBe(false);
+		expect(await insertable('silvertrail/reopen-link', navigation)).toBe(false);
+		await expect
+			.poll(() =>
+				page.evaluate((id) => window.wp.data.select('core/block-editor').getBlockListSettings(id)?.prioritizedInserterBlocks, navigation),
+			)
+			.toEqual(['core/navigation-link/page', 'core/navigation-link', 'silvertrail/navigation-link']);
+		const type = await page.evaluate(() => {
+			const { title, category, icon } = window.wp.blocks.getBlockType('silvertrail/navigation-link');
+			return { title, category, logo: icon.src?.type === 'svg' };
+		});
+		expect(type).toEqual({ title: 'Silvertrail Menu Item', category: 'design', logo: true });
+
+		await page.evaluate((id) => window.wp.data.dispatch('core').deleteEntityRecord('postType', 'wp_navigation', id, { force: true }), menu);
 	});
 
 	test('highlights a linked section until the next action', async ({ page }) => {

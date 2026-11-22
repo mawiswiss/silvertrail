@@ -73,7 +73,7 @@ Silvertrail does not implement the IAB Transparency and Consent Framework, so an
 - [Services and groups](services.md): register services, presets, groups, the config filter, gated scripts and embeds.
 - [Settings](settings.md): every setting, its values and where it is set.
 - [API](api.md): the PHP functions, the JavaScript API, the events, the cookie and every hook.
-- [Reopen the preferences](reopen.md): links, the shortcode, the block, menus and the floating button.
+- [Reopen the preferences](reopen.md): links, the shortcode, the blocks, menus and the floating button.
 - [Style the banner](styling.md): the theme's values, the design filter, your own stylesheet, Write with AI and templates.
 - [Texts](texts.md): where texts come from, every text key and the translation filters.
 - [Consent signals](consent-signals.md): Google Consent Mode, the WP Consent API and Global Privacy Control.

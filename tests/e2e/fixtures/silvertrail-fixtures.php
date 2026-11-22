@@ -90,6 +90,7 @@ add_action(
 			'silvertrail-embeds'    => '<iframe src="https://video.example.test/embed/1" title="Test video"></iframe>',
 			'silvertrail-shortcode' => '[silvertrail_link]',
 			'silvertrail-block'     => '<!-- wp:silvertrail/reopen-link {"text":"Cookie settings"} /-->',
+			'silvertrail-nav'       => '<!-- wp:navigation {"overlayMenu":"never"} --><!-- wp:silvertrail/navigation-link {"text":"Cookie settings"} /--><!-- /wp:navigation -->',
 			'silvertrail-leak'      => 'This page loads a script from another host without asking.',
 			'silvertrail-careless'  => 'This page calls another host on every choice, even a refusal.',
 			'silvertrail-reload'    => 'This page prints the pixel only once the cookie says yes.',

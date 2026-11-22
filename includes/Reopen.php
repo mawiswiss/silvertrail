@@ -10,7 +10,7 @@ namespace Silvertrail;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Ways back to the preferences: the shortcode, the block, the menu item and the floating button.
+ * Ways back to the preferences: the shortcode, the blocks, the menu item and the floating button.
  */
 final class Reopen {
 
@@ -89,7 +89,17 @@ final class Reopen {
 	}
 
 	public static function block(): void {
-		register_block_type( dirname( SILVERTRAIL_FILE ) . '/blocks/reopen-link' );
+		$blocks = dirname( SILVERTRAIL_FILE ) . '/blocks';
+		wp_register_script(
+			'silvertrail-blocks',
+			plugins_url( 'blocks/editor.js', SILVERTRAIL_FILE ),
+			array( 'wp-blocks', 'wp-block-editor', 'wp-data', 'wp-element', 'wp-i18n' ),
+			(string) filemtime( $blocks . '/editor.js' ),
+			array( 'in_footer' => false )
+		);
+		wp_set_script_translations( 'silvertrail-blocks', 'silvertrail' );
+		register_block_type( $blocks . '/reopen-link' );
+		register_block_type( $blocks . '/navigation-link' );
 	}
 
 	public static function button(): void {

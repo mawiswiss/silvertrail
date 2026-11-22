@@ -211,7 +211,7 @@ Cached pages still carry the old version of the settings. Purge the page cache a
 
 = Does it work without a footer link? =
 
-Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Design › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Silvertrail Link block or the `[silvertrail_link]` shortcode in the footer, or add the Privacy settings item from the Silvertrail box under Appearance › Menus. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
+Yes, with the floating button. It is off by default. Under Settings › Silvertrail › Design › Look, pick the bottom left or right corner, and it reopens the preferences on every page without a link to `#silvertrail`. Without it, put the Silvertrail Link block or the `[silvertrail_link]` shortcode in the footer, or add the Privacy settings item from the Silvertrail box under Appearance › Menus, or the Silvertrail Menu Item block to a Navigation block. The `silvertrail_reopen_icon` filter swaps its icon, and the theme's `silvertrail/silvertrail.css` styles it through `.silvertrail-reopen`.
 
 == Screenshots ==
 
