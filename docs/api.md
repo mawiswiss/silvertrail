@@ -8,7 +8,7 @@ The PHP functions, the JavaScript API and the events read the visitor's choice, 
 | --- | --- |
 | `silvertrail_register_service( string $id, array $args = [] )` | Registers a service, or turns on and changes a preset. Call it on the `silvertrail_register` action. [Services](services.md#register-a-service) lists the keys. |
 | `silvertrail_register_group( string $id, array $args )` | Registers a group, or changes one. Call it on the same action. [Groups](services.md#groups) lists the keys. |
-| `silvertrail_has( string $service ): bool` | Whether the visitor agreed to the service. |
+| `silvertrail_has( string $service ): bool` | Whether the visitor agreed to the service, or to every service of the group. |
 | `silvertrail_config(): array` | The final config, in the shape the [config filter](services.md#the-config-filter) receives. Call it on `init` or later. |
 
 ```php
@@ -17,7 +17,7 @@ if ( silvertrail_has( 'hubspot' ) ) {
 }
 ```
 
-`silvertrail_has()` reads the cookie and the `Sec-GPC` header. Essential services always return `true`, and an unknown ID returns `false`. Use it only on requests a page cache never serves, such as form posts and REST calls. Pages render every gated thing blocked, and the browser decides, so never use it to decide what a page prints.
+`silvertrail_has()` reads the cookie and the `Sec-GPC` header. Essential services always return `true`, and an unknown ID returns `false`. An ID that names both a service and a group means the service, as in the browser. Use it only on requests a page cache never serves, such as form posts and REST calls. Pages render every gated thing blocked, and the browser decides, so never use it to decide what a page prints.
 
 ## JavaScript
 
@@ -35,7 +35,7 @@ window.silvertrail.revoke('marketing');
 
 | Call | Returns or does |
 | --- | --- |
-| `has(id)` | Whether the visitor agreed to the service. Essential services are always `true`. |
+| `has(id)` | Whether the visitor agreed to the service, or to every service of the group. Essential services are always `true`. |
 | `set(ids)` | Stores exactly these services as the choice. Unknown and essential IDs are ignored. |
 | `grant(ids)` | Adds a service, a group or a list of them to the choice, as "Always allow" on an embed does. |
 | `revoke(ids)` | Removes a service, a group or a list of them from the choice and leaves the rest as it is. What already runs on the page stops on the next page view. |

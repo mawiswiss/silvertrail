@@ -65,6 +65,35 @@ final class ConsentTest extends WP_UnitTestCase {
 		$this->assertFalse( silvertrail_has( 'stats' ) );
 	}
 
+	public function test_a_group_counts_once_all_its_services_are_allowed(): void {
+		$media = array_keys( array_filter( silvertrail_config()['services'], static fn( array $service ): bool => 'external-media' === $service['group'] ) );
+		$this->assertGreaterThan( 1, count( $media ) );
+		$this->assertTrue( silvertrail_has( 'essential' ) );
+		$this->assertFalse( silvertrail_has( 'statistics' ) );
+		$this->assertFalse( silvertrail_has( 'preferences' ) );
+
+		$this->cookie( Config::revision(), array( 'stats', $media[0] ) );
+		$this->assertTrue( silvertrail_has( 'statistics' ) );
+		$this->assertFalse( silvertrail_has( 'external-media' ) );
+
+		$this->cookie( Config::revision(), $media );
+		$this->assertTrue( silvertrail_has( 'external-media' ) );
+		$this->assertFalse( silvertrail_has( 'statistics' ) );
+	}
+
+	public function test_a_service_wins_over_a_group_of_the_same_id(): void {
+		add_action(
+			'silvertrail_register',
+			static function (): void {
+				silvertrail_register_service( 'marketing', array( 'group' => 'statistics' ) );
+			}
+		);
+		$this->cookie( Config::revision(), array( 'marketing' ) );
+
+		$this->assertTrue( silvertrail_has( 'marketing' ) );
+		$this->assertFalse( silvertrail_has( 'ads' ) );
+	}
+
 	public function test_global_privacy_control_overrides_a_choice_made_without_it(): void {
 		$this->cookie( Config::revision(), array( 'stats' ) );
 		$_SERVER['HTTP_SEC_GPC'] = '1';

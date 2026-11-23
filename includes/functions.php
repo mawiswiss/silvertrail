@@ -13,9 +13,9 @@ use Silvertrail\Consent;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Whether the visitor consented to a service. Reads the cookie, so it only holds on
- * requests a page cache never serves, such as form posts or REST calls. Pages
- * gate their output in the browser instead.
+ * Whether the visitor consented to a service, or to every service of a group. Reads
+ * the cookie, so it only holds on requests a page cache never serves, such as form
+ * posts or REST calls. Pages gate their output in the browser instead.
  */
 function silvertrail_has( string $service ): bool {
 	return Consent::has( $service );

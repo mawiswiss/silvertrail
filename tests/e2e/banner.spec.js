@@ -304,6 +304,20 @@ test.describe('banner', () => {
 		expect((await cookie(context)).c).toEqual(['google-maps', 'test-video']);
 	});
 
+	test('has counts a group as allowed once all its services are', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+		const has = () =>
+			page.evaluate(() => ['external-media', 'youtube', 'essential', 'unknown'].map((id) => window.silvertrail.has(id)));
+		expect(await has()).toEqual([false, false, true, false]);
+
+		await page.evaluate(() => window.silvertrail.grant('youtube'));
+		expect(await has()).toEqual([false, true, true, false]);
+
+		await page.evaluate(() => window.silvertrail.grant('external-media'));
+		expect(await has()).toEqual([true, true, true, false]);
+	});
+
 	test('always allow on an embed under global privacy control stays', async ({ page, context }) => {
 		await sendGpc(page);
 		await page.goto('/?pagename=silvertrail-embeds');

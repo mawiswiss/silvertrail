@@ -38,12 +38,16 @@
 		return data !== null && !data.p;
 	}
 
-	function has(id) {
+	function allowed(id) {
 		if (config.essential.includes(id)) {
 			return true;
 		}
 		const data = read();
 		return !!data && data.c.includes(id);
+	}
+
+	function has(id) {
+		return expand(id).every(allowed);
 	}
 
 	// A stale cached page must not lower the stored n or drop services it does not know.
@@ -80,9 +84,10 @@
 	}
 
 	function expand(ids) {
-		return [].concat(ids).flatMap((id) =>
-			config.services[id] ? [id] : serviceIds.filter((other) => config.services[other].group === id),
-		);
+		return [].concat(ids).flatMap((id) => {
+			const members = config.services[id] ? [] : serviceIds.filter((other) => config.services[other].group === id);
+			return members.length > 0 ? members : [id];
+		});
 	}
 
 	function grant(ids, options = {}) {

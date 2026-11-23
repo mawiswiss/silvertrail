@@ -46,10 +46,12 @@ final class Consent {
 		return array_values( array_intersect( $cookie['c'], array_keys( Config::get()['services'] ) ) );
 	}
 
-	public static function has( string $service ): bool {
-		if ( ! isset( Config::get()['services'][ $service ] ) ) {
+	public static function has( string $id ): bool {
+		$services = Config::get()['services'];
+		$ids      = isset( $services[ $id ] ) ? array( $id ) : array_keys( array_filter( $services, static fn( array $service ): bool => $service['group'] === $id ) );
+		if ( array() === $ids ) {
 			return false;
 		}
-		return in_array( $service, Config::essential_ids(), true ) || in_array( $service, self::consented_ids(), true );
+		return array() === array_diff( $ids, Config::essential_ids(), self::consented_ids() );
 	}
 }
