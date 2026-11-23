@@ -68,7 +68,7 @@ Any element with `data-silvertrail-grant` allows the services and groups it name
 <button type="button" data-silvertrail-grant="external-media">Allow all external media</button>
 ```
 
-Unknown and essential IDs are ignored. The grant is recorded with the source `embed`. To put such a button on every embed placeholder, use the [`silvertrail_embed_actions` filter](services.md#more-buttons-on-the-placeholder).
+Unknown and essential IDs are ignored. The grant is recorded with the source `embed`. To put such a button on every embed placeholder, use the [`silvertrail_embed_actions` filter](services.md#more-buttons-on-the-placeholder). A button that withdraws or toggles needs a few lines of script, as in the [recipe for the privacy policy](recipes.md#quick-actions-on-the-privacy-policy).
 
 ## Events
 

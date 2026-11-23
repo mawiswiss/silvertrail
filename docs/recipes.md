@@ -96,6 +96,50 @@ Which of the two a region expects is a legal question. As a rough orientation, n
 
 The rules differ by service and change over time. Have a lawyer review them in depth, for each site and the regions it serves, before any visitor gets opt-out. [Privacy and imprint pages](privacy-pages.md) gives the same kind of orientation for the pages the banner links.
 
+## Quick actions on the privacy policy
+
+**Use case:** the privacy policy names each service, and next to it the visitor can allow or withdraw that service, or a whole group, without going through the preferences.
+
+A link to `#silvertrail` opens the preferences in place. An address that ends in it, such as `https://example.com/privacy-policy/#silvertrail` in an email, opens them as the page loads. A button with `data-silvertrail-grant` allows services and groups without a script, as the [API](api.md#allow-services-from-html) shows. Hash links only open the preferences, because a link that allowed a service as the page loads would let any outside link agree for the visitor.
+
+To allow and withdraw with the same button, give it the ID of a service or a group, and let a short script switch it:
+
+```html
+<p>
+	<a href="#silvertrail">Change your privacy settings</a>
+</p>
+<p>
+	<button type="button" data-consent-toggle="youtube" aria-pressed="false">YouTube videos</button>
+	<button type="button" data-consent-toggle="statistics" aria-pressed="false">All statistics</button>
+</p>
+<script>
+	window.addEventListener('DOMContentLoaded', () => {
+		const consent = window.silvertrail;
+		const buttons = document.querySelectorAll('[data-consent-toggle]');
+		if (!consent) {
+			return;
+		}
+		const show = () => {
+			buttons.forEach((button) => button.setAttribute('aria-pressed', String(consent.has(button.dataset.consentToggle))));
+		};
+		buttons.forEach((button) => {
+			button.addEventListener('click', () => {
+				const id = button.dataset.consentToggle;
+				consent.has(id) ? consent.revoke(id) : consent.grant(id);
+			});
+		});
+		window.addEventListener('silvertrail:change', show);
+		show();
+	});
+</script>
+```
+
+`aria-pressed` tells screen readers whether the service is allowed, and CSS can style the button with `[aria-pressed="true"]`. A group counts as allowed once all its services are, so a click on a partly allowed group allows the rest. The change event keeps every button right after a choice in the banner or another button.
+
+A service that already runs on the page stops only on the next page view after it is withdrawn. Without Silvertrail's script, such as while it is switched off, the buttons stay as they are and do nothing.
+
+In WordPress, paste the markup and the script into a Custom HTML block. The block keeps the script only for users who may post unfiltered HTML, such as administrators on a single site. Otherwise put the script into the theme and only the markup into the page.
+
 ## Load your own script after consent
 
 **Use case:** a script needs code around it, such as a chat widget that is configured before it loads, so a gated `<script>` tag is not enough.
