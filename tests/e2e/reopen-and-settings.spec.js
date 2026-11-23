@@ -297,6 +297,36 @@ test.describe('appearance settings', () => {
 		expect(fit).toEqual({ fits: true, scrolls: true, wide: false });
 	});
 
+	for (const layout of ['modal', 'box', 'bar']) {
+		test(`on a phone the ${layout} preferences span the screen and stack each service's details`, async ({
+			page,
+			context,
+		}) => {
+			await withSettings(context, { layout });
+			await page.setViewportSize({ width: 375, height: 700 });
+			await page.goto('/');
+			await page.getByRole('button', { name: 'Choose' }).click();
+
+			expect(await placement(page)).toMatchObject({ full: true, bottom: 0 });
+			await banner(page).locator('summary').first().click();
+			const box = (selector) => banner(page).locator(selector).first().boundingBox();
+			const [checkbox, summary, groups, card, service] = [
+				await box('.silvertrail__group input'),
+				await box('summary'),
+				await box('.silvertrail__groups'),
+				await box('.silvertrail__service'),
+				await box('.silvertrail__service-name'),
+			];
+			expect(summary.x).toBe(checkbox.x);
+			expect(card).toMatchObject({ x: groups.x, width: groups.width });
+
+			const [label, value] = [await box('dt'), await box('dd')];
+			expect(label.x).toBe(service.x);
+			expect(value.x).toBe(label.x);
+			expect(value.y).toBeGreaterThanOrEqual(label.y + label.height);
+		});
+	}
+
 	test('always allow on an embed before a banner choice still asks about the rest', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });
 		await page.goto('/?pagename=silvertrail-embeds');
