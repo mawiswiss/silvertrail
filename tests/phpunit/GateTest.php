@@ -7,6 +7,7 @@ namespace Silvertrail\Tests;
 use Silvertrail\Config;
 use Silvertrail\EmbedGate;
 use Silvertrail\Frontend;
+use WP_HTML_Tag_Processor;
 use WP_UnitTestCase;
 
 final class GateTest extends WP_UnitTestCase {
@@ -118,6 +119,49 @@ final class GateTest extends WP_UnitTestCase {
 		$this->assertSame( 2, substr_count( $html, 'class="silvertrail-embed__action ' ) );
 		$this->assertStringContainsString( 'data-silvertrail-grant="' . implode( ' ', $media ) . '">Allow &lt;all&gt; media</button>', $html );
 		$this->assertStringContainsString( 'data-silvertrail-open>Settings</button>', $html );
+	}
+
+	/**
+	 * @return array<string, array{string, string|null}>
+	 */
+	public static function sizes(): array {
+		return array(
+			'pixels'         => array( 'width="560" height="315"', '--silvertrail-embed-width:560px;--silvertrail-embed-height:315px;--silvertrail-embed-ratio:auto' ),
+			'full width'     => array( 'width="100%" height="352"', '--silvertrail-embed-width:100%;--silvertrail-embed-height:352px;--silvertrail-embed-ratio:auto' ),
+			'inline style'   => array( 'width="560" height="315" style="border:0; WIDTH: 100%; height: auto; aspect-ratio: 4 / 3"', '--silvertrail-embed-width:100%;--silvertrail-embed-ratio:4 / 3' ),
+			'no size'        => array( 'title="Video"', null ),
+			'percent height' => array( 'height="100%"', null ),
+			'junk'           => array( 'width="0" height="calc(1)" style="height: expression(alert(1)); aspect-ratio: 1/1}body{color:red"', null ),
+		);
+	}
+
+	/**
+	 * @dataProvider sizes
+	 */
+	public function test_the_placeholder_takes_the_size_of_its_iframe( string $attributes, ?string $style ): void {
+		$tags = new WP_HTML_Tag_Processor( EmbedGate::wrap( "<iframe src=\"https://video.example.test/1\" {$attributes}></iframe>", 'video' ) );
+		$tags->next_tag( array( 'class_name' => 'silvertrail-embed' ) );
+
+		$this->assertSame( $style, $tags->get_attribute( 'style' ) );
+	}
+
+	public function test_a_theme_template_keeps_its_own_style_and_gets_the_size(): void {
+		global $wp_stylesheet_path, $wp_template_path;
+		$theme = array( $wp_stylesheet_path, $wp_template_path );
+		$dir   = get_temp_dir() . 'silvertrail-theme-' . wp_generate_password( 6, false );
+		wp_mkdir_p( $dir . '/silvertrail' );
+		file_put_contents( $dir . '/silvertrail/embed.php', '<section data-silvertrail-embed="video" style="color: red;"><button data-silvertrail-load>Load</button><template></template></section>' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		$wp_stylesheet_path = $dir; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$wp_template_path   = $dir; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+		$html = EmbedGate::wrap( '<iframe src="https://video.example.test/1" height="152"></iframe>', 'video' );
+
+		list( $wp_stylesheet_path, $wp_template_path ) = $theme; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		wp_delete_file( $dir . '/silvertrail/embed.php' );
+		rmdir( $dir . '/silvertrail' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+		rmdir( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+
+		$this->assertStringContainsString( '<section data-silvertrail-embed="video" style="color: red;--silvertrail-embed-height:152px;--silvertrail-embed-ratio:auto">', $html );
 	}
 
 	public function test_iframes_outside_the_content_are_wrapped(): void {

@@ -584,9 +584,12 @@
 /* Embed placeholder */
 
 .silvertrail-embed {
+	box-sizing: border-box;
 	display: grid;
 	place-items: center;
-	aspect-ratio: 16 / 9;
+	width: min(var(--silvertrail-embed-width, 100%), 100%);
+	min-height: var(--silvertrail-embed-height, 0);
+	aspect-ratio: var(--silvertrail-embed-ratio, 16 / 9);
 	padding: 1.5rem;
 	border: 1px solid var(--silvertrail-line);
 	border-radius: var(--silvertrail-radius);
@@ -595,9 +598,20 @@
 	text-align: center;
 }
 
-/* Core reserves the ratio in this spacer for an absolutely positioned iframe. */
-.wp-embed-responsive .wp-has-aspect-ratio .wp-block-embed__wrapper:has(> [data-silvertrail-embed])::before {
-	content: none;
+/* Core's spacer holds the block's ratio. The placeholder shares its cell, so it can still grow. */
+.wp-embed-responsive .wp-has-aspect-ratio .wp-block-embed__wrapper:has(> [data-silvertrail-embed]) {
+	display: grid;
+}
+
+.wp-embed-responsive .wp-has-aspect-ratio .wp-block-embed__wrapper:has(> [data-silvertrail-embed])::before,
+.wp-embed-responsive .wp-has-aspect-ratio .wp-block-embed__wrapper > [data-silvertrail-embed] {
+	grid-area: 1 / 1;
+}
+
+.wp-embed-responsive .wp-has-aspect-ratio .wp-block-embed__wrapper > [data-silvertrail-embed] {
+	width: auto;
+	min-height: 0;
+	aspect-ratio: auto;
 }
 
 .silvertrail-embed__inner {

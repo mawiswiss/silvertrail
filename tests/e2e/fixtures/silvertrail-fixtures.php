@@ -99,6 +99,12 @@ add_action(
 			'silvertrail-slow'      => 'This page sends a slow beacon before any choice.',
 			'silvertrail-vimeo'     => '<iframe src="https://player.vimeo.com/video/1" title="Vimeo video"></iframe>',
 			'silvertrail-youtube'   => '<iframe src="https://www.youtube-nocookie.com/embed/1" title="YouTube video"></iframe>',
+			'silvertrail-sizes'     => '<!-- wp:html --><iframe src="https://video.example.test/embed/11" title="Pixels" width="560" height="315" frameborder="0"></iframe><!-- /wp:html -->'
+				. '<!-- wp:html --><iframe src="https://video.example.test/embed/12" title="Full width" width="100%" height="352" frameborder="0"></iframe><!-- /wp:html -->'
+				. '<!-- wp:embed {"url":"https://video.example.test/embed/13","type":"video","responsive":true,"className":"wp-embed-aspect-1-1 wp-has-aspect-ratio"} -->'
+				. '<figure class="wp-block-embed is-type-video wp-embed-aspect-1-1 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe src="https://video.example.test/embed/13" title="Block" width="500" height="500" frameborder="0"></iframe></div></figure>'
+				. '<!-- /wp:embed -->'
+				. '<!-- wp:paragraph --><p>After the embeds.</p><!-- /wp:paragraph -->',
 		);
 		foreach ( $pages as $slug => $content ) {
 			if ( get_page_by_path( $slug ) ) {

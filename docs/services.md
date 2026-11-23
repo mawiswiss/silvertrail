@@ -178,6 +178,21 @@ An iframe that the theme prints in PHP passes none of these filters. Render it a
 echo do_blocks( '<!-- wp:html --><iframe src="https://www.youtube-nocookie.com/embed/VIDEO" title="Video"></iframe><!-- /wp:html -->' );
 ```
 
+### The placeholder's size
+
+The placeholder takes the size of its iframe, so the page does not move when the embed loads. It reads the iframe's `width` and `height` attributes and the `width`, `height` and `aspect-ratio` in its inline style. A height in pixels stays as it is, as it would for the iframe, and a pixel width shrinks to fit the column. Inside an embed block, in a theme with responsive embeds, the placeholder keeps the block's aspect ratio. An iframe that names no size gets 16:9.
+
+To give one service another default, set its properties in your stylesheet. A size the iframe names still wins.
+
+```css
+[data-silvertrail-embed="spotify"] {
+	--silvertrail-embed-height: 152px;
+	--silvertrail-embed-ratio: auto;
+}
+```
+
+Silvertrail reads only the iframe's markup. If the theme resizes iframes in CSS, give `.silvertrail-embed` the same size in [your own stylesheet](styling.md#your-own-stylesheet), for example `.silvertrail-embed { width: 100%; min-height: 0; aspect-ratio: 16 / 9; }`. The placeholder never clips its text, so an embed shorter than the text and the button still gets a taller placeholder.
+
 ### More buttons on the placeholder
 
 The `silvertrail_embed_actions` filter adds buttons under the placeholder's own, with no template of your own. Each button allows services for good or opens the preferences. The filter also receives the placeholder's service ID, so a button can appear on some placeholders only.

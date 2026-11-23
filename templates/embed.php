@@ -2,7 +2,8 @@
 /**
  * Placeholder for a blocked embed. To change the markup, copy this file to your theme
  * as silvertrail/embed.php and keep the data-silvertrail-* attributes and the empty
- * template. Silvertrail puts the embed into the template.
+ * template. Silvertrail puts the embed into the template and its size into the style
+ * attribute of the element with data-silvertrail-embed.
  *
  * @package Silvertrail
  *

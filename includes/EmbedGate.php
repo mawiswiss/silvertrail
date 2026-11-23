@@ -57,22 +57,95 @@ final class EmbedGate {
 		}
 
 		$tags = new WP_HTML_Tag_Processor( $html );
+		$size = null;
 		while ( $tags->next_tag( array( 'tag_name' => 'IFRAME' ) ) ) {
+			$size ??= self::size( $tags );
 			$tags->set_attribute( self::MARK, true );
 		}
 
-		$placeholder = Templates::capture(
-			'embed',
-			array(
-				'service' => $service,
-				'name'    => $config['services'][ $service ]['name'],
-				'texts'   => Texts::all(),
-				'theme'   => Frontend::appearance(),
-				'actions' => self::actions( $service ),
-			)
+		$placeholder = self::sized(
+			Templates::capture(
+				'embed',
+				array(
+					'service' => $service,
+					'name'    => $config['services'][ $service ]['name'],
+					'texts'   => Texts::all(),
+					'theme'   => Frontend::appearance(),
+					'actions' => self::actions( $service ),
+				)
+			),
+			(string) $size
 		);
 		$end         = strripos( $placeholder, '</template>' );
 		return false === $end ? $placeholder : substr_replace( $placeholder, $tags->get_updated_html(), $end, 0 );
+	}
+
+	/**
+	 * The iframe's size as custom properties. Its inline style beats its attributes, as in CSS.
+	 */
+	private static function size( WP_HTML_Tag_Processor $tags ): string {
+		$width  = self::attribute( $tags->get_attribute( 'width' ), true );
+		$height = self::attribute( $tags->get_attribute( 'height' ), false );
+		$ratio  = '';
+		$style  = $tags->get_attribute( 'style' );
+		foreach ( is_string( $style ) ? explode( ';', $style ) : array() as $declaration ) {
+			$pair = explode( ':', $declaration, 2 );
+			if ( 2 !== count( $pair ) ) {
+				continue;
+			}
+			$property = strtolower( trim( $pair[0] ) );
+			$value    = strtolower( trim( $pair[1] ) );
+			if ( 'width' === $property ) {
+				$width = self::length( $value, true );
+			} elseif ( 'height' === $property ) {
+				$height = self::length( $value, false );
+			} elseif ( 'aspect-ratio' === $property ) {
+				$ratio = 1 === preg_match( '#^\d+(\.\d+)?(\s*/\s*\d+(\.\d+)?)?$#', $value ) ? $value : '';
+			}
+		}
+
+		$properties = '' === $width ? array() : array( "--silvertrail-embed-width:{$width}" );
+		if ( '' !== $height ) {
+			$properties[] = "--silvertrail-embed-height:{$height}";
+			$properties[] = '--silvertrail-embed-ratio:auto';
+		} elseif ( '' !== $ratio ) {
+			$properties[] = "--silvertrail-embed-ratio:{$ratio}";
+		}
+		return implode( ';', $properties );
+	}
+
+	private static function attribute( mixed $value, bool $percent ): string {
+		if ( ! is_string( $value ) || 1 !== preg_match( '/^\s*(\d+(?:\.\d+)?)(%?)/', $value, $match ) || (float) $match[1] <= 0 ) {
+			return '';
+		}
+		if ( '%' === $match[2] ) {
+			return $percent ? "{$match[1]}%" : '';
+		}
+		return "{$match[1]}px";
+	}
+
+	private static function length( string $value, bool $percent ): string {
+		if ( 1 !== preg_match( '/^(\d+(?:\.\d+)?)(px|%|r?em|vw|vh|svh|dvh|lvh)$/', $value, $match ) || (float) $match[1] <= 0 ) {
+			return '';
+		}
+		return '%' !== $match[2] || $percent ? $value : '';
+	}
+
+	private static function sized( string $placeholder, string $size ): string {
+		if ( '' === $size ) {
+			return $placeholder;
+		}
+		$tags = new WP_HTML_Tag_Processor( $placeholder );
+		while ( $tags->next_tag() ) {
+			if ( null === $tags->get_attribute( 'data-silvertrail-embed' ) ) {
+				continue;
+			}
+			$style = $tags->get_attribute( 'style' );
+			$style = is_string( $style ) ? rtrim( trim( $style ), ';' ) : '';
+			$tags->set_attribute( 'style', '' === $style ? $size : "{$style};{$size}" );
+			break;
+		}
+		return $tags->get_updated_html();
 	}
 
 	/**

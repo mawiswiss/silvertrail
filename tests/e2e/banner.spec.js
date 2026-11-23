@@ -228,6 +228,27 @@ test.describe('banner', () => {
 		await expect(page.locator('iframe[title="YouTube video"]')).toHaveCount(1);
 	});
 
+	for (const width of [1280, 360]) {
+		test(`an embed placeholder has the height of its embed at ${width}px`, async ({ page }) => {
+			await page.setViewportSize({ width, height: 900 });
+			await page.goto('/?pagename=silvertrail-sizes');
+			await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+			for (const title of ['Pixels', 'Full width', 'Block']) {
+				const placeholder = page.locator('[data-silvertrail-embed]').first();
+				const before = await placeholder.boundingBox();
+				await placeholder.getByRole('button', { name: 'Load content' }).click();
+				const after = await page.locator(`iframe[title="${title}"]`).boundingBox();
+
+				expect(Math.abs(after.height - before.height), title).toBeLessThanOrEqual(1);
+				// On a phone the 560px iframe overflows the column, while the placeholder fits it.
+				if (width > 600) {
+					expect(Math.abs(after.width - before.width), title).toBeLessThanOrEqual(1);
+				}
+			}
+		});
+	}
+
 	test('always allow on an embed stores consent for the service', async ({ page, context }) => {
 		await page.goto('/?pagename=silvertrail-embeds');
 		await page.getByRole('button', { name: 'Only essential' }).first().click();
