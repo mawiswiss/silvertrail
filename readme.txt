@@ -5,7 +5,7 @@ Tags: cookie consent, cookie banner, gdpr, consent mode, privacy
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -241,6 +241,17 @@ Each tracker preset below connects to its provider only when an admin turns it o
 Write with AI, on WordPress 7.0 and later, sends the styling prompt and the admin's description of the look to the AI provider set up under Settings › Connectors, through WordPress's AI Client, and only when an admin clicks it. The prompt holds the styling brief, the theme's colour and font presets and its current `silvertrail/silvertrail.css`, and nothing about visitors. The terms and privacy policy of the provider the site chose apply.
 
 == Changelog ==
+
+= 1.4.0 =
+
+* New: the `silvertrail_embed_actions` filter adds buttons to every embed placeholder, such as one that allows all external media or one that opens the preferences.
+* New: a click on any element with `data-silvertrail-grant` allows the services and groups it names.
+* New: `revoke()` withdraws consent for a service, a group or a list, and `grant()` takes a group or a list too.
+* New: `has()` and `silvertrail_has()` check a whole group, and `state()` and `silvertrail_state()` tell which of its services the visitor allowed.
+* Changed: the embed placeholder takes the size of its embed, so the page no longer jumps when a visitor loads it.
+* Fixed: on phones the banner uses the full width, and each service's details stack under its name.
+* Fixed: Save choices is a compact button that no longer competes with Accept all and Only essential.
+* Docs: a recipe adds buttons to the privacy policy that allow, withdraw or toggle a service or a group.
 
 = 1.3.0 =
 
