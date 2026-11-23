@@ -320,12 +320,34 @@ test.describe('appearance settings', () => {
 			expect(summary.x).toBe(checkbox.x);
 			expect(card).toMatchObject({ x: groups.x, width: groups.width });
 
+			const [save, accept] = [await box('.silvertrail__save'), await box('.silvertrail__button')];
+			expect(save).toMatchObject({ x: groups.x, width: groups.width });
+			expect(save.height).toBeLessThan(accept.height);
+
 			const [label, value] = [await box('dt'), await box('dd')];
 			expect(label.x).toBe(service.x);
 			expect(value.x).toBe(label.x);
 			expect(value.y).toBeGreaterThanOrEqual(label.y + label.height);
 		});
 	}
+
+	test('on a wide screen Save choices is a small button at the left edge', async ({ page }) => {
+		await page.setViewportSize({ width: 1280, height: 800 });
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Choose' }).click();
+		await banner(page).locator('summary').first().click();
+
+		const box = (selector) => banner(page).locator(selector).first().boundingBox();
+		const [checkbox, card, save, accept] = [
+			await box('.silvertrail__group input'),
+			await box('.silvertrail__service'),
+			await box('.silvertrail__save'),
+			await box('.silvertrail__button'),
+		];
+		expect(save.x).toBe(checkbox.x);
+		expect(save.width).toBeLessThan(card.width);
+		expect(save.height).toBeLessThan(accept.height);
+	});
 
 	test('always allow on an embed before a banner choice still asks about the rest', async ({ page, context }) => {
 		await withSettings(context, { layout: 'box' });
