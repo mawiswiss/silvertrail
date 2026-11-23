@@ -47,7 +47,7 @@ Each template receives `$args`:
 | Template | `$args` |
 | --- | --- |
 | `banner.php` | `layout` (`modal`, `box` or `bar`), `position` (`top` or `bottom`, for the bar), `appearance`, `trail` (bool), `groups` (each with `name`, `description`, `locked` and its `services`), `texts`, `privacy_url`, `imprint_url` |
-| `embed.php` | `service` (the ID), `name`, `texts`, `theme` (the appearance) |
+| `embed.php` | `service` (the ID), `name`, `texts`, `theme` (the appearance), `actions` (the [extra buttons](services.md#more-buttons-on-the-placeholder), each with `label` and `grant`, the service IDs it allows, or an empty list for a button that opens the preferences) |
 | `reopen-button.php` | `label`, `appearance`, `mode` (`auto` or `always`), `position` (`left` or `right`), `icon` (HTML from `silvertrail_reopen_icon`) |
 
 `texts` holds every [text key](texts.md#text-keys) in the visitor's language.
@@ -91,7 +91,7 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
       .silvertrail__link            Choose
     .silvertrail__legal > a
   .silvertrail__close
-.silvertrail-embed > .silvertrail-embed__inner > .silvertrail-embed__text, .silvertrail-embed__button, .silvertrail-embed__remember
+.silvertrail-embed > .silvertrail-embed__inner > .silvertrail-embed__text, .silvertrail-embed__button, .silvertrail-embed__remember, .silvertrail-embed__actions > .silvertrail-embed__action
 .silvertrail-reopen                  floating button, plus .silvertrail-reopen--left or .silvertrail-reopen--right
 ```
 
@@ -106,5 +106,5 @@ Set tokens first, on `.silvertrail, .silvertrail-embed, .silvertrail-reopen`. Wr
 - Below 30rem the defaults dock `.silvertrail` to the bottom edge at full width with `inset: auto 0 0; width: 100%; max-width: none; margin: 0`, round only its top corners and set the gutter to `1rem`. The bar's entrance view keeps its own edge. The buttons take a row each, and `.silvertrail__save` the full width. The chevron of `.silvertrail__details summary` moves under the checkbox, and the service cards below it take the full width. `.silvertrail__info` stacks each label above its value. Repeat any change to these inside `@media (max-width: 30rem)`.
 - The bar's entrance view lays out `.silvertrail__inner` as a grid with the areas `title`, `text`, `choose`, `legal`, `accept` and `reject`, and sets `.silvertrail__footer` and `.silvertrail__actions` to `display: contents`. From 48rem the buttons sit on the right. Its preferences view is the same card as the other layouts. Keep these rules when you restyle the bar.
 - A few defaults pair a class with an element, such as `.silvertrail a`, `.silvertrail__switch input[type="checkbox"]` and `.silvertrail__details summary`. Override them with the same selector.
-- The marker of `.silvertrail__details summary` is its `::before`, a chevron drawn with borders in `currentColor`. On hover, buttons mix 15% of `--silvertrail-on-accent` into the accent, and links and `.silvertrail__link` thicken their underline. `.silvertrail__save` is an outlined button. Hover and press take the button colours from the tokens again, against themes that restyle every button, so change button colours through the tokens.
+- The marker of `.silvertrail__details summary` is its `::before`, a chevron drawn with borders in `currentColor`. On hover, buttons mix 15% of `--silvertrail-on-accent` into the accent, and links, `.silvertrail__link` and `.silvertrail-embed__action` thicken their underline. `.silvertrail__save` is an outlined button. Hover and press take the button colours from the tokens again, against themes that restyle every button, so change button colours through the tokens.
 - Put motion inside `@media (prefers-reduced-motion: no-preference)`. Never use `!important`.

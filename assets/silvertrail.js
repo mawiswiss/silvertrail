@@ -299,15 +299,18 @@
 		return decided() || !config.require;
 	}
 
+	// A link inside an embed placeholder goes away with the placeholder, so it does not replace the floating button.
 	function showReopen() {
-		const linked = document.querySelector(
-			'a[href$="#silvertrail"]:not([data-silvertrail-reopen]), [data-silvertrail-open]:not([data-silvertrail-reopen])',
-		);
+		const linked = [
+			...document.querySelectorAll(
+				'a[href$="#silvertrail"]:not([data-silvertrail-reopen]), [data-silvertrail-open]:not([data-silvertrail-reopen])',
+			),
+		].some((link) => !link.closest('[data-silvertrail-embed]'));
 		document.querySelectorAll('[data-silvertrail-reopen]').forEach((button) => {
 			button.hidden =
 				read() === null ||
 				(config.needsBanner && !decided()) ||
-				(button.dataset.silvertrailReopen === 'auto' && linked !== null);
+				(button.dataset.silvertrailReopen === 'auto' && linked);
 		});
 	}
 
@@ -377,6 +380,11 @@
 			if (opener) {
 				event.preventDefault();
 				open();
+				return;
+			}
+			const granter = event.target.closest('[data-silvertrail-grant]');
+			if (granter) {
+				grant(granter.dataset.silvertrailGrant.split(/\s+/), { source: 'embed' });
 				return;
 			}
 			const loader = event.target.closest('[data-silvertrail-load]');

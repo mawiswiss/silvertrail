@@ -68,10 +68,64 @@ final class EmbedGate {
 				'name'    => $config['services'][ $service ]['name'],
 				'texts'   => Texts::all(),
 				'theme'   => Frontend::appearance(),
+				'actions' => self::actions( $service ),
 			)
 		);
 		$end         = strripos( $placeholder, '</template>' );
 		return false === $end ? $placeholder : substr_replace( $placeholder, $tags->get_updated_html(), $end, 0 );
+	}
+
+	/**
+	 * @return list<array{label: string, grant: list<string>}>
+	 */
+	private static function actions( string $service ): array {
+		$actions = array();
+		foreach ( (array) apply_filters( 'silvertrail_embed_actions', array(), $service ) as $action ) {
+			if ( ! is_array( $action ) || ! is_string( $action['label'] ?? null ) || '' === trim( $action['label'] ) ) {
+				continue;
+			}
+			if ( isset( $action['grant'] ) ) {
+				$grant = self::services( (array) $action['grant'] );
+				if ( array() !== $grant ) {
+					$actions[] = array(
+						'label' => $action['label'],
+						'grant' => $grant,
+					);
+				}
+			} elseif ( ! empty( $action['open'] ) ) {
+				$actions[] = array(
+					'label' => $action['label'],
+					'grant' => array(),
+				);
+			}
+		}
+		return $actions;
+	}
+
+	/**
+	 * A group ID stands for all its services.
+	 *
+	 * @param array<mixed> $ids
+	 * @return list<string>
+	 */
+	private static function services( array $ids ): array {
+		$services = Config::get()['services'];
+		$found    = array();
+		foreach ( $ids as $id ) {
+			if ( ! is_string( $id ) ) {
+				continue;
+			}
+			if ( isset( $services[ $id ] ) ) {
+				$found[] = $id;
+				continue;
+			}
+			foreach ( $services as $service_id => $service ) {
+				if ( $service['group'] === $id ) {
+					$found[] = $service_id;
+				}
+			}
+		}
+		return array_values( array_diff( array_unique( $found ), Config::essential_ids() ) );
 	}
 
 	private static function service_in( string $html ): ?string {

@@ -77,6 +77,49 @@ final class GateTest extends WP_UnitTestCase {
 		$this->assertSame( $wrapped, EmbedGate::content( $wrapped ) );
 	}
 
+	public function test_the_placeholder_has_no_extra_buttons_by_default(): void {
+		$html = EmbedGate::wrap( '<iframe src="https://video.example.test/1"></iframe>', 'video' );
+
+		$this->assertStringNotContainsString( 'silvertrail-embed__actions', $html );
+	}
+
+	public function test_the_placeholder_shows_the_buttons_code_adds(): void {
+		$seen = '';
+		add_filter(
+			'silvertrail_embed_actions',
+			static function ( array $actions, string $service ) use ( &$seen ): array {
+				$seen = $service;
+				return array(
+					array(
+						'label' => 'Allow <all> media',
+						'grant' => 'external-media',
+					),
+					array(
+						'label' => 'Settings',
+						'open'  => true,
+					),
+					array(
+						'label' => 'Nothing to allow',
+						'grant' => array( 'own-stats', 'silvertrail', 'missing' ),
+					),
+					array( 'grant' => 'video' ),
+					array( 'label' => 'Does nothing' ),
+					'junk',
+				);
+			},
+			10,
+			2
+		);
+		$html  = EmbedGate::wrap( '<iframe src="https://video.example.test/1"></iframe>', 'video' );
+		$media = array_keys( array_filter( silvertrail_config()['services'], static fn( array $service ): bool => 'external-media' === $service['group'] ) );
+
+		$this->assertSame( 'video', $seen );
+		$this->assertContains( 'video', $media );
+		$this->assertSame( 2, substr_count( $html, 'class="silvertrail-embed__action ' ) );
+		$this->assertStringContainsString( 'data-silvertrail-grant="' . implode( ' ', $media ) . '">Allow &lt;all&gt; media</button>', $html );
+		$this->assertStringContainsString( 'data-silvertrail-open>Settings</button>', $html );
+	}
+
 	public function test_iframes_outside_the_content_are_wrapped(): void {
 		$iframe = '<iframe src="https://video.example.test/4"></iframe>';
 

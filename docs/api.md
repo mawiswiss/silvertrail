@@ -59,6 +59,17 @@ Silvertrail's script loads with `defer`, so `window.silvertrail` exists from `DO
 
 [Reopen the preferences](reopen.md) covers the shortcode, the blocks, menus and the floating button.
 
+### Allow services from HTML
+
+Any element with `data-silvertrail-grant` allows the services and groups it names, separated by spaces, when clicked. It works like `grant()`, so the visitor's choice keeps the rest, and every placeholder of these services on the page loads.
+
+```html
+<button type="button" data-silvertrail-grant="youtube vimeo">Allow all videos</button>
+<button type="button" data-silvertrail-grant="external-media">Allow all external media</button>
+```
+
+Unknown and essential IDs are ignored. The grant is recorded with the source `embed`. To put such a button on every embed placeholder, use the [`silvertrail_embed_actions` filter](services.md#more-buttons-on-the-placeholder).
+
 ## Events
 
 `silvertrail:change` fires on `window` after every choice:
@@ -114,6 +125,7 @@ Read the choice through `window.silvertrail` or `silvertrail_has()`, not from th
 | `silvertrail_config` | filter | `$config`: the groups, the services and `google`. It runs last. | [The config filter](services.md#the-config-filter) |
 | `silvertrail_settings` | filter | `$settings`: every setting but the presets and the texts | [Settings](settings.md#the-settings-filter) |
 | `silvertrail_design` | filter | `$design`, the design values, and `$appearance`, `light` or `dark` | [The design filter](styling.md#the-design-filter) |
+| `silvertrail_embed_actions` | filter | `$actions`: the extra buttons on an embed placeholder, and `$service`, its service ID | [More buttons on the placeholder](services.md#more-buttons-on-the-placeholder) |
 | `silvertrail_reopen_icon` | filter | `$icon`: the floating button's icon, as inline SVG or an `<img>` | [Floating button](reopen.md#floating-button) |
 | `silvertrail_translation` | filter | `$translation`, the theme's JSON file or `''`, and `$locale` | [Ship texts from a plugin](texts.md#ship-texts-from-a-plugin) |
 | `silvertrail_texts` | filter | `$texts`: every text in the visitor's language | [The texts filter](texts.md#the-texts-filter) |

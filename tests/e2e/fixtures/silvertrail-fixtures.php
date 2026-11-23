@@ -171,6 +171,25 @@ add_filter(
 	}
 );
 
+// Buttons from code on every embed placeholder, per browser context.
+add_filter(
+	'silvertrail_embed_actions',
+	static function ( array $actions ): array {
+		if ( empty( $_COOKIE['silvertrail_test_embed_actions'] ) ) {
+			return $actions;
+		}
+		$actions[] = array(
+			'label' => 'Allow all external media',
+			'grant' => 'external-media',
+		);
+		$actions[] = array(
+			'label' => 'Embed settings',
+			'open'  => true,
+		);
+		return $actions;
+	}
+);
+
 // An ungated script from another host, for the trail, the leak check and expect-no-leaks.
 add_action(
 	'wp_head',

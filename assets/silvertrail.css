@@ -259,7 +259,8 @@
 }
 
 .silvertrail__link:is(:hover, :active),
-.silvertrail__close:is(:hover, :active) {
+.silvertrail__close:is(:hover, :active),
+.silvertrail-embed__action:is(:hover, :active) {
 	background: none;
 	color: var(--silvertrail-text);
 }
@@ -297,6 +298,7 @@
 .silvertrail__button:focus-visible,
 .silvertrail__link:focus-visible,
 .silvertrail__close:focus-visible,
+.silvertrail-embed__action:focus-visible,
 .silvertrail summary:focus-visible,
 .silvertrail input[type="checkbox"]:focus-visible {
 	outline: 3px solid var(--silvertrail-accent);
@@ -456,7 +458,8 @@
 }
 
 .silvertrail a:hover,
-.silvertrail__link:hover {
+.silvertrail__link:hover,
+.silvertrail-embed__action:hover {
 	text-decoration-thickness: 2px;
 }
 
@@ -624,6 +627,26 @@
 	margin-top: 0.75rem;
 	font-size: 0.875rem;
 	color: var(--silvertrail-muted);
+}
+
+.silvertrail-embed__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 1rem;
+	justify-content: center;
+	margin: 0.5rem 0 0;
+}
+
+.silvertrail-embed__action {
+	padding: 0.25rem;
+	border: 0;
+	background: none;
+	color: var(--silvertrail-text);
+	font: inherit;
+	font-size: 0.875rem;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+	cursor: pointer;
 }
 
 @media (max-width: 30rem) {

@@ -178,6 +178,26 @@ An iframe that the theme prints in PHP passes none of these filters. Render it a
 echo do_blocks( '<!-- wp:html --><iframe src="https://www.youtube-nocookie.com/embed/VIDEO" title="Video"></iframe><!-- /wp:html -->' );
 ```
 
+### More buttons on the placeholder
+
+The `silvertrail_embed_actions` filter adds buttons under the placeholder's own, with no template of your own. Each button allows services for good or opens the preferences. The filter also receives the placeholder's service ID, so a button can appear on some placeholders only.
+
+```php
+add_filter( 'silvertrail_embed_actions', function ( array $actions, string $service ): array {
+	$actions[] = [ 'label' => __( 'Always allow all external media', 'my-theme' ), 'grant' => 'external-media' ];
+	$actions[] = [ 'label' => __( 'Privacy settings', 'my-theme' ), 'open' => true ];
+	return $actions;
+}, 10, 2 );
+```
+
+| Key | Type | What it does |
+| --- | --- | --- |
+| `label` | string | The button's text. Silvertrail's texts do not include it, so translate it in your own text domain. |
+| `grant` | string or list | Service or group IDs. A group stands for all its services. The button adds them to the visitor's choice, and every placeholder of these services on the page loads. |
+| `open` | bool | Opens the preferences, where the visitor chooses per service. Used when `grant` is not set. |
+
+A button without a label, or whose `grant` names no service that needs consent, is left out. A grant counts like "Always allow": it is recorded with the source `embed`, and the banner still asks about the rest. A theme's own `embed.php` shows the buttons only if it renders `$args['actions']`, as the plugin's template does. The [API](api.md#allow-services-from-html) shows the attribute behind the `grant` button, for a button elsewhere on the page.
+
 [Styling](styling.md#templates) shows how to change the placeholder's markup.
 
 To read the visitor's choice in PHP or in the browser, see the [API](api.md).

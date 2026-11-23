@@ -380,6 +380,39 @@ test.describe('appearance settings', () => {
 		await expect(banner(page)).toBeVisible();
 	});
 
+	test('a button from code on an embed allows its whole group and still asks about the rest', async ({ page, context }) => {
+		await withSettings(context, { layout: 'box' });
+		await context.addCookies([{ name: 'silvertrail_test_embed_actions', value: '1', url: 'http://localhost:8892' }]);
+		await page.goto('/?pagename=silvertrail-embeds');
+		await page.getByRole('button', { name: 'Allow all external media' }).click();
+		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
+
+		await page.reload();
+		await expect(page.locator('iframe[title="Test video"]')).toHaveCount(1);
+		await expect(page.locator('#silvertrail-banner')).toBeVisible();
+		const allowed = await page.evaluate(() =>
+			['youtube', 'google-maps', 'test-video', 'test-analytics'].map((id) => window.silvertrail.has(id)),
+		);
+		expect(allowed).toEqual([true, true, true, false]);
+		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
+	});
+
+	test('a button from code on an embed opens the preferences and leaves the floating button', async ({ page, context }) => {
+		await withSettings(context, { floating_button: 'auto' });
+		await context.addCookies([
+			{ name: 'silvertrail_test_in_place', value: '1', url: 'http://localhost:8892' },
+			{ name: 'silvertrail_test_embed_actions', value: '1', url: 'http://localhost:8892' },
+		]);
+		await page.goto('/?pagename=silvertrail-embeds');
+		await page.getByRole('button', { name: 'Embed settings' }).click();
+		await expect(banner(page)).toBeVisible();
+
+		await banner(page).getByRole('button', { name: 'Only essential' }).click();
+		await expect(banner(page)).toBeHidden();
+		await expect(page.getByRole('button', { name: 'Embed settings' })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Privacy settings' })).toBeVisible();
+	});
+
 	// The theme's own button and the page, read live so a saved style variation does not break the test.
 	const colors = (page) =>
 		page.evaluate(() => {
@@ -486,6 +519,19 @@ test.describe('a theme that styles every button and checkbox', () => {
 		expect(atRest.background).not.toBe('rgb(40, 48, 61)');
 		await reopen.hover();
 		expect(await style(reopen)).toMatchObject({ background: atRest.background, color: atRest.color });
+	});
+
+	test('leaves the buttons from code on an embed their own look', async ({ page, context }) => {
+		await context.addCookies([{ name: 'silvertrail_test_embed_actions', value: '1', url: 'http://localhost:8892' }]);
+		await page.goto('/?pagename=silvertrail-embeds');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+
+		const action = page.getByRole('button', { name: 'Embed settings' });
+		const atRest = await style(action);
+		expect(atRest).toMatchObject({ background: 'rgba(0, 0, 0, 0)', padding: '4px' });
+		expect(atRest.color).not.toBe('rgb(209, 228, 221)');
+		await action.hover();
+		expect(await style(action)).toMatchObject({ background: atRest.background, color: atRest.color });
 	});
 });
 

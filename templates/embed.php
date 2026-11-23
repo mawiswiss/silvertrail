@@ -6,7 +6,7 @@
  *
  * @package Silvertrail
  *
- * @var array{service: string, name: string, texts: array<string, string>, theme: string} $args
+ * @var array{service: string, name: string, texts: array<string, string>, theme: string, actions: list<array{label: string, grant: list<string>}>} $args
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -21,6 +21,17 @@ $silvertrail_texts = $args['texts'];
 			<input type="checkbox" data-silvertrail-remember>
 			<?php echo esc_html( sprintf( $silvertrail_texts['embed_remember'], $args['name'] ) ); ?>
 		</label>
+		<?php if ( array() !== $args['actions'] ) : ?>
+			<p class="silvertrail-embed__actions">
+				<?php foreach ( $args['actions'] as $silvertrail_action ) : ?>
+					<?php if ( array() === $silvertrail_action['grant'] ) : ?>
+						<button type="button" class="silvertrail-embed__action has-background has-text-color" data-silvertrail-open><?php echo esc_html( $silvertrail_action['label'] ); ?></button>
+					<?php else : ?>
+						<button type="button" class="silvertrail-embed__action has-background has-text-color" data-silvertrail-grant="<?php echo esc_attr( implode( ' ', $silvertrail_action['grant'] ) ); ?>"><?php echo esc_html( $silvertrail_action['label'] ); ?></button>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</p>
+		<?php endif; ?>
 	</div>
 	<template></template>
 </div>
