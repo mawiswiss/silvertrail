@@ -267,6 +267,22 @@ test.describe('banner', () => {
 		expect(await page.evaluate(() => window.silvertrail.decided())).toBe(false);
 	});
 
+	test('grant and revoke take whole groups in one change', async ({ page, context }) => {
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+		await page.evaluate(() => window.silvertrail.grant(['external-media', 'test-pixel']));
+		expect((await cookie(context)).c).toEqual(['youtube', 'google-maps', 'test-video', 'test-pixel']);
+
+		const changes = await page.evaluate(() => {
+			let count = 0;
+			window.addEventListener('silvertrail:change', () => count++);
+			window.silvertrail.revoke(['marketing', 'youtube']);
+			return count;
+		});
+		expect(changes).toBe(1);
+		expect((await cookie(context)).c).toEqual(['google-maps', 'test-video']);
+	});
+
 	test('always allow on an embed under global privacy control stays', async ({ page, context }) => {
 		await sendGpc(page);
 		await page.goto('/?pagename=silvertrail-embeds');

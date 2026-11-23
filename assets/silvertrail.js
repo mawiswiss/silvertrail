@@ -79,13 +79,20 @@
 		}
 	}
 
-	function grant(id, options = {}) {
-		set([...consentIds.filter(has), id], { ...options, partial: !decided() });
+	function expand(ids) {
+		return [].concat(ids).flatMap((id) =>
+			config.services[id] ? [id] : serviceIds.filter((other) => config.services[other].group === id),
+		);
 	}
 
-	function revoke(id) {
-		if (consentIds.includes(id) && has(id)) {
-			set(consentIds.filter((other) => other !== id && has(other)), { partial: !decided() });
+	function grant(ids, options = {}) {
+		set([...consentIds.filter(has), ...expand(ids)], { ...options, partial: !decided() });
+	}
+
+	function revoke(ids) {
+		const gone = expand(ids);
+		if (consentIds.some((id) => gone.includes(id) && has(id))) {
+			set(consentIds.filter((id) => !gone.includes(id) && has(id)), { partial: !decided() });
 		}
 	}
 

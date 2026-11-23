@@ -30,18 +30,21 @@ if (window.silvertrail.has('hubspot')) {
 
 window.silvertrail.open();
 window.silvertrail.set(['google-analytics', 'youtube']);
+window.silvertrail.revoke('marketing');
 ```
 
 | Call | Returns or does |
 | --- | --- |
 | `has(id)` | Whether the visitor agreed to the service. Essential services are always `true`. |
 | `set(ids)` | Stores exactly these services as the choice. Unknown and essential IDs are ignored. |
-| `grant(id)` | Adds one service to the choice, as "Always allow" on an embed does. |
-| `revoke(id)` | Removes one service from the choice and leaves the others as they are. What already runs on the page stops on the next page view. |
+| `grant(ids)` | Adds a service, a group or a list of them to the choice, as "Always allow" on an embed does. |
+| `revoke(ids)` | Removes a service, a group or a list of them from the choice and leaves the rest as it is. What already runs on the page stops on the next page view. |
 | `open()` | Opens the preferences. |
 | `decided()` | Whether the visitor made a full choice. A grant from an embed alone does not count. |
 | `trail()` | `{ held, loaded }`: the services the page held back and the other hosts it loaded from. |
 | `reset()` | Forgets the choice in this browser, so the next page view is a first visit. Meant for testing. |
+
+A group stands for all its services, and an ID that names both a service and a group means the service. Each call stores one choice and fires one `silvertrail:change`, whatever it names.
 
 Silvertrail's script loads with `defer`, so `window.silvertrail` exists from `DOMContentLoaded` on. An inline script runs earlier, so it waits for that event before it calls the API.
 
