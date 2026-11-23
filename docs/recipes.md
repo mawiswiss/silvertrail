@@ -119,8 +119,9 @@ To allow and withdraw with the same button, give it the ID of a service or a gro
 		if (!consent) {
 			return;
 		}
+		const pressed = { granted: 'true', mixed: 'mixed', denied: 'false' };
 		const show = () => {
-			buttons.forEach((button) => button.setAttribute('aria-pressed', String(consent.has(button.dataset.consentToggle))));
+			buttons.forEach((button) => button.setAttribute('aria-pressed', pressed[consent.state(button.dataset.consentToggle).status]));
 		};
 		buttons.forEach((button) => {
 			button.addEventListener('click', () => {
@@ -134,7 +135,7 @@ To allow and withdraw with the same button, give it the ID of a service or a gro
 </script>
 ```
 
-`aria-pressed` tells screen readers whether the service is allowed, and CSS can style the button with `[aria-pressed="true"]`. A group counts as allowed once all its services are, so a click on a partly allowed group allows the rest. The change event keeps every button right after a choice in the banner or another button.
+The `status` from `state()` is `granted`, `mixed` or `denied`, and `aria-pressed` passes it on to screen readers as `true`, `mixed` or `false`. CSS can style each state through `[aria-pressed]`. A click on a partly allowed group allows the rest, and the next one withdraws the whole group. The change event keeps every button right after a choice in the banner or another button.
 
 A service that already runs on the page stops only on the next page view after it is withdrawn. Without Silvertrail's script, such as while it is switched off, the buttons stay as they are and do nothing.
 

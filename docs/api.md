@@ -9,6 +9,7 @@ The PHP functions, the JavaScript API and the events read the visitor's choice, 
 | `silvertrail_register_service( string $id, array $args = [] )` | Registers a service, or turns on and changes a preset. Call it on the `silvertrail_register` action. [Services](services.md#register-a-service) lists the keys. |
 | `silvertrail_register_group( string $id, array $args )` | Registers a group, or changes one. Call it on the same action. [Groups](services.md#groups) lists the keys. |
 | `silvertrail_has( string $service ): bool` | Whether the visitor agreed to the service, or to every service of the group. |
+| `silvertrail_state( string $id ): array` | The choice for the service or the group, in the same shape as [`state()`](#javascript) in the browser. |
 | `silvertrail_config(): array` | The final config, in the shape the [config filter](services.md#the-config-filter) receives. Call it on `init` or later. |
 
 ```php
@@ -17,7 +18,7 @@ if ( silvertrail_has( 'hubspot' ) ) {
 }
 ```
 
-`silvertrail_has()` reads the cookie and the `Sec-GPC` header. Essential services always return `true`, and an unknown ID returns `false`. An ID that names both a service and a group means the service, as in the browser. Use it only on requests a page cache never serves, such as form posts and REST calls. Pages render every gated thing blocked, and the browser decides, so never use it to decide what a page prints.
+`silvertrail_has()` reads the cookie and the `Sec-GPC` header. Essential services always return `true`, and an unknown ID returns `false`. An ID that names both a service and a group means the service, as in the browser. `silvertrail_state()` reads the same. Use it only on requests a page cache never serves, such as form posts and REST calls. Pages render every gated thing blocked, and the browser decides, so never use it to decide what a page prints.
 
 ## JavaScript
 
@@ -36,6 +37,7 @@ window.silvertrail.revoke('marketing');
 | Call | Returns or does |
 | --- | --- |
 | `has(id)` | Whether the visitor agreed to the service, or to every service of the group. Essential services are always `true`. |
+| `state(id)` | `{ status, granted, denied }`: `status` is `granted` when the visitor agreed to the service or to every service of the group, `mixed` when they agreed to some, and `denied` otherwise. `granted` and `denied` list the service IDs on each side. |
 | `set(ids)` | Stores exactly these services as the choice. Unknown and essential IDs are ignored. |
 | `grant(ids)` | Adds a service, a group or a list of them to the choice, as "Always allow" on an embed does. |
 | `revoke(ids)` | Removes a service, a group or a list of them from the choice and leaves the rest as it is. What already runs on the page stops on the next page view. |
@@ -45,6 +47,15 @@ window.silvertrail.revoke('marketing');
 | `reset()` | Forgets the choice in this browser, so the next page view is a first visit. Meant for testing. |
 
 A group stands for all its services, and an ID that names both a service and a group means the service. Each call stores one choice and fires one `silvertrail:change`, whatever it names.
+
+`has()` answers whether something may run, so a group counts only when every one of its services is allowed. `state()` is for showing the choice, such as a toggle with `aria-pressed="mixed"`, as the [recipe for the privacy policy](recipes.md#quick-actions-on-the-privacy-policy) does, or a list of what the visitor allowed:
+
+```js
+const { status, granted, denied } = window.silvertrail.state('external-media');
+// status: 'mixed', granted: ['youtube'], denied: ['vimeo', 'google-maps']
+```
+
+Essential services are always in `granted`. An ID that names no service and no group with services lands in `denied` as it is. A visitor who has not chosen yet reads as `denied`, and `decided()` tells the two apart.
 
 Silvertrail's script loads with `defer`, so `window.silvertrail` exists from `DOMContentLoaded` on. An inline script runs earlier, so it waits for that event before it calls the API.
 

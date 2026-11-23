@@ -318,6 +318,24 @@ test.describe('banner', () => {
 		expect(await has()).toEqual([true, true, true, false]);
 	});
 
+	test('state lists which services of a group are granted and which are not', async ({ page }) => {
+		await page.goto('/');
+		const state = (id) => page.evaluate((id) => window.silvertrail.state(id), id);
+		const media = ['youtube', 'google-maps', 'test-video'];
+		expect(await state('external-media')).toEqual({ status: 'denied', granted: [], denied: media });
+		expect(await state('essential')).toMatchObject({ status: 'granted', denied: [] });
+		expect(await state('unknown')).toEqual({ status: 'denied', granted: [], denied: ['unknown'] });
+
+		await page.getByRole('button', { name: 'Only essential' }).first().click();
+		await page.evaluate(() => window.silvertrail.grant('youtube'));
+		expect(await state('external-media')).toEqual({ status: 'mixed', granted: ['youtube'], denied: ['google-maps', 'test-video'] });
+		expect(await state('youtube')).toEqual({ status: 'granted', granted: ['youtube'], denied: [] });
+		expect(await page.evaluate(() => window.silvertrail.has('external-media'))).toBe(false);
+
+		await page.evaluate(() => window.silvertrail.grant('external-media'));
+		expect(await state('external-media')).toEqual({ status: 'granted', granted: media, denied: [] });
+	});
+
 	test('always allow on an embed under global privacy control stays', async ({ page, context }) => {
 		await sendGpc(page);
 		await page.goto('/?pagename=silvertrail-embeds');

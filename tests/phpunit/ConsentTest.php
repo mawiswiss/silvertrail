@@ -81,6 +81,22 @@ final class ConsentTest extends WP_UnitTestCase {
 		$this->assertFalse( silvertrail_has( 'statistics' ) );
 	}
 
+	public function test_the_state_lists_which_services_of_a_group_are_granted(): void {
+		$media = array_keys( array_filter( silvertrail_config()['services'], static fn( array $service ): bool => 'external-media' === $service['group'] ) );
+		$this->assertSame( $this->state( 'denied', array(), $media ), silvertrail_state( 'external-media' ) );
+		$this->assertSame( $this->state( 'denied', array(), array( 'unknown' ) ), silvertrail_state( 'unknown' ) );
+		$this->assertSame( $this->state( 'denied', array(), array( 'preferences' ) ), silvertrail_state( 'preferences' ) );
+		$this->assertSame( 'granted', silvertrail_state( 'essential' )['status'] );
+
+		$this->cookie( Config::revision(), array( $media[0] ) );
+		$this->assertSame( $this->state( 'mixed', array( $media[0] ), array_slice( $media, 1 ) ), silvertrail_state( 'external-media' ) );
+		$this->assertSame( $this->state( 'granted', array( $media[0] ), array() ), silvertrail_state( $media[0] ) );
+		$this->assertFalse( silvertrail_has( 'external-media' ) );
+
+		$this->cookie( Config::revision(), $media );
+		$this->assertSame( $this->state( 'granted', $media, array() ), silvertrail_state( 'external-media' ) );
+	}
+
 	public function test_a_service_wins_over_a_group_of_the_same_id(): void {
 		add_action(
 			'silvertrail_register',
@@ -122,6 +138,19 @@ final class ConsentTest extends WP_UnitTestCase {
 		$_SERVER['HTTP_SEC_GPC'] = '1';
 
 		$this->assertTrue( silvertrail_has( 'stats' ) );
+	}
+
+	/**
+	 * @param list<string> $granted
+	 * @param list<string> $denied
+	 * @return array{status: string, granted: list<string>, denied: list<string>}
+	 */
+	private function state( string $status, array $granted, array $denied ): array {
+		return array(
+			'status'  => $status,
+			'granted' => $granted,
+			'denied'  => $denied,
+		);
 	}
 
 	/**

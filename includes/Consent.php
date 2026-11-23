@@ -47,11 +47,29 @@ final class Consent {
 	}
 
 	public static function has( string $id ): bool {
+		return 'granted' === self::state( $id )['status'];
+	}
+
+	/**
+	 * @return array{status: 'granted'|'mixed'|'denied', granted: list<string>, denied: list<string>}
+	 */
+	public static function state( string $id ): array {
 		$services = Config::get()['services'];
 		$ids      = isset( $services[ $id ] ) ? array( $id ) : array_keys( array_filter( $services, static fn( array $service ): bool => $service['group'] === $id ) );
-		if ( array() === $ids ) {
-			return false;
+		$ids      = array() === $ids ? array( $id ) : $ids;
+		$granted  = array_values( array_intersect( $ids, array_merge( Config::essential_ids(), self::consented_ids() ) ) );
+		$denied   = array_values( array_diff( $ids, $granted ) );
+		if ( array() === $denied ) {
+			$status = 'granted';
+		} elseif ( array() === $granted ) {
+			$status = 'denied';
+		} else {
+			$status = 'mixed';
 		}
-		return array() === array_diff( $ids, Config::essential_ids(), self::consented_ids() );
+		return array(
+			'status'  => $status,
+			'granted' => $granted,
+			'denied'  => $denied,
+		);
 	}
 }

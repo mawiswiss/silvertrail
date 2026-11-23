@@ -50,6 +50,17 @@
 		return expand(id).every(allowed);
 	}
 
+	function state(id) {
+		const ids = expand(id);
+		const granted = ids.filter(allowed);
+		const denied = ids.filter((other) => !granted.includes(other));
+		return {
+			status: denied.length === 0 ? 'granted' : granted.length > 0 ? 'mixed' : 'denied',
+			granted,
+			denied,
+		};
+	}
+
 	// A stale cached page must not lower the stored n or drop services it does not know.
 	function set(ids, { silent = false, source = 'banner', partial = false } = {}) {
 		const stored = readRaw();
@@ -546,7 +557,7 @@
 		}
 	});
 
-	window.silvertrail = { has, set, grant, revoke, open, decided, trail, reset };
+	window.silvertrail = { has, state, set, grant, revoke, open, decided, trail, reset };
 
 	let started = false;
 	const once = () => {

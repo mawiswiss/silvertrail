@@ -22,6 +22,16 @@ function silvertrail_has( string $service ): bool {
 }
 
 /**
+ * The visitor's choice for a service or a group: its status, 'granted', 'mixed' or
+ * 'denied', and the service IDs on each side. Reads the cookie, as silvertrail_has() does.
+ *
+ * @return array{status: 'granted'|'mixed'|'denied', granted: list<string>, denied: list<string>}
+ */
+function silvertrail_state( string $id ): array {
+	return Consent::state( $id );
+}
+
+/**
  * Call on the silvertrail_register action.
  *
  * @param array<string, mixed> $args name, description, locked, consent_api.
