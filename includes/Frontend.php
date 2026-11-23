@@ -82,7 +82,7 @@ final class Frontend {
 				'groups'      => $groups,
 				'texts'       => Texts::all(),
 				'privacy_url' => (string) get_privacy_policy_url(),
-				'imprint_url' => 'publish' === get_post_status( $imprint ) ? (string) get_permalink( $imprint ) : '',
+				'imprint_url' => $imprint && 'publish' === get_post_status( $imprint ) ? (string) get_permalink( $imprint ) : '',
 			)
 		);
 	}

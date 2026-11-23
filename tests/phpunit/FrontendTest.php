@@ -12,6 +12,7 @@ final class FrontendTest extends WP_UnitTestCase {
 
 	public function tear_down(): void {
 		delete_option( Settings::OPTION );
+		unset( $GLOBALS['post'] );
 		parent::tear_down();
 	}
 
@@ -35,5 +36,13 @@ final class FrontendTest extends WP_UnitTestCase {
 
 		wp_publish_post( $page );
 		$this->assertStringContainsString( 'href="' . esc_url( (string) get_permalink( $page ) ) . '">Imprint</a>', self::banner() );
+	}
+
+	public function test_the_banner_links_no_imprint_when_none_is_set(): void {
+		// A published page as the global post, as on any singular view.
+		$GLOBALS['post'] = get_post( self::factory()->post->create( array( 'post_type' => 'page' ) ) );
+		update_option( Settings::OPTION, array( 'imprint_page' => 0 ) );
+
+		$this->assertStringNotContainsString( '>Imprint</a>', self::banner() );
 	}
 }
